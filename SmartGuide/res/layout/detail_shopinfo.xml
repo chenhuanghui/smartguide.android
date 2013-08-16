@@ -1,0 +1,175 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="horizontal" >
+
+    <RelativeLayout
+        android:id="@+id/layoutHeader"
+        android:layout_width="86dp"
+        android:layout_height="match_parent"
+        android:background="@drawable/bg" >
+
+        <TextView
+            android:id="@+id/textView1"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_below="@+id/imgLandmark"
+            android:layout_centerHorizontal="true"
+            android:text="THÔNG TIN"
+            android:textAlignment="center"
+            android:textColor="#282E3A"
+            android:textSize="10dp"
+            android:textStyle="bold" />
+
+        <TextView
+            android:id="@+id/textView2"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_below="@+id/textView1"
+            android:layout_centerHorizontal="true"
+            android:text="CỬA HÀNG"
+            android:textColor="#282E3A"
+            android:textSize="10dp"
+            android:textStyle="bold" />
+
+        <ImageView
+            android:id="@+id/imgLandmark"
+            android:layout_width="46dp"
+            android:layout_height="wrap_content"
+            android:layout_alignParentTop="true"
+            android:layout_centerHorizontal="true"
+            android:layout_marginTop="46dp"
+            android:src="@drawable/pic_shopinfo" />
+
+    </RelativeLayout>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:background="#ffffff"
+        android:orientation="vertical"
+        android:paddingLeft="10dp"
+        android:paddingRight="10dp" >
+
+        <RelativeLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_alignParentTop="true"
+            android:layout_marginTop="46dp" >
+
+            <TextView
+                android:id="@+id/textView3"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Miêu tả: "
+                android:textAppearance="?android:attr/textAppearanceSmall"
+                android:textColor="#282E3A"
+                android:textSize="11dp"
+                android:textStyle="bold" />
+
+            <TextView
+                android:id="@+id/txtDes"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_alignParentTop="true"
+                android:layout_marginLeft="60dp"
+                android:text="Mỗi tuần Starbucks trên khắp thế giới phục vụ hàng triệu thức uống đến tay khách hàng. Và Stabucks cam kết sẽ phục vụ từng khác hàng duy nhất."
+                android:textAppearance="?android:attr/textAppearanceSmall"
+                android:textColor="#4A4A4A"
+                android:textSize="11dp" />
+
+        </RelativeLayout>
+
+        <RelativeLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="12dp" >
+
+            <RelativeLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_alignParentLeft="true"
+                android:layout_alignParentTop="true" >
+
+                <TextView
+                    android:id="@+id/TextView02"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Địa chỉ:"
+                    android:textAppearance="?android:attr/textAppearanceSmall"
+                    android:textColor="#282E3A"
+                    android:textSize="11dp"
+                    android:textStyle="bold" />
+
+                <TextView
+                    android:id="@+id/txtAddress"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginLeft="60dp"
+                    android:text="Góc đường Nguyễn Thị Nghĩa - Phạm Hồng Thái 76 Lê Lai, quận 1 Thành Phố Hồ Chí Minh"
+                    android:textAppearance="?android:attr/textAppearanceSmall"
+                    android:textColor="#4A4A4A"
+                    android:textSize="11dp" />
+
+            </RelativeLayout>
+
+        </RelativeLayout>
+
+        <RelativeLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="12dp" >
+
+            <TextView
+                android:id="@+id/TextView04"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Liên lạc:"
+                android:textAppearance="?android:attr/textAppearanceSmall"
+                android:textColor="#282E3A"
+                android:textSize="11dp"
+                android:textStyle="bold" />
+
+            <TextView
+                android:id="@+id/txtPhone"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="60dp"
+                android:text="+84 099 09 099"
+                android:textAppearance="?android:attr/textAppearanceSmall"
+                android:textColor="#4A4A4A"
+                android:textSize="11dp" />
+
+        </RelativeLayout>
+
+        <RelativeLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="12dp" >
+
+            <TextView
+                android:id="@+id/TextView06"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Website:"
+                android:textAppearance="?android:attr/textAppearanceSmall"
+                android:textColor="#282E3A"
+                android:textSize="11dp"
+                android:textStyle="bold" />
+
+            <TextView
+                android:id="@+id/txtWeb"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="60dp"
+                android:text="http://www.stabucks.vn"
+                android:textAppearance="?android:attr/textAppearanceSmall"
+                android:textColor="#4A4A4A"
+                android:textSize="11dp" />
+
+        </RelativeLayout>
+
+    </LinearLayout>
+
+</LinearLayout>

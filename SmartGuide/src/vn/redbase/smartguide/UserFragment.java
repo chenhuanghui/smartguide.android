@@ -1,0 +1,337 @@
+package vn.redbase.smartguide;
+
+import java.util.ArrayList;
+import java.util.List;
+
+import org.apache.http.NameValuePair;
+import org.apache.http.message.BasicNameValuePair;
+import org.json.JSONException;
+import org.json.JSONObject;
+
+import vn.redbase.smartguide.ShopListFragment.FetchMoreShopListTask;
+
+
+
+import android.animation.ObjectAnimator;
+import android.graphics.Bitmap;
+import android.graphics.drawable.BitmapDrawable;
+import android.graphics.drawable.Drawable;
+import android.os.AsyncTask;
+import android.os.Bundle;
+import android.os.Handler;
+import android.os.Message;
+import android.support.v4.app.Fragment;
+import android.view.LayoutInflater;
+import android.view.View;
+import android.view.ViewGroup;
+import android.view.animation.AccelerateDecelerateInterpolator;
+import android.widget.AbsListView;
+import android.widget.AdapterView;
+import android.widget.AdapterView.OnItemClickListener;
+import android.widget.BaseAdapter;
+import android.widget.ImageView;
+import android.widget.LinearLayout;
+import android.widget.ListView;
+import android.widget.TextView;
+
+public class UserFragment extends Fragment{
+	private MainAcitivyListener mMainAcitivyListener = null;
+	private boolean mShowContent;
+	private ImageView mAvatar;
+	private TextView mScoreText;
+	private CollectionAdapter mAdapter;
+	private ListView mLstCollection;
+	private int indexPage = 0;
+	private boolean isMore = true;
+	
+	@Override
+	public View onCreateView(LayoutInflater inflater, ViewGroup container,
+			Bundle savedInstanceState) {
+		// TODO Auto-generated method stub
+		return inflater.inflate(R.layout.user_fragment, container, false);
+	}
+	
+	public boolean updateSGP(int id, int sgp){
+		if (mAdapter == null)
+			return false;
+		
+		List<Shop> mShopList = mAdapter.mShops;
+		if (mShopList == null || mShopList.size() == 0)
+			return false;
+		
+		for(int i = 0; i < mShopList.size(); i++){
+			if (mShopList.get(i).mID == id){
+				try{
+				mAdapter.mSGPTexts.get(i).setText(Integer.toString(sgp));
+				}catch(Exception ex){
+					return false;
+				}
+				((PromotionTypeOne)mShopList.get(i).mPromotion).mSGP = sgp;
+				return true;
+			}
+		}
+		
+		return false;
+	}
+	
+	@Override
+	public void onActivityCreated(Bundle savedInstanceState) {
+		// TODO Auto-generated method stub
+		super.onActivityCreated(savedInstanceState);
+		mMainAcitivyListener = (MainAcitivyListener) getActivity();
+		
+		mLstCollection = (ListView) getView().findViewById(R.id.lstCollection);
+		mAdapter = new CollectionAdapter();
+		mAdapter.setData(new ArrayList<Shop>());
+		mLstCollection.setAdapter(mAdapter);
+		
+		// invisible
+		View layoutMain = getView().findViewById(R.id.userLayoutMain);
+		layoutMain.setVisibility(View.GONE);
+		
+		mAvatar = (ImageView) getView().findViewById(R.id.avatarUserView);
+		mScoreText = (TextView) getView().findViewById(R.id.txtPoint);
+		
+		mLstCollection.setOnScrollListener(new AbsListView.OnScrollListener() {
+			@Override
+			public void onScrollStateChanged(AbsListView view, int scrollState) {
+			}
+			
+			@Override
+			public void onScroll(AbsListView view, int firstVisibleItem,
+					int visibleItemCount, int totalItemCount) {
+				if (((firstVisibleItem >= indexPage * GlobalVariable.itemPerPage + GlobalVariable.needLoadMore) ||  visibleItemCount >= GlobalVariable.needLoadMore) && isMore == true){
+					isMore = false;
+					new FetchMoreShopListTask().execute();
+				}	
+			}
+		});
+		
+		mLstCollection.setOnItemClickListener(new OnItemClickListener() {
+
+			@Override
+			public void onItemClick(AdapterView<?> arg0, View arg1, int arg2,
+					long arg3) {
+				GlobalVariable.mCurrentShop = mAdapter.mShops.get(arg2);
+				mMainAcitivyListener.getDetailFragment().setData(GlobalVariable.mCurrentShop);
+				mMainAcitivyListener.userToDetail();
+			}
+		});
+	}
+	
+	public void updateScore(String score){
+		mScoreText.setText(score);
+	}
+	
+	public void updateAvatar(){
+		GlobalVariable.imageLoader.displayImage(GlobalVariable.avatarFace, mAvatar);
+	}
+	
+	public void toggle() {
+		mShowContent = !mShowContent;
+		ObjectAnimator animator = null;
+		int height = getActivity().findViewById(R.id.linearLayout).getHeight();
+		View layout = getView().findViewById(R.id.userLayoutMain);
+		layout.setVisibility(View.VISIBLE);
+		if (mShowContent)
+			animator = ObjectAnimator.ofFloat(layout, "translationY", -height, 0);
+		else
+			animator = ObjectAnimator.ofFloat(layout, "translationY", 0, -height);
+
+		animator.setInterpolator(new AccelerateDecelerateInterpolator());
+		animator.start();
+	}
+	
+	public void update(List<Shop> shop){
+		mAdapter = new CollectionAdapter();
+		if (shop == null || shop.size() == 0)
+			isMore = false;
+		else{
+			if (shop.size() % GlobalVariable.itemPerPage == 0)
+				isMore = true;
+			else
+				isMore = false;
+
+			indexPage++;
+		}	
+		
+		mAdapter.setData(shop);
+		mLstCollection.setAdapter(mAdapter);
+		mAdapter.notifyDataSetChanged();
+	}
+	
+	public class CollectionAdapter extends BaseAdapter {
+		
+		private LayoutInflater inflater;
+		private List<Shop> mShops;
+		private List<Drawable> mBitmaps;
+		private List<TextView> mSGPTexts;
+		
+		public CollectionAdapter() {
+			inflater = UserFragment.this.getActivity().getLayoutInflater();
+		}
+		
+		public void setData(List<Shop> shops){
+			mShops = shops;
+			mBitmaps = new ArrayList<Drawable>();
+			mSGPTexts = new ArrayList<TextView>();
+			for(int i = 0; i < shops.size(); i++){
+				mBitmaps.add(null);
+				mSGPTexts.add(null);
+			}
+		}
+		
+		public void addData(List<Shop> shops){
+			for(int i = 0; i < shops.size(); i++){
+				mShops.add(shops.get(i));
+				mBitmaps.add(null);
+				mSGPTexts.add(null);
+			}
+		}
+		
+		@Override
+		public int getCount() {
+			return mShops.size();
+		}
+
+		@Override
+		public Object getItem(int pos) {
+			return pos;
+		}
+
+		@Override
+		public long getItemId(int pos) {
+			return pos;
+		}
+
+		@Override
+		public View getView(final int position, View convertView, ViewGroup parent) {
+			
+			if (convertView == null) {
+				convertView = inflater.inflate(R.layout.user_item, null);
+			}
+			
+			final Shop sp = mShops.get(position);
+			TextView shopTextView = (TextView)convertView.findViewById(R.id.textView1);
+			TextView sgpTextView = (TextView)convertView.findViewById(R.id.TextView01);
+			TextView spTextView = (TextView)convertView.findViewById(R.id.TextView03);
+			TextView timeTextView = (TextView)convertView.findViewById(R.id.textView4);
+			TextView updateTextview = (TextView)convertView.findViewById(R.id.textView5);
+			final ImageView shopAva = (ImageView)convertView.findViewById(R.id.imageView1);
+			mSGPTexts.set(position, sgpTextView);
+			
+			shopTextView.setText(sp.mName);
+			Drawable nowDrawable = mBitmaps.get(position); 
+			if (nowDrawable == null){
+				new Handler().postDelayed(new Runnable() {
+					@Override
+					public void run() {
+						new HttpConnection(new Handler() {
+			        		@Override
+			        		public void handleMessage(Message message) {
+			        			
+			        			switch (message.what) {
+			        			case HttpConnection.DID_START: {
+			        				break;
+			        			}
+			        			case HttpConnection.DID_SUCCEED: {
+			        				Bitmap response = (Bitmap) message.obj;
+			        				Drawable drawable = new BitmapDrawable(getActivity().getResources(), response);
+			        				mBitmaps.set(position, drawable);
+			        				shopAva.setBackgroundDrawable(drawable);
+			        				break;
+			        			}
+			        			case HttpConnection.DID_ERROR: {
+			        				Exception e = (Exception) message.obj;
+			        				e.printStackTrace();
+			        				break;
+			        			}
+			        			}
+			        		}
+			        		
+			        	}).bitmap(sp.mLogo);
+					}
+				}, 2000);
+			}else
+				shopAva.setBackgroundDrawable(nowDrawable);
+			
+			if (sp.mPromotionStatus == true){
+				int type = sp.mPromotion.getType();
+				switch(type){
+				case 1:
+					PromotionTypeOne promotion = (PromotionTypeOne)sp.mPromotion;
+					sgpTextView.setText(Integer.toString(promotion.mSGP));
+					spTextView.setText(Integer.toString(promotion.mSP));
+					updateTextview.setText(promotion.mDuration);
+					break;
+				case 2:
+					PromotionTypeTwo promotion_2 = (PromotionTypeTwo)sp.mPromotion;
+					TextView spTitle = (TextView)convertView.findViewById(R.id.TextView02);
+					TextView sgpTitle = (TextView)convertView.findViewById(R.id.textView2);
+					
+					spTitle.setVisibility(View.INVISIBLE);
+					spTextView.setVisibility(View.INVISIBLE);
+					sgpTextView.setText(Integer.toString(promotion_2.mMoney));
+					sgpTitle.setText("VN�?");
+					break;
+				}	
+			}
+			
+			timeTextView.setText(sp.mUpdateAt);
+			return convertView;
+		}
+	}
+	
+	public class FetchMoreShopListTask extends AsyncTask<Void, Void, Boolean> {
+		String JSResult = null;
+		
+		@Override
+		protected Boolean doInBackground(Void... params) {
+			List<NameValuePair> pairs = new ArrayList<NameValuePair>();
+			pairs.add(new BasicNameValuePair("user_id", GlobalVariable.userID));
+			pairs.add(new BasicNameValuePair("user_lat", Float.toString(GlobalVariable.mLat)));
+			pairs.add(new BasicNameValuePair("user_lng", Float.toString(GlobalVariable.mLng)));
+			pairs.add(new BasicNameValuePair("page", "0"));
+			
+			JSResult = NetworkManger.post(APILinkMaker.mGetUserCollection(), pairs);
+
+			return true;
+		}
+
+		@Override
+		protected void onPostExecute(Boolean k){
+			JSONObject obj;
+			try {
+				obj = new JSONObject(JSResult);
+				
+				List<Shop> shopList = Shop.getListForUse(obj.getJSONArray("collection"));
+				if (shopList.size() != 0){
+
+					if (shopList == null || shopList.size() == 0)
+						isMore = false;
+					else{
+						mAdapter.addData(shopList);
+						
+						if (shopList.size() % GlobalVariable.itemPerPage == 0)
+							isMore = true;
+						else
+							isMore = false;
+
+						indexPage++;
+						
+						mAdapter.notifyDataSetChanged();
+					}	
+				}
+			} catch (JSONException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+			
+		}
+
+		@Override
+		protected void onPreExecute(){
+		}
+	}
+	
+}
