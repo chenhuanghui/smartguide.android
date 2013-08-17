@@ -1,0 +1,263 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="wrap_content"
+    android:layout_height="wrap_content"
+    android:orientation="vertical" >
+
+    <RelativeLayout
+        android:id="@+id/layoutRootDetailMenu"
+        android:layout_width="wrap_content"
+        android:layout_height="100dp" >
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="4px"
+            android:layout_alignRight="@+id/layoutHalfUpperMenu"
+            android:layout_below="@+id/layoutHalfUpperMenu"
+            android:background="#9A4028"
+            android:orientation="horizontal" >
+        </LinearLayout>
+
+        <LinearLayout
+            android:id="@+id/layoutInfoShop"
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content"
+            android:layout_alignRight="@+id/layoutHalfUpperMenu"
+            android:orientation="vertical"
+            android:visibility="visible" >
+
+            <LinearLayout
+                android:id="@+id/layoutInfoShopChild"
+                android:layout_width="fill_parent"
+                android:layout_height="wrap_content"
+                android:layout_alignRight="@+id/linearLayout2"
+                android:layout_below="@+id/layoutHalfUpperMenu"
+                android:layout_marginTop="1px"
+                android:background="#CA5436"
+                android:gravity="center_vertical"
+                android:paddingBottom="4dp"
+                android:paddingTop="4dp" >
+
+                <ImageButton
+                    android:id="@+id/btnInfo"
+                    android:layout_width="0dp"
+                    android:layout_height="match_parent"
+                    android:layout_weight="1"
+                    android:background="#00000000"
+                    android:clickable="false"
+                    android:src="@drawable/icon_shopinfo" />
+
+                <ImageButton
+                    android:id="@+id/btnShopMenu"
+                    android:layout_width="0dp"
+                    android:layout_height="match_parent"
+                    android:layout_weight="1"
+                    android:background="#00000000"
+                    android:clickable="false"
+                    android:src="@drawable/icon_shopmenu" />
+
+                <ImageButton
+                    android:id="@+id/btnCamera"
+                    android:layout_width="0dp"
+                    android:layout_height="match_parent"
+                    android:layout_weight="1"
+                    android:background="#00000000"
+                    android:clickable="false"
+                    android:src="@drawable/icon_camera" />
+
+                <ImageButton
+                    android:id="@+id/btnShopPhoto"
+                    android:layout_width="0dp"
+                    android:layout_height="match_parent"
+                    android:layout_weight="1"
+                    android:background="#00000000"
+                    android:clickable="false"
+                    android:src="@drawable/icon_shopphoto" />
+
+                <ImageButton
+                    android:id="@+id/btnShopComment"
+                    android:layout_width="0dp"
+                    android:layout_height="match_parent"
+                    android:layout_weight="1"
+                    android:background="#00000000"
+                    android:clickable="false"
+                    android:src="@drawable/icon_shopcomment" />
+
+                <ImageButton
+                    android:id="@+id/btnShowMap"
+                    android:layout_width="0dp"
+                    android:layout_height="match_parent"
+                    android:layout_weight="1"
+                    android:background="#00000000"
+                    android:clickable="false"
+                    android:src="@drawable/icon_shopmap" />
+            </LinearLayout>
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="4px"
+                android:layout_alignRight="@+id/layoutHalfUpperMenu"
+                android:layout_below="@+id/layoutHalfUpperMenu"
+                android:background="#9A4028"
+                android:orientation="horizontal" />
+        </LinearLayout>
+
+        <LinearLayout
+            android:id="@+id/layoutHalfUpperMenu"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:background="#CA5436"
+            android:gravity="center_vertical" >
+
+            <Button
+                android:id="@+id/btnLike"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:background="#00000000"
+                android:drawableRight="@drawable/icon_like"
+                android:paddingBottom="6dp"
+                android:paddingLeft="8dp"
+                android:paddingRight="8dp"
+                android:paddingTop="6dp"
+                android:text="1.250 "
+                android:textSize="9dp"
+                android:textStyle="bold"
+                android:textColor="#ffffff" />
+
+            <LinearLayout
+                android:layout_width="1px"
+                android:layout_height="fill_parent"
+                android:layout_marginBottom="2dp"
+                android:layout_marginTop="2dp"
+                android:background="#9A4028" >
+            </LinearLayout>
+
+            <Button
+                android:id="@+id/btnDislike"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:background="#00000000"
+                android:drawableRight="@drawable/icon_dislike"
+                android:paddingBottom="6dp"
+                android:paddingLeft="8dp"
+                android:paddingRight="8dp"
+                android:paddingTop="6dp"
+                android:text="10 "
+                android:textSize="9dp"
+                android:textColor="#ffffff"
+                android:textStyle="bold" />
+
+            <LinearLayout
+                android:layout_width="1px"
+                android:layout_height="fill_parent"
+                android:layout_marginBottom="2dp"
+                android:layout_marginTop="2dp"
+                android:background="#9A4028" >
+            </LinearLayout>
+
+            
+            <RelativeLayout
+                android:id="@+id/layoutShopSwitch"
+                android:layout_width="wrap_content"
+                android:layout_height="match_parent" >
+ 
+                <RelativeLayout
+                    android:id="@+id/layoutShopSwitch2"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content" >
+
+                    <LinearLayout
+                        android:id="@+id/tlinearLayout2"
+                        android:layout_width="1px"
+                        android:layout_height="fill_parent"
+                        android:layout_marginBottom="2dp"
+                        android:layout_marginTop="2dp"
+                        android:background="#9A4028"
+                        android:orientation="horizontal" />
+
+                    <ImageButton
+                        android:id="@+id/imageButton2"
+                        android:layout_width="wrap_content"
+                        android:layout_height="match_parent"
+                        android:layout_toRightOf="@+id/tlinearLayout2"
+                        android:background="#00000000"
+                        android:src="@drawable/pick_right" />
+
+                    <Button
+                        android:id="@+id/btnShop2"
+                        android:layout_width="wrap_content"
+                        android:layout_height="match_parent"
+                        android:background="#00000000"
+                        android:paddingLeft="6dp"
+                        android:paddingRight="6dp"
+                        android:text="CỬA HÀNG"
+                        android:textAlignment="center"
+                        android:textSize="9dp"
+                        android:textStyle="bold"
+                        android:layout_toRightOf="@+id/imageButton2" />
+                </RelativeLayout>
+
+                <RelativeLayout
+                    android:id="@+id/layoutShopSwitch1"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:background="#CA5436" >
+
+                    <Button
+                        android:id="@+id/btnShop1"
+                        android:layout_width="wrap_content"
+                        android:layout_height="match_parent"
+                        android:background="#00000000"
+                        android:paddingLeft="6dp"
+                        android:paddingRight="6dp"
+                        android:text="KHUYẾN MÃI"
+                        android:textAlignment="center"
+                        android:textSize="9dp"
+                        android:textStyle="bold"
+                        android:textColor="#ffffff" />
+
+                    <ImageButton
+                        android:id="@+id/imageButton1"
+                        android:layout_width="wrap_content"
+                        android:layout_height="match_parent"
+                        android:layout_toRightOf="@+id/btnShop1"
+                        android:background="#00000000"
+                        android:src="@drawable/pick_left" />
+
+                    <LinearLayout
+                        android:id="@+id/tlinearLayout"
+                        android:layout_width="1px"
+                        android:layout_height="fill_parent"
+                        android:layout_marginBottom="2dp"
+                        android:layout_marginTop="2dp"
+                        android:background="#9A4028"
+                        android:orientation="horizontal"
+                        android:layout_toRightOf="@+id/imageButton1" >
+                    </LinearLayout>
+
+                    <ImageButton
+                        android:id="@+id/btnShop3"
+                        android:layout_width="wrap_content"
+                        android:layout_height="match_parent"
+                        android:layout_toRightOf="@+id/tlinearLayout"
+                        android:background="#00000000"
+                        android:paddingLeft="2dp"
+                        android:paddingRight="2dp"
+                        android:src="@drawable/icon_info" />
+
+                </RelativeLayout>
+                
+            </RelativeLayout>
+             
+            
+        </LinearLayout>
+
+        <ImageView
+            android:id="@+id/imgCursor"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:src="@drawable/pick" />
+    </RelativeLayout>
+
+</LinearLayout>
