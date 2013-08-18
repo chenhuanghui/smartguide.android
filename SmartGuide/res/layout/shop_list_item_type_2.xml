@@ -2,9 +2,7 @@
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:id="@+id/root_layout_item_list"
     android:layout_width="match_parent"
-    android:layout_height="86dp"
-    android:layout_marginLeft="20dp"
-    android:layout_marginRight="20dp"
+    android:layout_height="wrap_content"
     android:background="#282e3a" >
 "
 
@@ -12,8 +10,6 @@
         android:id="@+id/root"
         android:layout_width="match_parent"
         android:layout_height="75dp"
-        android:layout_marginLeft="11dp"
-        android:layout_marginTop="11dp"
         android:background="#282e3a" >
 
         <TextView
@@ -21,7 +17,7 @@
             android:layout_width="wrap_content"
             android:layout_height="25dp"
             android:layout_gravity="center_horizontal|top"
-            android:background="@drawable/shop_distance_red"
+            android:background="@drawable/shop_distance_green"
             android:gravity="center"
             android:shadowColor="@color/text_shadow"
             android:shadowDx="1"
@@ -40,7 +36,7 @@
             android:layout_below="@+id/shop_distance"
             android:layout_gravity="center_horizontal|top"
             android:layout_toLeftOf="@+id/shop_cover_layout"
-            android:background="@drawable/shop_score_red"
+            android:background="@drawable/shop_score_green"
             android:gravity="center"
             android:orientation="horizontal" >
 
@@ -51,7 +47,7 @@
                 android:gravity="center_vertical|center_horizontal"
                 android:text="/10"
                 android:textColor="#ffffff"
-                android:textSize="15dp"
+                android:textSize="14dp"
                 android:textStyle="bold" />
         </LinearLayout>
 
@@ -61,7 +57,7 @@
             android:layout_height="25dp"
             android:layout_alignParentLeft="true"
             android:layout_below="@+id/shop_score_now_min"
-            android:background="@drawable/shop_type_red"
+            android:background="@drawable/shop_type_green"
             android:gravity="center"
             android:orientation="horizontal" >
 
@@ -104,7 +100,7 @@
                 android:id="@+id/shop_cover_layout_tran"
                 android:layout_width="fill_parent"
                 android:layout_height="fill_parent"
-                android:background="@drawable/shop_avatar_red_tran"
+                android:background="@drawable/shop_avatar_green_tran"
                 android:orientation="vertical" >
             </LinearLayout>
         </RelativeLayout>
@@ -116,27 +112,45 @@
             android:layout_alignBottom="@+id/shop_type_score"
             android:layout_alignParentTop="true"
             android:layout_toRightOf="@+id/shop_cover_layout"
-            android:background="@drawable/shop_content_red"
+            android:background="@drawable/shop_content_green"
             android:gravity="center"
             android:orientation="vertical" >
 
-            <TextView
-                android:id="@+id/shop_name_real"
+            <RelativeLayout
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_below="@+id/shop_name"
                 android:layout_marginTop="15dp"
-                android:ellipsize="end"
-                android:gravity="center_horizontal"
-                android:shadowColor="@color/text_shadow"
-                android:shadowDx="1"
-                android:shadowDy="1"
-                android:shadowRadius="2"
-                android:text="SHOP NAME"
-                android:textColor="#ffffff"
-                android:textSize="16dp"
-                android:textStyle="bold" >
-            </TextView>
+                android:layout_marginLeft="5dp"
+                android:layout_marginRight="5dp"
+                android:layout_gravity="center_horizontal" >
+
+                <TextView
+                    android:id="@+id/shop_name_real"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_centerVertical="true"
+                    android:layout_toRightOf="@+id/shop_type_icon"
+                    android:ellipsize="end"
+                    android:gravity="center_horizontal"
+                    android:shadowColor="@color/text_shadow"
+                    android:shadowDx="1"
+                    android:shadowDy="1"
+                    android:layout_marginLeft="3dp"
+                    android:shadowRadius="2"
+                    android:maxLines="2"
+                    android:text="SHOP NAME"
+                    android:textColor="#ffffff"
+                    android:textSize="13dp"
+                    android:textStyle="bold" />
+
+                <ImageView
+                    android:id="@+id/shop_type_icon"
+                    android:layout_width="20dp"
+                    android:layout_height="20dp"
+                    android:layout_alignParentLeft="true"
+                    android:layout_centerVertical="true" />
+
+            </RelativeLayout>
 
             <TextView
                 android:id="@+id/shop_content_real"
@@ -152,13 +166,4 @@
             </TextView>
         </LinearLayout>
     </RelativeLayout>
-
-    <ImageView
-        android:id="@+id/imageView"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_alignParentLeft="true"
-        android:layout_alignParentTop="true"
-        android:background="@drawable/list_promtion" />
-
 </RelativeLayout>

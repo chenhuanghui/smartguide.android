@@ -23,7 +23,7 @@
                 android:id="@+id/imgCover"
                 android:layout_width="fill_parent"
                 android:layout_height="fill_parent"
-                android:background="@drawable/shop_detail_background"
+                android:background="@drawable/cover_noimage"
                 android:cropToPadding="false"
                 android:scaleType="fitXY"
                 android:visibility="visible" />
@@ -75,7 +75,7 @@
 
         <fragment
             android:id="@+id/detailMenuFragment"
-            android:name="vn.redbase.smartguide.DetailMenuFragment"
+            android:name="vn.smartguide.DetailMenuFragment"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             tools:layout="@layout/detail_menu" />

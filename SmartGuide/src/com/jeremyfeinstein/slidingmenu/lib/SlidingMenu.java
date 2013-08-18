@@ -2,7 +2,7 @@ package com.jeremyfeinstein.slidingmenu.lib;
 
 import java.lang.reflect.Method;
 
-import vn.redbase.smartguide.R;
+import vn.smartguide.R;
 
 
 

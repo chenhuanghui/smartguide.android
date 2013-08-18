@@ -4,7 +4,8 @@
     xmlns:map="http://schemas.android.com/apk/res-auto"
     android:layout_width="fill_parent"
     android:layout_height="fill_parent"
-    android:background="@drawable/bg" >
+    android:background="@drawable/bg"
+    android:id="@+id/rootOfroot" >
 
     <RelativeLayout
         android:id="@+id/relativeLayout"
@@ -108,8 +109,6 @@
                 android:background="#FFFFFF"
                 android:gravity="center_vertical|center_horizontal"
                 android:orientation="vertical" >
-
-                
             </LinearLayout>
         </LinearLayout>
 
@@ -164,11 +163,21 @@
                 android:background="#282E3A"
                 android:orientation="vertical" >
 
-                <vn.redbase.smartguide.SViewPager
+                <vn.smartguide.SViewPager
                     android:id="@+id/contentViewPager"
                     android:layout_width="match_parent"
                     android:layout_height="match_parent" >
-                </vn.redbase.smartguide.SViewPager>
+                </vn.smartguide.SViewPager>
+            </LinearLayout>
+
+            <LinearLayout
+                android:id="@+id/launchingLayout"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:layout_alignBottom="@+id/layoutContentHolder"
+                android:background="@drawable/launching"
+                android:orientation="vertical"
+                android:visibility="invisible" >
             </LinearLayout>
 
             <LinearLayout
@@ -183,7 +192,7 @@
 
         <fragment
             android:id="@+id/adsFragment"
-            android:name="vn.redbase.smartguide.AdsFragment"
+            android:name="vn.smartguide.AdsFragment"
             android:layout_width="match_parent"
             android:layout_height="0dp"
             android:layout_weight="2"
@@ -192,7 +201,7 @@
 
     <fragment
         android:id="@+id/filterFragment"
-        android:name="vn.redbase.smartguide.FilterFragment"
+        android:name="vn.smartguide.FilterFragment"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:layout_above="@+id/linearLayout3"
@@ -202,7 +211,7 @@
 
     <fragment
         android:id="@+id/userFragment"
-        android:name="vn.redbase.smartguide.UserFragment"
+        android:name="vn.smartguide.UserFragment"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:layout_above="@+id/linearLayout3"

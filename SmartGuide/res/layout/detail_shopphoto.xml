@@ -63,11 +63,11 @@
                 android:layout_below="@+id/textView3"
                 android:padding="8dp" >
 
-                <vn.redbase.smartguide.HorizontalListView
+                <vn.smartguide.HorizontalListView
                     android:id="@+id/pagerShopPhoto1"
                     android:layout_width="match_parent"
                     android:layout_height="48dp" >
-                </vn.redbase.smartguide.HorizontalListView>
+                </vn.smartguide.HorizontalListView>
 
                 <Button
                     android:id="@+id/btnPagerPhoto1"
@@ -100,11 +100,11 @@
                 android:layout_below="@+id/TextView06"
                 android:padding="8dp" >
 
-                <vn.redbase.smartguide.HorizontalListView
+                <vn.smartguide.HorizontalListView
                     android:id="@+id/pagerShopPhoto2"
                     android:layout_width="match_parent"
                     android:layout_height="match_parent" >
-                </vn.redbase.smartguide.HorizontalListView>
+                </vn.smartguide.HorizontalListView>
 
                 <Button
                     android:id="@+id/btnPagerPhoto2"

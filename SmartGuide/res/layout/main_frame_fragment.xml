@@ -137,7 +137,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="0dp"
                 android:layout_weight="3"
-                android:name="vn.redbase.smartguide.ContentFragment"
+                android:name="vn.smartguide.ContentFragment"
                 android:id="@+id/contentFragment"
                 android:layout_gravity="left|center_vertical"
                 tools:layout="@layout/content_fragment"/>
@@ -146,7 +146,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="0dp"
                 android:layout_weight="1"
-                android:name="vn.redbase.smartguide.AdsFragment"
+                android:name="vn.smartguide.AdsFragment"
                 android:id="@+id/adsFragment"
                 tools:layout="@layout/ads_fragment"/>
     </LinearLayout>

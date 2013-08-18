@@ -1,6 +1,6 @@
 package com.jeremyfeinstein.slidingmenu.lib;
 
-import vn.redbase.smartguide.R;
+import vn.smartguide.R;
 import android.content.Context;
 import android.graphics.Bitmap;
 import android.graphics.Canvas;
