@@ -65,6 +65,9 @@ public class AdsFragment extends Fragment {
 		((ImageButton)getView().findViewById(R.id.imageButton)).setOnClickListener(new View.OnClickListener() {
 			@Override
 			public void onClick(View v) {
+				if (images.size() == 0)
+					return;
+				
 				stopAds();
 
 				if (index == 0)
@@ -79,6 +82,9 @@ public class AdsFragment extends Fragment {
 		((ImageButton)getView().findViewById(R.id.imageButton2)).setOnClickListener(new View.OnClickListener() {
 			@Override
 			public void onClick(View v) {
+				if (images.size() == 0)
+					return;
+				
 				stopAds();
 				
 				index = (index + 1) % images.size();

@@ -77,7 +77,7 @@ public class MainActivity extends FragmentActivity implements MainAcitivyListene
 
 	private final int WelcomeRequestCode 		= 44444;
 	private final int FlashScreenRequestCode 	= 55555;
-
+	private final int ReviewRequestCode			= 66666;
 	// Load qrcode lib
 	static {
 		System.loadLibrary("iconv");
@@ -109,6 +109,8 @@ public class MainActivity extends FragmentActivity implements MainAcitivyListene
 
 	// Slide menu
 	SlidingMenu menu;
+	private RelativeLayout reviewBtn;
+	private boolean isNeedReview = false;
 
 	// Viewpager
 	private FragmentManager mFragmentManager;
@@ -679,7 +681,7 @@ public class MainActivity extends FragmentActivity implements MainAcitivyListene
 
 		((RelativeLayout)findViewById(R.id.rootOfroot)).setOnTouchListener(this);
 		((RelativeLayout)findViewById(R.id.layoutQR)).setOnTouchListener(this);
-		
+
 		mActivity = this;
 
 		// init
@@ -735,7 +737,7 @@ public class MainActivity extends FragmentActivity implements MainAcitivyListene
 					final Fragment scroll = getSupportFragmentManager().findFragmentById(R.id.adsFragment);
 					final FragmentTransaction tr = getSupportFragmentManager().beginTransaction();
 					//tr.setCustomAnimations(R.anim.slide_up, R.anim.slide_down);
-					tr.hide(scroll);
+					//tr.hide(scroll);
 					tr.commit();
 				}
 				else{
@@ -768,6 +770,20 @@ public class MainActivity extends FragmentActivity implements MainAcitivyListene
 		mNaviText = (TextView) findViewById(R.id.txtNavi);
 		mAvatarFaceBtn = (ImageButton)menu.getMenu().findViewById(R.id.imageView1);
 		mTotalSGP = (TextView)menu.getMenu().findViewById(R.id.SGPScoreSetting);
+		reviewBtn = (RelativeLayout)menu.getMenu().findViewById(R.id.reviewSmartGuide);
+
+		reviewBtn.setOnClickListener(new View.OnClickListener() {	
+			@Override
+			public void onClick(View v) {
+				if (GlobalVariable.avatarFace.compareTo("null") == 0){
+					isNeedReview = true;
+					loginFaceToReview();
+				}else{
+					startActivityForResult(new Intent(mActivity, ReviewActivity.class), ReviewRequestCode);
+				}
+			}
+		});
+		
 		authButton = (LoginButton)menu.getMenu().findViewById(R.id.authButtonSetting);
 		authButton.setReadPermissions(Arrays.asList("basic_info","email"));
 		authButton.setSessionStatusCallback(new Session.StatusCallback() {
@@ -1011,7 +1027,7 @@ public class MainActivity extends FragmentActivity implements MainAcitivyListene
 		name.setMaxLines(1);
 
 		if (GlobalVariable.avatarFace.compareTo("null") != 0){
-			name.setText("");
+			name.setText(GlobalVariable.nameFace);
 			GlobalVariable.imageLoader.displayImage(GlobalVariable.avatarFace, avatar);
 			mUserFragment.updateAvatar();
 		}
@@ -1195,10 +1211,12 @@ public class MainActivity extends FragmentActivity implements MainAcitivyListene
 	}
 
 	public void disableAll(){
-		stopAds();
-		LinearLayout view = (LinearLayout)findViewById(R.id.launchingLayout);
+		mAdsFragment.startDownImage();
+		
+		ImageView view = (ImageView)findViewById(R.id.launchingLayout);
 		view.setVisibility(View.VISIBLE);
 
+		GlobalVariable.imageLoader.displayImage(GlobalVariable.mURL, view);
 		mFilterBtn.setClickable(false);
 		mMapButton.setClickable(false);
 		mLocationBtn.setClickable(false);
@@ -1221,7 +1239,6 @@ public class MainActivity extends FragmentActivity implements MainAcitivyListene
 			try {
 				JSResult = new JSONObject(json);
 			} catch (JSONException e) {
-				e.printStackTrace();
 			}
 
 			return true;
@@ -1244,7 +1261,7 @@ public class MainActivity extends FragmentActivity implements MainAcitivyListene
 					mSGPText.setVisibility(View.VISIBLE);
 					mContentText.setVisibility(View.VISIBLE);
 					mShopNameText.setText(JSResult.getString("shop_name"));
-					mSGPText.setText(JSResult.getString("money") + " VN�?");
+					mSGPText.setText(JSResult.getString("money") + " VNĐ?");
 					mContentText.setText("Bạn nhận được phiếu giảm giá");
 
 					try {
@@ -1444,7 +1461,6 @@ public class MainActivity extends FragmentActivity implements MainAcitivyListene
 			try {
 				JSResult = new JSONObject(json);
 			} catch (JSONException e) {
-				// TODO Auto-generated catch block
 				e.printStackTrace();
 			}
 
@@ -1600,6 +1616,27 @@ public class MainActivity extends FragmentActivity implements MainAcitivyListene
 	public void onBottomToTopSwipe(){
 		if (!mShowCamera)
 			toggleCamera();
+	}
+
+	public void loginFaceToReview(){
+		AlertDialog.Builder builder = new AlertDialog.Builder(this);
+		
+		builder.setTitle("Thông báo");
+		builder.setMessage("Bạn cần đăng nhập facebook để đánh giá SmartGuide");
+		builder.setCancelable(true);
+		
+		builder.setPositiveButton("Đăng nhập", new DialogInterface.OnClickListener() {
+			public void onClick(DialogInterface dialog, int which) {
+				
+			}
+		});
+		
+		builder.setNegativeButton("Thoát", new DialogInterface.OnClickListener() {
+			public void onClick(DialogInterface dialog, int which) {
+			}
+		});
+		
+		builder.show();
 	}
 }
 
