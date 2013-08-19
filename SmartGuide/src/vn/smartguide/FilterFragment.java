@@ -1,32 +1,30 @@
 package vn.smartguide;
 
-import android.animation.AnimatorSet;
-import android.animation.ObjectAnimator;
-import android.app.Activity;
-
-
-import android.support.v4.app.Fragment;
-import android.graphics.Typeface;
-import android.os.AsyncTask;
-import android.os.Bundle;
-import android.view.LayoutInflater;
-import android.view.View;
-import android.view.ViewGroup;
-import android.view.animation.AccelerateDecelerateInterpolator;
-import android.widget.BaseAdapter;
-import android.widget.Button;
-import android.widget.CompoundButton;
-import android.widget.GridView;
-import android.widget.ImageButton;
-import android.widget.ImageView;
-import android.widget.RadioButton;
-import android.widget.TextView;
-import android.widget.ToggleButton;
 import java.util.ArrayList;
 import java.util.List;
 
 import org.apache.http.NameValuePair;
 import org.apache.http.message.BasicNameValuePair;
+
+import android.animation.ObjectAnimator;
+import android.app.Activity;
+import android.graphics.Typeface;
+import android.os.AsyncTask;
+import android.os.Bundle;
+import android.support.v4.app.Fragment;
+import android.view.LayoutInflater;
+import android.view.View;
+import android.view.ViewGroup;
+import android.view.animation.AccelerateDecelerateInterpolator;
+import android.widget.AdapterView;
+import android.widget.AdapterView.OnItemClickListener;
+import android.widget.BaseAdapter;
+import android.widget.Button;
+import android.widget.GridView;
+import android.widget.ImageButton;
+import android.widget.ImageView;
+import android.widget.RadioButton;
+import android.widget.TextView;
 
 
 /**
@@ -54,14 +52,14 @@ public class FilterFragment extends Fragment {
 	};
 	
 	private final FilterItem[] mItemList = new FilterItem[] {
-			new FilterItem(R.drawable.icon12, R.drawable.icon12_gray, "F", "ĂN", "food"),
-			new FilterItem(R.drawable.icon13, R.drawable.icon13_gray, "D", "UỐNNG", "drink"),
-			new FilterItem(R.drawable.icon14, R.drawable.icon14_gray, "H", "SỨC KHỎE", "health&fitness"),
-			new FilterItem(R.drawable.icon15, R.drawable.icon15_gray, "E", "GIẢI TRÍ", "entertainment"),
-			new FilterItem(R.drawable.icon16, R.drawable.icon16_gray, "S", "THỜI TRANG", "fashion"),
-			new FilterItem(R.drawable.icon17, R.drawable.icon17_gray, "T", "DU LỊCH", "travel"),
-			new FilterItem(R.drawable.icon18, R.drawable.icon18_gray, "P", "MUA SẮM", "production"),
-			new FilterItem(R.drawable.icon19, R.drawable.icon19_gray, "D", "GIÁO DỤC", "education"),
+			new FilterItem(R.drawable.icon12, R.drawable.icon12_gray, R.drawable.iconpin_food, "ĂN", "food"),
+			new FilterItem(R.drawable.icon13, R.drawable.icon13_gray, R.drawable.iconpin_drink, "UỐNNG", "drink"),
+			new FilterItem(R.drawable.icon14, R.drawable.icon14_gray, R.drawable.iconpin_healness, "SỨC KHỎE", "health&fitness"),
+			new FilterItem(R.drawable.icon15, R.drawable.icon15_gray, R.drawable.iconpin_entertaiment, "GIẢI TRÍ", "entertainment"),
+			new FilterItem(R.drawable.icon16, R.drawable.icon16_gray, R.drawable.iconpin_fashion, "THỜI TRANG", "fashion"),
+			new FilterItem(R.drawable.icon17, R.drawable.icon17_gray, R.drawable.iconpin_travel, "DU LỊCH", "travel"),
+			new FilterItem(R.drawable.icon18, R.drawable.icon18_gray, R.drawable.iconpin_shopping, "MUA SẮM", "production"),
+			new FilterItem(R.drawable.icon19, R.drawable.icon19_gray, R.drawable.iconpin_education, "GIÁO DỤC", "education"),
 	};
 
 	private FilterAdapter mFilterAdapter;
@@ -97,7 +95,6 @@ public class FilterFragment extends Fragment {
 		mRadioMostLike = (RadioButton)getView().findViewById(R.id.radioMostLike);
 		mRadioMostView = (RadioButton)getView().findViewById(R.id.radioMostView);
 		mRadioDistance = (RadioButton)getView().findViewById(R.id.radioDistance);
-		
 		
 		mDoneBtn = (ImageButton)getView().findViewById(R.id.imageButton);
 		mDoneBtn.setOnClickListener(new View.OnClickListener() {
@@ -152,7 +149,16 @@ public class FilterFragment extends Fragment {
 
 		// Set filter adapter
 		mFilterAdapter = new FilterAdapter();
-		((GridView) getView().findViewById(R.id.gridCate)).setAdapter(mFilterAdapter);
+		GridView grid = (GridView) getView().findViewById(R.id.gridCate);
+		grid.setAdapter(mFilterAdapter);
+		grid.setOnItemClickListener(new OnItemClickListener() {
+			
+			@Override
+			public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+
+				mFilterAdapter.onCheckChange(position);
+			}
+		});
 
 		// Set button event
 		((Button) getView().findViewById(R.id.btnSelectAll)).setOnClickListener(new View.OnClickListener() {
@@ -193,12 +199,12 @@ public class FilterFragment extends Fragment {
 
 		int RID;
 		int RIDg;
-		String symbol;
+		int symbol;
 		String nameVN;
 		String name;
 		boolean status;
 
-		public FilterItem(int RID, int RIDg, String symbol, String nameVN, String name) {
+		public FilterItem(int RID, int RIDg, int symbol, String nameVN, String name) {
 			this.RID    = RID;
 			this.RIDg   = RIDg;
 			this.symbol = symbol;
@@ -229,19 +235,6 @@ public class FilterFragment extends Fragment {
 				convertView = inflater.inflate(R.layout.filter_item, null);
 			}
 
-			// Set tag
-			ToggleButton btnCate = (ToggleButton) convertView.findViewById(R.id.checkCate);
-			btnCate.setTag(position);
-
-			// Set onClick event
-			btnCate.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
-				@Override
-				public void onCheckedChanged(CompoundButton compoundButton, boolean b) {
-
-					onCheckChange((Integer) compoundButton.getTag(), b);
-				}
-			});
-
 			// Update view
 			updateItemView(convertView, position);
 
@@ -260,8 +253,8 @@ public class FilterFragment extends Fragment {
 				imgBigIcon.setImageResource(mItemList.get(pos).RIDg);
 
 			// Small icon
-			((Button) convertView.findViewById(R.id.btnSmallIcon))
-			.setText(mItemList.get(pos).symbol);
+			((ImageView) convertView.findViewById(R.id.imgPin))
+			.setImageResource(mItemList.get(pos).symbol);
 
 			// Set text color
 			TextView txtCateNameVN = (TextView) convertView.findViewById(R.id.txtCateNameVN);
@@ -279,9 +272,9 @@ public class FilterFragment extends Fragment {
 			}
 		}
 
-		private void onCheckChange(int pos, boolean isChecked) {
+		public void onCheckChange(int pos) {
 
-			mItemList.get(pos).status = isChecked;
+			mItemList.get(pos).status = !mItemList.get(pos).status;
 			notifyDataSetChanged();
 		}
 
@@ -331,7 +324,6 @@ public class FilterFragment extends Fragment {
 		protected void onPostExecute(Boolean k){
 			List<ObjectAnimator> arrayListObjectAnimators = new ArrayList<ObjectAnimator>();
 			
-		
 		}
 
 		@Override

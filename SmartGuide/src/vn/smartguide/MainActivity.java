@@ -49,6 +49,7 @@ import com.google.android.gms.maps.GoogleMap.InfoWindowAdapter;
 import com.google.android.gms.maps.GoogleMap.OnInfoWindowClickListener;
 import com.google.android.gms.maps.GoogleMap.OnMyLocationChangeListener;
 import com.google.android.gms.maps.SupportMapFragment;
+import com.google.android.gms.maps.model.BitmapDescriptorFactory;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.LatLngBounds;
 import com.google.android.gms.maps.model.Marker;
@@ -427,13 +428,25 @@ public class MainActivity extends FragmentActivity implements MainAcitivyListene
 			return;
 
 		LatLngBounds.Builder builder = new LatLngBounds.Builder();
+		
+		final int[] iconIdArr = new int[] {
+				R.drawable.iconpin_food,
+				R.drawable.iconpin_drink,
+				R.drawable.iconpin_healness,
+				R.drawable.iconpin_entertaiment,
+				R.drawable.iconpin_fashion,
+				R.drawable.iconpin_travel,
+				R.drawable.iconpin_shopping,
+				R.drawable.iconpin_education};
 
 		for (int i = 0; i < getShopListFragment().mShopList.size() && i < 30; i++) {
 
 			Shop s = getShopListFragment().mShopList.get(i);
 			LatLng ll = new LatLng(s.mLat, s.mLng);
 			map.addMarker(new MarkerOptions().position(ll)
+					.icon(BitmapDescriptorFactory.fromResource(iconIdArr[s.mGroupShop-1]))
 					.snippet("" + i));
+
 			builder.include(ll);
 		}	
 

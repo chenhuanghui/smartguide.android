@@ -1,218 +1,223 @@
 <?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="fill_parent"
+    android:layout_height="fill_parent"
+    android:orientation="vertical" >
 
-<LinearLayout
-        xmlns:android="http://schemas.android.com/apk/res/android"
-        android:orientation="vertical"
-        android:layout_width="fill_parent"
-        android:layout_height="fill_parent">
     <RelativeLayout
-
-            android:layout_width="fill_parent"
-            android:layout_height="fill_parent"
-            android:id="@+id/layoutContentFrame2">
+        android:id="@+id/layoutContentFrame2"
+        android:layout_width="fill_parent"
+        android:layout_height="fill_parent" >
 
         <RelativeLayout
-                android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:background="#282E3A"
-                android:id="@+id/layoutContentHolder2"
-                android:paddingLeft="24dp"
-                android:paddingRight="24dp"
-                android:layout_above="@+id/linearLayout">
+            android:id="@+id/layoutContentHolder2"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_above="@+id/linearLayout"
+            android:background="#282E3A"
+            android:paddingLeft="24dp"
+            android:paddingRight="24dp" >
 
             <LinearLayout
-                    android:orientation="horizontal"
+                android:id="@+id/LinearLayout3"
+                android:layout_width="fill_parent"
+                android:layout_height="wrap_content"
+                android:background="@drawable/line_repeat"
+                android:orientation="horizontal" >
+            </LinearLayout>
+
+            <TextView
+                android:id="@+id/txtAllFields"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_below="@+id/LinearLayout3"
+                android:layout_centerHorizontal="true"
+                android:layout_gravity="center"
+                android:text="ALL FIELDS"
+                android:textColor="#8494B8"
+                android:textStyle="bold"
+                android:typeface="normal" />
+
+            <TextView
+                android:id="@+id/txtAllFieldsVN"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_below="@+id/txtAllFields"
+                android:layout_centerHorizontal="true"
+                android:layout_gravity="center"
+                android:text="TẤT CẢ CÁC DANH MỤC"
+                android:textColor="#4A597A"
+                android:textIsSelectable="false"
+                android:textSize="8dp"
+                android:textStyle="bold"
+                android:typeface="normal" />
+
+            <LinearLayout
+                android:id="@+id/linearLayout5"
+                android:layout_width="fill_parent"
+                android:layout_height="wrap_content"
+                android:layout_alignParentBottom="true"
+                android:orientation="vertical"
+                android:paddingBottom="30dp" >
+
+                
+
+                <LinearLayout
+                    android:id="@+id/linearLayout2"
                     android:layout_width="fill_parent"
                     android:layout_height="wrap_content"
                     android:background="@drawable/line_repeat"
-                    android:id="@+id/LinearLayout3">
-            </LinearLayout>
+                    android:orientation="vertical" />
 
-            <TextView
+                <TextView
+                    android:id="@+id/txtSort"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="ALL FIELDS"
-                    android:id="@+id/txtAllFields"
                     android:layout_gravity="center"
-                    android:textColor="#8494B8"
-                    android:textStyle="bold"
-                    android:typeface="normal"
-                    android:layout_centerHorizontal="true"
-                    android:layout_below="@+id/LinearLayout3"/>
+                    android:text="SORT"
+                    android:textColor="#8593BA" />
 
-            <TextView
+                <TextView
+                    android:id="@+id/txtSortVN"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="TẤT CẢ CÁC DANH MỤC"
-                    android:id="@+id/txtAllFieldsVN"
                     android:layout_gravity="center"
+                    android:text="SẮP XẾP"
                     android:textColor="#4A597A"
-                    android:textSize="8dp"
-                    android:textIsSelectable="false"
-                    android:typeface="normal"
-                    android:textStyle="bold"
-                    android:layout_centerHorizontal="true"
-                    android:layout_below="@+id/txtAllFields"/>
+                    android:textSize="8dp" />
 
-            <LinearLayout
-                    android:id="@+id/linearLayout5"
-                    android:orientation="vertical"
-                    android:layout_width="fill_parent"
-                    android:layout_height="wrap_content"
-                    android:paddingBottom="30dp"
-                    android:layout_alignParentBottom="true">
-
-                <LinearLayout
-                        android:id="@+id/LinearLayout4"
-                        android:orientation="horizontal"
-                        android:layout_width="fill_parent"
-                        android:layout_height="wrap_content"
-                        android:layout_below="@+id/gridCate"
-                        android:gravity="right"
-                        android:layout_marginBottom="4dp">
-
-                    <Button
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:text="Chọn tất cả"
-                            android:id="@+id/btnSelectAll"
-                            android:textColor="#FFFFFF"
-                            android:layout_gravity="right"
-                            android:background="@drawable/button_checknon"
-                            android:layout_marginRight="8dp"
-                            android:textSize="10dp"
-                            />
-
-                    <Button
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:text="Bỏ chọn tất cả"
-                            android:id="@+id/btnDeselectAll"
-                            android:textColor="#FFFFFF"
-                            android:background="@drawable/button_checkall"
-                            android:textSize="10dp"
-                            />
-
-                </LinearLayout>
-
-                <LinearLayout
-                        android:orientation="vertical"
-                        android:layout_width="fill_parent"
-                        android:layout_height="wrap_content"
-                        android:background="@drawable/line_repeat"
-                        android:id="@+id/linearLayout2"/>
-
-                <TextView
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:text="SORT"
-                        android:id="@+id/txtSort"
-                        android:layout_gravity="center"
-                        android:textColor="#8593BA"/>
-
-                <TextView
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:text="SẮP XẾP"
-                        android:id="@+id/txtSortVN"
-                        android:layout_gravity="center"
-                        android:textColor="#4A597A"
-                        android:textSize="8dp"/>
                 <RadioGroup
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center_horizontal"
+                    android:gravity="center_vertical"
+                    android:orientation="vertical" >
+
+                    <RadioButton
+                        android:id="@+id/radioGetAward"
+                        style="@style/RadioButton"
                         android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:orientation="vertical"
-                        android:gravity="center_vertical"
-                        android:layout_gravity="center_horizontal"
-                        >
+                        android:layout_height="17dp"
+                        android:checked="true"
+                        android:text="MOST GET AWARD"
+                        android:textColor="#8494B8"
+                        android:textSize="14dp" />
 
                     <RadioButton
-                            android:layout_width="wrap_content"
-                            android:layout_height="17dp"
-                            android:text="MOST GET AWARD"
-                            android:id="@+id/radioGetAward"
-                            android:checked="true"
-                            android:textColor="#8494B8"
-                            style="@style/RadioButton"
-                            android:textSize="14dp"/>
+                        android:id="@+id/radioMostPoint"
+                        style="@style/RadioButton"
+                        android:layout_width="wrap_content"
+                        android:layout_height="17dp"
+                        android:checked="false"
+                        android:text="MOST GET POINT"
+                        android:textColor="#8494B8"
+                        android:textSize="14dp" />
 
                     <RadioButton
-                            android:layout_width="wrap_content"
-                            android:layout_height="17dp"
-                            android:text="MOST GET POINT"
-                            android:id="@+id/radioMostPoint"
-                            android:checked="false"
-                            android:textColor="#8494B8"
-                            style="@style/RadioButton"
-                            android:textSize="14dp"/>
+                        android:id="@+id/radioMostLike"
+                        style="@style/RadioButton"
+                        android:layout_width="wrap_content"
+                        android:layout_height="17dp"
+                        android:checked="false"
+                        android:text="MOST LIKE"
+                        android:textColor="#8494B8"
+                        android:textSize="14dp" />
 
                     <RadioButton
-                            android:layout_width="wrap_content"
-                            android:layout_height="17dp"
-                            android:text="MOST LIKE"
-                            android:id="@+id/radioMostLike"
-                            android:checked="false"
-                            android:textColor="#8494B8"
-                            style="@style/RadioButton"
-                            android:textSize="14dp"/>
+                        android:id="@+id/radioMostView"
+                        style="@style/RadioButton"
+                        android:layout_width="wrap_content"
+                        android:layout_height="17dp"
+                        android:checked="false"
+                        android:text="MOST VIEW"
+                        android:textColor="#8494B8"
+                        android:textSize="14dp" />
 
                     <RadioButton
-                            android:layout_width="wrap_content"
-                            android:layout_height="17dp"
-                            android:text="MOST VIEW"
-                            android:id="@+id/radioMostView"
-                            android:checked="false"
-                            android:textColor="#8494B8"
-                            style="@style/RadioButton"
-                            android:textSize="14dp"/>
-
-                    <RadioButton
-                            android:layout_width="match_parent"
-                            android:layout_height="17dp"
-                            android:text="DISTANCE"
-                            android:id="@+id/radioDistance"
-                            android:checked="false"
-                            android:textColor="#8494B8"
-                            style="@style/RadioButton"
-                            android:textSize="14dp"/>
-
+                        android:id="@+id/radioDistance"
+                        style="@style/RadioButton"
+                        android:layout_width="match_parent"
+                        android:layout_height="17dp"
+                        android:checked="false"
+                        android:text="DISTANCE"
+                        android:textColor="#8494B8"
+                        android:textSize="14dp" />
                 </RadioGroup>
 
                 <ImageButton
-                        android:layout_width="49dp"
-                        android:layout_height="wrap_content"
-                        android:id="@+id/imageButton"
-                        android:layout_gravity="center"
-                        android:src="@drawable/done_icon"
-                        android:background="@drawable/dummy"
-                        android:layout_marginTop="5dp"
-                        android:cropToPadding="false"
-                        android:adjustViewBounds="true"
-                        android:scaleType="centerInside"
-                        />
-
+                    android:id="@+id/imageButton"
+                    android:layout_width="49dp"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center"
+                    android:layout_marginTop="5dp"
+                    android:adjustViewBounds="true"
+                    android:background="@drawable/dummy"
+                    android:cropToPadding="false"
+                    android:scaleType="centerInside"
+                    android:src="@drawable/done_icon" />
             </LinearLayout>
 
-            <GridView
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="48dp"
+                android:layout_above="@+id/linearLayout5"
+                android:layout_below="@+id/txtAllFieldsVN"
+                android:orientation="vertical" >
+
+                <LinearLayout
+                    android:id="@+id/linearLayout7"
+                    android:layout_width="wrap_content"
+                    android:layout_height="160dp"
+                    android:orientation="vertical" >
+
+                    <GridView
+                        android:id="@+id/gridCate"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:listSelector="#00000000"
+                        android:numColumns="2" >
+                    </GridView>
+                </LinearLayout>
+
+                <LinearLayout
+                    android:id="@+id/linearLayout6"
                     android:layout_width="match_parent"
-                    android:layout_height="match_parent"
-                    android:id="@+id/gridCate"
-                    android:numColumns="2"
-                    android:verticalSpacing="8dp"
-                    android:layout_below="@+id/txtAllFieldsVN"
-                    android:layout_above="@id/linearLayout5"
-                    />
+                    android:layout_height="wrap_content"
+                    android:gravity="right"
+                    android:orientation="horizontal" >
+
+                    <Button
+                        android:id="@+id/btnSelectAll"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_gravity="right"
+                        android:layout_marginRight="8dp"
+                        android:background="@drawable/button_checknon"
+                        android:text="Chọn tất cả"
+                        android:textColor="#FFFFFF"
+                        android:textSize="10dp" />
+
+                    <Button
+                        android:id="@+id/btnDeselectAll"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:background="@drawable/button_checkall"
+                        android:text="Bỏ chọn tất cả"
+                        android:textColor="#FFFFFF"
+                        android:textSize="10dp" />
+                </LinearLayout>
+            </LinearLayout>
 
         </RelativeLayout>
 
         <LinearLayout
-                android:orientation="vertical"
-                android:layout_width="fill_parent"
-                android:layout_height="wrap_content"
-                android:background="@drawable/ray_blue_repeat"
-                android:layout_alignParentBottom="true"
-                android:id="@+id/linearLayout">
+            android:id="@+id/linearLayout"
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content"
+            android:layout_alignParentBottom="true"
+            android:background="@drawable/ray_blue_repeat"
+            android:orientation="vertical" >
         </LinearLayout>
     </RelativeLayout>
-</LinearLayout>
 
+</LinearLayout>

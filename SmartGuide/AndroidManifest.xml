@@ -50,7 +50,7 @@
 
         <meta-data
             android:name="com.google.android.maps.v2.API_KEY"
-            android:value="AIzaSyDJSQJaLZQ79mjFKVBSbTwsEdIDuyiSCCI" />
+            android:value="AIzaSyC_m_vxRwyaD933JOzKhXXB1ioyzJZ2L6I" />
         <meta-data
             android:name="com.facebook.sdk.ApplicationId"
             android:value="@string/app_id" />

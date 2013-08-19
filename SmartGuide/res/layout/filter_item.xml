@@ -1,66 +1,58 @@
 <?xml version="1.0" encoding="utf-8"?>
+<LinearLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical">
 
-<RelativeLayout
-        xmlns:android="http://schemas.android.com/apk/res/android"
-        android:layout_width="fill_parent"
-        android:layout_height="fill_parent">
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:paddingBottom="4dp"
+        android:paddingTop="4dp" >
 
-    <ToggleButton
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:id="@+id/checkCate"
-            android:layout_alignParentTop="true"
-            android:layout_alignParentLeft="true"
-            android:checked="true"
-            style="@style/ToggleButton"
-            android:background="@drawable/dummy"/>
-
-    <ImageView
-            android:layout_width="33dp"
-            android:layout_height="33dp"
+        <ImageView
             android:id="@+id/imgBigIcon"
-            android:layout_centerVertical="true"
+            android:layout_width="32dp"
+            android:layout_height="32dp"
             android:layout_alignParentLeft="true"
-            android:src="@drawable/icon1"/>
+            android:layout_centerVertical="true"
+            android:src="@drawable/icon1" />
 
-    <Button
-            android:layout_width="17dp"
+        <ImageView
+            android:id="@+id/imgPin"
+            android:layout_width="21dp"
             android:layout_height="21dp"
-            android:text="S"
-            android:id="@+id/btnSmallIcon"
             android:layout_centerVertical="true"
             android:layout_toRightOf="@+id/imgBigIcon"
-            android:background="@drawable/pin"
-            android:layout_marginLeft="4dp"
-            android:textColor="#FFFFFF"
-            android:textStyle="bold"
-            />
+            android:src="@drawable/iconpin_drink" />
 
-    <LinearLayout
-            android:orientation="vertical"
+        <LinearLayout
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_centerVertical="true"
-            android:layout_toRightOf="@+id/btnSmallIcon"
-            android:layout_marginLeft="4dp">
+            android:layout_marginLeft="4dp"
+            android:layout_toRightOf="@+id/imgPin"
+            android:orientation="vertical" >
 
-        <TextView
+            <TextView
+                android:id="@+id/txtCateNameVN"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="MUA SẮM"
-                android:id="@+id/txtCateNameVN"
                 android:textColor="#B5BABE"
-                android:textStyle="bold"
-                android:textSize="11dp"/>
+                android:textSize="11dp"
+                android:textStyle="bold" />
 
-        <TextView
+            <TextView
+                android:id="@+id/txtCateName"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
+                android:layout_marginTop="-4dp"
                 android:text="shopping"
-                android:id="@+id/txtCateName"
                 android:textColor="#B5BABE"
-                android:textSize="9dp"
-                android:layout_marginTop="-4dp"/>
-    </LinearLayout>
+                android:textSize="9dp" />
+        </LinearLayout>
+    </RelativeLayout>
 
-</RelativeLayout>
+</LinearLayout>
