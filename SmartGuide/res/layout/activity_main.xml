@@ -4,7 +4,7 @@
     xmlns:map="http://schemas.android.com/apk/res-auto"
     android:layout_width="fill_parent"
     android:layout_height="fill_parent"
-    android:background="@drawable/bg"
+    android:background="#ffffff"
     android:id="@+id/rootOfroot" >
 
     <RelativeLayout
@@ -170,15 +170,15 @@
                 </vn.smartguide.SViewPager>
             </LinearLayout>
 
-            <LinearLayout
+            <ImageView
                 android:id="@+id/launchingLayout"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
                 android:layout_alignBottom="@+id/layoutContentHolder"
-                android:background="@drawable/launching"
+                android:background="#282E3A"
                 android:orientation="vertical"
                 android:visibility="invisible" >
-            </LinearLayout>
+            </ImageView>
 
             <LinearLayout
                 android:id="@+id/linearLayout"

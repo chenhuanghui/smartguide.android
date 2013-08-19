@@ -253,7 +253,7 @@ public class ShopDetailFragment extends Fragment {
     	GlobalVariable.imageLoader.displayImage(mShop.mLogo, mLogoImageView, GlobalVariable.displayImageOptions);
     	
     	if (mShop.mCover.compareTo("null") != 0)
-    		GlobalVariable.imageLoader.displayImage(mShop.mLogo, mCoverImageView, GlobalVariable.displayImageOptions);
+    		GlobalVariable.imageLoader.displayImage(mShop.mCover, mCoverImageView, GlobalVariable.displayImageOptions);
     	
     	DetailMenuFragment menu = (DetailMenuFragment) getFragmentManager().findFragmentById(R.id.detailMenuFragment);
     	menu.updateLikeDis(s.mNumOfLike, s.mNumOfDislike, s.mLikeStatus);

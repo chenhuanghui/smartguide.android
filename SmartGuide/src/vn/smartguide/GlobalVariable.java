@@ -251,5 +251,7 @@ public final class GlobalVariable {
         mLng = 106.6886185999993f;
 	}
 	
+	// for launching reason
 	public static int mMode = 1;
+	public static String mURL = "";
 }

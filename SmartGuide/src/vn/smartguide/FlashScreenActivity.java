@@ -275,6 +275,7 @@ public class FlashScreenActivity extends Activity {
 					switch (status){
 					case 0:
 						GlobalVariable.mIsLaunching = true;
+						GlobalVariable.mURL = object.getString("url");
 						break;
 					case 1:
 						GlobalVariable.mCateogries = Category.getListCategory(object.getJSONArray("content"));
