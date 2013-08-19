@@ -76,7 +76,7 @@ public class MainActivity extends FragmentActivity implements MainAcitivyListene
 
 	private final int WelcomeRequestCode 		= 44444;
 	private final int FlashScreenRequestCode 	= 55555;
-
+	private final int ReviewRequestCode			= 66666;
 	// Load qrcode lib
 	static {
 		System.loadLibrary("iconv");
@@ -766,7 +766,7 @@ public class MainActivity extends FragmentActivity implements MainAcitivyListene
 					isNeedReview = true;
 					loginFaceToReview();
 				}else{
-					
+					startActivityForResult(new Intent(mActivity, ReviewActivity.class), FlashScreenRequestCode);
 				}
 			}
 		});
@@ -1198,7 +1198,8 @@ public class MainActivity extends FragmentActivity implements MainAcitivyListene
 	}
 
 	public void disableAll(){
-		stopAds();
+		mAdsFragment.startDownImage();
+		
 		ImageView view = (ImageView)findViewById(R.id.launchingLayout);
 		view.setVisibility(View.VISIBLE);
 
@@ -1225,7 +1226,6 @@ public class MainActivity extends FragmentActivity implements MainAcitivyListene
 			try {
 				JSResult = new JSONObject(json);
 			} catch (JSONException e) {
-				e.printStackTrace();
 			}
 
 			return true;

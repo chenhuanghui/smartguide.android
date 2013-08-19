@@ -5,12 +5,8 @@ import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 
-import org.apache.http.NameValuePair;
-import org.apache.http.message.BasicNameValuePair;
 import org.json.JSONException;
 import org.json.JSONObject;
-
-
 
 import com.facebook.FacebookException;
 import com.facebook.Request;
@@ -21,7 +17,6 @@ import com.facebook.UiLifecycleHelper;
 import com.facebook.model.GraphUser;
 import com.facebook.widget.LoginButton;
 import com.facebook.widget.LoginButton.OnErrorListener;
-import com.loopj.android.http.AsyncHttpResponseHandler;
 
 import android.os.AsyncTask;
 import android.os.Bundle;
@@ -51,6 +46,7 @@ public class WellcomeActivity extends FragmentActivity{
 
 	UiLifecycleHelper 	mUiHelper;
 	boolean isShow = false;
+	boolean isConfirm = false;
 	
 	ImageView mLogo = null;
 	ImageView mSlogan = null;
@@ -71,7 +67,6 @@ public class WellcomeActivity extends FragmentActivity{
 	int marginTop = 40;
 	
 	String userID = "";
-	boolean isConfirm = false;
 	LoginButton authButton = null;
 	
 	private ObjectAnimator mSloganSlideUp = null;
@@ -86,6 +81,7 @@ public class WellcomeActivity extends FragmentActivity{
 	private ObjectAnimator mStatusTextFlash = null;
 
 	private Intent resultData;
+	
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
@@ -188,7 +184,6 @@ public class WellcomeActivity extends FragmentActivity{
 						}
 					});
 				}
-
 			}
 		});
 		
@@ -196,7 +191,6 @@ public class WellcomeActivity extends FragmentActivity{
 			
 			@Override
 			public void onClick(View v) {
-				// TODO Auto-generated method stub
 				authButton.callOnClick();
 			}
 		});
@@ -238,7 +232,6 @@ public class WellcomeActivity extends FragmentActivity{
 		mLogoSlideUp.addListener(new AnimatorListener() {
 			@Override
 			public void onAnimationStart(Animator animation) {
-				// TODO Auto-generated method stub
 				new Handler().postDelayed(new Runnable() {
 
 					@Override
@@ -276,7 +269,6 @@ public class WellcomeActivity extends FragmentActivity{
 			@Override
 			public void onAnimationStart(Animator animation) {
 				new Handler().postDelayed(new Runnable() {
-					
 					@Override
 					public void run() {
 						mSlogan.setVisibility(View.VISIBLE);
@@ -301,7 +293,6 @@ public class WellcomeActivity extends FragmentActivity{
 		mSloganSlideUp.setDuration(1000);
 		mSloganSlideUp.setInterpolator(new AccelerateDecelerateInterpolator());
 		mSloganSlideUp.addListener(new AnimatorListener() {
-			
 			@Override
 			public void onAnimationStart(Animator animation) {
 				// TODO Auto-generated method stub
@@ -315,22 +306,13 @@ public class WellcomeActivity extends FragmentActivity{
 			}
 			
 			@Override
-			public void onAnimationRepeat(Animator animation) {
-				// TODO Auto-generated method stub
-				
-			}
+			public void onAnimationRepeat(Animator animation) {}
 			
 			@Override
-			public void onAnimationEnd(Animator animation) {
-				// TODO Auto-generated method stub
-				
-			}
+			public void onAnimationEnd(Animator animation) {}
 			
 			@Override
-			public void onAnimationCancel(Animator animation) {
-				// TODO Auto-generated method stub
-				
-			}
+			public void onAnimationCancel(Animator animation) {}
 		});
 		
 		mNumberFieldSlideUp = ObjectAnimator.ofFloat(mNumberField, "translationY", mHeight, mHeight / 2 - 15);
@@ -340,12 +322,10 @@ public class WellcomeActivity extends FragmentActivity{
 			
 			@Override
 			public void onAnimationStart(Animator arg0) {
-				// TODO Auto-generated method stub
 				List<ObjectAnimator> arrayListObjectAnimators = new ArrayList<ObjectAnimator>();
 				
 				mNumberField.setVisibility(View.VISIBLE);
 				mSendButton.setVisibility(View.VISIBLE);
-				// TODO Auto-generated method stub
 				
 				mSendButtonSlideUp = ObjectAnimator.ofFloat(mSendButton, "translationY", mHeight, mHeight / 2 - 15);
 				mSendButtonSlideUp.setDuration(1000);
@@ -377,10 +357,7 @@ public class WellcomeActivity extends FragmentActivity{
 			}
 			
 			@Override
-			public void onAnimationRepeat(Animator arg0) {
-				// TODO Auto-generated method stub
-				
-			}
+			public void onAnimationRepeat(Animator arg0) {}
 			
 			@Override
 			public void onAnimationEnd(Animator arg0) {
@@ -395,10 +372,7 @@ public class WellcomeActivity extends FragmentActivity{
 			}
 			
 			@Override
-			public void onAnimationCancel(Animator arg0) {
-				// TODO Auto-generated method stub
-				
-			}
+			public void onAnimationCancel(Animator arg0) {}
 		});
 	}
 	
@@ -410,28 +384,24 @@ public class WellcomeActivity extends FragmentActivity{
 	
 	@Override
 	protected void onResume() {
-
 		super.onResume();
 		mUiHelper.onResume();
 	}
 	
 	@Override
 	public void onPause() {
-
 		super.onPause();
 		mUiHelper.onPause();
 	}
 	
 	@Override
 	protected void onDestroy() {
-		
 		super.onDestroy();
 		mUiHelper.onDestroy();
 	}
 	
 	@Override
 	public void onSaveInstanceState(Bundle outState) {
-
 		super.onSaveInstanceState(outState);
 		mUiHelper.onSaveInstanceState(outState);
 	}
@@ -453,7 +423,6 @@ public class WellcomeActivity extends FragmentActivity{
 	}
 	
 	private void makeMeRequest(final Session session) {
-
 		Request request = Request.newMeRequest(session, new Request.GraphUserCallback() {
 
 			public void onCompleted(GraphUser user, Response response) {
@@ -507,10 +476,7 @@ public class WellcomeActivity extends FragmentActivity{
 			return true;
 		}
 
-		protected void onPostExecute(Boolean k) { 
-			
-			
-		}
+		protected void onPostExecute(Boolean k) { }
 		protected void onPreExecute(){ }
 	}
 	
@@ -568,7 +534,6 @@ public class WellcomeActivity extends FragmentActivity{
 						
 						@Override
 						public void onAnimationStart(Animator animation) {
-							// TODO Auto-generated method stub
 							mSendButtonSlideUp = ObjectAnimator.ofFloat(mSendButton, "alpha", 1.0f, 0.0f);
 							mSendButtonSlideUp.setInterpolator(new AccelerateDecelerateInterpolator());
 							mSendButtonSlideUp.setDuration(200);
@@ -576,14 +541,10 @@ public class WellcomeActivity extends FragmentActivity{
 						}
 						
 						@Override
-						public void onAnimationRepeat(Animator animation) {
-							// TODO Auto-generated method stub
-							
-						}
+						public void onAnimationRepeat(Animator animation) {}
 						
 						@Override
 						public void onAnimationEnd(Animator animation) {
-							// TODO Auto-generated method stub
 							mNumberField.setVisibility(View.INVISIBLE);
 							mSendButton.setVisibility(View.INVISIBLE);
 							
@@ -602,17 +563,13 @@ public class WellcomeActivity extends FragmentActivity{
 						}
 						
 						@Override
-						public void onAnimationCancel(Animator animation) {
-							// TODO Auto-generated method stub
-							
-						}
+						public void onAnimationCancel(Animator animation) {}
 					});
 					
 					mNumberFieldSlideUp.start();
 				}
 				
 			} catch (JSONException e) {
-				// TODO Auto-generated catch block
 				mStatusText.setText("Mã xác nhận không hợp lệ");
 				mNumberField.setText("");
 			}
