@@ -766,7 +766,7 @@ public class MainActivity extends FragmentActivity implements MainAcitivyListene
 					isNeedReview = true;
 					loginFaceToReview();
 				}else{
-					startActivityForResult(new Intent(mActivity, ReviewActivity.class), FlashScreenRequestCode);
+					startActivityForResult(new Intent(mActivity, ReviewActivity.class), ReviewRequestCode);
 				}
 			}
 		});
@@ -1248,7 +1248,7 @@ public class MainActivity extends FragmentActivity implements MainAcitivyListene
 					mSGPText.setVisibility(View.VISIBLE);
 					mContentText.setVisibility(View.VISIBLE);
 					mShopNameText.setText(JSResult.getString("shop_name"));
-					mSGPText.setText(JSResult.getString("money") + " VN�?");
+					mSGPText.setText(JSResult.getString("money") + " VNĐ?");
 					mContentText.setText("Bạn nhận được phiếu giảm giá");
 
 					try {
