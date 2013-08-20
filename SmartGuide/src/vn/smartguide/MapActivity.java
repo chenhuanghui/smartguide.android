@@ -1,5 +1,6 @@
 package vn.smartguide;
 
+import com.google.analytics.tracking.android.EasyTracker;
 import com.google.android.gms.common.GooglePlayServicesNotAvailableException;
 import com.google.android.gms.maps.CameraUpdate;
 import com.google.android.gms.maps.CameraUpdateFactory;
@@ -39,5 +40,17 @@ public class MapActivity extends FragmentActivity {
 		map.setMyLocationEnabled(true);
 		map.moveCamera(CameraUpdateFactory.newLatLng(new LatLng(lat, lng)));
 		map.addMarker(new MarkerOptions().position(new LatLng(lat, lng)));
+	}
+	
+	@Override
+	public void onStart() {
+		super.onStart();
+		EasyTracker.getInstance(this).activityStart(this);  // Add this method.
+	}
+
+	@Override
+	public void onStop() {
+		super.onStop();
+		EasyTracker.getInstance(this).activityStop(this);  // Add this method.
 	}
 }

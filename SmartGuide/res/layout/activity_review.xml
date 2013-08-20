@@ -15,12 +15,14 @@
         android:layout_marginLeft="30dp"
         android:layout_marginRight="30dp"
         android:textSize="15dp"
-        android:text="Nhận xét của người dùng"
+        android:text=""
         android:textStyle="italic"
         android:maxLines="2"
         android:textColor="#040404"
         android:layout_gravity="center_horizontal"
-        android:gravity="center"/>
+        android:gravity="center">
+        <requestFocus />
+     </EditText>
 
     <TextView
         android:id="@+id/textView1"

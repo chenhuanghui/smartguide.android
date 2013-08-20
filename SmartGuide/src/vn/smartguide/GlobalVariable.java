@@ -28,7 +28,7 @@ import java.util.List;
  */
 
 public final class GlobalVariable {
-	
+
 	// AysnHttpClient
 	public static AsyncHttpClient mAsyncHttpClient = new AsyncHttpClient();
 
@@ -44,19 +44,19 @@ public final class GlobalVariable {
 	public static String serectID = "4xvgf3r9dxs8k8g8o8k0gss0s0wc8so4g4wg40c8s44kgcwsks";
 	public static String grantType = "?grant_type=http://dev.smartguide.com/app_dev.php/grants/bingo";
 	public static String serverOAuth = "https://devapi.smartguide.vn/oauth/v2/token";
-	
+
 	public static String tokenID = "NWRiNTRhMDI1MDQwOWY4ZDk4MDAzOTA5ZDQ2MTY5YmQwYzM0YTM5Y2RiZTcxZDQ3ZTEyNDU3YThiNzQ3N2UxMg";
 	public static String refreshTokenID = "NzRkYmFiMTc2YTZlZGVlZTk3OTcxNGM4M2MwNjYwYmVjYTEwMWIxYTcyNzU5M2JhYzI3OTBiNjA2MDAyMDk5Nw";
-	
+
 	public static String getTokenURL = serverOAuth + grantType + "&client_id=" + clientID + "&client_secret=" + serectID; 
-			
+
 	// Activate Code
 	public static String activateCode = "";
 	public static String phoneNumber = "";
 	public static String urlGetActivateCode = "https://devapi.smartguide.vn/user/activation?phone=";
 	public static String urlChekcActivateCode = "https://devapi.smartguide.vn/user/check?phone=";
 	public static String footerURL = "";
-	
+
 	// Database
 	public static String databaseName ="SmartGuideDB.db";
 	public static DatabaseManger smartGuideDB = null;
@@ -66,7 +66,7 @@ public final class GlobalVariable {
 	public static int focusInterval = 500;
 	public static int timeChangeAds = 10000;
 	public static int timeToResumeImageDownloader = 3500;
-	
+
 	// Load more setting
 	public static int needLoadMore = 5;
 	public static int itemPerPage = 10;
@@ -97,18 +97,18 @@ public final class GlobalVariable {
 	public static boolean isNeedUpdateCityList = false;
 	public static List<String> mCityNames = new ArrayList<String>();
 	public static List<String> mCityIDes = new ArrayList<String>();
-	
+
 	public static float mLat = -1;
 	public static float mLng = -1;
-	
+
 	// Camera Intent request code
-	public static final int CAMERA_REQUEST_CODE = 33333;
-	
+	public static final int CAMERA_REQUEST_CODE = 11111;
+
 	// Shop
 	public static Shop mCurrentShop = null;
-	
+
 	public static boolean mIsLaunching = false;
-	
+
 	public static void createDatbase(Context applicationcontext){
 		smartGuideDB = new DatabaseManger(applicationcontext);
 	}
@@ -120,51 +120,51 @@ public final class GlobalVariable {
 	public static HashMap<String, String> getTokenIDViaOAuth2(){
 		HttpGet httpGet = new HttpGet(getTokenURL + GlobalVariable.footerURL);
 		JSONObject key;
-		
+
 		try{
-		DefaultHttpClient httpClient = new DefaultHttpClient(NetworkManger.ccm, NetworkManger.params);
-		HttpResponse httpResponse = httpClient.execute(httpGet);
-        HttpEntity httpEntity = httpResponse.getEntity();
-        key = new JSONObject(EntityUtils.toString(httpEntity));
-        
+			DefaultHttpClient httpClient = new DefaultHttpClient(NetworkManger.ccm, NetworkManger.params);
+			HttpResponse httpResponse = httpClient.execute(httpGet);
+			HttpEntity httpEntity = httpResponse.getEntity();
+			key = new JSONObject(EntityUtils.toString(httpEntity));
+
 		}catch(Exception ex){
 			return null;
 		}
-		
+
 		try {
 			tokenID = key.getString("access_token");
 			refreshTokenID = key.getString("refresh_token");
 		} catch (JSONException e) {
 			return null;
 		}
-		
+
 		HashMap<String, String> token =  new  HashMap<String, String>();
 		token.put("tokenID", tokenID);
 		token.put("refreshID", refreshTokenID);
 		return token;
 	}
-	
+
 	public static HashMap<String, String> getRefreshIDViaOAuth2(){
 		HttpGet httpGet = new HttpGet(serverOAuth + "?grant_type=refresh_token&client_id=" + clientID + "&client_secret=" + serectID + "&refresh_token=" + refreshTokenID);
 		JSONObject key;
-		
+
 		try{
-		DefaultHttpClient httpClient = new DefaultHttpClient(NetworkManger.ccm, NetworkManger.params);
-		HttpResponse httpResponse = httpClient.execute(httpGet);
-        HttpEntity httpEntity = httpResponse.getEntity();
-        key = new JSONObject(EntityUtils.toString(httpEntity));
-        
+			DefaultHttpClient httpClient = new DefaultHttpClient(NetworkManger.ccm, NetworkManger.params);
+			HttpResponse httpResponse = httpClient.execute(httpGet);
+			HttpEntity httpEntity = httpResponse.getEntity();
+			key = new JSONObject(EntityUtils.toString(httpEntity));
+
 		}catch(Exception ex){
 			return null;
 		}
-		
+
 		try {
 			tokenID = key.getString("access_token");
 			refreshTokenID = key.getString("refresh_token");
 		} catch (JSONException e) {
 			return null;
 		}
-		
+
 		HashMap<String, String> token =  new  HashMap<String, String>();
 		token.put("tokenID", tokenID);
 		token.put("refreshID", refreshTokenID);
@@ -188,7 +188,7 @@ public final class GlobalVariable {
 		if (token == null){
 			return false;
 		}
-		
+
 		activateCode = token.get("activateID");
 		phoneNumber = token.get("phoneNumber");
 		userID = token.get("userID");
@@ -197,14 +197,14 @@ public final class GlobalVariable {
 		footerURL = "&phone=" + phoneNumber + "&code=" + activateCode;
 		return true;
 	}
-	
+
 	public static boolean getFacebookFromDB(){
 		HashMap<String, String> token = smartGuideDB.getFacebook();
 
 		if (token == null){
 			return false;
 		}
-		
+
 		userIDFacebook = token.get("userID");
 		if(avatarFace == "" || avatarFace.compareTo("null") == 0)
 			avatarFace = token.get("avatar");
@@ -212,23 +212,23 @@ public final class GlobalVariable {
 			nameFace = token.get("name");
 		return true;
 	}
-	
+
 	public static boolean getVersionFromDB(){
 		HashMap<String, String> token = smartGuideDB.getVersion();
 
 		if (token == null){
 			return false;
 		}
-		
+
 		mVersion = token.get("versionID");
 		mCityID = token.get("cityID");
 		return true;
 	}
-	
+
 	public static void getCityList(){
 		mCityNames = new ArrayList<String>();
 		mCityIDes = new ArrayList<String>();
-		
+
 		ArrayList<HashMap<String, String>> list = smartGuideDB.getCity();
 		for(int i = 0; i < list.size(); i++){ 
 			HashMap<String, String> city = list.get(i);
@@ -236,22 +236,25 @@ public final class GlobalVariable {
 			mCityIDes.add(city.get("cityID"));
 		}
 	}
-	
+
 	public static void updateLocation(Activity activity){
 		LocationManager mgr = (LocationManager) activity.getSystemService(Context.LOCATION_SERVICE);
-        Criteria criteria = new Criteria();
-        String best = mgr.getBestProvider(criteria, true);
-        Location location = mgr.getLastKnownLocation(LocationManager.NETWORK_PROVIDER);
-        if (location != null){
-        	mLat = (float) location.getLatitude();
-        	mLng = (float) location.getLongitude();
-        }
-        
-        mLat = 10.7602819f;
-        mLng = 106.6886185999993f;
+		Criteria criteria = new Criteria();
+		String best = mgr.getBestProvider(criteria, true);
+		Location location = mgr.getLastKnownLocation(LocationManager.NETWORK_PROVIDER);
+		if (location != null){
+			mLat = (float) location.getLatitude();
+			mLng = (float) location.getLongitude();
+		}
+
+		mLat = 10.7602819f;
+		mLng = 106.6886185999993f;
 	}
-	
+
+	// for launching reason
 	// for launching reason
 	public static int mMode = 1;
 	public static String mURL = "";
+	public static String reviewString = "";
+	public static boolean isNeedPostReview = false;
 }

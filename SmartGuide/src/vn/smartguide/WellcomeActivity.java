@@ -17,6 +17,7 @@ import com.facebook.UiLifecycleHelper;
 import com.facebook.model.GraphUser;
 import com.facebook.widget.LoginButton;
 import com.facebook.widget.LoginButton.OnErrorListener;
+import com.google.analytics.tracking.android.EasyTracker;
 
 import android.os.AsyncTask;
 import android.os.Bundle;
@@ -576,5 +577,17 @@ public class WellcomeActivity extends FragmentActivity{
 			
 		}
 		protected void onPreExecute(){ }
+	}
+	
+	@Override
+	public void onStart() {
+		super.onStart();
+		EasyTracker.getInstance(this).activityStart(this);  // Add this method.
+	}
+
+	@Override
+	public void onStop() {
+		super.onStop();
+		EasyTracker.getInstance(this).activityStop(this);  // Add this method.
 	}
 }

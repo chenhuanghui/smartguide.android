@@ -43,6 +43,7 @@ import com.facebook.UiLifecycleHelper;
 import com.facebook.model.GraphUser;
 import com.facebook.widget.LoginButton;
 
+import com.google.analytics.tracking.android.EasyTracker;
 import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.GoogleMap.InfoWindowAdapter;
@@ -238,6 +239,11 @@ public class MainActivity extends FragmentActivity implements MainAcitivyListene
 
 		case GlobalVariable.CAMERA_REQUEST_CODE:
 			getDetailFragment().onActivityResult(requestCode, resultCode, data);
+			break;
+		case ReviewRequestCode:
+			if(GlobalVariable.isNeedPostReview == true){
+				new PostReview().execute();
+			}
 			break;
 		}
 	}
@@ -775,12 +781,8 @@ public class MainActivity extends FragmentActivity implements MainAcitivyListene
 		reviewBtn.setOnClickListener(new View.OnClickListener() {	
 			@Override
 			public void onClick(View v) {
-				if (GlobalVariable.avatarFace.compareTo("null") == 0){
-					isNeedReview = true;
-					loginFaceToReview();
-				}else{
-					startActivityForResult(new Intent(mActivity, ReviewActivity.class), ReviewRequestCode);
-				}
+				GlobalVariable.isNeedPostReview = false;
+				startActivityForResult(new Intent(mActivity, ReviewActivity.class), ReviewRequestCode);
 			}
 		});
 		
@@ -1637,6 +1639,39 @@ public class MainActivity extends FragmentActivity implements MainAcitivyListene
 		});
 		
 		builder.show();
+	}
+	
+	public class PostReview extends AsyncTask<Void, Void, Boolean> {
+		String mJson;
+		@Override
+		protected Boolean doInBackground(Void... params) {
+			List<NameValuePair> pairs = new ArrayList<NameValuePair>();
+			pairs.add(new BasicNameValuePair("user_id", GlobalVariable.userID));
+			pairs.add(new BasicNameValuePair("feedback", GlobalVariable.reviewString));
+			
+			mJson = NetworkManger.post(APILinkMaker.mPostReview(), pairs);
+			try {
+			} catch (Exception e) {}
+			return true;
+		}
+
+		@Override
+		protected void onPostExecute(Boolean k){}
+
+		@Override
+		protected void onPreExecute(){}
+	}
+	
+	@Override
+	public void onStart() {
+		super.onStart();
+		EasyTracker.getInstance(this).activityStart(this);  // Add this method.
+	}
+
+	@Override
+	public void onStop() {
+		super.onStop();
+		EasyTracker.getInstance(this).activityStop(this);  // Add this method.
 	}
 }
 

@@ -2,6 +2,8 @@ package vn.smartguide;
 
 import java.util.List;
 
+import com.google.analytics.tracking.android.EasyTracker;
+
 
 
 import android.os.Bundle;
@@ -158,5 +160,17 @@ public class PhotoActivity extends FragmentActivity{
 
 			super.onActivityCreated(savedInstanceState);
 		}
+	}
+	
+	@Override
+	public void onStart() {
+		super.onStart();
+		EasyTracker.getInstance(this).activityStart(this);  // Add this method.
+	}
+
+	@Override
+	public void onStop() {
+		super.onStop();
+		EasyTracker.getInstance(this).activityStop(this);  // Add this method.
 	}
 }

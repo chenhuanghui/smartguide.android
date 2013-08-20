@@ -24,6 +24,7 @@ public final class APILinkMaker {
 	private static String mAwardType1			= 	"user/get/promotion1/award";
 	private static String mAwardType2			= 	"user/get/promotion2";
 	private static String mCollection			= 	"user/collection";
+	private static String mReview				= 	"feedback";
 	
 	public static String ShopListInCategory(){
 		return mHostName + mShopListInCategory;
@@ -108,4 +109,8 @@ public final class APILinkMaker {
 	public static String mGetUserCollection(){
 		return mHostName + mCollection;
 	}
+	
+	public static String mPostReview(){
+		return mHostName + mReview;
+	}	
 }

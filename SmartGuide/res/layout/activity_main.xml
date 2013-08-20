@@ -81,6 +81,7 @@
             android:layout_toLeftOf="@+id/btnUser"
             android:background="@drawable/dummy"
             android:src="@drawable/menu_filter" />
+
     </RelativeLayout>
 
     <LinearLayout
@@ -199,6 +200,7 @@
             tools:layout="@layout/ads_fragment" />
     </LinearLayout>
 
+
     <fragment
         android:id="@+id/filterFragment"
         android:name="vn.smartguide.FilterFragment"
@@ -219,13 +221,14 @@
         android:layout_gravity="left|center_vertical"
         tools:layout="@layout/user_fragment" />
 
+
     <LinearLayout
         android:id="@+id/opticalMainFrame"
         android:layout_width="fill_parent"
         android:layout_height="fill_parent"
         android:background="#00000000"
         android:orientation="vertical"
-        android:visibility="visible" >
+        android:visibility="gone" >
     </LinearLayout>
 
     <RelativeLayout
