@@ -26,5 +26,6 @@
     <string name="app_id">1391698407719065</string>
     <string name="title_activity_map">MapActivity</string>
     <string name="title_activity_review">ReviewActivity</string>
+    <string name="title_activity_take_picture">TakePictureActivity</string>
 
 </resources>

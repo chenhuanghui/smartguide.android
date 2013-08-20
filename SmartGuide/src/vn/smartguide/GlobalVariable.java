@@ -40,10 +40,10 @@ public final class GlobalVariable {
 	public static int timeTransfer = 1000;
 
 	// Secret key and Client key to get token
-	public static String clientID = "1_53obx9yqlcco80w8wkoowgccw44o0w0ook0okogwosg84wscg8";
-	public static String serectID = "t3p0k1rvstcgwcsggo8ossgcwo8cckso88sscgcsks8w0wsk8";
+	public static String clientID = "1_orazuv2dl3k8ossssg8804o4kwksw8kwcskkk404w40gwcwws";
+	public static String serectID = "4xvgf3r9dxs8k8g8o8k0gss0s0wc8so4g4wg40c8s44kgcwsks";
 	public static String grantType = "?grant_type=http://dev.smartguide.com/app_dev.php/grants/bingo";
-	public static String serverOAuth = "https://api.smartguide.vn/oauth/v2/token";
+	public static String serverOAuth = "https://devapi.smartguide.vn/oauth/v2/token";
 	
 	public static String tokenID = "NWRiNTRhMDI1MDQwOWY4ZDk4MDAzOTA5ZDQ2MTY5YmQwYzM0YTM5Y2RiZTcxZDQ3ZTEyNDU3YThiNzQ3N2UxMg";
 	public static String refreshTokenID = "NzRkYmFiMTc2YTZlZGVlZTk3OTcxNGM4M2MwNjYwYmVjYTEwMWIxYTcyNzU5M2JhYzI3OTBiNjA2MDAyMDk5Nw";
@@ -53,8 +53,8 @@ public final class GlobalVariable {
 	// Activate Code
 	public static String activateCode = "";
 	public static String phoneNumber = "";
-	public static String urlGetActivateCode = "https://api.smartguide.vn/user/activation?phone=";
-	public static String urlChekcActivateCode = "https://api.smartguide.vn/user/check?phone=";
+	public static String urlGetActivateCode = "https://devapi.smartguide.vn/user/activation?phone=";
+	public static String urlChekcActivateCode = "https://devapi.smartguide.vn/user/check?phone=";
 	public static String footerURL = "";
 	
 	// Database
@@ -230,7 +230,7 @@ public final class GlobalVariable {
 		mCityIDes = new ArrayList<String>();
 		
 		ArrayList<HashMap<String, String>> list = smartGuideDB.getCity();
-		for(int i = 0; i < list.size(); i++){
+		for(int i = 0; i < list.size(); i++){ 
 			HashMap<String, String> city = list.get(i);
 			mCityNames.add(city.get("name"));
 			mCityIDes.add(city.get("cityID"));
@@ -252,6 +252,6 @@ public final class GlobalVariable {
 	}
 	
 	// for launching reason
-	public static int mMode = 0;
+	public static int mMode = 1;
 	public static String mURL = "";
 }

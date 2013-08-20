@@ -70,6 +70,12 @@
             android:label="@string/title_activity_review"
             android:theme="@android:style/Theme.Light.NoTitleBar" >
         </activity>
+        <activity
+            android:name="vn.smartguide.TakePictureActivity"
+            android:label="@string/title_activity_take_picture"
+            android:theme="@android:style/Theme.Light.NoTitleBar"
+            android:windowSoftInputMode="adjustResize" >
+        </activity>
     </application>
 
 </manifest>

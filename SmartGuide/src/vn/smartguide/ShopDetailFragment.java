@@ -143,6 +143,8 @@ public class ShopDetailFragment extends Fragment {
     @Override
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
     	
+    	Intent intent = new Intent(getActivity(), TakePictureActivity.class);
+    	getActivity().startActivity(intent);
     }
     
     private class ScreenSlidePagerAdapter extends FragmentStatePagerAdapter {

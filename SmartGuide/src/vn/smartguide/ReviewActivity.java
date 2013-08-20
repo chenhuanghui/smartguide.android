@@ -20,7 +20,7 @@ public class ReviewActivity extends Activity {
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
-		//Test jflasdjflasjdflasjflasjflajflsjadflks
+		//Test
 		setContentView(R.layout.activity_review);
 		mName = (TextView)findViewById(R.id.textView1);
 		mName.setText(GlobalVariable.nameFace);
