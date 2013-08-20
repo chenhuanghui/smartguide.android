@@ -38,7 +38,6 @@
         </activity>
         <activity
             android:name="vn.smartguide.WellcomeActivity"
-            android:label="@string/title_activity_wellcome"
             android:theme="@android:style/Theme.Light.NoTitleBar" >
         </activity>
         <activity
@@ -69,6 +68,11 @@
             android:name="vn.smartguide.ReviewActivity"
             android:label="@string/title_activity_review"
             android:theme="@android:style/Theme.Light.NoTitleBar" >
+        </activity>
+        <activity
+            android:name="vn.smartguide.TakePictureActivity"
+            android:theme="@android:style/Theme.Light.NoTitleBar"
+            android:windowSoftInputMode="adjustResize" >
         </activity>
     </application>
 
