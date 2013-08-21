@@ -228,7 +228,7 @@
         android:layout_height="fill_parent"
         android:background="#00000000"
         android:orientation="vertical"
-        android:visibility="gone" >
+        android:visibility="visible" >
     </LinearLayout>
 
     <RelativeLayout
