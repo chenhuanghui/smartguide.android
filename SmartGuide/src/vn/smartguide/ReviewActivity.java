@@ -46,8 +46,8 @@ public class ReviewActivity extends Activity {
 				final String review = mReviewText.getText().toString();
 				
 				if (review == "" || review.length() == 0){
-					builder.setTitle("Thong bao");
-					builder.setMessage("Vui lÃ²ng nháº­p nháº­n xÃ©t");
+					builder.setTitle("Thông báo");
+					builder.setMessage("Vui lòng nhập nhận xét của bạn");
 					builder.setCancelable(true);
 
 					builder.setPositiveButton("OK", new DialogInterface.OnClickListener() {
@@ -57,7 +57,7 @@ public class ReviewActivity extends Activity {
 					});
 
 				}else{
-					builder.setMessage("Cáº£m Æ¡n báº¡n vÃ¬ lá»�i nháº­n xÃ©t. Báº¥m OK Ä‘á»ƒ trá»Ÿ láº¡i chÆ°Æ¡ng trÃ¬nh");
+					builder.setMessage("Cám ơn bạn vì lời nhận xét. Nhấn OK để trở lại chương trình");
 					builder.setCancelable(true);
 
 					builder.setPositiveButton("OK", new DialogInterface.OnClickListener() {

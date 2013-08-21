@@ -79,6 +79,7 @@ public class MainActivity extends FragmentActivity implements MainAcitivyListene
 	private final int WelcomeRequestCode 		= 44444;
 	private final int FlashScreenRequestCode 	= 55555;
 	private final int ReviewRequestCode			= 33333;
+	
 	// Load qrcode lib
 	static {
 		System.loadLibrary("iconv");
