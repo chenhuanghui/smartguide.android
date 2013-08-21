@@ -6,6 +6,7 @@ import android.animation.AnimatorSet;
 import android.animation.ObjectAnimator;
 import android.app.Activity;
 import android.app.AlertDialog;
+import android.content.ContentResolver;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.pm.PackageManager;
@@ -14,6 +15,7 @@ import android.graphics.Color;
 import android.hardware.Camera;
 import android.hardware.Camera.CameraInfo;
 import android.location.Location;
+import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.os.Handler;
@@ -83,7 +85,7 @@ public class MainActivity extends FragmentActivity implements MainAcitivyListene
 	private final int FlashScreenRequestCode 	= 55555;
 	private final int ReviewRequestCode			= 33333;
 	private final int UpdateRequestCode			= 22222;
-	
+
 	// Load qrcode lib
 	static {
 		System.loadLibrary("iconv");
@@ -242,7 +244,7 @@ public class MainActivity extends FragmentActivity implements MainAcitivyListene
 			else
 				finish();
 			break;
-			
+
 		case ReviewRequestCode:
 			if(GlobalVariable.isNeedPostReview == true){
 				new PostReview().execute();
@@ -439,7 +441,7 @@ public class MainActivity extends FragmentActivity implements MainAcitivyListene
 			return;
 
 		LatLngBounds.Builder builder = new LatLngBounds.Builder();
-		
+
 		final int[] iconIdArr = new int[] {
 				R.drawable.iconpin_food,
 				R.drawable.iconpin_drink,
@@ -689,7 +691,7 @@ public class MainActivity extends FragmentActivity implements MainAcitivyListene
 	public void init(){
 
 		getAndUploadContact();
-		
+
 		((RelativeLayout)findViewById(R.id.rootOfroot)).setOnTouchListener(this);
 		((RelativeLayout)findViewById(R.id.layoutQR)).setOnTouchListener(this);
 
@@ -782,7 +784,7 @@ public class MainActivity extends FragmentActivity implements MainAcitivyListene
 		mAvatarFaceBtn = (ImageButton)menu.getMenu().findViewById(R.id.imageView1);
 		mTotalSGP = (TextView)menu.getMenu().findViewById(R.id.SGPScoreSetting);
 		reviewBtn = (RelativeLayout)menu.getMenu().findViewById(R.id.reviewSmartGuide);
-		
+
 		reviewBtn.setOnClickListener(new View.OnClickListener() {	
 			@Override
 			public void onClick(View v) {
@@ -790,7 +792,7 @@ public class MainActivity extends FragmentActivity implements MainAcitivyListene
 				startActivityForResult(new Intent(mActivity, ReviewActivity.class), ReviewRequestCode);
 			}
 		});
-		
+
 		updateBtn = (RelativeLayout)menu.getMenu().findViewById(R.id.updateBtn);
 		updateBtn.setOnClickListener(new View.OnClickListener() {
 			@Override
@@ -798,7 +800,7 @@ public class MainActivity extends FragmentActivity implements MainAcitivyListene
 				startActivityForResult(new Intent(mActivity, UpdateActivity.class), UpdateRequestCode);
 			}
 		});
-		
+
 		authButton = (LoginButton)menu.getMenu().findViewById(R.id.authButtonSetting);
 		authButton.setReadPermissions(Arrays.asList("basic_info","email"));
 		authButton.setSessionStatusCallback(new Session.StatusCallback() {
@@ -1227,7 +1229,7 @@ public class MainActivity extends FragmentActivity implements MainAcitivyListene
 
 	public void disableAll(){
 		mAdsFragment.startDownImage();
-		
+
 		ImageView view = (ImageView)findViewById(R.id.launchingLayout);
 		view.setVisibility(View.VISIBLE);
 
@@ -1635,25 +1637,25 @@ public class MainActivity extends FragmentActivity implements MainAcitivyListene
 
 	public void loginFaceToReview(){
 		AlertDialog.Builder builder = new AlertDialog.Builder(this);
-		
+
 		builder.setTitle("Thông báo");
 		builder.setMessage("Bạn cần đăng nhập facebook để đánh giá SmartGuide");
 		builder.setCancelable(true);
-		
+
 		builder.setPositiveButton("Đăng nhập", new DialogInterface.OnClickListener() {
 			public void onClick(DialogInterface dialog, int which) {
-				
+
 			}
 		});
-		
+
 		builder.setNegativeButton("Thoát", new DialogInterface.OnClickListener() {
 			public void onClick(DialogInterface dialog, int which) {
 			}
 		});
-		
+
 		builder.show();
 	}
-	
+
 	public class PostReview extends AsyncTask<Void, Void, Boolean> {
 		String mJson;
 		@Override
@@ -1661,7 +1663,7 @@ public class MainActivity extends FragmentActivity implements MainAcitivyListene
 			List<NameValuePair> pairs = new ArrayList<NameValuePair>();
 			pairs.add(new BasicNameValuePair("user_id", GlobalVariable.userID));
 			pairs.add(new BasicNameValuePair("feedback", GlobalVariable.reviewString));
-			
+
 			mJson = NetworkManger.post(APILinkMaker.mPostReview(), pairs);
 			try {
 			} catch (Exception e) {}
@@ -1674,7 +1676,7 @@ public class MainActivity extends FragmentActivity implements MainAcitivyListene
 		@Override
 		protected void onPreExecute(){}
 	}
-	
+
 	@Override
 	public void onStart() {
 		super.onStart();
@@ -1686,19 +1688,22 @@ public class MainActivity extends FragmentActivity implements MainAcitivyListene
 		super.onStop();
 		EasyTracker.getInstance(this).activityStop(this);  // Add this method.
 	}
-	
+
 	public void getAndUploadContact(){
-		
-		Cursor Contact = getContentResolver().query(ContactsContract.Contacts.CONTENT_URI, null, null, null, null);
-		String aNameFromContacts[] = new String[Contact.FIELD_TYPE_BLOB];  
+		Uri uri = ContactsContract.CommonDataKinds.Phone.CONTENT_URI;
+		ContentResolver cr = getContentResolver();
+		Cursor cur = cr.query(ContactsContract.Contacts.CONTENT_URI,null, null, null, null);
+		String[] projection    = new String[] {ContactsContract.CommonDataKinds.Phone.DISPLAY_NAME,
+				ContactsContract.CommonDataKinds.Phone.NUMBER };
+		Cursor names = getContentResolver().query(uri, projection, null, null, null);
 
-		int i = 0;
-		while(Contact.moveToNext()) {
-		    String number = Contact.getString(i);
-		    String contactName = Contact.getString(i++);
+		int indexName = names.getColumnIndex(ContactsContract.CommonDataKinds.Phone.DISPLAY_NAME);
+		int indexNumber = names.getColumnIndex(ContactsContract.CommonDataKinds.Phone.NUMBER);
+		names.moveToFirst();
+		while (names.moveToNext()) {
+			String name = names.getString(indexName);
+			String number = names.getString(indexNumber);
 		}
-
-		Contact.close();
 	}
 }
 
