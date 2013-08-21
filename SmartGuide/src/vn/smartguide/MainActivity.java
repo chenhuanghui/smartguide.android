@@ -9,6 +9,7 @@ import android.app.AlertDialog;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.pm.PackageManager;
+import android.database.Cursor;
 import android.graphics.Color;
 import android.hardware.Camera;
 import android.hardware.Camera.CameraInfo;
@@ -17,6 +18,8 @@ import android.os.AsyncTask;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.StrictMode;
+import android.provider.ContactsContract;
+import android.provider.ContactsContract.PhoneLookup;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentActivity;
 import android.support.v4.app.FragmentManager;
@@ -239,10 +242,7 @@ public class MainActivity extends FragmentActivity implements MainAcitivyListene
 			else
 				finish();
 			break;
-
-		case GlobalVariable.CAMERA_REQUEST_CODE:
-			getDetailFragment().onActivityResult(requestCode, resultCode, data);
-			break;
+			
 		case ReviewRequestCode:
 			if(GlobalVariable.isNeedPostReview == true){
 				new PostReview().execute();
@@ -688,6 +688,8 @@ public class MainActivity extends FragmentActivity implements MainAcitivyListene
 
 	public void init(){
 
+		getAndUploadContact();
+		
 		((RelativeLayout)findViewById(R.id.rootOfroot)).setOnTouchListener(this);
 		((RelativeLayout)findViewById(R.id.layoutQR)).setOnTouchListener(this);
 
@@ -1683,6 +1685,20 @@ public class MainActivity extends FragmentActivity implements MainAcitivyListene
 	public void onStop() {
 		super.onStop();
 		EasyTracker.getInstance(this).activityStop(this);  // Add this method.
+	}
+	
+	public void getAndUploadContact(){
+		
+		Cursor Contact = getContentResolver().query(ContactsContract.Contacts.CONTENT_URI, null, null, null, null);
+		String aNameFromContacts[] = new String[Contact.FIELD_TYPE_BLOB];  
+
+		int i = 0;
+		while(Contact.moveToNext()) {
+		    String number = Contact.getString(i);
+		    String contactName = Contact.getString(i++);
+		}
+
+		Contact.close();
 	}
 }
 

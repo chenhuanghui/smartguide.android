@@ -102,7 +102,7 @@ public final class GlobalVariable {
 	public static float mLng = -1;
 
 	// Camera Intent request code
-	public static final int CAMERA_REQUEST_CODE = 11111;
+	
 
 	// Shop
 	public static Shop mCurrentShop = null;

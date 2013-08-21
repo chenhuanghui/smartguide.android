@@ -69,10 +69,6 @@ public class ShopDetailFragment extends Fragment {
     private Fragment mActiveFragment;
     private Shop mShop;
     
-    private Intent cameraIntent = null;
-    private Uri outputFileUri = null;
-    private static Uri oldFileUri = null;
-    
     private ImageView mLogoImageView;
     private ImageView mCoverImageView;
     
@@ -142,9 +138,6 @@ public class ShopDetailFragment extends Fragment {
 
     @Override
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
-    	
-    	Intent intent = new Intent(getActivity(), TakePictureActivity.class);
-    	getActivity().startActivity(intent);
     }
     
     private class ScreenSlidePagerAdapter extends FragmentStatePagerAdapter {
@@ -194,16 +187,8 @@ public class ShopDetailFragment extends Fragment {
 		
 		switch(index){
 		case 2:
-			String filename = new SimpleDateFormat("yyyyMMdd_HHmmss").format(Calendar.getInstance().getTime()) + ".jpg";
-	        String path = Environment.getExternalStorageDirectory().getAbsolutePath() + "/" + filename;
-	        File file = new File(path);
-	        outputFileUri = Uri.fromFile(file);
-
-	        cameraIntent  = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
-	        cameraIntent.putExtra(MediaStore.EXTRA_OUTPUT, outputFileUri);
-	        getActivity().startActivityForResult(cameraIntent, GlobalVariable.CAMERA_REQUEST_CODE);
-	        
-	    	
+			Intent intent = new Intent(getActivity(), TakePictureActivity.class);
+	    	getActivity().startActivity(intent);
 			break;
 		}
     }
@@ -352,50 +337,5 @@ public class ShopDetailFragment extends Fragment {
     	for (int i = 0; i < jUserImageArr.length(); i++) {
     		mShop.mShopImageList.add(new ImageStr(jShopImage.getString(i), null));
     	}
-    }
-    
-    void getPicture(){
-    	String imgPath = outputFileUri.getPath();
-        BitmapFactory.Options bmOpt = new BitmapFactory.Options();
-        bmOpt.inJustDecodeBounds = true;
-
-        BitmapFactory.decodeFile(imgPath, bmOpt);
-        int photoW = bmOpt.outWidth;
-        int photoH = bmOpt.outHeight;
-        float aspectRatio = (float) photoW / (float) photoH;
-
-
-        int scale = 1;
-        int targetW = 640;
-        int targetH = 480;
-       
-        if ((targetW > 0) || (targetH > 0)){
-            scale = Math.min(photoW / targetW, photoH / targetH);
-        }
-
-        bmOpt.inJustDecodeBounds = false;
-        bmOpt.inSampleSize = scale;
-        bmOpt.inPurgeable = true;
-
-        Bitmap bitmap = BitmapFactory.decodeFile(imgPath, bmOpt);
-
-
-        int newWidth = 640;
-        int newHeight = (int) (newWidth / aspectRatio);
-
-        String filename = new SimpleDateFormat("yyyyMMdd_HHmmss").format(Calendar.getInstance().getTime()) + ".jpg";
-        String path = Environment.getExternalStorageDirectory().getAbsolutePath() + "/" + filename;
-        File file = new File(path);
-
-        try {
-            FileOutputStream out = new FileOutputStream(file);
-            Bitmap.createScaledBitmap(bitmap, newWidth, newHeight, true).compress(Bitmap.CompressFormat.JPEG, 90, out);
-            out.flush();
-            out.close();
-            outputFileUri = Uri.fromFile(file);
-            oldFileUri = Uri.fromFile(file);
-        } catch (Exception e) {
-
-        }
     }
 }
