@@ -67,14 +67,18 @@
         </activity>
         <activity
             android:name="vn.smartguide.ReviewActivity"
-            android:theme="@android:style/Theme.Light.NoTitleBar" 
-            android:windowSoftInputMode="stateVisible">
+            android:theme="@android:style/Theme.Light.NoTitleBar"
+            android:windowSoftInputMode="stateVisible" >
         </activity>
         <activity
             android:name="vn.smartguide.TakePictureActivity"
             android:label="@string/title_activity_take_picture"
             android:theme="@android:style/Theme.Light.NoTitleBar"
             android:windowSoftInputMode="adjustResize" >
+        </activity>
+        <activity
+            android:name="vn.smartguide.UpdateActivity"
+            android:theme="@android:style/Theme.Light.NoTitleBar" >
         </activity>
     </application>
 

@@ -79,6 +79,7 @@ public class MainActivity extends FragmentActivity implements MainAcitivyListene
 	private final int WelcomeRequestCode 		= 44444;
 	private final int FlashScreenRequestCode 	= 55555;
 	private final int ReviewRequestCode			= 33333;
+	private final int UpdateRequestCode			= 22222;
 	
 	// Load qrcode lib
 	static {
@@ -112,6 +113,7 @@ public class MainActivity extends FragmentActivity implements MainAcitivyListene
 	// Slide menu
 	SlidingMenu menu;
 	private RelativeLayout reviewBtn;
+	private RelativeLayout updateBtn;
 	private boolean isNeedReview = false;
 
 	// Viewpager
@@ -778,12 +780,20 @@ public class MainActivity extends FragmentActivity implements MainAcitivyListene
 		mAvatarFaceBtn = (ImageButton)menu.getMenu().findViewById(R.id.imageView1);
 		mTotalSGP = (TextView)menu.getMenu().findViewById(R.id.SGPScoreSetting);
 		reviewBtn = (RelativeLayout)menu.getMenu().findViewById(R.id.reviewSmartGuide);
-
+		
 		reviewBtn.setOnClickListener(new View.OnClickListener() {	
 			@Override
 			public void onClick(View v) {
 				GlobalVariable.isNeedPostReview = false;
 				startActivityForResult(new Intent(mActivity, ReviewActivity.class), ReviewRequestCode);
+			}
+		});
+		
+		updateBtn = (RelativeLayout)menu.getMenu().findViewById(R.id.updateBtn);
+		updateBtn.setOnClickListener(new View.OnClickListener() {
+			@Override
+			public void onClick(View arg0) {
+				startActivityForResult(new Intent(mActivity, UpdateActivity.class), UpdateRequestCode);
 			}
 		});
 		
