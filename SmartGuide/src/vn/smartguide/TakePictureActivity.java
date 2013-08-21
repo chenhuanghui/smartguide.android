@@ -68,8 +68,8 @@ public class TakePictureActivity extends Activity {
         int photoH = 480;
         float aspectRatio = (float) photoW / (float) photoH;
         
-        int targetW = imageView.getWidth();
-        int targetH = imageView.getHeight();
+        int targetW = 320;
+        int targetH = 240;
 
         int scale = 1;
         if ((targetW > 0) || (targetH > 0)){
@@ -128,17 +128,5 @@ public class TakePictureActivity extends Activity {
 
         File file = new File(oldFileUri.getPath());
         file.delete();
-    }
-
-    public String getRealPathFromURI(Uri contentUri) {
-        String [] proj = {MediaStore.Images.Media.DATA};
-        Cursor cursor = managedQuery( contentUri, proj, null, null,null);
-
-        if (cursor == null)
-            return null;
-
-        int column_index = cursor.getColumnIndexOrThrow(MediaStore.Images.Media.DATA);
-        cursor.moveToFirst();
-        return cursor.getString(column_index);
     }
 }

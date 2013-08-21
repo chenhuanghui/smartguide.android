@@ -445,7 +445,7 @@ public class ShopListFragment extends Fragment {
 				ImageView mShopType = (ImageView)mShopTypeScore.findViewById(R.id.shop_type_image);
 
 				final ImageView mShopCover = (ImageView)MyView.findViewById(R.id.shop_cover);
-				//GlobalVariable.imageLoader.displayImage(mShop.mLogo, mShopCover);
+				GlobalVariable.imageLoader.displayImage(mShop.mLogo, mShopCover);
 //				new Handler().postDelayed(new Runnable() {
 //					
 //					@Override

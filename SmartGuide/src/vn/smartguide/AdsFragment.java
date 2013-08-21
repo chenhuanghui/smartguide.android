@@ -34,7 +34,7 @@ public class AdsFragment extends Fragment {
 	ImageSwitcher mAdsSwitcher = null;
 	int index = 1;
 	ChangeImage mChangeImage = null;
-
+	
 	@Override
 	public View onCreateView(LayoutInflater inflater, ViewGroup container,
 			Bundle savedInstanceState) {

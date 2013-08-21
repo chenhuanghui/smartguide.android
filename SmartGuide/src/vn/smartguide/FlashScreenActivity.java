@@ -11,6 +11,7 @@ import org.json.JSONObject;
 
 import com.google.analytics.tracking.android.EasyTracker;
 import com.nostra13.universalimageloader.cache.disc.impl.UnlimitedDiscCache;
+import com.nostra13.universalimageloader.cache.disc.naming.HashCodeFileNameGenerator;
 import com.nostra13.universalimageloader.cache.disc.naming.Md5FileNameGenerator;
 import com.nostra13.universalimageloader.cache.memory.impl.WeakMemoryCache;
 import com.nostra13.universalimageloader.core.DisplayImageOptions;
@@ -19,6 +20,7 @@ import com.nostra13.universalimageloader.core.ImageLoaderConfiguration;
 import com.nostra13.universalimageloader.core.assist.ImageScaleType;
 import com.nostra13.universalimageloader.core.assist.QueueProcessingType;
 import com.nostra13.universalimageloader.core.display.FadeInBitmapDisplayer;
+import com.nostra13.universalimageloader.core.display.RoundedBitmapDisplayer;
 
 import android.os.AsyncTask;
 import android.os.Bundle;
@@ -244,15 +246,17 @@ public class FlashScreenActivity extends Activity {
 			.showImageOnFail(R.drawable.ic_error)
 			.bitmapConfig(Bitmap.Config.RGB_565)
 			.cacheOnDisc(true)
+			.cacheInMemory()
 			.imageScaleType(ImageScaleType.EXACTLY)
-			.bitmapConfig(Bitmap.Config.RGB_565)
+			.displayer(new RoundedBitmapDisplayer(20))
 			.build();
-
+			
 			ImageLoaderConfiguration config = new ImageLoaderConfiguration.Builder(getApplicationContext())
-			.threadPoolSize(5)
-			.discCacheFileNameGenerator(new Md5FileNameGenerator())
-			.tasksProcessingOrder(QueueProcessingType.FIFO)
-			.memoryCache(new WeakMemoryCache())
+			.threadPoolSize(6)
+			.threadPriority(Thread.NORM_PRIORITY-1)
+			.denyCacheImageMultipleSizesInMemory()
+			.discCacheSize(10*1024*1024)
+			.tasksProcessingOrder(QueueProcessingType.LIFO)
 			.build();
 
 

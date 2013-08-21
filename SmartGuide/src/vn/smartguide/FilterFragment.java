@@ -53,7 +53,7 @@ public class FilterFragment extends Fragment {
 	
 	private final FilterItem[] mItemList = new FilterItem[] {
 			new FilterItem(R.drawable.icon12, R.drawable.icon12_gray, R.drawable.iconpin_food, "ĂN", "food"),
-			new FilterItem(R.drawable.icon13, R.drawable.icon13_gray, R.drawable.iconpin_drink, "UỐNNG", "drink"),
+			new FilterItem(R.drawable.icon13, R.drawable.icon13_gray, R.drawable.iconpin_drink, "UỐNG", "drink"),
 			new FilterItem(R.drawable.icon14, R.drawable.icon14_gray, R.drawable.iconpin_healness, "SỨC KHỎE", "health&fitness"),
 			new FilterItem(R.drawable.icon15, R.drawable.icon15_gray, R.drawable.iconpin_entertaiment, "GIẢI TRÍ", "entertainment"),
 			new FilterItem(R.drawable.icon16, R.drawable.icon16_gray, R.drawable.iconpin_fashion, "THỜI TRANG", "fashion"),
@@ -138,7 +138,7 @@ public class FilterFragment extends Fragment {
 		});
 		
 		// Set font
-		Typeface typeFace = Typeface.createFromAsset(getActivity().getAssets(), "fonts/impact.ttf");
+		Typeface typeFace = Typeface.createFromAsset(getActivity().getAssets(), "fonts/utmhelvetints.ttf");
 		for (int i : mTextViewIDArr) {
 			((TextView) getView().findViewById(i)).setTypeface(typeFace);
 		}
