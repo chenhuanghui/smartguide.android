@@ -24,7 +24,6 @@
                 android:layout_height="match_parent"
                 android:id="@+id/ads_gallery"
                 android:layout_gravity="center"
-                android:src="@drawable/ads"
                 android:layout_alignParentTop="false"
                 android:layout_toRightOf="@+id/imageButton"
                 android:layout_toLeftOf="@+id/imageButton2"

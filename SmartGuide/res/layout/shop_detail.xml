@@ -44,8 +44,7 @@
                     <ImageView
                         android:id="@+id/imgLogo"
                         android:layout_width="match_parent"
-                        android:layout_height="match_parent"
-                        android:src="@drawable/ava" />
+                        android:layout_height="match_parent"/>
                 </LinearLayout>
 
                 <LinearLayout
