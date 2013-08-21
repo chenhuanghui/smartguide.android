@@ -27,7 +27,9 @@ import android.animation.AnimatorSet;
 import android.animation.Animator.AnimatorListener;
 import android.animation.ObjectAnimator;
 import android.app.Activity;
+import android.app.AlertDialog;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.view.Display;
 import android.view.Menu;
@@ -82,12 +84,13 @@ public class WellcomeActivity extends FragmentActivity{
 	private ObjectAnimator mStatusTextFlash = null;
 
 	private Intent resultData;
+	Activity mActivity;
 	
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.activity_wellcome);
-		
+		mActivity = this; 
 		Session.StatusCallback callback = new Session.StatusCallback() {
 
 			public void call(Session session, SessionState state, Exception exception) {
@@ -131,18 +134,14 @@ public class WellcomeActivity extends FragmentActivity{
 			public void onClick(View v) {
 				if (isConfirm == false){
 					phoneNumber = mNumberField.getText().toString();
+					
 					if (PhoneNumberUtils.isGlobalPhoneNumber(phoneNumber) == true){
-						
-						mStatusText.setText("Chờ và nhập mã xác nhận...");
-						mNumberField.setText("");
-						isConfirm = true;
-						
 						if (phoneNumber.charAt(0) == '+'){
 							String subphone = phoneNumber.substring(1);
 							phoneNumber = subphone;
 						}
 						
-						new GetActivateCode().execute();
+						confirmPhone();
 					}else{
 						mStatusText.setText("Số điện thoại không hợp lệ...");
 						mNumberField.setText("");
@@ -589,5 +588,39 @@ public class WellcomeActivity extends FragmentActivity{
 	public void onStop() {
 		super.onStop();
 		EasyTracker.getInstance(this).activityStop(this);  // Add this method.
+	}
+	
+	public void confirmPhone(){
+		
+		AlertDialog.Builder builder = new AlertDialog.Builder(this);
+		
+		builder.setMessage("Số điện thoại của bạn: " +  phoneNumber);
+		builder.setCancelable(true);
+		
+		builder.setPositiveButton("Nhập lại", new DialogInterface.OnClickListener() {
+			public void onClick(DialogInterface dialog, int which) {
+				mStatusText.setText("Nhập số điện thoại...");
+				mNumberField.setText("");
+			}
+		});
+		
+		builder.setNegativeButton("Gởi", new DialogInterface.OnClickListener() {
+			public void onClick(DialogInterface dialog, int which) {
+				AlertDialog.Builder builder = new AlertDialog.Builder(mActivity);
+				builder.setMessage("Vui lòng chờ mã xác nhận qua tin nhắn");
+				
+				builder.setPositiveButton("OK", new DialogInterface.OnClickListener() {
+					public void onClick(DialogInterface dialog, int which) {
+						isConfirm = true;
+						mStatusText.setText("Chờ và nhập mã xác nhận...");
+						mNumberField.setText("");
+						new GetActivateCode().execute();
+					}
+				});
+				builder.show();
+			}
+		});
+		
+		builder.show();
 	}
 }
