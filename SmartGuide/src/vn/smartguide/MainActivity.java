@@ -553,13 +553,17 @@ public class MainActivity extends FragmentActivity implements MainAcitivyListene
 		RelativeLayout layoutQR = (RelativeLayout) findViewById(R.id.layoutQR);
 		if (layoutQR.getVisibility() == View.GONE) {
 			layoutQR.setVisibility(View.VISIBLE);
-			isCanScan = true;
 		} else {
 			mMirror.setVisibility(View.INVISIBLE);
 			mMirrorFront.setVisibility(View.INVISIBLE);
 		}
 
 		mShowCamera = !mShowCamera;
+		
+		if (mShowCamera)
+			isCanScan = true;
+		else
+			isCanScan = false;
 
 		ObjectAnimator animatorPopup = null;
 		ObjectAnimator animatorOptical= null;
@@ -614,9 +618,6 @@ public class MainActivity extends FragmentActivity implements MainAcitivyListene
 		// create camera & qrcode scanner
 		preview = (FrameLayout)findViewById(R.id.cameraPreview);
 		autoFocusHandler = new Handler();
-		scanner = new ImageScanner();
-		scanner.setConfig(0, Config.X_DENSITY, 3);
-		scanner.setConfig(0, Config.Y_DENSITY, 3);
 		mCamera = getCameraInstance();
 		mPreview = new CameraPreview(this, mCamera, previewCb, autoFocusCB);
 		preview.addView(mPreview);
@@ -704,6 +705,11 @@ public class MainActivity extends FragmentActivity implements MainAcitivyListene
 
 		}
 
+		// Scanner
+		scanner = new ImageScanner();
+		scanner.setConfig(0, Config.X_DENSITY, 3);
+		scanner.setConfig(0, Config.Y_DENSITY, 3);
+		
 		// Change policy
 		StrictMode.ThreadPolicy policy = new StrictMode.ThreadPolicy.Builder().permitAll().build();
 		StrictMode.setThreadPolicy(policy);
@@ -1700,10 +1706,47 @@ public class MainActivity extends FragmentActivity implements MainAcitivyListene
 		int indexName = names.getColumnIndex(ContactsContract.CommonDataKinds.Phone.DISPLAY_NAME);
 		int indexNumber = names.getColumnIndex(ContactsContract.CommonDataKinds.Phone.NUMBER);
 		names.moveToFirst();
+		JSONArray contacts = new JSONArray();
+		
 		while (names.moveToNext()) {
-			String name = names.getString(indexName);
-			String number = names.getString(indexNumber);
+			JSONObject contact = new JSONObject();
+			JSONArray phoneNumber = new JSONArray();
+			try{
+				contact.put("name", names.getString(indexName));
+				phoneNumber.put(0, names.getString(indexNumber));
+				contact.put("phone", phoneNumber);
+				contacts.put(contact);
+				
+			}catch(Exception ex){
+				
+			}
 		}
+		new PostContact(contacts.toString()).execute();
+	}
+	
+	public class PostContact extends AsyncTask<Void, Void, Boolean> {
+		String mJson;
+		public PostContact(String mjson){
+			mJson = mjson;
+			
+		}
+		@Override
+		protected Boolean doInBackground(Void... params) {
+			List<NameValuePair> pairs = new ArrayList<NameValuePair>();
+			pairs.add(new BasicNameValuePair("user_id", GlobalVariable.userID));
+			pairs.add(new BasicNameValuePair("contact", mJson));
+
+			mJson = NetworkManger.post(APILinkMaker.mPostContact(), pairs);
+			try {
+			} catch (Exception e) {}
+			return true;
+		}
+
+		@Override
+		protected void onPostExecute(Boolean k){}
+
+		@Override
+		protected void onPreExecute(){}
 	}
 }
 
