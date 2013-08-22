@@ -4,9 +4,11 @@ import android.animation.Animator;
 import android.animation.Animator.AnimatorListener;
 import android.animation.AnimatorSet;
 import android.animation.ObjectAnimator;
+import android.animation.TimeInterpolator;
 import android.app.Activity;
 import android.app.AlertDialog;
 import android.content.ContentResolver;
+import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.pm.PackageManager;
@@ -29,16 +31,22 @@ import android.support.v4.app.FragmentPagerAdapter;
 import android.support.v4.app.FragmentTransaction;
 import android.support.v4.view.ViewPager;
 import android.view.GestureDetector.OnGestureListener;
+import android.view.KeyEvent;
 import android.view.MotionEvent;
 import android.view.View;
+import android.view.View.OnClickListener;
+import android.view.View.OnFocusChangeListener;
 import android.view.View.OnTouchListener;
 import android.view.animation.AccelerateDecelerateInterpolator;
+import android.view.inputmethod.InputMethodManager;
+import android.widget.EditText;
 import android.widget.FrameLayout;
 import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
+import android.widget.TextView.OnEditorActionListener;
 
 import com.facebook.Request;
 import com.facebook.Response;
@@ -756,7 +764,7 @@ public class MainActivity extends FragmentActivity implements MainAcitivyListene
 					final Fragment scroll = getSupportFragmentManager().findFragmentById(R.id.adsFragment);
 					final FragmentTransaction tr = getSupportFragmentManager().beginTransaction();
 					//tr.setCustomAnimations(R.anim.slide_up, R.anim.slide_down);
-					//tr.hide(scroll);
+					tr.hide(scroll);
 					tr.commit();
 				}
 				else{
@@ -909,8 +917,118 @@ public class MainActivity extends FragmentActivity implements MainAcitivyListene
 				createDestroyMap();
 			}
 		});
+		
+		// Set search button
+		((ImageButton) findViewById(R.id.btnSearch)).setOnClickListener(new OnClickListener() {
+			
+			@Override
+			public void onClick(View v) {
+
+				OnSearchButtonClick();
+			}
+		});
 
 		initToggleCamera();
+	}
+	
+	private boolean mShowSearch = false;
+	void OnSearchButtonClick() {
+		
+		EditText edtSearch = (EditText) findViewById(R.id.edtSearch);
+		ImageButton btnSearch = (ImageButton) findViewById(R.id.btnSearch);
+		ImageButton btnToggleMenu = (ImageButton) findViewById(R.id.btnToggleMenu);
+		ImageButton btnToggleFilter = (ImageButton) findViewById(R.id.btnToggleMap);
+		
+		edtSearch.setOnFocusChangeListener(new OnFocusChangeListener() {
+
+			@Override
+			public void onFocusChange(View v, boolean hasFocus) {
+			
+				if (!hasFocus && mShowSearch)
+					OnSearchButtonClick();
+			}
+		});
+		
+		edtSearch.setOnEditorActionListener(new OnEditorActionListener() {
+
+			@Override
+			public boolean onEditorAction(TextView v, int actionId, KeyEvent event) {
+			
+				OnSearchButtonClick();
+				
+				return false;
+			}
+		});
+		
+		int width = (int) (btnToggleFilter.getX() - btnToggleMenu.getX()
+				- btnToggleMenu.getWidth() + btnToggleFilter.getWidth());
+		ObjectAnimator animator = null;
+		ObjectAnimator animator2 = null;
+		mShowSearch = !mShowSearch;
+		
+		if (mShowSearch) {
+			animator = ObjectAnimator.ofInt(edtSearch, "width", 0, width);
+			animator.addListener(new AnimatorListener() {
+				public int searchWidth;
+				public AnimatorListener init(int w) {
+					searchWidth = w;
+					return this;
+				}
+				public void onAnimationRepeat(Animator animation) { }
+				public void onAnimationStart(Animator animation) {
+					showSearchBox();
+				}
+				public void onAnimationEnd(Animator animation) { }
+				public void onAnimationCancel(Animator animation) { }
+			}.init(btnSearch.getWidth()));
+			
+			animator2 = ObjectAnimator.ofFloat(btnSearch, "translationX", 
+					0, btnToggleFilter.getX() - btnToggleMenu.getX() - btnToggleMenu.getWidth());
+		} else {
+			animator = ObjectAnimator.ofInt(edtSearch, "width", width, 0);
+			animator.addListener(new AnimatorListener() {
+				public int searchWidth;
+				public AnimatorListener init(int w) {
+					searchWidth = w;
+					return this;
+				}
+				public void onAnimationRepeat(Animator animation) { }
+				public void onAnimationStart(Animator animation) { }
+				public void onAnimationEnd(Animator animation) {
+					hideSearchBox();
+				}
+				public void onAnimationCancel(Animator animation) {
+					hideSearchBox();
+				}
+			}.init(btnSearch.getWidth()));
+			
+			animator2 = ObjectAnimator.ofFloat(btnSearch, "translationX", 
+					btnToggleFilter.getX() - btnToggleMenu.getX() - btnToggleMenu.getWidth(), 0);
+		}
+		TimeInterpolator acce = new AccelerateDecelerateInterpolator();
+		animator.setInterpolator(acce);
+		animator2.setInterpolator(acce);
+		animator.start();
+		animator2.start();
+	}
+	
+	public void hideSearchBox() {
+		
+		EditText edtSearch = (EditText) findViewById(R.id.edtSearch);
+		edtSearch.setVisibility(View.INVISIBLE);
+		InputMethodManager imm = (InputMethodManager)getSystemService(
+			      Context.INPUT_METHOD_SERVICE);
+		imm.hideSoftInputFromWindow(edtSearch.getWindowToken(), 0);
+	}
+	
+	public void showSearchBox() {
+		
+		EditText edtSearch = (EditText) findViewById(R.id.edtSearch);
+		edtSearch.setVisibility(View.VISIBLE);
+		InputMethodManager imm = (InputMethodManager)getSystemService(
+			      Context.INPUT_METHOD_SERVICE);
+		edtSearch.requestFocus();
+		imm.toggleSoftInput(0, 0);
 	}
 
 	void updateLocation(){
@@ -1197,11 +1315,11 @@ public class MainActivity extends FragmentActivity implements MainAcitivyListene
 			return;
 		}
 
-		if (mIsShowFilter){
-			mIsShowFilter = !mIsShowFilter;
-			mFiterFragment.toggle();
-			return;
-		}
+//		if (mIsShowFilter){
+//			mIsShowFilter = !mIsShowFilter;
+//			mFiterFragment.toggle();
+//			return;
+//		}
 
 		if(!mShowContent){
 			toggleShowContent();
