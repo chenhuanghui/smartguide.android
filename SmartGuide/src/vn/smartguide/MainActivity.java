@@ -998,6 +998,7 @@ public class MainActivity extends FragmentActivity implements MainAcitivyListene
 			
 			performSearch(edtSearch.getText().toString());
 		}
+		
 		TimeInterpolator acce = new AccelerateDecelerateInterpolator();
 		animator.setInterpolator(acce);
 		animator2.setInterpolator(acce);
@@ -1006,7 +1007,6 @@ public class MainActivity extends FragmentActivity implements MainAcitivyListene
 	}
 	
 	private void performSearch(String name) {
-		
 		goToPage(1);
 		getShopListFragment().search(name);
 	}

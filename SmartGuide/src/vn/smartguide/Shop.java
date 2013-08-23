@@ -57,7 +57,7 @@ public class Shop {
 				mShop.mLat = (float)object.getDouble("shop_lat");
 				mShop.mLng = (float)object.getDouble("shop_lng");
 				mShop.mDistance = (float)object.getDouble("distance");
-				mShop.mNumOfLike = object.getInt("like");
+				mShop.mNumOfLike = object.getInt("num_of_like");
 				mShop.mNumOfVisit = object.getInt("num_of_visit");
 				mShop.mNumGetReward = object.getInt("num_get_reward");
 				mShop.mNumGetPromotion = object.getInt("num_get_promotion");

@@ -45,7 +45,7 @@
                 android:layout_height="wrap_content"
                 android:layout_gravity="bottom"
                 android:gravity="center_vertical"
-                android:text="09"
+                android:text=""
                 android:textColor="#ffffff"
                 android:textSize="17dp"
                 android:textStyle="bold" />
@@ -56,7 +56,7 @@
                 android:layout_height="wrap_content"
                 android:layout_gravity="bottom"
                 android:gravity="center_vertical"
-                android:text="/10"
+                android:text=""
                 android:textColor="#282e3a"
                 android:textSize="14dp"
                 android:textStyle="bold" />

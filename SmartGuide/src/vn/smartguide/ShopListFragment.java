@@ -17,6 +17,7 @@ import android.os.Handler;
 import android.os.Message;
 import android.support.v4.app.Fragment;
 import android.text.method.CharacterPickerDialog;
+import android.util.Log;
 import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.MotionEvent;
@@ -71,6 +72,8 @@ public class ShopListFragment extends Fragment {
 	private ObjectAnimator mFadeInMiddle = null;
 	
 	public boolean mHaveAnimation = false;
+	
+	private String mSearchString = "";
 	
 	public void updateSGP(int id, int sgp){
 		if (mShopList == null || mShopList.size() == 0)
@@ -175,23 +178,6 @@ public class ShopListFragment extends Fragment {
 	
 	public void search(String search){
 		isSearch = true;
-		
-		// display waiting progress
-		mLoadingCircle.setVisibility(View.VISIBLE);
-		mLoadingMiddle.setVisibility(View.VISIBLE);
-		mLoadingBackground.setVisibility(View.VISIBLE);
-		
-		List<ObjectAnimator> arrayListObjectAnimators = new ArrayList<ObjectAnimator>();
-		
-		arrayListObjectAnimators.add(mFadeInMiddle);
-		arrayListObjectAnimators.add(mFadeInCircle);
-		arrayListObjectAnimators.add(mRotateAnimation);
-		
-		ObjectAnimator[] objectAnimators = arrayListObjectAnimators.toArray(new ObjectAnimator[arrayListObjectAnimators.size()]);
-		AnimatorSet animSetXY = new AnimatorSet();
-		animSetXY.playTogether(objectAnimators);
-		animSetXY.start();
-		
 		// get search result
 		new SearchShopListTask(search).execute();
 	}
@@ -308,9 +294,6 @@ public class ShopListFragment extends Fragment {
 	
 	public void updateShopList(){
 		if (mShopList != null){
-			if (gridView != null)
-				gridView.getAdapter();
-			
 			mAdapter = new ShopListAdapter(getActivity().getBaseContext(), getActivity());
 			gridView.setAdapter(mAdapter);
 			mAdapter.notifyDataSetChanged();
@@ -330,8 +313,14 @@ public class ShopListFragment extends Fragment {
 			pairs.add(new BasicNameValuePair("user_lng", Float.toString(GlobalVariable.mLng)));
 			pairs.add(new BasicNameValuePair("page", Integer.toString(indexPage + 1)));
 			pairs.add(new BasicNameValuePair("sort_by", GlobalVariable.mSortByString));
+			pairs.add(new BasicNameValuePair("shop_name", mSearchString));
+			
 			try {
-				json = NetworkManger.post(APILinkMaker.ShopListInCategory(), pairs);
+				
+				if (isSearch)
+					json = NetworkManger.post(APILinkMaker.mSearch(), pairs);
+				else
+					json = NetworkManger.post(APILinkMaker.ShopListInCategory(), pairs);
 			} catch (Exception e) {
 				return false;
 			}
@@ -411,14 +400,15 @@ public class ShopListFragment extends Fragment {
 		@Override
 		public View getView(int position, View convertView, ViewGroup parent)
 		{
-			final int index = position;
-			
-			if (mViewList.get(position) != null)
-				return mViewList.get(position);
-
-			View MyView = convertView;
-
+			View MyView = null;
 			try{
+				final int index = position;
+				
+				if (mViewList.get(position) != null)
+					return mViewList.get(position);
+
+				MyView = convertView;
+				
 				final Shop mShop = mShopList.get(position);
 				LayoutInflater li = mActivity.getLayoutInflater();
 				if (mShop.mPromotionStatus == true){
@@ -430,7 +420,13 @@ public class ShopListFragment extends Fragment {
 						MyView = li.inflate(R.layout.shop_list_item_type_2, null);
 						break;
 					}
+				}else{
+					MyView = li.inflate(R.layout.shop_list_item, null);
+					MyView.findViewById(R.id.shop_type_image).setVisibility(View.INVISIBLE);
+					MyView.findViewById(R.id.shop_score).setVisibility(View.INVISIBLE);
+					
 				}
+					
 
 				final TextView mDistantTV = (TextView)MyView.findViewById(R.id.shop_distance);
 				if (mShop.mDistance == - 1)
@@ -450,6 +446,7 @@ public class ShopListFragment extends Fragment {
 						case 1:
 							PromotionTypeOne promotionTypeOne = (PromotionTypeOne)mShop.mPromotion;
 							mShopScoreNowTV.setText(Integer.toString(promotionTypeOne.mSGP));
+							mShopScoreMinTV.setText("/10");
 							break;
 						case 2:
 							PromotionTypeTwo promotionTypeTwo = (PromotionTypeTwo)mShop.mPromotion;
@@ -494,6 +491,7 @@ public class ShopListFragment extends Fragment {
 //			        	}).bitmap(mShop.mLogo);
 //					}
 //				}, 2000);
+				
 				
 				final LinearLayout mShopNameContent = (LinearLayout)MyView.findViewById(R.id.shop_name_content);
 				TextView mShopName= (TextView) mShopNameContent.findViewById(R.id.shop_name_real);
@@ -582,10 +580,11 @@ public class ShopListFragment extends Fragment {
 	public class SearchShopListTask extends AsyncTask<Void, Void, Boolean> {
 		private String json = null;
 		private String mName;
+		private boolean isComeToEnd = false;
 		
 		public SearchShopListTask(String name) {
-			
 			mName = name;
+			isComeToEnd = false;
 		}
 
 		@Override
@@ -628,23 +627,45 @@ public class ShopListFragment extends Fragment {
 					@Override
 					public void onAnimationEnd(Animator animation) {
 						// TODO Auto-generated method stub
+						if (isComeToEnd)
+							return;
+						
 						mLoadingOptical.setVisibility(View.INVISIBLE);
 						mLoadingBackground.setVisibility(View.INVISIBLE);
-						updateShopList();
+						if (mShopList != null){
+							mAdapter = new ShopListAdapter(getActivity().getBaseContext(), getActivity());
+							gridView.setAdapter(mAdapter);
+							mAdapter.notifyDataSetChanged();
+						}
+						
+						isComeToEnd = true;
 					}
 					
 					@Override
-					public void onAnimationCancel(Animator animation) {
-						// TODO Auto-generated method stub
-						
-					}
+					public void onAnimationCancel(Animator animation) {}
 				});
+				
 				animSetXY.start();
 			}
 		}
 
 		@Override
 		protected void onPreExecute(){
+			mLoadingCircle.setVisibility(View.VISIBLE);
+			mLoadingMiddle.setVisibility(View.VISIBLE);
+			mLoadingOptical.setVisibility(View.VISIBLE);
+			mLoadingBackground.setVisibility(View.VISIBLE);
+			
+			List<ObjectAnimator> arrayListObjectAnimators = new ArrayList<ObjectAnimator>();
+			
+			arrayListObjectAnimators.add(mFadeInMiddle);
+			arrayListObjectAnimators.add(mFadeInCircle);
+			arrayListObjectAnimators.add(mRotateAnimation);
+			
+			ObjectAnimator[] objectAnimators = arrayListObjectAnimators.toArray(new ObjectAnimator[arrayListObjectAnimators.size()]);
+			AnimatorSet animSetXY = new AnimatorSet();
+			animSetXY.playTogether(objectAnimators);
+			animSetXY.start();
 		}
 	}
 }
