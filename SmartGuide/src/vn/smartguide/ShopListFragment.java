@@ -594,7 +594,7 @@ public class ShopListFragment extends Fragment {
 			pairs.add(new BasicNameValuePair("user_id", GlobalVariable.userID));
 			pairs.add(new BasicNameValuePair("user_lat", Float.toString(GlobalVariable.mLat)));
 			pairs.add(new BasicNameValuePair("user_lng", Float.toString(GlobalVariable.mLng)));
-			pairs.add(new BasicNameValuePair("page", Integer.toString(indexPage + 1)));
+			pairs.add(new BasicNameValuePair("page", Integer.toString(indexPage)));
 			try {
 				json = NetworkManger.post(APILinkMaker.mSearch(), pairs);
 				mShopList = Shop.getListForUse(new JSONArray(json));

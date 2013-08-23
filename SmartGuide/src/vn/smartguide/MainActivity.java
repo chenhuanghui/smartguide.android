@@ -1755,8 +1755,8 @@ public class MainActivity extends FragmentActivity implements MainAcitivyListene
 	}
 
 	public void onBottomToTopSwipe(){
-		if (!mShowCamera)
-			toggleCamera();
+//		if (!mShowCamera)
+//			toggleCamera();
 	}
 
 	public void loginFaceToReview(){
