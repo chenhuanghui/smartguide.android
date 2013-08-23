@@ -24,6 +24,7 @@ import android.support.v4.app.Fragment;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.ViewGroup.LayoutParams;
 import android.view.animation.AccelerateDecelerateInterpolator;
 import android.widget.AbsListView;
 import android.widget.AdapterView;
@@ -32,6 +33,7 @@ import android.widget.BaseAdapter;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.ListView;
+import android.widget.TableLayout;
 import android.widget.TextView;
 
 public class UserFragment extends Fragment{
@@ -216,7 +218,7 @@ public class UserFragment extends Fragment{
 			TextView sgpTextView = (TextView)convertView.findViewById(R.id.TextView01);
 			TextView spTextView = (TextView)convertView.findViewById(R.id.TextView03);
 			TextView timeTextView = (TextView)convertView.findViewById(R.id.textView4);
-			TextView updateTextview = (TextView)convertView.findViewById(R.id.textView5);
+			//TextView updateTextview = (TextView)convertView.findViewById(R.id.textView5);
 			final ImageView shopAva = (ImageView)convertView.findViewById(R.id.imageView1);
 			mSGPTexts.set(position, sgpTextView);
 			
@@ -262,7 +264,7 @@ public class UserFragment extends Fragment{
 					PromotionTypeOne promotion = (PromotionTypeOne)sp.mPromotion;
 					sgpTextView.setText(Integer.toString(promotion.mSGP));
 					spTextView.setText(Integer.toString(promotion.mSP));
-					updateTextview.setText(promotion.mDuration);
+					//updateTextview.setText(promotion.mDuration);
 					break;
 				case 2:
 					PromotionTypeTwo promotion_2 = (PromotionTypeTwo)sp.mPromotion;
@@ -271,8 +273,10 @@ public class UserFragment extends Fragment{
 					
 					spTitle.setVisibility(View.INVISIBLE);
 					spTextView.setVisibility(View.INVISIBLE);
-					sgpTextView.setText(Integer.toString(promotion_2.mMoney));
-					sgpTitle.setText("VNĐ");
+					sgpTextView.setLayoutParams(new TableLayout.LayoutParams(LayoutParams.WRAP_CONTENT, LayoutParams.WRAP_CONTENT, 1f));
+					sgpTextView.setText(Integer.toString(promotion_2.mMoney) + "  VNĐ");
+					
+					sgpTitle.setVisibility(View.INVISIBLE);
 					break;
 				}	
 			}

@@ -418,8 +418,10 @@ public class DetailCommentFragment extends Fragment {
 			
 			if (k) {
 				String timeStamp = new SimpleDateFormat("HH:mm").format(Calendar.getInstance().getTime());
-				addComment(new Comment("User name", mContent, null, timeStamp));
-				
+				String username = "Anomynous User";
+				if (GlobalVariable.avatarFace.compareTo("null") != 0)
+					username = GlobalVariable.nameFace;
+				addComment(new Comment(username, mContent, null, timeStamp));
 			}
 		}
 		

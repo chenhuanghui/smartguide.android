@@ -297,10 +297,10 @@ public class ShopDetailFragment extends Fragment {
 	}
     
     public void parseJsonShopDetail(JSONObject jRoot) throws JSONException {
-    	
     	// Parse Item
     	mShop.mItemList.clear();
     	JSONArray jCateItemArr = jRoot.getJSONArray("shop_items"); 
+    	
     	for (int i = 0; i < jCateItemArr.length(); i++) {
     		JSONArray jItemArr = jCateItemArr.getJSONObject(i).getJSONArray("items");
     		

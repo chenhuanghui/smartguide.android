@@ -214,7 +214,7 @@ public class DetailMenuFragment extends Fragment {
             View cover = detailFragment.getView().findViewById(R.id.imgCover);
 
             // Set position for menu
-            float x = cover.getWidth() - layoutRoot.getWidth();
+            float x = cover.getWidth() - layoutRoot.getWidth() - 10;
             float y = avaHolder.getY() + avaHolder.getHeight() - layoutUpper.getHeight() - 4;
 
             layoutRoot.setTranslationX(x);

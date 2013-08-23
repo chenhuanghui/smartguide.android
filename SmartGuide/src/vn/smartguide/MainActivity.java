@@ -33,7 +33,6 @@ import android.view.KeyEvent;
 import android.view.MotionEvent;
 import android.view.View;
 import android.view.View.OnClickListener;
-import android.view.View.OnFocusChangeListener;
 import android.view.View.OnTouchListener;
 import android.view.animation.AccelerateDecelerateInterpolator;
 import android.view.inputmethod.InputMethodManager;
@@ -995,8 +994,9 @@ public class MainActivity extends FragmentActivity implements MainAcitivyListene
 			
 			animator2 = ObjectAnimator.ofFloat(btnSearch, "translationX", 
 					btnToggleFilter.getX() - btnToggleMenu.getX() - btnToggleMenu.getWidth(), 0);
-			
-			performSearch(edtSearch.getText().toString());
+			String search = edtSearch.getText().toString();
+			edtSearch.setText("");
+			performSearch(search);
 		}
 		
 		TimeInterpolator acce = new AccelerateDecelerateInterpolator();
@@ -1008,6 +1008,7 @@ public class MainActivity extends FragmentActivity implements MainAcitivyListene
 	
 	private void performSearch(String name) {
 		goToPage(1);
+		setNaviText(name);
 		getShopListFragment().search(name);
 	}
 	

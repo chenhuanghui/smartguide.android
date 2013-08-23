@@ -37,6 +37,7 @@ public class DetailPromo1Fragment extends DetailPromoFragment {
 	private boolean isUpdatedScore = false;
 	private Activity mActivity;
 	private MainAcitivyListener mMainAcitivyListener;
+	private TextView mCostPerSGP;
 	GridView gridView;
 	List<PromotionStr> dataList;
 	
@@ -54,6 +55,7 @@ public class DetailPromo1Fragment extends DetailPromoFragment {
         super.onActivityCreated(savedInstanceState);
         mMainAcitivyListener = (MainAcitivyListener) getActivity();
         
+        mCostPerSGP = (TextView)getView().findViewById(R.id.textView1);
         // Instance of ImageAdapter Class
         mPromoListAdapter = new ShopPromotionListAdapter(getActivity());
         gridView = (GridView) getView().findViewById(R.id.grid_view_shop_promotion_list);
@@ -97,6 +99,7 @@ public class DetailPromo1Fragment extends DetailPromoFragment {
     		isUpdatedScore = true;
     		txtSP.setText("" + promo.mSP);
     		txtSGP.setText("" + promo.mSGP);
+    		mCostPerSGP.setText(Integer.toString(promo.mCost / 1000) + "K VNĐ/1 SGP");
     		new GetPromotionDetail().execute();
     	}
     	break;

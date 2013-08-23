@@ -11,22 +11,10 @@
         android:background="@drawable/bg" >
 
         <TextView
-            android:id="@+id/textView1"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_below="@+id/imageView1"
-            android:layout_centerHorizontal="true"
-            android:text="THỰC ĐƠN/"
-            android:textAlignment="center"
-            android:textColor="#282E3A"
-            android:textSize="10dp"
-            android:textStyle="bold" />
-
-        <TextView
             android:id="@+id/textView2"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_below="@+id/textView1"
+            android:layout_below="@+id/imageView1"
             android:layout_centerHorizontal="true"
             android:text="DANH MỤC"
             android:textColor="#282E3A"

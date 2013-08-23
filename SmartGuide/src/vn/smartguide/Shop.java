@@ -34,6 +34,7 @@ public class Shop {
 	public Promotion mPromotion;
 	public String mTel;
 	public String mUpdateAt;
+	public String mCatName;
 	
 	public List<Item> mItemList = new ArrayList<Item>();
 	public List<ImageStr> mUserImageList = new ArrayList<ImageStr>();
@@ -102,7 +103,8 @@ public class Shop {
 							requirements.add(new Requirement(jo.getInt("id"), jo.getInt("required"), jo.getString("content")));
 						}
 						
-						mShop.mPromotion = new PromotionTypeOne(promotion.getJSONArray("array_required").getJSONObject(0).getInt("required"), sgp, sp, duration, requirements);
+						mShop.mPromotion = new PromotionTypeOne(cost, sgp, sp, duration, requirements);
+						
 						break;
 					case 2:
 						int money = promotion.getInt("money");
