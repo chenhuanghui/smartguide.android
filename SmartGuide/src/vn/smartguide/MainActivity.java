@@ -935,18 +935,9 @@ public class MainActivity extends FragmentActivity implements MainAcitivyListene
 		EditText edtSearch = (EditText) findViewById(R.id.edtSearch);
 		ImageButton btnSearch = (ImageButton) findViewById(R.id.btnSearch);
 		ImageButton btnToggleMenu = (ImageButton) findViewById(R.id.btnToggleMenu);
-		ImageButton btnToggleFilter = (ImageButton) findViewById(R.id.btnToggleMap);
+		ImageButton btnToggleFilter = (ImageButton) findViewById(R.id.btnToggleMap);		
 		
-		edtSearch.setOnFocusChangeListener(new OnFocusChangeListener() {
-
-			@Override
-			public void onFocusChange(View v, boolean hasFocus) {
-			
-				if (!hasFocus && mShowSearch)
-					OnSearchButtonClick();
-			}
-		});
-		
+		// Set search onscreen keyboard event
 		edtSearch.setOnEditorActionListener(new OnEditorActionListener() {
 
 			@Override
@@ -965,6 +956,7 @@ public class MainActivity extends FragmentActivity implements MainAcitivyListene
 		mShowSearch = !mShowSearch;
 		
 		if (mShowSearch) {
+			// Show search box
 			animator = ObjectAnimator.ofInt(edtSearch, "width", 0, width);
 			animator.addListener(new AnimatorListener() {
 				public int searchWidth;
@@ -983,6 +975,7 @@ public class MainActivity extends FragmentActivity implements MainAcitivyListene
 			animator2 = ObjectAnimator.ofFloat(btnSearch, "translationX", 
 					0, btnToggleFilter.getX() - btnToggleMenu.getX() - btnToggleMenu.getWidth());
 		} else {
+			// Hide search box
 			animator = ObjectAnimator.ofInt(edtSearch, "width", width, 0);
 			animator.addListener(new AnimatorListener() {
 				public int searchWidth;
@@ -1002,12 +995,20 @@ public class MainActivity extends FragmentActivity implements MainAcitivyListene
 			
 			animator2 = ObjectAnimator.ofFloat(btnSearch, "translationX", 
 					btnToggleFilter.getX() - btnToggleMenu.getX() - btnToggleMenu.getWidth(), 0);
+			
+			performSearch(edtSearch.getText().toString());
 		}
 		TimeInterpolator acce = new AccelerateDecelerateInterpolator();
 		animator.setInterpolator(acce);
 		animator2.setInterpolator(acce);
 		animator.start();
 		animator2.start();
+	}
+	
+	private void performSearch(String name) {
+		
+		goToPage(1);
+		getShopListFragment().search(name);
 	}
 	
 	public void hideSearchBox() {

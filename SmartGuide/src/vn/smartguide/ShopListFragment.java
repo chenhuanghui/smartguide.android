@@ -171,7 +171,33 @@ public class ShopListFragment extends Fragment {
 		
 	}
 
+	private boolean isSearch = false;
+	
+	public void search(String search){
+		isSearch = true;
+		
+		// display waiting progress
+		mLoadingCircle.setVisibility(View.VISIBLE);
+		mLoadingMiddle.setVisibility(View.VISIBLE);
+		mLoadingBackground.setVisibility(View.VISIBLE);
+		
+		List<ObjectAnimator> arrayListObjectAnimators = new ArrayList<ObjectAnimator>();
+		
+		arrayListObjectAnimators.add(mFadeInMiddle);
+		arrayListObjectAnimators.add(mFadeInCircle);
+		arrayListObjectAnimators.add(mRotateAnimation);
+		
+		ObjectAnimator[] objectAnimators = arrayListObjectAnimators.toArray(new ObjectAnimator[arrayListObjectAnimators.size()]);
+		AnimatorSet animSetXY = new AnimatorSet();
+		animSetXY.playTogether(objectAnimators);
+		animSetXY.start();
+		
+		// get search result
+		new SearchShopListTask(search).execute();
+	}
+	
 	public void update(String json){
+		isSearch = false;
 		mJson = json;
 		new UpdateTask().execute();
 	}
@@ -224,16 +250,10 @@ public class ShopListFragment extends Fragment {
 							animSetXY.addListener(new AnimatorListener() {
 								
 								@Override
-								public void onAnimationStart(Animator animation) {
-									// TODO Auto-generated method stub
-									
-								}
+								public void onAnimationStart(Animator animation) {}
 								
 								@Override
-								public void onAnimationRepeat(Animator animation) {
-									// TODO Auto-generated method stub
-									
-								}
+								public void onAnimationRepeat(Animator animation) {}
 								
 								@Override
 								public void onAnimationEnd(Animator animation) {
@@ -556,6 +576,75 @@ public class ShopListFragment extends Fragment {
 			image.setBackgroundResource(R.drawable.iconpin_education);
 			break;
 			
+		}
+	}
+	
+	public class SearchShopListTask extends AsyncTask<Void, Void, Boolean> {
+		private String json = null;
+		private String mName;
+		
+		public SearchShopListTask(String name) {
+			
+			mName = name;
+		}
+
+		@Override
+		protected Boolean doInBackground(Void... params) {
+			List<NameValuePair> pairs = new ArrayList<NameValuePair>();
+			pairs.add(new BasicNameValuePair("shop_name", mName));
+			pairs.add(new BasicNameValuePair("user_id", GlobalVariable.userID));
+			pairs.add(new BasicNameValuePair("user_lat", Float.toString(GlobalVariable.mLat)));
+			pairs.add(new BasicNameValuePair("user_lng", Float.toString(GlobalVariable.mLng)));
+			pairs.add(new BasicNameValuePair("page", Integer.toString(indexPage + 1)));
+			try {
+				json = NetworkManger.post(APILinkMaker.mSearch(), pairs);
+				mShopList = Shop.getListForUse(new JSONArray(json));
+			} catch (Exception e) {
+				return false;
+			}
+
+			return true;
+		}
+
+		@Override
+		protected void onPostExecute(Boolean k){
+
+			if (k){
+				List<ObjectAnimator> arrayListObjectAnimators = new ArrayList<ObjectAnimator>();
+				arrayListObjectAnimators.add(mFadeOutCircle);
+				arrayListObjectAnimators.add(mFadeOutMiddle);
+				
+				ObjectAnimator[] objectAnimators = arrayListObjectAnimators.toArray(new ObjectAnimator[arrayListObjectAnimators.size()]);
+				AnimatorSet animSetXY = new AnimatorSet();
+				animSetXY.playTogether(objectAnimators);
+				animSetXY.addListener(new AnimatorListener() {
+					
+					@Override
+					public void onAnimationStart(Animator animation) {}
+					
+					@Override
+					public void onAnimationRepeat(Animator animation) {}
+					
+					@Override
+					public void onAnimationEnd(Animator animation) {
+						// TODO Auto-generated method stub
+						mLoadingOptical.setVisibility(View.INVISIBLE);
+						mLoadingBackground.setVisibility(View.INVISIBLE);
+						updateShopList();
+					}
+					
+					@Override
+					public void onAnimationCancel(Animator animation) {
+						// TODO Auto-generated method stub
+						
+					}
+				});
+				animSetXY.start();
+			}
+		}
+
+		@Override
+		protected void onPreExecute(){
 		}
 	}
 }
