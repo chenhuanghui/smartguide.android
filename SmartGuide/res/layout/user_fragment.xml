@@ -91,7 +91,8 @@
                             android:id="@+id/avatarUserView"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
-                            android:background="@drawable/ava_default"/>
+                            android:background="@drawable/ava_default"
+                            android:scaleType="centerCrop" />
 
                         <ImageView
                             android:layout_width="match_parent"
