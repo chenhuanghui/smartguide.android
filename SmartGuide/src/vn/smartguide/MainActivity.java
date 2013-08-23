@@ -945,7 +945,7 @@ public class MainActivity extends FragmentActivity implements MainAcitivyListene
 			
 				OnSearchButtonClick();
 				
-				return false;
+				return true;
 			}
 		});
 		
