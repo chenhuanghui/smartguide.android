@@ -2,15 +2,12 @@ package vn.smartguide;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.zip.Inflater;
 
 import org.apache.http.NameValuePair;
 import org.apache.http.message.BasicNameValuePair;
 import org.json.JSONException;
 import org.json.JSONObject;
-
-import vn.smartguide.ShopListFragment.FetchMoreShopListTask;
-
-
 
 import android.animation.ObjectAnimator;
 import android.graphics.Bitmap;
@@ -33,7 +30,6 @@ import android.widget.AdapterView.OnItemClickListener;
 import android.widget.BaseAdapter;
 import android.widget.Button;
 import android.widget.ImageView;
-import android.widget.LinearLayout;
 import android.widget.ListView;
 import android.widget.TableLayout;
 import android.widget.TextView;
@@ -107,6 +103,9 @@ public class UserFragment extends Fragment{
 		mAdapter = new CollectionAdapter();
 		mAdapter.setData(new ArrayList<Shop>());
 		mLstCollection.setAdapter(mAdapter);
+		
+		ListView lstGift = (ListView) getView().findViewById(R.id.lstGift);
+		lstGift.setAdapter(new GiftAdapter());
 		
 		// invisible
 		View layoutMain = getView().findViewById(R.id.userLayoutMain);
@@ -354,6 +353,63 @@ public class UserFragment extends Fragment{
 
 		@Override
 		protected void onPreExecute(){
+		}
+	}
+	
+	public class GiftItem {
+		
+		public String name;
+	}
+	
+	public class GiftAdapter extends BaseAdapter {
+		
+		private LayoutInflater inflater;
+		private List<GiftItem> mGiftList = new ArrayList<GiftItem>(); 
+		
+		public GiftAdapter() {
+			
+			inflater = UserFragment.this.getActivity().getLayoutInflater();
+			
+			mGiftList.add(new GiftItem());
+			mGiftList.add(new GiftItem());
+			mGiftList.add(new GiftItem());
+			mGiftList.add(new GiftItem());
+			mGiftList.add(new GiftItem());
+		}
+		
+		public void setData(List<Shop> shops){
+			
+		}
+		
+		public void addData(List<Shop> shops){
+
+		}
+		
+		@Override
+		public int getCount() {
+			return mGiftList.size();
+		}
+
+		@Override
+		public Object getItem(int pos) {
+			return pos;
+		}
+
+		@Override
+		public long getItemId(int pos) {
+			return pos;
+		}
+
+		@Override
+		public View getView(final int position, View convertView, ViewGroup parent) {
+			
+			if (convertView == null) {
+				convertView = inflater.inflate(R.layout.gift_item, null);
+			}
+			
+			GiftItem gift = mGiftList.get(position);
+			
+			return convertView;
 		}
 	}
 }
