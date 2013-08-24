@@ -526,6 +526,8 @@ public class MainActivity extends FragmentActivity implements MainAcitivyListene
 						GlobalVariable.mLng = (float) loc.getLongitude();
 					}
 				});
+				
+				mMapFragment.getMap().setMyLocationEnabled(true);
 
 				new Handler().postDelayed(new Runnable() {
 					@Override
