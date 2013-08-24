@@ -286,8 +286,7 @@ public class ShopDetailFragment extends Fragment {
 			return true;
 		}
 
-		protected void onPostExecute(Boolean k) { 
-			
+		protected void onPostExecute(Boolean k) {
 			((DetailShopMenuFragment) mDetailFragmentList.get(1)).setData(mShop);
 	    	((DetailShopPhotoFragment) mDetailFragmentList.get(3)).setData(mShop);
 	    	((DetailCommentFragment) mDetailFragmentList.get(4)).setData(mShop);

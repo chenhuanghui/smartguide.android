@@ -826,7 +826,6 @@ public class MainActivity extends FragmentActivity implements MainAcitivyListene
 		});
 
 		reviewBtn = (RelativeLayout)menu.getMenu().findViewById(R.id.reviewSmartGuide);
-
 		reviewBtn.setOnClickListener(new View.OnClickListener() {	
 			@Override
 			public void onClick(View v) {

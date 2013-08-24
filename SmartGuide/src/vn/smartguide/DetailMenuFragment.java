@@ -390,36 +390,10 @@ public class DetailMenuFragment extends Fragment {
 		}
 
 		@Override
-		protected void onPostExecute(Boolean k){
-//			try{
-//				JSONObject object = new JSONObject(mJson);
-//				updateLikeStatus(object.getInt("like"), object.getInt("dislike"), Integer.valueOf(object.getString("like_status")));
-//			}catch(Exception ex){
-//				
-//			}
-		}
+		protected void onPostExecute(Boolean k){}
 
 		@Override
-		protected void onPreExecute(){
-//			switch(mLikeStatus){
-//			case 0:
-//				if (mActionOfLike == 1)
-//					updateLikeStatus(mNumLike + 1, mNumDislike - 1, 1);
-//				else
-//					updateLikeStatus(mNumLike - 1, mNumDislike + 1, 2);
-//				
-//				mLikeStatus = 2;
-//				break;
-//			case 2:
-//				if (mActionOfLike == 1)
-//					updateLikeStatus(mNumLike + 1, mNumDislike, 1);
-//				else
-//					updateLikeStatus(mNumLike, mNumDislike + 1, 2);
-//				mLikeStatus = 1;
-//				break;
-//			}
-		
-		}
+		protected void onPreExecute(){}
 	}
     
     public class ActionUnlike extends AsyncTask<Void, Void, Boolean> {
@@ -436,17 +410,9 @@ public class DetailMenuFragment extends Fragment {
 		}
 
 		@Override
-		protected void onPostExecute(Boolean k){
-//			try{
-//				JSONObject object = new JSONObject(mJson);
-//				updateLikeStatus(object.getInt("like"), object.getInt("dislike"), Integer.valueOf(object.getString("like_status")));
-//			}catch(Exception ex){
-//				
-//			}
-		}
+		protected void onPostExecute(Boolean k){}
 
 		@Override
-		protected void onPreExecute(){
-		}
+		protected void onPreExecute(){}
 	}
 }
