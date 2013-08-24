@@ -42,6 +42,7 @@ import android.widget.FrameLayout;
 import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
+import android.widget.ProgressBar;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.TextView.OnEditorActionListener;
@@ -110,7 +111,8 @@ public class MainActivity extends FragmentActivity implements MainAcitivyListene
 	private int mAwardId = -1;
 	private boolean isNeedUpdateSGP = false;
 	private boolean isCanScan = true;
-
+	private ProgressBar mProgressBar;
+	
 	// QR Code layout
 	private LinearLayout mMirror;
 	private RelativeLayout mMirrorFront;
@@ -922,7 +924,8 @@ public class MainActivity extends FragmentActivity implements MainAcitivyListene
 				OnSearchButtonClick();
 			}
 		});
-
+		//
+		mProgressBar = (ProgressBar)findViewById(R.id.progressBar1);
 		initToggleCamera();
 	}
 	
@@ -1499,6 +1502,7 @@ public class MainActivity extends FragmentActivity implements MainAcitivyListene
 		@Override
 		protected void onPostExecute(Boolean k){
 			int sgp = 0;
+			mProgressBar.setVisibility(View.INVISIBLE);
 			try{
 				int status = JSResult.getInt("status");
 				switch(status){
@@ -1565,7 +1569,9 @@ public class MainActivity extends FragmentActivity implements MainAcitivyListene
 		}
 
 		@Override
-		protected void onPreExecute(){}
+		protected void onPreExecute(){
+			mProgressBar.setVisibility(View.VISIBLE);
+		}
 	}
 
 	public class GetUserCollection extends AsyncTask<Void, Void, Boolean> {
@@ -1628,6 +1634,7 @@ public class MainActivity extends FragmentActivity implements MainAcitivyListene
 		@Override
 		protected void onPostExecute(Boolean k){
 			int sgp = 0;
+			mProgressBar.setVisibility(View.INVISIBLE);
 			try{
 				int status = JSResult.getInt("status");
 				switch(status){
@@ -1684,7 +1691,9 @@ public class MainActivity extends FragmentActivity implements MainAcitivyListene
 		}
 
 		@Override
-		protected void onPreExecute(){}
+		protected void onPreExecute(){
+			mProgressBar.setVisibility(View.VISIBLE);
+		}
 	}
 
 	public class UpdateTotalSGP extends AsyncTask<Void, Void, Boolean> {
