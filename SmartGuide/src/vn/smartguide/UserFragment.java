@@ -23,6 +23,7 @@ import android.os.Message;
 import android.support.v4.app.Fragment;
 import android.view.LayoutInflater;
 import android.view.View;
+import android.view.View.OnClickListener;
 import android.view.ViewGroup;
 import android.view.ViewGroup.LayoutParams;
 import android.view.animation.AccelerateDecelerateInterpolator;
@@ -30,11 +31,13 @@ import android.widget.AbsListView;
 import android.widget.AdapterView;
 import android.widget.AdapterView.OnItemClickListener;
 import android.widget.BaseAdapter;
+import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.ListView;
 import android.widget.TableLayout;
 import android.widget.TextView;
+import android.widget.ViewSwitcher;
 
 public class UserFragment extends Fragment{
 	private MainAcitivyListener mMainAcitivyListener = null;
@@ -49,8 +52,26 @@ public class UserFragment extends Fragment{
 	@Override
 	public View onCreateView(LayoutInflater inflater, ViewGroup container,
 			Bundle savedInstanceState) {
+		
+		View v = inflater.inflate(R.layout.user_fragment, container, false); 		
+
+		return v;
+	}
+	
+	@Override
+	public void onViewCreated(View view, Bundle savedInstanceState) {
 		// TODO Auto-generated method stub
-		return inflater.inflate(R.layout.user_fragment, container, false);
+		super.onViewCreated(view, savedInstanceState);
+		
+		((Button) (getView().findViewById(R.id.btnDoiDiemLayQua)))
+		.setOnClickListener(new OnClickListener() {
+
+			@Override
+			public void onClick(View v) {
+				
+				((ViewSwitcher) getView().findViewById(R.id.switcherUser)).showNext();
+			}
+		});
 	}
 	
 	public boolean updateSGP(int id, int sgp){

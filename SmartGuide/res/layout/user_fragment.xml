@@ -72,7 +72,7 @@
                             android:textStyle="bold" />
 
                         <Button
-                            android:id="@+id/btnYksdfhlasfh"
+                            android:id="@+id/btnDoiDiemLayQua"
                             android:layout_width="wrap_content"
                             android:layout_height="30dp"
                             android:layout_marginTop="8dp"
@@ -140,15 +140,30 @@
                             android:src="@drawable/arrow_down" />
                     </LinearLayout>
 
-                    <ListView
-                        android:id="@+id/lstCollection"
+                    <ViewSwitcher
+                        android:id="@+id/switcherUser"
                         android:layout_width="193dp"
                         android:layout_height="200dp"
                         android:layout_above="@+id/userlayout2"
-                        android:listSelector="@android:color/transparent"
                         android:layout_alignParentRight="true"
-                        android:layout_below="@+id/userlayout1" >
-                    </ListView>
+                        android:layout_below="@+id/userlayout1"
+                        android:inAnimation="@anim/push_right_in"
+                        android:outAnimation="@anim/push_right_out" >
+
+                        <ListView
+                            android:id="@+id/lstCollection"
+                            android:layout_width="match_parent"
+                            android:layout_height="match_parent"
+                            android:listSelector="@android:color/transparent" >
+                        </ListView>
+
+                        <Button
+                            android:id="@+id/button1"
+                            android:layout_width="match_parent"
+                            android:layout_height="match_parent"
+                            android:text="Button" />
+
+                    </ViewSwitcher>
                 </RelativeLayout>
             </RelativeLayout>
         </LinearLayout>
