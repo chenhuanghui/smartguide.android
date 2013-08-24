@@ -125,7 +125,6 @@ public class MainActivity extends FragmentActivity implements MainAcitivyListene
 	private RelativeLayout reviewBtn;
 	private RelativeLayout updateBtn;
 	private boolean isNeedReview = false;
-	private boolean mShowMenu = false;
 	
 	// Viewpager
 	private FragmentManager mFragmentManager;
@@ -138,7 +137,10 @@ public class MainActivity extends FragmentActivity implements MainAcitivyListene
 	private boolean mShowUser 					= false;
 	private boolean mIsShowFilter				= false;
 	private boolean mIsNeedGotoDetail 			= false;
-
+	private boolean mShowMenu 					= false;
+	private boolean mIsNeedToggleMap			= false;
+	private boolean mIsNeedToggleUser 			= false;
+	
 	// Fragment
 	private AdsFragment mAdsFragment;
 	private CategoryListFragment mCategoryListFragment;
@@ -180,14 +182,14 @@ public class MainActivity extends FragmentActivity implements MainAcitivyListene
 	private View btnQRTToogle;
 	private View textViewGetScore;
 
-	//
+	// Map control
 	private ImageButton mFilterBtn;
 	private ImageButton mMapButton;
 	private LatLngBounds mBound;
 	private boolean mIsMapAlive = false;
 	private boolean mNeedUpdateMap = false;
 
-	//
+	// Swipe para
 	static final int MIN_DISTANCE = 100;
 	private float downX, downY, upX, upY;
 
@@ -497,6 +499,7 @@ public class MainActivity extends FragmentActivity implements MainAcitivyListene
 		mViewPager.setCurrentItem(2, false);
 
 		animator.start();
+		mIsNeedToggleMap = true;
 	}
 
 	public void createDestroyMap() {
@@ -1321,7 +1324,23 @@ public class MainActivity extends FragmentActivity implements MainAcitivyListene
 			toggleShowContent();
 			return;
 		}
-
+		
+		if(mIsNeedToggleUser){
+			mIsNeedToggleUser = !mIsNeedToggleUser;
+			if (!mShowUser){
+				toogleUser();
+				return;
+			}
+		}
+		
+		if (mIsNeedToggleMap){
+			mIsNeedToggleMap = !mIsNeedToggleMap;
+			if (mShowContent){
+				toggleShowContent();
+				return;
+			}
+		}
+		
 		goPreviousPage();
 		return;
 	}
@@ -1335,6 +1354,7 @@ public class MainActivity extends FragmentActivity implements MainAcitivyListene
 
 	@Override
 	public void userToDetail() {
+		mIsNeedToggleUser = true;
 		toogleUser();
 		setNaviText(GlobalVariable.mCurrentShop.mName);
 		mViewPager.setCurrentItem(2, false);
