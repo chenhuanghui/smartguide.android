@@ -125,7 +125,8 @@ public class MainActivity extends FragmentActivity implements MainAcitivyListene
 	private RelativeLayout reviewBtn;
 	private RelativeLayout updateBtn;
 	private boolean isNeedReview = false;
-
+	private boolean mShowMenu = false;
+	
 	// Viewpager
 	private FragmentManager mFragmentManager;
 	private List<Fragment> mFragmentList;
@@ -139,7 +140,7 @@ public class MainActivity extends FragmentActivity implements MainAcitivyListene
 	private boolean mIsNeedGotoDetail 			= false;
 
 	// Fragment
-	private AdsFragment mAdsFragment = null;
+	private AdsFragment mAdsFragment;
 	private CategoryListFragment mCategoryListFragment;
 	private ShopListFragment mShopListFragment;
 	private ShopDetailFragment mShopDetailFragment;
@@ -317,8 +318,7 @@ public class MainActivity extends FragmentActivity implements MainAcitivyListene
 	public void goPreviousPage() {
 		int current_index = mViewPager.getCurrentItem();
 		if (current_index == 0){
-			stopAds();
-			finish();
+			confirmExit();
 			return;
 		}
 
@@ -522,7 +522,6 @@ public class MainActivity extends FragmentActivity implements MainAcitivyListene
 				});
 
 				new Handler().postDelayed(new Runnable() {
-
 					@Override
 					public void run() {
 						try {
@@ -540,11 +539,6 @@ public class MainActivity extends FragmentActivity implements MainAcitivyListene
 				getSupportFragmentManager().beginTransaction().remove(mMapFragment).commit();
 			}
 		}
-		//		mShowContent;
-		//		mShowCamera;
-		//		mShowUser;
-		//		mIsShowFilter;
-
 	}
 
 	public void initToggleCamera(){
@@ -938,18 +932,14 @@ public class MainActivity extends FragmentActivity implements MainAcitivyListene
 		
 		// Set search onscreen keyboard event
 		edtSearch.setOnEditorActionListener(new OnEditorActionListener() {
-
 			@Override
 			public boolean onEditorAction(TextView v, int actionId, KeyEvent event) {
-			
 				OnSearchButtonClick();
-				
 				return true;
 			}
 		});
 		
-		int width = (int) (btnToggleFilter.getX() - btnToggleMenu.getX()
-				- btnToggleMenu.getWidth() + btnToggleFilter.getWidth());
+		int width = (int) (btnToggleFilter.getX() - btnToggleMenu.getX() - btnToggleMenu.getWidth() + btnToggleFilter.getWidth());
 		ObjectAnimator animator = null;
 		ObjectAnimator animator2 = null;
 		mShowSearch = !mShowSearch;
@@ -1089,7 +1079,6 @@ public class MainActivity extends FragmentActivity implements MainAcitivyListene
 	private UiLifecycleHelper 	mUiHelper;
 
 	private void makeMeRequest(final Session session) {
-
 		Request request = Request.newMeRequest(session, new Request.GraphUserCallback() {
 			public void onCompleted(GraphUser user, Response response) {
 				if (session == Session.getActiveSession()) {
@@ -1185,6 +1174,7 @@ public class MainActivity extends FragmentActivity implements MainAcitivyListene
 		token.put("cityID", GlobalVariable.mCityID); // default for first time = 1
 
 		GlobalVariable.smartGuideDB.insertVersion(token);
+		
 		//new UpdateCityList().execute();
 		mCategoryListFragment.firstTimeUpdate();
 		mAdsFragment.startDownImage();
@@ -1205,6 +1195,7 @@ public class MainActivity extends FragmentActivity implements MainAcitivyListene
 	}
 
 	public void toggleSideMenu() {
+		mShowMenu = !mShowMenu;
 		menu.toggle();
 	}
 
@@ -1305,6 +1296,11 @@ public class MainActivity extends FragmentActivity implements MainAcitivyListene
 
 	@Override
 	public void onBackPressed() {	
+		if (mShowMenu){
+			toggleSideMenu();
+			return;
+		}
+		
 		if (mShowCamera){
 			toggleCamera();
 			return;
@@ -1315,11 +1311,11 @@ public class MainActivity extends FragmentActivity implements MainAcitivyListene
 			return;
 		}
 
-//		if (mIsShowFilter){
-//			mIsShowFilter = !mIsShowFilter;
-//			mFiterFragment.toggle();
-//			return;
-//		}
+		if (mIsShowFilter){
+			mIsShowFilter = !mIsShowFilter;
+			mFiterFragment.toggle();
+			return;
+		}
 
 		if(!mShowContent){
 			toggleShowContent();
@@ -1741,13 +1737,9 @@ public class MainActivity extends FragmentActivity implements MainAcitivyListene
 		return false;
 	}
 
-	public void onRightToLeftSwipe(){
+	public void onRightToLeftSwipe(){}
 
-	}
-
-	public void onLeftToRightSwipe(){
-
-	}
+	public void onLeftToRightSwipe(){}
 
 	public void onTopToBottomSwipe(){
 		if (mShowCamera)
@@ -1755,29 +1747,6 @@ public class MainActivity extends FragmentActivity implements MainAcitivyListene
 	}
 
 	public void onBottomToTopSwipe(){
-//		if (!mShowCamera)
-//			toggleCamera();
-	}
-
-	public void loginFaceToReview(){
-		AlertDialog.Builder builder = new AlertDialog.Builder(this);
-
-		builder.setTitle("Thông báo");
-		builder.setMessage("Bạn cần đăng nhập facebook để đánh giá SmartGuide");
-		builder.setCancelable(true);
-
-		builder.setPositiveButton("Đăng nhập", new DialogInterface.OnClickListener() {
-			public void onClick(DialogInterface dialog, int which) {
-
-			}
-		});
-
-		builder.setNegativeButton("Thoát", new DialogInterface.OnClickListener() {
-			public void onClick(DialogInterface dialog, int which) {
-			}
-		});
-
-		builder.show();
 	}
 
 	public class PostReview extends AsyncTask<Void, Void, Boolean> {
@@ -1844,10 +1813,12 @@ public class MainActivity extends FragmentActivity implements MainAcitivyListene
 	
 	public class PostContact extends AsyncTask<Void, Void, Boolean> {
 		String mJson;
+		
 		public PostContact(String mjson){
 			mJson = mjson;
 			
 		}
+		
 		@Override
 		protected Boolean doInBackground(Void... params) {
 			List<NameValuePair> pairs = new ArrayList<NameValuePair>();
@@ -1865,6 +1836,26 @@ public class MainActivity extends FragmentActivity implements MainAcitivyListene
 
 		@Override
 		protected void onPreExecute(){}
+	}
+	
+	public void confirmExit(){
+		AlertDialog.Builder builder = new AlertDialog.Builder(this);
+		builder.setMessage("Bạn muốn đóng ứng dụng");
+		builder.setCancelable(true);
+
+		builder.setPositiveButton("Có", new DialogInterface.OnClickListener() {
+			public void onClick(DialogInterface dialog, int which) {
+				stopAds();
+				finish();
+			}
+		});
+
+		builder.setNegativeButton("Không", new DialogInterface.OnClickListener() {
+			public void onClick(DialogInterface dialog, int which) {
+			}
+		});
+
+		builder.show();
 	}
 }
 
