@@ -29,6 +29,7 @@ import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentPagerAdapter;
 import android.support.v4.app.FragmentTransaction;
 import android.support.v4.view.ViewPager;
+import android.view.Gravity;
 import android.view.KeyEvent;
 import android.view.MotionEvent;
 import android.view.View;
@@ -1875,7 +1876,9 @@ public class MainActivity extends FragmentActivity implements MainAcitivyListene
 			}
 		});
 
-		builder.show();
+		AlertDialog dialog = builder.show();
+		TextView messageView = (TextView)dialog.findViewById(android.R.id.message);
+		messageView.setGravity(Gravity.CENTER);
 	}
 }
 

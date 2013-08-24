@@ -32,6 +32,7 @@ import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.view.Display;
+import android.view.Gravity;
 import android.view.Menu;
 import android.view.View;
 import android.view.animation.AccelerateDecelerateInterpolator;
@@ -594,33 +595,28 @@ public class WellcomeActivity extends FragmentActivity{
 		
 		AlertDialog.Builder builder = new AlertDialog.Builder(this);
 		
-		builder.setMessage("Số điện thoại của bạn: " +  phoneNumber);
+		builder.setMessage(phoneNumber +"\nMã kích hoạt SmartGuide sẽ được gửi đến số điện thoại trên" +
+				"qua tin nhắn. Chọn Đồng ý để tiếp tục hoặc hủy để thay đổi số điện thoại");
 		builder.setCancelable(true);
 		
-		builder.setPositiveButton("Nhập lại", new DialogInterface.OnClickListener() {
+		builder.setPositiveButton("Hủy", new DialogInterface.OnClickListener() {
 			public void onClick(DialogInterface dialog, int which) {
 				mStatusText.setText("Nhập số điện thoại...");
 				mNumberField.setText("");
 			}
 		});
 		
-		builder.setNegativeButton("Gởi", new DialogInterface.OnClickListener() {
+		builder.setNegativeButton("Đồng ý", new DialogInterface.OnClickListener() {
 			public void onClick(DialogInterface dialog, int which) {
-				AlertDialog.Builder builder = new AlertDialog.Builder(mActivity);
-				builder.setMessage("Vui lòng chờ mã xác nhận qua tin nhắn");
-				
-				builder.setPositiveButton("OK", new DialogInterface.OnClickListener() {
-					public void onClick(DialogInterface dialog, int which) {
-						isConfirm = true;
-						mStatusText.setText("Chờ và nhập mã xác nhận...");
-						mNumberField.setText("");
-						new GetActivateCode().execute();
-					}
-				});
-				builder.show();
+				isConfirm = true;
+				mStatusText.setText("Chờ và nhập mã xác nhận...");
+				mNumberField.setText("");
+				new GetActivateCode().execute();
 			}
 		});
 		
-		builder.show();
+		AlertDialog dialog = builder.show();
+		TextView messageView = (TextView)dialog.findViewById(android.R.id.message);
+		messageView.setGravity(Gravity.CENTER);
 	}
 }
