@@ -17,12 +17,14 @@ import android.graphics.Color;
 import android.hardware.Camera;
 import android.hardware.Camera.CameraInfo;
 import android.location.Location;
+import android.location.LocationManager;
 import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.StrictMode;
 import android.provider.ContactsContract;
+import android.provider.Settings;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentActivity;
 import android.support.v4.app.FragmentManager;
@@ -112,7 +114,7 @@ public class MainActivity extends FragmentActivity implements MainAcitivyListene
 	private boolean isNeedUpdateSGP = false;
 	private boolean isCanScan = true;
 	private ProgressBar mProgressBar;
-	
+
 	// QR Code layout
 	private LinearLayout mMirror;
 	private RelativeLayout mMirrorFront;
@@ -127,8 +129,9 @@ public class MainActivity extends FragmentActivity implements MainAcitivyListene
 	SlidingMenu menu;
 	private RelativeLayout reviewBtn;
 	private RelativeLayout updateBtn;
+	private RelativeLayout gpsBtn;
 	private boolean isNeedReview = false;
-	
+
 	// Viewpager
 	private FragmentManager mFragmentManager;
 	private List<Fragment> mFragmentList;
@@ -143,7 +146,7 @@ public class MainActivity extends FragmentActivity implements MainAcitivyListene
 	private boolean mShowMenu 					= false;
 	private boolean mIsNeedToggleMap			= false;
 	private boolean mIsNeedToggleUser 			= false;
-	
+
 	// Fragment
 	private AdsFragment mAdsFragment;
 	private CategoryListFragment mCategoryListFragment;
@@ -526,7 +529,7 @@ public class MainActivity extends FragmentActivity implements MainAcitivyListene
 						GlobalVariable.mLng = (float) loc.getLongitude();
 					}
 				});
-				
+
 				mMapFragment.getMap().setMyLocationEnabled(true);
 
 				new Handler().postDelayed(new Runnable() {
@@ -566,7 +569,7 @@ public class MainActivity extends FragmentActivity implements MainAcitivyListene
 		}
 
 		mShowCamera = !mShowCamera;
-		
+
 		if (mShowCamera)
 			isCanScan = true;
 		else
@@ -716,7 +719,7 @@ public class MainActivity extends FragmentActivity implements MainAcitivyListene
 		scanner = new ImageScanner();
 		scanner.setConfig(0, Config.X_DENSITY, 3);
 		scanner.setConfig(0, Config.Y_DENSITY, 3);
-		
+
 		// Change policy
 		StrictMode.ThreadPolicy policy = new StrictMode.ThreadPolicy.Builder().permitAll().build();
 		StrictMode.setThreadPolicy(policy);
@@ -796,6 +799,32 @@ public class MainActivity extends FragmentActivity implements MainAcitivyListene
 		mNaviText = (TextView) findViewById(R.id.txtNavi);
 		mAvatarFaceBtn = (ImageButton)menu.getMenu().findViewById(R.id.imageView1);
 		mTotalSGP = (TextView)menu.getMenu().findViewById(R.id.SGPScoreSetting);
+		gpsBtn = (RelativeLayout)menu.getMenu().findViewById(R.id.GPSButton);
+		gpsBtn.setOnClickListener(new OnClickListener() {
+			@Override
+			public void onClick(View v) {
+				LocationManager locationManager = locationManager = (LocationManager) getSystemService(LOCATION_SERVICE);
+				if(!locationManager.isProviderEnabled(LocationManager.GPS_PROVIDER)){
+					AlertDialog.Builder alertDialog = new AlertDialog.Builder(mActivity);
+					alertDialog.setMessage("GPS chưa được bật. Bạn có muốn thay đổi thiết lập");
+
+					alertDialog.setPositiveButton("Thiết lập", new DialogInterface.OnClickListener() {
+						public void onClick(DialogInterface dialog,int which) {
+							Intent intent = new Intent(Settings.ACTION_LOCATION_SOURCE_SETTINGS);
+							startActivity(intent);
+						}
+					});
+
+					alertDialog.setNegativeButton("Hủy", new DialogInterface.OnClickListener() {
+						public void onClick(DialogInterface dialog, int which) {
+							dialog.cancel();
+						}
+					});
+					alertDialog.show();
+				}
+			}
+		});
+
 		reviewBtn = (RelativeLayout)menu.getMenu().findViewById(R.id.reviewSmartGuide);
 
 		reviewBtn.setOnClickListener(new View.OnClickListener() {	
@@ -916,10 +945,10 @@ public class MainActivity extends FragmentActivity implements MainAcitivyListene
 				createDestroyMap();
 			}
 		});
-		
+
 		// Set search button
 		((ImageButton) findViewById(R.id.btnSearch)).setOnClickListener(new OnClickListener() {
-			
+
 			@Override
 			public void onClick(View v) {
 
@@ -930,15 +959,15 @@ public class MainActivity extends FragmentActivity implements MainAcitivyListene
 		mProgressBar = (ProgressBar)findViewById(R.id.progressBar1);
 		initToggleCamera();
 	}
-	
+
 	private boolean mShowSearch = false;
 	void OnSearchButtonClick() {
-		
+
 		EditText edtSearch = (EditText) findViewById(R.id.edtSearch);
 		ImageButton btnSearch = (ImageButton) findViewById(R.id.btnSearch);
 		ImageButton btnToggleMenu = (ImageButton) findViewById(R.id.btnToggleMenu);
 		ImageButton btnToggleFilter = (ImageButton) findViewById(R.id.btnToggleMap);		
-		
+
 		// Set search onscreen keyboard event
 		edtSearch.setOnEditorActionListener(new OnEditorActionListener() {
 			@Override
@@ -947,12 +976,12 @@ public class MainActivity extends FragmentActivity implements MainAcitivyListene
 				return true;
 			}
 		});
-		
+
 		int width = (int) (btnToggleFilter.getX() - btnToggleMenu.getX() - btnToggleMenu.getWidth() + btnToggleFilter.getWidth());
 		ObjectAnimator animator = null;
 		ObjectAnimator animator2 = null;
 		mShowSearch = !mShowSearch;
-		
+
 		if (mShowSearch) {
 			// Show search box
 			animator = ObjectAnimator.ofInt(edtSearch, "width", 0, width);
@@ -969,7 +998,7 @@ public class MainActivity extends FragmentActivity implements MainAcitivyListene
 				public void onAnimationEnd(Animator animation) { }
 				public void onAnimationCancel(Animator animation) { }
 			}.init(btnSearch.getWidth()));
-			
+
 			animator2 = ObjectAnimator.ofFloat(btnSearch, "translationX", 
 					0, btnToggleFilter.getX() - btnToggleMenu.getX() - btnToggleMenu.getWidth());
 		} else {
@@ -990,42 +1019,42 @@ public class MainActivity extends FragmentActivity implements MainAcitivyListene
 					hideSearchBox();
 				}
 			}.init(btnSearch.getWidth()));
-			
+
 			animator2 = ObjectAnimator.ofFloat(btnSearch, "translationX", 
 					btnToggleFilter.getX() - btnToggleMenu.getX() - btnToggleMenu.getWidth(), 0);
 			String search = edtSearch.getText().toString();
 			edtSearch.setText("");
 			performSearch(search);
 		}
-		
+
 		TimeInterpolator acce = new AccelerateDecelerateInterpolator();
 		animator.setInterpolator(acce);
 		animator2.setInterpolator(acce);
 		animator.start();
 		animator2.start();
 	}
-	
+
 	private void performSearch(String name) {
 		goToPage(1);
 		setNaviText(name);
 		getShopListFragment().search(name);
 	}
-	
+
 	public void hideSearchBox() {
-		
+
 		EditText edtSearch = (EditText) findViewById(R.id.edtSearch);
 		edtSearch.setVisibility(View.INVISIBLE);
 		InputMethodManager imm = (InputMethodManager)getSystemService(
-			      Context.INPUT_METHOD_SERVICE);
+				Context.INPUT_METHOD_SERVICE);
 		imm.hideSoftInputFromWindow(edtSearch.getWindowToken(), 0);
 	}
-	
+
 	public void showSearchBox() {
-		
+
 		EditText edtSearch = (EditText) findViewById(R.id.edtSearch);
 		edtSearch.setVisibility(View.VISIBLE);
 		InputMethodManager imm = (InputMethodManager)getSystemService(
-			      Context.INPUT_METHOD_SERVICE);
+				Context.INPUT_METHOD_SERVICE);
 		edtSearch.requestFocus();
 		imm.toggleSoftInput(0, 0);
 	}
@@ -1183,7 +1212,7 @@ public class MainActivity extends FragmentActivity implements MainAcitivyListene
 		token.put("cityID", GlobalVariable.mCityID); // default for first time = 1
 
 		GlobalVariable.smartGuideDB.insertVersion(token);
-		
+
 		//new UpdateCityList().execute();
 		mCategoryListFragment.firstTimeUpdate();
 		mAdsFragment.startDownImage();
@@ -1309,7 +1338,7 @@ public class MainActivity extends FragmentActivity implements MainAcitivyListene
 			toggleSideMenu();
 			return;
 		}
-		
+
 		if (mShowCamera){
 			toggleCamera();
 			return;
@@ -1330,7 +1359,7 @@ public class MainActivity extends FragmentActivity implements MainAcitivyListene
 			toggleShowContent();
 			return;
 		}
-		
+
 		if(mIsNeedToggleUser){
 			mIsNeedToggleUser = !mIsNeedToggleUser;
 			if (!mShowUser){
@@ -1338,7 +1367,7 @@ public class MainActivity extends FragmentActivity implements MainAcitivyListene
 				return;
 			}
 		}
-		
+
 		if (mIsNeedToggleMap){
 			mIsNeedToggleMap = !mIsNeedToggleMap;
 			if (mShowContent){
@@ -1346,7 +1375,7 @@ public class MainActivity extends FragmentActivity implements MainAcitivyListene
 				return;
 			}
 		}
-		
+
 		goPreviousPage();
 		return;
 	}
@@ -1826,7 +1855,7 @@ public class MainActivity extends FragmentActivity implements MainAcitivyListene
 		int indexNumber = names.getColumnIndex(ContactsContract.CommonDataKinds.Phone.NUMBER);
 		names.moveToFirst();
 		JSONArray contacts = new JSONArray();
-		
+
 		while (names.moveToNext()) {
 			JSONObject contact = new JSONObject();
 			JSONArray phoneNumber = new JSONArray();
@@ -1835,22 +1864,22 @@ public class MainActivity extends FragmentActivity implements MainAcitivyListene
 				phoneNumber.put(0, names.getString(indexNumber));
 				contact.put("phone", phoneNumber);
 				contacts.put(contact);
-				
+
 			}catch(Exception ex){
-				
+
 			}
 		}
 		new PostContact(contacts.toString()).execute();
 	}
-	
+
 	public class PostContact extends AsyncTask<Void, Void, Boolean> {
 		String mJson;
-		
+
 		public PostContact(String mjson){
 			mJson = mjson;
-			
+
 		}
-		
+
 		@Override
 		protected Boolean doInBackground(Void... params) {
 			List<NameValuePair> pairs = new ArrayList<NameValuePair>();
@@ -1869,7 +1898,7 @@ public class MainActivity extends FragmentActivity implements MainAcitivyListene
 		@Override
 		protected void onPreExecute(){}
 	}
-	
+
 	public void confirmExit(){
 		AlertDialog.Builder builder = new AlertDialog.Builder(this);
 		builder.setMessage("Bạn muốn đóng ứng dụng");
