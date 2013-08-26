@@ -6,10 +6,15 @@ import java.util.zip.Inflater;
 
 import org.apache.http.NameValuePair;
 import org.apache.http.message.BasicNameValuePair;
+import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
+import org.w3c.dom.Text;
 
 import android.animation.ObjectAnimator;
+import android.app.AlertDialog;
+import android.app.AlertDialog.Builder;
+import android.content.DialogInterface;
 import android.graphics.Bitmap;
 import android.graphics.drawable.BitmapDrawable;
 import android.graphics.drawable.Drawable;
@@ -18,6 +23,7 @@ import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
 import android.support.v4.app.Fragment;
+import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.View.OnClickListener;
@@ -44,6 +50,8 @@ public class UserFragment extends Fragment{
 	private ListView mLstCollection;
 	private int indexPage = 0;
 	private boolean isMore = true;
+	
+	private GiftAdapter mGiftAdapter;
 	
 	@Override
 	public View onCreateView(LayoutInflater inflater, ViewGroup container,
@@ -105,7 +113,8 @@ public class UserFragment extends Fragment{
 		mLstCollection.setAdapter(mAdapter);
 		
 		ListView lstGift = (ListView) getView().findViewById(R.id.lstGift);
-		lstGift.setAdapter(new GiftAdapter());
+		mGiftAdapter = new GiftAdapter();
+		lstGift.setAdapter(mGiftAdapter);
 		
 		// invisible
 		View layoutMain = getView().findViewById(R.id.userLayoutMain);
@@ -356,8 +365,17 @@ public class UserFragment extends Fragment{
 		}
 	}
 	
-	public class GiftItem {
-		public String name;
+	public void updateRewardList(List<GiftItem> giftList) {
+		
+		mGiftAdapter.setData(giftList);
+	}
+	
+	public static class GiftItem {
+		
+		public int id;
+		public int score;
+		public String content;
+		public int status;
 	}
 	
 	public class GiftAdapter extends BaseAdapter {
@@ -368,20 +386,12 @@ public class UserFragment extends Fragment{
 		public GiftAdapter() {
 			
 			inflater = UserFragment.this.getActivity().getLayoutInflater();
-			
-			mGiftList.add(new GiftItem());
-			mGiftList.add(new GiftItem());
-			mGiftList.add(new GiftItem());
-			mGiftList.add(new GiftItem());
-			mGiftList.add(new GiftItem());
 		}
 		
-		public void setData(List<Shop> shops){
+		public void setData(List<GiftItem> giftList){
 			
-		}
-		
-		public void addData(List<Shop> shops){
-
+			mGiftList = giftList;
+			notifyDataSetChanged();
 		}
 		
 		@Override
@@ -404,11 +414,106 @@ public class UserFragment extends Fragment{
 			
 			if (convertView == null) {
 				convertView = inflater.inflate(R.layout.gift_item, null);
+				
 			}
 			
 			GiftItem gift = mGiftList.get(position);
 			
+			TextView txtName = (TextView) convertView.findViewById(R.id.txtGiftName);
+			TextView txtPoint = (TextView) convertView.findViewById(R.id.txtPoint);
+			
+			txtName.setText("■ " + gift.content);
+			txtPoint.setText("" + gift.score + " P");
+			Button btnDoiQua = (Button) convertView.findViewById(R.id.btnDoiQua);
+			btnDoiQua.setTag(position);
+			if (gift.status == 0)
+				btnDoiQua.setAlpha(1f);
+			else
+				btnDoiQua.setAlpha(0.5f);
+			btnDoiQua.setOnClickListener(new OnClickListener() {
+				
+				@Override
+				public void onClick(View v) {
+					
+					int index = (Integer) v.getTag();
+					onDoiQuaClick(index);
+				}
+			});
+			
 			return convertView;
+		}
+		
+		public void onDoiQuaClick(int pos) {
+			
+			new GetRewardTask(mGiftList.get(pos).id).execute();
+		}
+	}
+		
+	public class GetRewardTask extends AsyncTask<Void, Void, Boolean> {
+		
+		private String result;
+		private int rewardId;
+		
+		public GetRewardTask(int id) {
+			
+			rewardId = id;
+		}
+		
+		@Override
+		protected Boolean doInBackground(Void... params) {
+			List<NameValuePair> pairs = new ArrayList<NameValuePair>();
+			pairs.add(new BasicNameValuePair("reward_id", "" + rewardId));
+			pairs.add(new BasicNameValuePair("user_id", GlobalVariable.userID));
+			
+			result = NetworkManger.post(APILinkMaker.mGetReward(), pairs);
+
+			return true;
+		}
+
+		@Override
+		protected void onPostExecute(Boolean k){
+			JSONObject obj;
+			try {
+				obj = new JSONObject(result);
+				
+				int sta = obj.getInt("status");
+				switch (sta) {
+				
+				case 2: {
+					// Show success dialog 
+					Builder builder = new Builder(UserFragment.this.getActivity());
+					builder.setMessage("Chúc mừng bạn đã nhận được\n"
+							+ obj.getString("reward") 
+							+ "\nChúng tôi sẽ liên lạc với bạn trong thời gian sớm nhất");
+					builder.setCancelable(true);
+					builder.setPositiveButton("OK", null);
+
+					AlertDialog dialog = builder.show();
+					TextView messageView = (TextView)dialog.findViewById(android.R.id.message);
+					messageView.setGravity(Gravity.CENTER);
+					break;
+				}
+				
+				default: {
+					// Show fail dialog 
+					Builder builder = new Builder(UserFragment.this.getActivity());
+					builder.setMessage(obj.getString("content"));
+					builder.setCancelable(true);
+					builder.setPositiveButton("OK", null);
+					
+					AlertDialog dialog = builder.show();
+					TextView messageView = (TextView)dialog.findViewById(android.R.id.message);
+					messageView.setGravity(Gravity.CENTER);
+					break;
+				}
+				}
+			} catch (JSONException e) {
+				e.printStackTrace();
+			}
+		}
+
+		@Override
+		protected void onPreExecute(){
 		}
 	}
 }

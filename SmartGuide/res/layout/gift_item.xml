@@ -86,16 +86,16 @@
                 android:textStyle="bold" />
 
             <TextView
-                android:id="@+id/textView4"
-                android:layout_width="wrap_content"
+                android:id="@+id/txtPoint"
+                android:layout_width="40dp"
                 android:layout_height="wrap_content"
-                android:text="100 point"
+                android:text="100 P"
                 android:textColor="#94A5C3"
                 android:textSize="9sp" />
         </LinearLayout>
 
         <Button
-            android:id="@+id/button1"
+            android:id="@+id/btnDoiQua"
             android:layout_width="43dp"
             android:layout_height="20dp"
             android:layout_marginLeft="4dp"

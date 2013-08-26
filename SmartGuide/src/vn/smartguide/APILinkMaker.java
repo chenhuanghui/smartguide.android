@@ -27,7 +27,12 @@ public final class APILinkMaker {
 	private static String mReview				= 	"feedback";
 	private static String mContact				=	"contact/import";
 	private static String mSearch				=	"shop/search";
+<<<<<<< HEAD
 	private static String mFeedback				=	"get_feedback";
+=======
+	private static String mGetRewardList		=	"reward/list";
+	private static String mGetReward			=	"reward/receive";
+>>>>>>> Doi diem lay qua (logic)
 	
 	public static String ShopListInCategory(){
 		return mHostName + mShopListInCategory;
@@ -127,5 +132,13 @@ public final class APILinkMaker {
 	
 	public static String mGetFeedback(){
 		return mHostName + mFeedback;
+	}
+
+	public static String mGetRewardList(){
+		return mHostName + mGetRewardList;
+	}
+	
+	public static String mGetReward(){
+		return mHostName + mGetReward;
 	}
 }

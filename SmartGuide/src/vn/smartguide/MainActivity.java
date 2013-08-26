@@ -85,6 +85,8 @@ import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import vn.smartguide.UserFragment.GiftItem;
+
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
@@ -1366,7 +1368,8 @@ public class MainActivity extends FragmentActivity implements MainAcitivyListene
 		getAndUploadContact();
 		// Update SGP at Setting view
 		new GetUserCollection().execute();
-		
+		new GetRewardList().execute();
+
 		// Update name and avatar facebook if possible
 		ImageView avatar = (ImageView)menu.getMenu().findViewById(R.id.userAvatarSetting);
 		TextView name = (TextView)menu.getMenu().findViewById(R.id.textView);
@@ -1809,6 +1812,46 @@ public class MainActivity extends FragmentActivity implements MainAcitivyListene
 
 				List<Shop> mShops = Shop.getListForUse(obj.getJSONArray("collection"));
 				mUserFragment.update(mShops);
+			} catch (JSONException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+		}
+
+		@Override
+		protected void onPreExecute(){}
+	}
+	
+	public class GetRewardList extends AsyncTask<Void, Void, Boolean> {
+		String result = null;
+
+		@Override
+		protected Boolean doInBackground(Void... params) {
+			List<NameValuePair> pairs = new ArrayList<NameValuePair>();
+
+			result = NetworkManger.post(APILinkMaker.mGetRewardList(), pairs);
+			return true;
+		}
+
+		@Override
+		protected void onPostExecute(Boolean k) {
+			try {
+				JSONArray jGiftArr = new JSONArray(result);
+				List<GiftItem> giftList = new ArrayList<GiftItem>();
+				
+				// Parse json to get reward list
+				for (int i = 0; i < jGiftArr.length(); i++) {
+					JSONObject jGift = jGiftArr.getJSONObject(i);
+					GiftItem item 	= new GiftItem();
+					item.content 	= jGift.getString("content");
+					item.id 		= jGift.getInt("id");
+					item.score 		= jGift.getInt("score");
+					item.status 	= jGift.getInt("status");
+					giftList.add(item);
+				}
+				
+				mUserFragment.updateRewardList(giftList);
+				
 			} catch (JSONException e) {
 				// TODO Auto-generated catch block
 				e.printStackTrace();
