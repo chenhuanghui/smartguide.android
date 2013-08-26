@@ -4,6 +4,9 @@ import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import com.google.android.gms.maps.model.Polyline;
+import com.google.android.gms.maps.model.PolylineOptions;
+
 import java.util.ArrayList;
 import java.util.List;
 
@@ -40,6 +43,8 @@ public class Shop {
 	public List<ImageStr> mUserImageList = new ArrayList<ImageStr>();
 	public List<ImageStr> mShopImageList = new ArrayList<ImageStr>();
 	public List<Comment> mCommentList = new ArrayList<Comment>();
+	
+	public Polyline polyline;
 
 	public Shop() {
 		

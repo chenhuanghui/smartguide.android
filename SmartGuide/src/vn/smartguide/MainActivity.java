@@ -22,6 +22,7 @@ import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.os.Handler;
+import android.os.Message;
 import android.os.StrictMode;
 import android.provider.ContactsContract;
 import android.provider.Settings;
@@ -69,6 +70,7 @@ import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.LatLngBounds;
 import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.MarkerOptions;
+import com.google.android.gms.maps.model.PolylineOptions;
 import com.jeremyfeinstein.slidingmenu.lib.SlidingMenu;
 
 import net.sourceforge.zbar.Config;
@@ -87,6 +89,7 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
+import java.util.Locale;
 
 public class MainActivity extends FragmentActivity implements MainAcitivyListener, OnTouchListener  {
 
@@ -393,13 +396,20 @@ public class MainActivity extends FragmentActivity implements MainAcitivyListene
 		animator.setInterpolator(new AccelerateDecelerateInterpolator());
 		animator.start();
 	}
+	
+	///////////////////////////////////////////////////////////////////////////
+	// Map stuff
+	///////////////////////////////////////////////////////////////////////////
+	
+	private Shop mMapSelectedShop;
 
 	public void updateMap() {
 		mNeedUpdateMap = true;
 	}
 
 	public void updateMapAsync() {
-		GoogleMap map = mMapFragment.getMap();
+		final GoogleMap map = mMapFragment.getMap();
+		map.clear();
 		map.setInfoWindowAdapter(new InfoWindowAdapter() {
 
 			@Override
@@ -443,12 +453,17 @@ public class MainActivity extends FragmentActivity implements MainAcitivyListene
 
 				txtShopNae.setText(s.mName);
 				txtAddress.setText(s.mAddress);
+				
+				// Get diretion
+				mMapSelectedShop = s;
+				if (s.polyline == null)
+					RequestDirection(s, map);
+				else
+					ShowDirection(map);
 
 				return view;
 			}
 		});
-
-		map.clear();
 
 		if (getShopListFragment().mShopList == null)
 			return;
@@ -551,6 +566,151 @@ public class MainActivity extends FragmentActivity implements MainAcitivyListene
 			}
 		}
 	}
+	
+	private void RequestDirection(Shop nearby, final GoogleMap googleMap) {
+		double myLat = googleMap.getMyLocation().getLatitude();
+		double myLon = googleMap.getMyLocation().getLongitude();
+		double dstLat = nearby.mLat;
+		double dstLon = nearby.mLng;
+		Handler handler = new Handler() {
+			
+			private Shop nearby;
+			
+			public Handler init(Shop nearby) {
+				this.nearby = nearby;
+				return this;
+			}
+			
+			@Override
+			public void handleMessage(Message message) {
+				switch (message.what) {
+				case HttpConnection.DID_START: {
+					break;
+				}
+				case HttpConnection.DID_SUCCEED: {
+					String response = (String) message.obj;
+					try {
+						JSONObject rootJson = new JSONObject(response);
+						HandleDirectionResponse(rootJson, nearby, googleMap);
+					} catch (Exception e) {
+						e.printStackTrace();
+					}
+					break;
+				}
+				case HttpConnection.DID_ERROR: {
+					Exception e = (Exception) message.obj;
+					e.printStackTrace();
+					break;
+				}
+				}
+			}
+		}.init(nearby);
+		GetDirection(myLat, myLon, dstLat, dstLon, handler);
+	}
+	
+	private void ShowDirection(GoogleMap googleMap) {
+
+		if (mMapSelectedShop != null && mMapSelectedShop.polyline != null)
+			mMapSelectedShop.polyline.setVisible(true);
+		else
+			return;
+		
+		for (Shop nearby : getShopListFragment().mShopList) {
+			if (nearby.polyline != null)
+				nearby.polyline.setVisible(nearby.equals(mMapSelectedShop));
+		}
+		
+		LatLngBounds.Builder builder = LatLngBounds.builder();
+		for (LatLng latlng : mMapSelectedShop.polyline.getPoints()) {
+			builder.include(latlng);
+		}
+		
+		googleMap.animateCamera(CameraUpdateFactory.newLatLngBounds(builder.build(), 24));
+	}
+	
+	private void HandleDirectionResponse(JSONObject rootJson, Shop nearby, GoogleMap googleMap) {
+		
+//		if (nearby.polyline != null)
+//			return;
+		
+		// Decode polyline string
+		String encoded_points = null;
+		try {
+			encoded_points = rootJson.getJSONArray("routes").getJSONObject(0)
+					.getJSONObject("overview_polyline").getString("points");
+		} catch (JSONException e) {
+			e.printStackTrace();
+		}
+		PolylineOptions mapOption = decodePoints(encoded_points);
+
+		// Store the polyline
+		nearby.polyline = googleMap.addPolyline(mapOption.color(0xff8080FF));
+		
+		// If this polyline is not being selected
+		if (mMapSelectedShop != nearby) {
+			// Hide it
+			nearby.polyline.setVisible(false);
+		} else {
+			ShowDirection(googleMap);
+		}
+	}
+	
+	private static PolylineOptions decodePoints(String encoded_points){
+		
+		int index = 0;
+		int lat = 0;
+		int lng = 0;
+		PolylineOptions polylineOption = new PolylineOptions();
+
+		try {
+		    int shift;
+		    int result;
+		    
+		    while (index < encoded_points.length()) {
+		        shift = 0;
+		        result = 0;
+		        
+		        while (true) {
+		            int b = encoded_points.charAt(index++) - '?';
+		            result |= ((b & 31) << shift);
+		            shift += 5;
+		            if (b < 32)
+		                break;
+		        }
+		        lat += ((result & 1) != 0 ? ~(result >> 1) : result >> 1);
+
+		        shift = 0;
+		        result = 0;
+		        
+		        while (true) {
+		            int b = encoded_points.charAt(index++) - '?';
+		            result |= ((b & 31) << shift);
+		            shift += 5;
+		            if (b < 32)
+		                break;
+		        }
+		        lng += ((result & 1) != 0 ? ~(result >> 1) : result >> 1);
+		        /* Add the new Lat/Lng to the Array. */
+		        polylineOption = polylineOption.add(new LatLng((lat/1e5),(lng/1e5)));
+		    }
+		    return polylineOption;
+		    
+		} catch(Exception e) {
+		    e.printStackTrace();
+		}
+		return polylineOption;
+	}
+	
+	public static void GetDirection(double srcLat, double srcLon, double dstLat, double dstLon, Handler handler) {
+		
+		final String URLFormat = "http://maps.googleapis.com/maps/api/directions/json?origin=%f,%f&destination=%f,%f&sensor=true";
+
+		String URL = String.format(Locale.US, URLFormat, srcLat, srcLon, dstLat, dstLon);
+		
+		new HttpConnection(handler).get(URL);
+	}
+	
+	///////////////////////////////////////////////////////////////////////////
 
 	public void initToggleCamera(){
 		layoutTC = findViewById(R.id.relativeLayout2);
