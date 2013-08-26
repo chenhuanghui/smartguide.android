@@ -584,6 +584,9 @@ public class MainActivity extends FragmentActivity implements MainAcitivyListene
 	}
 	
 	private void RequestDirection(Shop nearby, final GoogleMap googleMap) {
+		if (googleMap.getMyLocation() == null)
+			return;
+		
 		double myLat = googleMap.getMyLocation().getLatitude();
 		double myLon = googleMap.getMyLocation().getLongitude();
 		double dstLat = nearby.mLat;

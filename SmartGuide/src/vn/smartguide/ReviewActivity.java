@@ -93,6 +93,7 @@ public class ReviewActivity extends Activity {
 					mTextSwitcher.setVisibility(View.INVISIBLE);
 					mReviewText.setCursorVisible(true);
 					mReviewText.requestFocus();
+					mFirstTimeClick = false;
 					return;
 				}
 				
