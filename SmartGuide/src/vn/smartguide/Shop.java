@@ -99,6 +99,7 @@ public class Shop {
 					case 1:
 						int cost = promotion.getInt("cost");
 						int sgp = promotion.getInt("sgp");
+						int min_score = promotion.getInt("min_score");
 						sp = promotion.getInt("sp");
 						String duration = promotion.getString("duration");
 						List<Requirement> requirements = new ArrayList<Requirement>();
@@ -108,7 +109,7 @@ public class Shop {
 							requirements.add(new Requirement(jo.getInt("id"), jo.getInt("required"), jo.getString("content")));
 						}
 						
-						mShop.mPromotion = new PromotionTypeOne(cost, sgp, sp, duration, requirements);
+						mShop.mPromotion = new PromotionTypeOne(cost, sgp, sp, min_score, duration, requirements);
 						
 						break;
 					case 2:

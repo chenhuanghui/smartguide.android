@@ -446,7 +446,7 @@ public class ShopListFragment extends Fragment {
 						case 1:
 							PromotionTypeOne promotionTypeOne = (PromotionTypeOne)mShop.mPromotion;
 							mShopScoreNowTV.setText(Integer.toString(promotionTypeOne.mSGP));
-							mShopScoreMinTV.setText("/10");
+							mShopScoreMinTV.setText("/" + promotionTypeOne.mMinScore);
 							break;
 						case 2:
 							PromotionTypeTwo promotionTypeTwo = (PromotionTypeTwo)mShop.mPromotion;
@@ -494,7 +494,7 @@ public class ShopListFragment extends Fragment {
 				
 				
 				final LinearLayout mShopNameContent = (LinearLayout)MyView.findViewById(R.id.shop_name_content);
-				TextView mShopName= (TextView) mShopNameContent.findViewById(R.id.shop_name_real);
+				TextView mShopName = (TextView) mShopNameContent.findViewById(R.id.shop_name_real);
 				mShopName.setText(mShop.mName);
 
 				TextView mShopContent = (TextView) mShopNameContent.findViewById(R.id.shop_content_real);

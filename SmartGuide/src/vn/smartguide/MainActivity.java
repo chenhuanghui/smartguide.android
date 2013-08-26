@@ -879,9 +879,7 @@ public class MainActivity extends FragmentActivity implements MainAcitivyListene
 	}
 
 	public void init(){
-
-		getAndUploadContact();
-
+		
 		((RelativeLayout)findViewById(R.id.rootOfroot)).setOnTouchListener(this);
 		((RelativeLayout)findViewById(R.id.layoutQR)).setOnTouchListener(this);
 
@@ -1364,9 +1362,11 @@ public class MainActivity extends FragmentActivity implements MainAcitivyListene
 	}
 
 	void updateInformation(){
+		
+		getAndUploadContact();
 		// Update SGP at Setting view
 		new GetUserCollection().execute();
-
+		
 		// Update name and avatar facebook if possible
 		ImageView avatar = (ImageView)menu.getMenu().findViewById(R.id.userAvatarSetting);
 		TextView name = (TextView)menu.getMenu().findViewById(R.id.textView);
