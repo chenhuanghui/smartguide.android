@@ -409,6 +409,10 @@ public class MainActivity extends FragmentActivity implements MainAcitivyListene
 
 	public void updateMapAsync() {
 		final GoogleMap map = mMapFragment.getMap();
+		
+		if (map == null)
+			return;
+		
 		map.clear();
 		map.setInfoWindowAdapter(new InfoWindowAdapter() {
 
@@ -432,23 +436,30 @@ public class MainActivity extends FragmentActivity implements MainAcitivyListene
 				TextView txtAddress = (TextView) view.findViewById(R.id.txtAddress);
 
 				txtDistance.setText(Float.toString(s.mDistance) + " km");
-				switch (s.mPromotion.getType()) {
-				case 1: {
-					PromotionTypeOne promo = (PromotionTypeOne) s.mPromotion; 
-					txtPoint.setText("" + promo.mSGP);
-					txtMinPoint.setText("/10");
-					txtPointName.setText("POINT");
-				}
-				break;
+				
+				if (s.mPromotionStatus && s.mPromotion != null) {
+					switch (s.mPromotion.getType()) {
+					case 1: {
+						PromotionTypeOne promo = (PromotionTypeOne) s.mPromotion; 
+						txtPoint.setText("" + promo.mSGP);
+						txtMinPoint.setText("/10");
+						txtPointName.setText("POINT");
+					}
+					break;
 
-				case 2: {
-					PromotionTypeTwo promo = (PromotionTypeTwo) s.mPromotion;
-					txtPoint.setText(promo.mMoney / 1000 + " K");
+					case 2: {
+						PromotionTypeTwo promo = (PromotionTypeTwo) s.mPromotion;
+						txtPoint.setText(promo.mMoney / 1000 + " K");
+						txtMinPoint.setText("");
+						txtPointName.setText("VND");
+					}
+					break;
+					}
+					
+				} else { 
+					txtPoint.setText("");
 					txtMinPoint.setText("");
-					txtPointName.setText("VND");
-				}
-
-				break;
+					txtPointName.setText("");
 				}
 
 				txtShopNae.setText(s.mName);
@@ -551,9 +562,7 @@ public class MainActivity extends FragmentActivity implements MainAcitivyListene
 					@Override
 					public void run() {
 						try {
-							if (mBound == null || mMapFragment.getMap() == null)
-								return;
-							mMapFragment.getMap().animateCamera(CameraUpdateFactory.newLatLngBounds(mBound, 0));
+							jumpToBound();
 						} catch (Exception e) {
 							e.printStackTrace();
 						}
@@ -565,6 +574,13 @@ public class MainActivity extends FragmentActivity implements MainAcitivyListene
 				getSupportFragmentManager().beginTransaction().remove(mMapFragment).commit();
 			}
 		}
+	}
+	
+	public void jumpToBound() {
+		
+		if (mBound == null || mMapFragment.getMap() == null)
+			return;
+		mMapFragment.getMap().animateCamera(CameraUpdateFactory.newLatLngBounds(mBound, 0));
 	}
 	
 	private void RequestDirection(Shop nearby, final GoogleMap googleMap) {

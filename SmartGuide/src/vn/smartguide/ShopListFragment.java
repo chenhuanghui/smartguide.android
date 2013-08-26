@@ -636,6 +636,8 @@ public class ShopListFragment extends Fragment {
 							mAdapter = new ShopListAdapter(getActivity().getBaseContext(), getActivity());
 							gridView.setAdapter(mAdapter);
 							mAdapter.notifyDataSetChanged();
+							((MainActivity) mMainAcitivyListener).updateMapAsync();
+							((MainActivity) mMainAcitivyListener).jumpToBound();
 						}
 						
 						isComeToEnd = true;
