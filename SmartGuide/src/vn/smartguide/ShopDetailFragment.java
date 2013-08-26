@@ -292,6 +292,7 @@ public class ShopDetailFragment extends Fragment {
 	    	((DetailCommentFragment) mDetailFragmentList.get(4)).setData(mShop);
 	    	((DetailShowMapFragment) mDetailFragmentList.get(5)).setData(mShop);
 		}
+		
 		protected void onPreExecute(){ }
 	}
     

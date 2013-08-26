@@ -596,7 +596,7 @@ public class WellcomeActivity extends FragmentActivity{
 		AlertDialog.Builder builder = new AlertDialog.Builder(this);
 		
 		builder.setMessage(phoneNumber +"\nMã kích hoạt SmartGuide sẽ được gửi đến số điện thoại trên" +
-				"qua tin nhắn. Chọn Đồng ý để tiếp tục hoặc hủy để thay đổi số điện thoại");
+				" qua tin nhắn. Chọn Đồng ý để tiếp tục hoặc hủy để thay đổi số điện thoại");
 		builder.setCancelable(true);
 		
 		builder.setPositiveButton("Hủy", new DialogInterface.OnClickListener() {

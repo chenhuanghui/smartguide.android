@@ -27,6 +27,7 @@ public final class APILinkMaker {
 	private static String mReview				= 	"feedback";
 	private static String mContact				=	"contact/import";
 	private static String mSearch				=	"shop/search";
+	private static String mFeedback				=	"get_feedback";
 	
 	public static String ShopListInCategory(){
 		return mHostName + mShopListInCategory;
@@ -122,5 +123,9 @@ public final class APILinkMaker {
 	
 	public static String mSearch(){
 		return mHostName + mSearch;
+	}
+	
+	public static String mGetFeedback(){
+		return mHostName + mFeedback;
 	}
 }

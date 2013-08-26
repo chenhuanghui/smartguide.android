@@ -357,7 +357,6 @@ public class UserFragment extends Fragment{
 	}
 	
 	public class GiftItem {
-		
 		public String name;
 	}
 	

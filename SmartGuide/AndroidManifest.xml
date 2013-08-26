@@ -69,8 +69,7 @@
         </activity>
         <activity
             android:name="vn.smartguide.ReviewActivity"
-            android:theme="@android:style/Theme.Light.NoTitleBar"
-            android:windowSoftInputMode="stateVisible" >
+            android:theme="@android:style/Theme.Light.NoTitleBar">
         </activity>
         <activity
             android:name="vn.smartguide.TakePictureActivity"
