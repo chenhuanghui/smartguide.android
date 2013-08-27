@@ -10,11 +10,15 @@ public class Review {
 	int mID;
 	int mUserID;
 	String mFeedback;
+	String mFirstName;
+	String mLastName;
 	
-	public Review(int id, int userid, String feedback){
+	public Review(int id, int userid, String feedback, String firstName, String lastName){
 		mID = id;
 		mUserID = userid;
 		mFeedback = feedback;
+		mFirstName = firstName;
+		mLastName = lastName;
 	}
 	
 	public static List<Review> getList(String json){
@@ -26,7 +30,9 @@ public class Review {
 				int id = object.getInt("id");
 				int userid = object.getInt("user_id");
 				String feedback = object.getString("feedback");
-				result.add(new Review(id, userid, feedback));
+				String firstname = object.getString("first_name");
+				String lastname = object.getString("last_name");
+				result.add(new Review(id, userid, feedback, firstname, lastname));
 			}
 		}catch(Exception ex){
 			return result;

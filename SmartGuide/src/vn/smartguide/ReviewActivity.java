@@ -63,11 +63,7 @@ public class ReviewActivity extends Activity {
         });
 		
 		mName = (TextView)findViewById(R.id.textView1);
-		if(GlobalVariable.nameFace == "" || GlobalVariable.nameFace.compareTo("null") == 0)
-			mName.setText("Anomynous User");
-		else
-			mName.setText(GlobalVariable.nameFace);
-
+		
 		mReviewText = (EditText)findViewById(R.id.editText1);
 		mReviewBtn = (Button)findViewById(R.id.button1);
 		mActivity = this;
@@ -89,11 +85,18 @@ public class ReviewActivity extends Activity {
 			@Override
 			public void onClick(View v) {		
 				if (mFirstTimeClick){
+					
+					if(GlobalVariable.nameFace == "" || GlobalVariable.nameFace.compareTo("null") == 0)
+						mName.setText("Anomynous User");
+					else
+						mName.setText(GlobalVariable.nameFace);
+					
 					stopReview();
 					mTextSwitcher.setVisibility(View.INVISIBLE);
 					mReviewText.setCursorVisible(true);
 					mReviewText.requestFocus();
 					mFirstTimeClick = false;
+					mReviewBtn.setText("Gửi");
 					return;
 				}
 				
@@ -122,6 +125,7 @@ public class ReviewActivity extends Activity {
 							imm.hideSoftInputFromWindow(mReviewText.getWindowToken(), 0);
 							GlobalVariable.isNeedPostReview = true;
 							GlobalVariable.reviewString = review;
+							mReviewBtn.setText("Đánh giá");
 							finish();	
 						}
 					});
@@ -181,6 +185,11 @@ public class ReviewActivity extends Activity {
 					
 					index = (index + 1) % mReviews.size();
 					mTextSwitcher.setText('"' + mReviews.get(index).mFeedback + '"');
+					String name = mReviews.get(index).mLastName + " " + mReviews.get(index).mFirstName;
+					if (name.compareTo("null null") == 0)
+						mName.setText("Anomynous User");
+					else
+						mName.setText(name);
 				}
 			});
 		}

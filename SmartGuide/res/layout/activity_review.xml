@@ -36,7 +36,7 @@
             android:layout_gravity="right"
             android:layout_marginRight="20dp"
             android:layout_marginTop="10dp"
-            android:text="Nguyễn Ngọc Châu Sang"
+            android:text=""
             android:textColor="#565656" />
 
         <Button
