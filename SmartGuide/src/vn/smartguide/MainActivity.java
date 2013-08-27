@@ -137,6 +137,7 @@ public class MainActivity extends FragmentActivity implements MainAcitivyListene
 	private RelativeLayout reviewBtn;
 	private RelativeLayout updateBtn;
 	private RelativeLayout gpsBtn;
+	private RelativeLayout mTutorialBtn;
 	private boolean isNeedReview = false;
 
 	// Viewpager
@@ -997,6 +998,14 @@ public class MainActivity extends FragmentActivity implements MainAcitivyListene
 		mNaviText = (TextView) findViewById(R.id.txtNavi);
 		mAvatarFaceBtn = (ImageButton)menu.getMenu().findViewById(R.id.imageView1);
 		mTotalSGP = (TextView)menu.getMenu().findViewById(R.id.SGPScoreSetting);
+		mTutorialBtn = (RelativeLayout)menu.getMenu().findViewById(R.id.tutorialBtn);
+		mTutorialBtn.setOnClickListener(new OnClickListener() {
+			@Override
+			public void onClick(View v) {
+				startActivity(new Intent(mActivity, TutorialActivity.class));
+			}
+		});
+		
 		gpsBtn = (RelativeLayout)menu.getMenu().findViewById(R.id.GPSButton);
 		gpsBtn.setOnClickListener(new OnClickListener() {
 			@Override
