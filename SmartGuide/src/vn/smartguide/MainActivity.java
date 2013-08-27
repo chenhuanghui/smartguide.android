@@ -205,7 +205,8 @@ public class MainActivity extends FragmentActivity implements MainAcitivyListene
 	// Swipe para
 	static final int MIN_DISTANCE = 100;
 	private float downX, downY, upX, upY;
-
+	private boolean mIsCanWipe = false;
+	
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
@@ -519,7 +520,6 @@ public class MainActivity extends FragmentActivity implements MainAcitivyListene
 	}
 
 	public void turnMapShop2Detail(Shop s) {
-
 		if (mShowContent)
 			return;
 
@@ -753,8 +753,10 @@ public class MainActivity extends FragmentActivity implements MainAcitivyListene
 
 		mShowCamera = !mShowCamera;
 
-		if (mShowCamera)
+		if (mShowCamera){
 			isCanScan = true;
+			mIsCanWipe = true;
+		}
 		else
 			isCanScan = false;
 
@@ -837,14 +839,17 @@ public class MainActivity extends FragmentActivity implements MainAcitivyListene
 					switch (mScanningCode) {
 					case 1:
 						isCanScan = false;
+						mIsCanWipe = false;
 						new GetSGPPoint().execute();
 						break;
 					case 2:
 						isCanScan = false;
+						mIsCanWipe = false;
 						new GetAwardType1().execute();
 						break;
 					case 3:
 						isCanScan = false;
+						mIsCanWipe = false;
 						new GetAwardType2().execute();
 					default:
 						break;
@@ -1078,6 +1083,7 @@ public class MainActivity extends FragmentActivity implements MainAcitivyListene
 			@Override
 			public void onClick(View v) {
 				isCanScan = true;
+				mIsCanWipe = true;
 				toggleCamera();
 			}
 		});
@@ -1236,8 +1242,7 @@ public class MainActivity extends FragmentActivity implements MainAcitivyListene
 
 		EditText edtSearch = (EditText) findViewById(R.id.edtSearch);
 		edtSearch.setVisibility(View.INVISIBLE);
-		InputMethodManager imm = (InputMethodManager)getSystemService(
-				Context.INPUT_METHOD_SERVICE);
+		InputMethodManager imm = (InputMethodManager)getSystemService(Context.INPUT_METHOD_SERVICE);
 		imm.hideSoftInputFromWindow(edtSearch.getWindowToken(), 0);
 	}
 
@@ -1719,7 +1724,6 @@ public class MainActivity extends FragmentActivity implements MainAcitivyListene
 			try {
 				JSResult = new JSONObject(json);
 			} catch (JSONException e) {
-				// TODO Auto-generated catch block
 				e.printStackTrace();
 			}
 			return true;
@@ -1820,9 +1824,9 @@ public class MainActivity extends FragmentActivity implements MainAcitivyListene
 			try {
 				JSONObject obj = new JSONObject(JSResult);
 				String score = Integer.toString(obj.getInt("score"));
-				mTotalSGP.setText(score+ " point");
+				mTotalSGP.setText(score+ " P");
 				mUserFragment.updateScore(score);
-				mTotalSGP.setText(score + " point");
+				mTotalSGP.setText(score + " P");
 
 				List<Shop> mShops = Shop.getListForUse(obj.getJSONArray("collection"));
 				mUserFragment.update(mShops);
@@ -1978,7 +1982,7 @@ public class MainActivity extends FragmentActivity implements MainAcitivyListene
 		@Override
 		protected void onPostExecute(Boolean k){
 			try {
-				mTotalSGP.setText(Integer.toString((new JSONObject(mJson)).getInt("score")) + " point");
+				mTotalSGP.setText(Integer.toString((new JSONObject(mJson)).getInt("score")) + " p");
 				mUserFragment.updateScore(Integer.toString((new JSONObject(mJson)).getInt("score")));
 				new GetUserCollection().execute();
 			} catch (JSONException e) {
@@ -2038,7 +2042,7 @@ public class MainActivity extends FragmentActivity implements MainAcitivyListene
 	public void onLeftToRightSwipe(){}
 
 	public void onTopToBottomSwipe(){
-		if (mShowCamera)
+		if (mShowCamera && mIsCanWipe)
 			toggleCamera();
 	}
 
