@@ -66,6 +66,7 @@ public class ShopDetailFragment extends Fragment {
     private DetailPromoFragment mPromoFragment;
     private DetailPromo1Fragment mPromo1Fragment;
     private DetailPromo2Fragment mPromo2Fragment;
+    private DetailNoPromoFragment mNoPromoFragment;
     private Fragment mActiveFragment;
     private Shop mShop;
     
@@ -93,8 +94,9 @@ public class ShopDetailFragment extends Fragment {
         super.onViewCreated(view, savedInstanceState);
 
         // Set Viewpager adapter
-        mPromo1Fragment = new DetailPromo1Fragment();
-        mPromo2Fragment = new DetailPromo2Fragment();
+        mPromo1Fragment 	= new DetailPromo1Fragment();
+        mPromo2Fragment 	= new DetailPromo2Fragment();
+        mNoPromoFragment 	= new DetailNoPromoFragment();
         mDetailFragmentList = new ArrayList<Fragment>();
         mDetailFragmentList.add(new DetailShopInfoFragment());
         mDetailFragmentList.add(new DetailShopMenuFragment());
@@ -102,7 +104,6 @@ public class ShopDetailFragment extends Fragment {
         mDetailFragmentList.add(new DetailShopPhotoFragment());
         mDetailFragmentList.add(new DetailCommentFragment());
         mDetailFragmentList.add(new DetailShowMapFragment());
-        mDetailFragmentList.add(new DetailPromo2Fragment());
         
         mPromoFragment = mPromo1Fragment;
         
@@ -113,6 +114,7 @@ public class ShopDetailFragment extends Fragment {
         }
         transaction.add(R.id.layoutDetailPager, mPromo1Fragment).hide(mPromo1Fragment);
         transaction.add(R.id.layoutDetailPager, mPromo2Fragment).hide(mPromo2Fragment);
+        transaction.add(R.id.layoutDetailPager, mNoPromoFragment).hide(mNoPromoFragment);
         transaction.commit();
         
         mLogoImageView = (ImageView) getView().findViewById(R.id.imgLogo);
@@ -225,11 +227,13 @@ public class ShopDetailFragment extends Fragment {
     		} else if (s.mPromotion.getType() == 2) {
     			mPromoFragment = mPromo2Fragment;
     		}
+    	} else {
+    		mPromoFragment = mNoPromoFragment;
     	}
     	
     	if (mActiveFragment != mPromoFragment) {
     		if (mActiveFragment != null)
-    		getFragmentManager().beginTransaction().hide(mActiveFragment).show(mPromoFragment).commit();
+    			getFragmentManager().beginTransaction().hide(mActiveFragment).show(mPromoFragment).commit();
     		else
     			getFragmentManager().beginTransaction().show(mPromoFragment).commit();
     	}
@@ -245,7 +249,11 @@ public class ShopDetailFragment extends Fragment {
     	DetailMenuFragment menu = (DetailMenuFragment) getFragmentManager().findFragmentById(R.id.detailMenuFragment);
     	menu.updateLikeDis(s.mNumOfLike, s.mNumOfDislike, s.mLikeStatus);
     	
-    	if (menu.mYindex == 1) {
+    	if (mPromoFragment == mNoPromoFragment) {
+    		if (menu.mYindex == 0)
+    			menu.toggleShopInfo();
+    		menu.turnToShopInfo();
+    	} else if (menu.mYindex == 1) {
     		menu.toggleShopInfo();
     	}
     	
