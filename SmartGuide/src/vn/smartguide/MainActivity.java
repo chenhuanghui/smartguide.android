@@ -679,7 +679,7 @@ public class MainActivity extends FragmentActivity implements MainAcitivyListene
 		}
 	}
 	
-	private static PolylineOptions decodePoints(String encoded_points){
+	public static PolylineOptions decodePoints(String encoded_points){
 		
 		int index = 0;
 		int lat = 0;

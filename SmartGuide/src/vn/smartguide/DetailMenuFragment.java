@@ -180,6 +180,12 @@ public class DetailMenuFragment extends Fragment {
 		});
     }
 
+    public void turnToShopInfo() {
+    	mXindex = 0;
+		mYindex = 1;
+		animateCursor();
+		mMainAcitivyListener.getDetailFragment().onInfoButtonClick(0);
+    }
     
     void updateLikeStatus(int like, int disl, int likestatus){
     	GlobalVariable.mCurrentShop.mNumOfLike = like;
