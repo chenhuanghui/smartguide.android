@@ -90,7 +90,6 @@ public final class NetworkManger {
 		} catch (Exception e) {
 			return result;
 		}
-
 		return result;
 	}
 	
@@ -123,7 +122,6 @@ public final class NetworkManger {
 		} catch (Exception e) {
 			return result;
 		}
-
 		return result;
 	}
 	
@@ -140,7 +138,6 @@ public final class NetworkManger {
 		} catch (Exception e) {
 			return result;
 		}
-
 		return result;
 	}
 }

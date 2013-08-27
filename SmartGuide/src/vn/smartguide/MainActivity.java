@@ -72,6 +72,8 @@ import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.MarkerOptions;
 import com.google.android.gms.maps.model.PolylineOptions;
 import com.jeremyfeinstein.slidingmenu.lib.SlidingMenu;
+import com.jeremyfeinstein.slidingmenu.lib.SlidingMenu.OnClosedListener;
+import com.jeremyfeinstein.slidingmenu.lib.SlidingMenu.OnOpenedListener;
 
 import net.sourceforge.zbar.Config;
 import net.sourceforge.zbar.Image;
@@ -919,7 +921,19 @@ public class MainActivity extends FragmentActivity implements MainAcitivyListene
 		menu.setFadeDegree(0.35f);
 		menu.attachToActivity(this, SlidingMenu.SLIDING_CONTENT);
 		menu.setMenu(R.layout.side_menu_fragment);
-
+		menu.setOnOpenedListener(new OnOpenedListener() {
+			@Override
+			public void onOpened() {
+				mShowMenu = true;
+			}
+		});
+		menu.setOnClosedListener(new OnClosedListener() {
+			@Override
+			public void onClosed() {
+				mShowMenu = false;
+			}
+		});
+		
 		// Create fragment list
 		mFragmentManager = getSupportFragmentManager();
 		mFragmentList = new ArrayList<Fragment>();
