@@ -127,6 +127,7 @@
                 android:layout_height="wrap_content"
                 android:text="Liên lạc:"
                 android:textAppearance="?android:attr/textAppearanceSmall"
+                android:layout_centerVertical="true"
                 android:textColor="#282E3A"
                 android:textSize="11dp"
                 android:textStyle="bold" />
@@ -136,10 +137,21 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginLeft="60dp"
+                android:layout_centerVertical="true"
                 android:text="+84 099 09 099"
                 android:textAppearance="?android:attr/textAppearanceSmall"
                 android:textColor="#4A4A4A"
                 android:textSize="11dp" />
+
+            <ImageView
+                android:id="@+id/callBtn"
+                android:layout_width="20dp"
+                android:layout_height="20dp"
+                android:layout_alignParentTop="true"
+                android:layout_toRightOf="@+id/txtPhone"
+                android:layout_centerVertical="true"
+                android:src="@drawable/callicon"
+                android:layout_marginLeft="5dp" />
 
         </RelativeLayout>
 

@@ -71,7 +71,13 @@ public class Shop {
 				mShop.mLogo = object.getString("logo");
 				mShop.mContent = object.getString("description");
 				mShop.mPromotionStatus = object.getInt("promotion_status") == 1;
-//				mShop.mTel = object.getString("tel");
+				
+				try{
+					mShop.mTel = object.getString("tel");
+				}catch(Exception ex){	
+					mShop.mTel = "";
+				}
+				
 				mShop.mAddress = object.getString("address");
 				mShop.mLikeStatus = object.getInt("like_status");
 				mShop.mNumOfDislike = object.getInt("dislike");
