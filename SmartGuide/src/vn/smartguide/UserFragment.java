@@ -484,6 +484,8 @@ public class UserFragment extends Fragment{
 					// Show success dialog 
 					int total_score = obj.getInt("total_score");
 					updateScore(Integer.toString(total_score));
+					mMainAcitivyListener.updateTotalSGP(Integer.toString(total_score));
+					
 					Builder builder = new Builder(UserFragment.this.getActivity());
 					builder.setMessage("Chúc mừng bạn đã nhận được\n"
 							+ obj.getString("reward") 
