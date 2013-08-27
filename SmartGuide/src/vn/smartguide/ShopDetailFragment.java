@@ -306,16 +306,20 @@ public class ShopDetailFragment extends Fragment {
     
     public void parseJsonShopDetail(JSONObject jRoot) throws JSONException {
     	// Parse Item
-    	mShop.mItemList.clear();
+    	mShop.mItemCollections.clear();
+    	mShop.mGroupItemList.clear();
     	JSONArray jCateItemArr = jRoot.getJSONArray("shop_items"); 
     	
     	for (int i = 0; i < jCateItemArr.length(); i++) {
-    		JSONArray jItemArr = jCateItemArr.getJSONObject(i).getJSONArray("items");
-    		
+    		JSONObject jCate = jCateItemArr.getJSONObject(i);
+    		String cateName = jCate.getString("cat_name");
+    		JSONArray jItemArr = jCate.getJSONArray("items");
+    		mShop.mGroupItemList.add(cateName);
+    		mShop.mItemCollections.put(cateName, new ArrayList<Item>());
     		for (int j = 0; j < jItemArr.length(); j++) {
     			JSONObject jItem = jItemArr.getJSONObject(j);
-    			
-    			mShop.mItemList.add(new Item(jItem.getString("name"), jItem.getString("price"), null, null));
+    			Item item = new Item(jItem.getString("name"), jItem.getString("price"), null, null);
+    			mShop.mItemCollections.get(mShop.mGroupItemList.get(mShop.mGroupItemList.size() - 1)).add(item);
     		}
     	}
     	

@@ -8,7 +8,9 @@ import com.google.android.gms.maps.model.Polyline;
 import com.google.android.gms.maps.model.PolylineOptions;
 
 import java.util.ArrayList;
+import java.util.LinkedHashMap;
 import java.util.List;
+import java.util.Map;
 
 /**
  * Created by ChauSang on 7/23/13.
@@ -39,7 +41,8 @@ public class Shop {
 	public String mUpdateAt;
 	public String mCatName;
 	
-	public List<Item> mItemList = new ArrayList<Item>();
+	public Map<String, List<Item>> mItemCollections = new LinkedHashMap<String, List<Item>>();
+    public List<String> mGroupItemList = new ArrayList<String>();
 	public List<ImageStr> mUserImageList = new ArrayList<ImageStr>();
 	public List<ImageStr> mShopImageList = new ArrayList<ImageStr>();
 	public List<Comment> mCommentList = new ArrayList<Comment>();

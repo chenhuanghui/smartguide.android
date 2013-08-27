@@ -5,14 +5,10 @@
     android:gravity="center_horizontal|center_vertical"
     android:orientation="vertical" >
 
-    <TextView
-        android:id="@+id/textView1"
+    <ImageView
+        android:id="@+id/imageView1"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:gravity="center_vertical|center_horizontal"
-        android:text="Hiện nay cửa hàng không có
-khuyến mãi"
-        android:textAppearance="?android:attr/textAppearanceLarge"
-        android:textColor="#282E3A" />
+        android:src="@drawable/no_promotion" />
 
 </LinearLayout>
