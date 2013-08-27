@@ -1,5 +1,6 @@
 package vn.smartguide;
 
+import java.net.Inet4Address;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.zip.Inflater;
@@ -481,6 +482,8 @@ public class UserFragment extends Fragment{
 				
 				case 2: {
 					// Show success dialog 
+					int total_score = obj.getInt("total_score");
+					updateScore(Integer.toString(total_score));
 					Builder builder = new Builder(UserFragment.this.getActivity());
 					builder.setMessage("Chúc mừng bạn đã nhận được\n"
 							+ obj.getString("reward") 

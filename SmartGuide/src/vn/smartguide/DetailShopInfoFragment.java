@@ -35,8 +35,7 @@ public class DetailShopInfoFragment extends Fragment {
     	
     	txtDescription.setText(s.mContent);
     	txtAddress.setText(s.mAddress);
-    	txtPhone.setText("");
+    	txtPhone.setText(s.mTel);
     	txtWeb.setText("");
-    	
     }
 }

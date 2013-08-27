@@ -1824,7 +1824,6 @@ public class MainActivity extends FragmentActivity implements MainAcitivyListene
 			try {
 				JSONObject obj = new JSONObject(JSResult);
 				String score = Integer.toString(obj.getInt("score"));
-				mTotalSGP.setText(score+ " P");
 				mUserFragment.updateScore(score);
 				mTotalSGP.setText(score + " P");
 
@@ -1846,7 +1845,8 @@ public class MainActivity extends FragmentActivity implements MainAcitivyListene
 		@Override
 		protected Boolean doInBackground(Void... params) {
 			List<NameValuePair> pairs = new ArrayList<NameValuePair>();
-
+			pairs.add(new BasicNameValuePair("user_id", GlobalVariable.userID));
+			
 			result = NetworkManger.post(APILinkMaker.mGetRewardList(), pairs);
 			return true;
 		}
@@ -2158,6 +2158,11 @@ public class MainActivity extends FragmentActivity implements MainAcitivyListene
 		AlertDialog dialog = builder.show();
 		TextView messageView = (TextView)dialog.findViewById(android.R.id.message);
 		messageView.setGravity(Gravity.CENTER);
+	}
+
+	@Override
+	public void updateTotalSGP(String score) {
+		mTotalSGP.setText(score + " P");
 	}
 }
 

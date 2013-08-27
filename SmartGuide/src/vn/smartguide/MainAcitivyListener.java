@@ -17,5 +17,6 @@ public interface MainAcitivyListener {
 	public void getAwardTypeTwo(int award_id);
 	public void userToDetail();
 	public void setLocation(String cityName);
+	public void updateTotalSGP(String score);
 	//public void getShopList();
 }
