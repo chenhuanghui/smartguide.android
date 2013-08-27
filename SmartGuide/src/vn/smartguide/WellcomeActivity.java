@@ -135,7 +135,6 @@ public class WellcomeActivity extends FragmentActivity{
 			public void onClick(View v) {
 				if (isConfirm == false){
 					phoneNumber = mNumberField.getText().toString();
-					
 					if (PhoneNumberUtils.isGlobalPhoneNumber(phoneNumber) == true){
 						if (phoneNumber.charAt(0) == '+'){
 							String subphone = phoneNumber.substring(1);

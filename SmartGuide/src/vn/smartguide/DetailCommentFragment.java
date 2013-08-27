@@ -53,7 +53,8 @@ public class DetailCommentFragment extends Fragment {
 	private boolean					mPageEnd;
 	
 	private MyDialogFragment		dialogFragment;
-
+	private ImageView 				mAvatar;
+	
 	@Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
@@ -87,6 +88,7 @@ public class DetailCommentFragment extends Fragment {
         
    	 	mAdapter = new CommentListAdapter();
    	 	mLst.setAdapter(mAdapter);
+   	 	mAvatar = (ImageView)getView().findViewById(R.id.imageView2);
     }
     
     /**
@@ -107,6 +109,8 @@ public class DetailCommentFragment extends Fragment {
     	 mAdapter.mItemList.addAll(s.mCommentList);
     	 mAdapter.notifyDataSetChanged();
     	 mLst.setSelectionFromTop(mAdapter.getCount() - 1, 0);
+    	 if (GlobalVariable.avatarFace != "" || GlobalVariable.avatarFace.compareTo("null") != 0)
+    		 GlobalVariable.imageLoader.displayImage(GlobalVariable.avatarFace, mAvatar);
     }
     
     /**
