@@ -18,6 +18,7 @@
     <RelativeLayout
         android:layout_width="fill_parent"
         android:layout_height="fill_parent"
+        
         android:layout_margin="10dp"
         android:background="#00000000" >
 
@@ -44,7 +45,8 @@
             android:layout_height="wrap_content"
             android:layout_above="@+id/imageButton2"
             android:layout_alignParentLeft="true"
-            android:background="@drawable/tutorial_button_find" />
+            android:background="@drawable/tutorial_button_find" 
+            android:layout_marginBottom="10dp"/>
 
     </RelativeLayout>
 

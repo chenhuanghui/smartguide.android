@@ -37,6 +37,7 @@ public class TutorialActivity extends Activity {
 		mFirstView.setOnClickListener(new View.OnClickListener() {	
 			@Override
 			public void onClick(View v) {
+				currentPage = 0;
 				nextButton.setVisibility(View.INVISIBLE);
 				setContent(0);
 			}
@@ -46,6 +47,7 @@ public class TutorialActivity extends Activity {
 		mEighthView.setOnClickListener(new View.OnClickListener() {
 			@Override
 			public void onClick(View v) {
+				currentPage = 7;
 				nextButton.setVisibility(View.VISIBLE);
 				setContent(7);
 			}
@@ -71,14 +73,12 @@ public class TutorialActivity extends Activity {
 			
 			@Override
 			public void onClick(View arg0) {
-				currentPage++;
-				if (currentPage == 15)
-					return;
-				if (currentPage == 0 || currentPage == 7 || currentPage == 12)
-					nextButton.setVisibility(View.INVISIBLE);
 				
-				tutorialSwitcher.setInAnimation(AnimationUtils.loadAnimation(mActivity, R.anim.slide_in_right));
-				tutorialSwitcher.setOutAnimation(AnimationUtils.loadAnimation(mActivity, R.anim.slide_out_left));
+				currentPage++;
+				
+				if (currentPage == 0 || currentPage == 3 || currentPage == 7 || currentPage == 12 
+						|| currentPage == 9 || currentPage == 13 || currentPage == 14)
+					nextButton.setVisibility(View.INVISIBLE);
 				
 				setContent(currentPage);
 				
@@ -89,19 +89,29 @@ public class TutorialActivity extends Activity {
 		root.setOnClickListener(new View.OnClickListener() {
 			@Override
 			public void onClick(View v) {
-				if (currentPage == 1 || currentPage == 2 || currentPage == 4 || currentPage == 5 ||
-						currentPage == 8 || currentPage == 10 || currentPage == 11 || currentPage == 13)
+				if (currentPage == 1 || currentPage == 2 || currentPage == 4 || currentPage == 5 || currentPage == 6 ||
+						currentPage == 8 || currentPage == 10 || currentPage == 11)
 					return;
 				
 				currentPage++;
-				if (currentPage == 16)
-					return;
 				
-				tutorialSwitcher.setInAnimation(AnimationUtils.loadAnimation(mActivity, R.anim.slide_in_right));
-				tutorialSwitcher.setOutAnimation(AnimationUtils.loadAnimation(mActivity, R.anim.slide_out_left));
+				if (currentPage == 15){
+					mFirstView.setVisibility(View.INVISIBLE);
+					mEighthView.setVisibility(View.INVISIBLE);
+					nextButton.setVisibility(View.INVISIBLE);
+					setContent(currentPage);
+					return;
+				}
+				
+
+				if (currentPage == 16){
+					finish();
+					return;
+				}
 				
 				setContent(currentPage);
-				nextButton.setVisibility(View.VISIBLE);
+				if (currentPage != 13 && currentPage != 14)
+					nextButton.setVisibility(View.VISIBLE);
 			}
 		});
 	}
@@ -158,25 +168,5 @@ public class TutorialActivity extends Activity {
 			tutorialSwitcher.setImageDrawable(getResources().getDrawable(R.drawable.tutorial_end));
 			break;
 		}
-	}
-	
-	@Override
-	public void onBackPressed() {	
-//		currentPage--;
-//		if (currentPage == -1){
-//			currentPage = 0;
-//			return;
-//		}
-//		
-//		if (currentPage == 0 || currentPage == 7 || currentPage == 12)
-//			nextButton.setVisibility(View.INVISIBLE);
-//		else
-//			nextButton.setVisibility(View.VISIBLE);
-//		
-//		tutorialSwitcher.setInAnimation(AnimationUtils.loadAnimation(this, android.R.anim.slide_in_left));
-//		tutorialSwitcher.setOutAnimation(AnimationUtils.loadAnimation(this, android.R.anim.slide_out_right));
-	
-//		setContent(currentPage);
-		finish();
 	}
 }
