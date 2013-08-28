@@ -48,7 +48,6 @@ public class TutorialActivity extends Activity {
 			public void onClick(View v) {
 				nextButton.setVisibility(View.VISIBLE);
 				setContent(7);
-				
 			}
 		});
 		

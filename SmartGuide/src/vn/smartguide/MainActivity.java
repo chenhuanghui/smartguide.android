@@ -138,6 +138,7 @@ public class MainActivity extends FragmentActivity implements MainAcitivyListene
 	private RelativeLayout updateBtn;
 	private RelativeLayout gpsBtn;
 	private RelativeLayout mTutorialBtn;
+	private RelativeLayout mBtnIntro;
 	private boolean isNeedReview = false;
 
 	// Viewpager
@@ -1006,6 +1007,14 @@ public class MainActivity extends FragmentActivity implements MainAcitivyListene
 			}
 		});
 		
+		mBtnIntro = (RelativeLayout)menu.getMenu().findViewById(R.id.btnIntro);
+		mBtnIntro.setOnClickListener(new OnClickListener() {
+			@Override
+			public void onClick(View v) {
+				startActivity(new Intent(mActivity, IntroActivity.class));
+			}
+		});
+		
 		gpsBtn = (RelativeLayout)menu.getMenu().findViewById(R.id.GPSButton);
 		gpsBtn.setOnClickListener(new OnClickListener() {
 			@Override
@@ -1173,7 +1182,7 @@ public class MainActivity extends FragmentActivity implements MainAcitivyListene
 		EditText edtSearch = (EditText) findViewById(R.id.edtSearch);
 		ImageButton btnSearch = (ImageButton) findViewById(R.id.btnSearch);
 		ImageButton btnToggleMenu = (ImageButton) findViewById(R.id.btnToggleMenu);
-		ImageButton btnToggleFilter = (ImageButton) findViewById(R.id.btnToggleMap);		
+		ImageButton btnToggleFilter = (ImageButton) findViewById(R.id.btnToggleMap);
 
 		// Set search onscreen keyboard event
 		edtSearch.setOnEditorActionListener(new OnEditorActionListener() {
