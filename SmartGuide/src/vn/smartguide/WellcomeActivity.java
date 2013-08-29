@@ -135,7 +135,7 @@ public class WellcomeActivity extends FragmentActivity{
 			public void onClick(View v) {
 				if (isConfirm == false){
 					phoneNumber = mNumberField.getText().toString();
-					if (PhoneNumberUtils.isGlobalPhoneNumber(phoneNumber) == true){
+					if (PhoneNumberUtils.isGlobalPhoneNumber(phoneNumber) && validatePhoneNumber(phoneNumber)){
 						if (phoneNumber.charAt(0) == '+'){
 							String subphone = phoneNumber.substring(1);
 							phoneNumber = subphone;
@@ -618,4 +618,22 @@ public class WellcomeActivity extends FragmentActivity{
 		TextView messageView = (TextView)dialog.findViewById(android.R.id.message);
 		messageView.setGravity(Gravity.CENTER);
 	}
+	
+	public boolean validatePhoneNumber(String phone){
+		try{
+		String first3c = phone.substring(0, 2);
+		if (first3c.compareTo("84") == 0){
+			if (phone.length() != 11 && phone.length() != 12)
+				return false;
+			return true;
+		}else{
+			if (phone.length() != 10 && phone.length() != 11)
+				return false;
+			return true;
+		}
+		}catch(Exception ex){
+			return false;
+		}
+	}
+	
 }

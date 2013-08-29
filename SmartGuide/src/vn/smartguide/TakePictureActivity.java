@@ -66,14 +66,13 @@ public class TakePictureActivity extends Activity {
 
 		cameraIntent  = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
 		cameraIntent.putExtra(MediaStore.EXTRA_OUTPUT, outputFileUri);
-
 		startActivityForResult(cameraIntent, CAMERA_REQUEST_CODE);
 	}
 
 	@Override
 	public void onStart() {
 		super.onStart();
-		EasyTracker.getInstance(this).activityStart(this);  // Add this method.
+		EasyTracker.getInstance(this).activityStart(this);
 	}
 
 	@Override
@@ -156,7 +155,7 @@ public class TakePictureActivity extends Activity {
 	}
 
 	public void uploadImage(){
-		String URL = "http://devapi.smartguide.vn/api/images/upload" + "?access_token=" + GlobalVariable.tokenID + GlobalVariable.footerURL;
+		String URL = "https://devapi.smartguide.vn/api/images/upload" + "?access_token=" + GlobalVariable.tokenID + GlobalVariable.footerURL;
 		HttpPost post = new HttpPost(URL);
 
 		FileBody bin = new FileBody(new File(outputFileUri.getPath()), "image/jpeg");
@@ -170,10 +169,9 @@ public class TakePictureActivity extends Activity {
 			
 			HttpClient client = new DefaultHttpClient();
 			
-			HttpResponse response = client.execute(post);
+			HttpResponse response = NetworkManger.httpclient.execute(post);
             HttpEntity resEntity = response.getEntity();
             String output = EntityUtils.toString(resEntity);
-            String s = output + "sa";
 		}catch(Exception ex){
 		}
 	}
