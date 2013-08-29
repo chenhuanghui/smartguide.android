@@ -7,32 +7,22 @@ import org.json.JSONArray;
 import org.json.JSONObject;
 
 public class Review {
-	int mID;
-	int mUserID;
 	String mFeedback;
-	String mFirstName;
-	String mLastName;
+	String mName;
 	
-	public Review(int id, int userid, String feedback, String firstName, String lastName){
-		mID = id;
-		mUserID = userid;
+	public Review(String feedback, String name){
 		mFeedback = feedback;
-		mFirstName = firstName;
-		mLastName = lastName;
+		mName = name;
 	}
 	
-	public static List<Review> getList(String json){
+	public static List<Review> getList(JSONArray array){
 		List<Review> result = new ArrayList<Review>();
 		try{
-			JSONArray array = new JSONArray(json);
 			for(int i = 0; i < array.length(); i++){
 				JSONObject object = array.getJSONObject(i);
-				int id = object.getInt("id");
-				int userid = object.getInt("user_id");
 				String feedback = object.getString("feedback");
-				String firstname = object.getString("first_name");
-				String lastname = object.getString("last_name");
-				result.add(new Review(id, userid, feedback, firstname, lastname));
+				String name = object.getString("username");
+				result.add(new Review(feedback, name));
 			}
 		}catch(Exception ex){
 			return result;

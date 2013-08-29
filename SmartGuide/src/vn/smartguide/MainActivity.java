@@ -1630,7 +1630,9 @@ public class MainActivity extends FragmentActivity implements MainAcitivyListene
 		mFilterBtn.setClickable(false);
 		mMapButton.setClickable(false);
 		mLocationBtn.setClickable(false);
-
+		((ImageButton) findViewById(R.id.btnSearch)).setClickable(false);
+		((ImageButton) findViewById(R.id.btnQRToggle)).setClickable(false);
+		
 		mFilterBtn.setImageResource(R.drawable.menu_filter_lock);
 		mMapButton.setImageResource(R.drawable.menu_map_lock);
 	}
@@ -2060,7 +2062,7 @@ public class MainActivity extends FragmentActivity implements MainAcitivyListene
 	public void onLeftToRightSwipe(){}
 
 	public void onTopToBottomSwipe(){
-		if (mShowCamera && mIsCanWipe)
+		if (mShowCamera && mIsCanWipe && GlobalVariable.mMode != 0)
 			toggleCamera();
 	}
 
