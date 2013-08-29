@@ -177,12 +177,15 @@ public class ShopListFragment extends Fragment {
 	private boolean isSearch = false;
 	
 	public void search(String search){
+		indexPage = 0;
 		isSearch = true;
 		// get search result
+		mSearchString = search;
 		new SearchShopListTask(search).execute();
 	}
 	
 	public void update(String json){
+		indexPage = 0;
 		isSearch = false;
 		mJson = json;
 		new UpdateTask().execute();
@@ -311,12 +314,11 @@ public class ShopListFragment extends Fragment {
 			pairs.add(new BasicNameValuePair("user_id", GlobalVariable.userID));
 			pairs.add(new BasicNameValuePair("user_lat", Float.toString(GlobalVariable.mLat)));
 			pairs.add(new BasicNameValuePair("user_lng", Float.toString(GlobalVariable.mLng)));
-			pairs.add(new BasicNameValuePair("page", Integer.toString(indexPage + 1)));
+			pairs.add(new BasicNameValuePair("page", Integer.toString(++indexPage)));
 			pairs.add(new BasicNameValuePair("sort_by", GlobalVariable.mSortByString));
 			pairs.add(new BasicNameValuePair("shop_name", mSearchString));
 			
 			try {
-				
 				if (isSearch)
 					json = NetworkManger.post(APILinkMaker.mSearch(), pairs);
 				else
@@ -348,8 +350,6 @@ public class ShopListFragment extends Fragment {
 								isMore = true;
 							else
 								isMore = false;
-	
-							indexPage++;
 							
 							mAdapter.notifyDataSetChanged();
 						}
