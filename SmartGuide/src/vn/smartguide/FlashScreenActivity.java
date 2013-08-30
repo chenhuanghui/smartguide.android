@@ -40,9 +40,11 @@ import android.view.animation.AccelerateDecelerateInterpolator;
 import android.widget.ImageView;
 
 public class FlashScreenActivity extends Activity {
-	private boolean isShow = false;
 	
+	private boolean isShow = false;
+	private boolean isFinish = false;
 	Intent resultData = null;
+	
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
@@ -51,24 +53,27 @@ public class FlashScreenActivity extends Activity {
 		resultData = new Intent();
 		resultData.putExtra("Database", "OK");
 		resultData.putExtra("Connection", "OK");
+		
+		new InitInformation().execute();
+		
+		new Handler().postDelayed(new Runnable() {
+			
+			@Override
+			public void run() {
+				if (isFinish) {
+					finish();
+					overridePendingTransition(android.R.anim.slide_in_left, android.R.anim.slide_out_right);
+				}
+				
+				isFinish = true;
+			}
+		}, 2000);
 	}
 
 	@Override
 	public boolean onCreateOptionsMenu(Menu menu) {
-		// Inflate the menu; this adds items to the action bar if it is present.
 		getMenuInflater().inflate(R.menu.flash_screen, menu);
 		return true;
-	}
-
-	@Override
-	public void onWindowFocusChanged(boolean hasFocus){
-		if (isShow)
-			return;
-		isShow = true;
-
-		// Initiate lots of things
-		new InitInformation().execute();
-
 	}
 
 	public class InitInformation extends AsyncTask<Void, Void, Boolean> {
@@ -107,7 +112,7 @@ public class FlashScreenActivity extends Activity {
 			.imageScaleType(ImageScaleType.EXACTLY)
 			.displayer(new RoundedBitmapDisplayer(20))
 			.build();
-
+			
 			ImageLoaderConfiguration config = new ImageLoaderConfiguration.Builder(getApplicationContext())
 			.threadPoolSize(6)
 			.threadPriority(Thread.NORM_PRIORITY-1)
@@ -123,9 +128,9 @@ public class FlashScreenActivity extends Activity {
 			List<NameValuePair> pairs = new ArrayList<NameValuePair>();
 			pairs.add(new BasicNameValuePair("city", GlobalVariable.mCityID));
 			pairs.add(new BasicNameValuePair("env", Integer.toString(GlobalVariable.mMode)));
-
+			
 			json = NetworkManger.post(APILinkMaker.mGroupByCity(), pairs);
-
+			
 			if (json != ""){
 				resultData = new Intent();
 				resultData.putExtra("Database", "OK");
@@ -143,7 +148,7 @@ public class FlashScreenActivity extends Activity {
 						GlobalVariable.mCateogries = Category.getListCategory(object.getJSONArray("content"));
 						pairs = new ArrayList<NameValuePair>();
 						pairs.add(new BasicNameValuePair("type", "1")); // lấy version của city
-
+						
 						json = NetworkManger.post(APILinkMaker.mGetVersion(), pairs);
 						String version = json.substring(1, json.length() - 1);
 						if (version.compareTo(GlobalVariable.mVersion) != 0){
@@ -172,23 +177,22 @@ public class FlashScreenActivity extends Activity {
 					setResult(Activity.RESULT_OK, resultData);
 				else
 					getParent().setResult(Activity.RESULT_OK, resultData);
-				
-				finish();
-				overridePendingTransition(android.R.anim.slide_in_left, android.R.anim.slide_out_right);
+
+				if (isFinish == true){
+					finish();
+					overridePendingTransition(android.R.anim.slide_in_left, android.R.anim.slide_out_right);
+				}
+
+				isFinish = true;
 			}
 		}
 
 		@Override
 		protected void onPreExecute(){
-
+			
 		}
 	}
-
-	@Override
-	public void onActivityResult(int requestCode, int resultCode, Intent data) {
-
-	}
-
+	
 	@Override
 	public void onStart() {
 		super.onStart();
@@ -199,10 +203,5 @@ public class FlashScreenActivity extends Activity {
 	public void onStop() {
 		super.onStop();
 		EasyTracker.getInstance(this).activityStop(this);
-	}
-
-	@Override
-	public void onBackPressed() {
-		return;
 	}
 }
