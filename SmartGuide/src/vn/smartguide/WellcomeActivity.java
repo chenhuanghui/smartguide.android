@@ -119,6 +119,7 @@ public class WellcomeActivity extends FragmentActivity{
 		mLogin = (ImageButton)findViewById(R.id.viaFaceButton);
 		mSkip = (ImageButton)findViewById(R.id.skipFaceButton);
 		
+		// Set up animation		
 		mFacebookBtnFadeIn = ObjectAnimator.ofFloat(mLogin, "alpha", 0.0f, 1.0f);
 		mFacebookBtnFadeIn.setInterpolator(new AccelerateDecelerateInterpolator());
 		mSkipBtnFadeIn = ObjectAnimator.ofFloat(mSkip, "alpha", 0.0f, 1.0f);

@@ -80,138 +80,154 @@ public class FlashScreenActivity extends Activity {
 			return;
 		isShow = true;
 
+		// Initiate lots of things
 		new InitInformation().execute();
 
-		mLogo = (ImageView)findViewById(R.id.logoF);
-		mSlogan = (ImageView)findViewById(R.id.sloganF);
-		mSmartGuide = (ImageView)findViewById(R.id.smartguideF);
-
-		Display display = getWindowManager().getDefaultDisplay(); 
-		mWidth = display.getWidth();
-		mHeight = display.getHeight();
-
-		int halfWidth = mWidth / 2;
-
-		mLogo.setX(halfWidth - mLogo.getWidth() / 2);
-		mSlogan.setX(halfWidth - mSlogan.getWidth() / 2);
-		mSmartGuide.setX(halfWidth - mSmartGuide.getWidth() / 2);
-
-		mLogoFadeIn = ObjectAnimator.ofFloat(mLogo, "alpha", 0.0f, 1.0f);
-		mLogoFadeIn.setInterpolator(new AccelerateDecelerateInterpolator());
-
-		mLogoSlideUp = ObjectAnimator.ofFloat(mLogo, "translationY", mHeight, mHeight / 2 - 100 - 95);
-		mLogoSlideUp.setInterpolator(new AccelerateDecelerateInterpolator());
-		mLogoSlideUp.addListener(new AnimatorListener() {
+		// Set up animation
+//		mLogo = (ImageView)findViewById(R.id.logoF);
+//		mSlogan = (ImageView)findViewById(R.id.sloganF);
+//		mSmartGuide = (ImageView)findViewById(R.id.smartguideF);
+//
+//		Display display = getWindowManager().getDefaultDisplay(); 
+//		mWidth = display.getWidth();
+//		mHeight = display.getHeight();
+//
+//		int halfWidth = mWidth / 2;
+//
+//		mLogo.setX(halfWidth - mLogo.getWidth() / 2);
+//		mSlogan.setX(halfWidth - mSlogan.getWidth() / 2);
+//		mSmartGuide.setX(halfWidth - mSmartGuide.getWidth() / 2);
+//
+//		mLogoFadeIn = ObjectAnimator.ofFloat(mLogo, "alpha", 0.0f, 1.0f);
+//		mLogoFadeIn.setInterpolator(new AccelerateDecelerateInterpolator());
+//
+//		mLogoSlideUp = ObjectAnimator.ofFloat(mLogo, "translationY", mHeight, mHeight / 2 - 100 - 95);
+//		mLogoSlideUp.setInterpolator(new AccelerateDecelerateInterpolator());
+//		mLogoSlideUp.addListener(new AnimatorListener() {
+//			@Override
+//			public void onAnimationStart(Animator animation) {
+//				mLogo.setVisibility(View.VISIBLE);
+//				new Handler().postDelayed(new Runnable() {
+//
+//					@Override
+//					public void run() {
+//						mSmartGuide.setVisibility(View.VISIBLE);
+//						mSmartGuideSlideUp.start();
+//					}
+//				}, 500);
+//			}
+//
+//			@Override
+//			public void onAnimationRepeat(Animator animation) {
+//
+//			}
+//
+//			@Override
+//			public void onAnimationEnd(Animator animation) {
+//
+//			}
+//
+//			@Override
+//			public void onAnimationCancel(Animator animation) {
+//
+//			}
+//		});
+//
+//		List<ObjectAnimator> ListLogoAnimators = new ArrayList<ObjectAnimator>();
+//		ListLogoAnimators.add(mLogoFadeIn);
+//		ListLogoAnimators.add(mLogoSlideUp);
+//
+//		ObjectAnimator[] objectAnimators = ListLogoAnimators.toArray(new ObjectAnimator[ListLogoAnimators.size()]);
+//		AnimatorSet animSetXY = new AnimatorSet();
+//		animSetXY.playTogether(objectAnimators);
+//		animSetXY.setDuration(1000);//1sec
+//		animSetXY.start();
+//
+//		mSmartGuideSlideUp = ObjectAnimator.ofFloat(mSmartGuide, "translationY", mHeight, mHeight / 2 + 10);
+//		mSmartGuideSlideUp.setDuration(1000);
+//		mSmartGuideSlideUp.setInterpolator(new AccelerateDecelerateInterpolator());
+//		mSmartGuideSlideUp.addListener(new AnimatorListener() {
+//			@Override
+//			public void onAnimationStart(Animator animation) {
+//				// TODO Auto-generated method stub
+//				new Handler().postDelayed(new Runnable() {
+//
+//					@Override
+//					public void run() {
+//						mSlogan.setVisibility(View.VISIBLE);
+//						mSloganSlideUp.start();
+//					}
+//				}, 500);
+//			}
+//
+//			@Override
+//			public void onAnimationRepeat(Animator animation) {}
+//
+//			@Override
+//			public void onAnimationEnd(Animator animation) {}
+//
+//			@Override
+//			public void onAnimationCancel(Animator animation) {}
+//		});
+//		//mSmartGuideSlideUp.start();
+//
+//		mSloganSlideUp = ObjectAnimator.ofFloat(mSlogan, "translationY", mHeight, mHeight / 2 + 65);
+//		mSloganSlideUp.setDuration(1000);
+//		mSloganSlideUp.setInterpolator(new AccelerateDecelerateInterpolator());
+//		mSloganSlideUp.addListener(new AnimatorListener() {
+//
+//			@Override
+//			public void onAnimationStart(Animator animation) {
+//
+//			}
+//
+//			@Override
+//			public void onAnimationRepeat(Animator animation) {
+//
+//			}
+//
+//			@Override
+//			public void onAnimationEnd(Animator animation) {
+//				new Handler().postDelayed(new Runnable() {
+//
+//					@Override
+//					public void run() {
+//						if (isFinish){
+//
+//							if (getParent() == null) 
+//								setResult(Activity.RESULT_OK, resultData);
+//							else
+//								getParent().setResult(Activity.RESULT_OK, resultData);
+//
+//							finish();
+//							//overridePendingTransition(R.anim.slide_in_right, R.anim.slide_out_left);
+//							overridePendingTransition(android.R.anim.slide_in_left, android.R.anim.slide_out_right);
+//						}
+//
+//						isFinish = true;
+//					}
+//				}, 200);
+//			}
+//
+//			@Override
+//			public void onAnimationCancel(Animator animation) {
+//
+//			}
+//		});
+		
+		// Finish this activity after 2000 ms
+		new Handler().postDelayed(new Runnable() {
+			
 			@Override
-			public void onAnimationStart(Animator animation) {
-				mLogo.setVisibility(View.VISIBLE);
-				new Handler().postDelayed(new Runnable() {
-
-					@Override
-					public void run() {
-						mSmartGuide.setVisibility(View.VISIBLE);
-						mSmartGuideSlideUp.start();
-					}
-				}, 500);
+			public void run() {
+				
+				if (isFinish) {
+					finish();
+					overridePendingTransition(android.R.anim.slide_in_left, android.R.anim.slide_out_right);
+				}
+				isFinish = true;
 			}
-
-			@Override
-			public void onAnimationRepeat(Animator animation) {
-
-			}
-
-			@Override
-			public void onAnimationEnd(Animator animation) {
-
-			}
-
-			@Override
-			public void onAnimationCancel(Animator animation) {
-
-			}
-		});
-
-		List<ObjectAnimator> ListLogoAnimators = new ArrayList<ObjectAnimator>();
-		ListLogoAnimators.add(mLogoFadeIn);
-		ListLogoAnimators.add(mLogoSlideUp);
-
-		ObjectAnimator[] objectAnimators = ListLogoAnimators.toArray(new ObjectAnimator[ListLogoAnimators.size()]);
-		AnimatorSet animSetXY = new AnimatorSet();
-		animSetXY.playTogether(objectAnimators);
-		animSetXY.setDuration(1000);//1sec
-		animSetXY.start();
-
-		mSmartGuideSlideUp = ObjectAnimator.ofFloat(mSmartGuide, "translationY", mHeight, mHeight / 2 + 10);
-		mSmartGuideSlideUp.setDuration(1000);
-		mSmartGuideSlideUp.setInterpolator(new AccelerateDecelerateInterpolator());
-		mSmartGuideSlideUp.addListener(new AnimatorListener() {
-			@Override
-			public void onAnimationStart(Animator animation) {
-				// TODO Auto-generated method stub
-				new Handler().postDelayed(new Runnable() {
-
-					@Override
-					public void run() {
-						mSlogan.setVisibility(View.VISIBLE);
-						mSloganSlideUp.start();
-					}
-				}, 500);
-			}
-
-			@Override
-			public void onAnimationRepeat(Animator animation) {}
-
-			@Override
-			public void onAnimationEnd(Animator animation) {}
-
-			@Override
-			public void onAnimationCancel(Animator animation) {}
-		});
-		//mSmartGuideSlideUp.start();
-
-		mSloganSlideUp = ObjectAnimator.ofFloat(mSlogan, "translationY", mHeight, mHeight / 2 + 65);
-		mSloganSlideUp.setDuration(1000);
-		mSloganSlideUp.setInterpolator(new AccelerateDecelerateInterpolator());
-		mSloganSlideUp.addListener(new AnimatorListener() {
-
-			@Override
-			public void onAnimationStart(Animator animation) {
-
-			}
-
-			@Override
-			public void onAnimationRepeat(Animator animation) {
-
-			}
-
-			@Override
-			public void onAnimationEnd(Animator animation) {
-				new Handler().postDelayed(new Runnable() {
-
-					@Override
-					public void run() {
-						if (isFinish){
-
-							if (getParent() == null) 
-								setResult(Activity.RESULT_OK, resultData);
-							else
-								getParent().setResult(Activity.RESULT_OK, resultData);
-
-							finish();
-							//overridePendingTransition(R.anim.slide_in_right, R.anim.slide_out_left);
-							overridePendingTransition(android.R.anim.slide_in_left, android.R.anim.slide_out_right);
-						}
-
-						isFinish = true;
-					}
-				}, 200);
-			}
-
-			@Override
-			public void onAnimationCancel(Animator animation) {
-
-			}
-		});
+		}, 2000);
 	}
 
 	public class InitInformation extends AsyncTask<Void, Void, Boolean> {
@@ -327,7 +343,7 @@ public class FlashScreenActivity extends Activity {
 
 		@Override
 		protected void onPreExecute(){
-
+			
 		}
 	}
 
@@ -353,4 +369,3 @@ public class FlashScreenActivity extends Activity {
 		return;
 	}
 }
-
