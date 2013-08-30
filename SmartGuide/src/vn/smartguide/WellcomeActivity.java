@@ -45,15 +45,14 @@ import com.google.analytics.tracking.android.EasyTracker;
 public class WellcomeActivity extends FragmentActivity{
 
 	UiLifecycleHelper 	mUiHelper;
-	boolean isShow = false;
 	boolean isConfirm = false;
 	
-	ImageView mLogo = null;
-	ImageView mSlogan = null;
-	ImageView mSmartGuide = null;
+	ImageView mLogo;
+	ImageView mSlogan;
+	ImageView mSmartGuide;
 	
-	ImageButton mLogin = null;
-	ImageButton mSkip = null;
+	ImageButton mLogin;
+	ImageButton mSkip;
 	
 	EditText mNumberField = null;
 	ImageButton mSendButton = null;
@@ -69,19 +68,18 @@ public class WellcomeActivity extends FragmentActivity{
 	String userID = "";
 	LoginButton authButton = null;
 		
-	private ObjectAnimator mNumberFieldSlideUp = null;
-	private ObjectAnimator mSendButtonSlideUp = null;
-	private ObjectAnimator mFacebookBtnFadeIn = null;
-	private ObjectAnimator mStatusTextFlash = null;
+	private ObjectAnimator mNumberFieldSlideUp;
+	private ObjectAnimator mSendButtonSlideUp;
+	private ObjectAnimator mFacebookBtnFadeIn;
+	private ObjectAnimator mStatusTextFlash;
 
 	private Intent resultData;
-	Activity mActivity;
 	
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.activity_wellcome);
-		mActivity = this; 
+		
 		Session.StatusCallback callback = new Session.StatusCallback() {
 
 			public void call(Session session, SessionState state, Exception exception) {
@@ -194,13 +192,6 @@ public class WellcomeActivity extends FragmentActivity{
 	}
 	
 	@Override
-	public void onWindowFocusChanged(boolean hasFocus){
-		if (isShow)
-			return;
-		isShow = true;
-	}
-	
-	@Override
 	public void onActivityResult(int requestCode, int resultCode, Intent data) {
 		super.onActivityResult(requestCode, resultCode, data);
 		mUiHelper.onActivityResult(requestCode, resultCode, data);
@@ -292,7 +283,6 @@ public class WellcomeActivity extends FragmentActivity{
 	}
 	
 	public class GetActivateCode extends AsyncTask<Void, Void, Boolean> {    	
-
 		@Override
 		protected Boolean doInBackground(Void... params) {
 			NetworkManger.get(GlobalVariable.urlGetActivateCode + phoneNumber, false);
@@ -409,19 +399,19 @@ public class WellcomeActivity extends FragmentActivity{
 				" qua tin nhắn. Chọn Đồng ý để tiếp tục hoặc hủy để thay đổi số điện thoại");
 		builder.setCancelable(true);
 		
-		builder.setNegativeButton("Đồng ý", new DialogInterface.OnClickListener() {
+		builder.setNegativeButton("Hủy", new DialogInterface.OnClickListener() {
+			public void onClick(DialogInterface dialog, int which) {
+				mStatusText.setText("Nhập số điện thoại...");
+				mNumberField.setText("");
+			}
+		});
+		
+		builder.setPositiveButton("Đồng ý", new DialogInterface.OnClickListener() {
 			public void onClick(DialogInterface dialog, int which) {
 				isConfirm = true;
 				mStatusText.setText("Chờ và nhập mã xác nhận...");
 				mNumberField.setText("");
 				new GetActivateCode().execute();
-			}
-		});
-		
-		builder.setPositiveButton("Hủy", new DialogInterface.OnClickListener() {
-			public void onClick(DialogInterface dialog, int which) {
-				mStatusText.setText("Nhập số điện thoại...");
-				mNumberField.setText("");
 			}
 		});
 		

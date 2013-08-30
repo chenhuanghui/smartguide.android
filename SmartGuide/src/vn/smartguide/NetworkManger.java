@@ -35,7 +35,7 @@ public final class NetworkManger {
 	
 	public static HttpParams params;
 	public static ClientConnectionManager ccm;
-	public static HttpClient httpclient = new DefaultHttpClient(ccm, params);
+	public static HttpClient httpclient;
 	
 	public static void init() throws KeyStoreException, NoSuchAlgorithmException, CertificateException, IOException, KeyManagementException, UnrecoverableKeyException{
 		KeyStore trustStore = KeyStore.getInstance(KeyStore.getDefaultType());

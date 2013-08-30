@@ -34,19 +34,19 @@ import android.widget.TextView;
 
 public class CategoryListFragment extends Fragment {
 
-	private Activity mActivity = null;
-	private MainAcitivyListener mMainAcitivyListener = null;
+	private Activity mActivity;
+	private MainAcitivyListener mMainAcitivyListener;
 
-	private ImageView mLoadingCircle = null;
-	private ImageView mLoadingMiddle = null;
-	private ImageView mLoadingBackground = null;
-	private RelativeLayout mLoadingOptical = null;
+	private ImageView mLoadingCircle;
+	private ImageView mLoadingMiddle;
+	private ImageView mLoadingBackground;
+	private RelativeLayout mLoadingOptical;
 
-	private ObjectAnimator mRotateAnimation = null;
-	private ObjectAnimator mFadeOutCircle = null;
-	private ObjectAnimator mFadeOutMiddle = null;
-	private ObjectAnimator mFadeInCircle = null;
-	private ObjectAnimator mFadeInMiddle = null;
+	private ObjectAnimator mRotateAnimation;
+	private ObjectAnimator mFadeOutCircle;
+	private ObjectAnimator mFadeOutMiddle;
+	private ObjectAnimator mFadeInCircle;
+	private ObjectAnimator mFadeInMiddle;
 
 	private boolean mIsCanGoNextPage = false;
 

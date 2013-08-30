@@ -10,6 +10,7 @@ import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import android.annotation.SuppressLint;
 import android.app.ActionBar.LayoutParams;
 import android.graphics.Bitmap;
 import android.graphics.drawable.BitmapDrawable;
@@ -31,9 +32,9 @@ import android.widget.ViewSwitcher.ViewFactory;
 public class AdsFragment extends Fragment {
 	List<Drawable> images = new ArrayList<Drawable>();
 	
-	ImageSwitcher mAdsSwitcher = null;
+	ImageSwitcher mAdsSwitcher;
 	int index = 1;
-	ChangeImage mChangeImage = null;
+	ChangeImage mChangeImage;
 	
 	@Override
 	public View onCreateView(LayoutInflater inflater, ViewGroup container,
@@ -158,6 +159,7 @@ public class AdsFragment extends Fragment {
 			return true;
 		}
 
+		@SuppressLint("HandlerLeak")
 		@Override
 		protected void onPostExecute(Boolean k){
 			if (k == true){

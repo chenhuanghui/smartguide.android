@@ -86,6 +86,7 @@ public class TakePictureActivity extends Activity {
 		bmOpt.inJustDecodeBounds = true;
 
 		BitmapFactory.decodeFile(imgPath, bmOpt);
+		
 		int photoW = 640;
 		int photoH = 480;
 
@@ -152,7 +153,7 @@ public class TakePictureActivity extends Activity {
 	}
 
 	public void uploadImage(){
-		String URL = "https://devapi.smartguide.vn/api/images/upload" + "?access_token=" + GlobalVariable.tokenID + GlobalVariable.footerURL;
+		String URL = APILinkMaker.mUploadImage() + "?access_token=" + GlobalVariable.tokenID + GlobalVariable.footerURL;
 		HttpPost post = new HttpPost(URL);
 
 		FileBody bin = new FileBody(new File(outputFileUri.getPath()), "image/jpeg");
@@ -164,12 +165,16 @@ public class TakePictureActivity extends Activity {
 			reqEntity.addPart("photo", bin);
 			post.setEntity(reqEntity);
 			
-			HttpClient client = new DefaultHttpClient();
-			
 			HttpResponse response = NetworkManger.httpclient.execute(post);
             HttpEntity resEntity = response.getEntity();
             String output = EntityUtils.toString(resEntity);
 		}catch(Exception ex){
 		}
+	}
+	
+	@Override
+	public void finish() {
+		deleteOldPhoto();
+		super.finish();
 	}
 }
