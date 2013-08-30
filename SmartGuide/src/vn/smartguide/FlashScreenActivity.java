@@ -204,4 +204,9 @@ public class FlashScreenActivity extends Activity {
 		super.onStop();
 		EasyTracker.getInstance(this).activityStop(this);
 	}
+	
+	 @Override
+	 public void onBackPressed() {
+	    return;
+	 }
 }
