@@ -6,10 +6,7 @@ import java.util.Timer;
 import java.util.TimerTask;
 
 import org.apache.http.NameValuePair;
-import org.apache.http.message.BasicNameValuePair;
 import org.json.JSONObject;
-
-import vn.smartguide.AdsFragment.ChangeImage;
 
 import com.google.analytics.tracking.android.EasyTracker;
 
@@ -20,10 +17,8 @@ import android.app.AlertDialog;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.view.Gravity;
-import android.view.Menu;
 import android.view.View;
 import android.view.View.OnFocusChangeListener;
-import android.view.WindowManager.LayoutParams;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.Button;
 import android.widget.EditText;

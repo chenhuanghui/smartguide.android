@@ -28,5 +28,4 @@ public class ScrollerCustomDuration extends Scroller {
 	public void startScroll(int startX, int startY, int dx, int dy, int duration) {
 		super.startScroll(startX, startY, dx, dy, GlobalVariable.timeTransfer);
 	}
-
 }

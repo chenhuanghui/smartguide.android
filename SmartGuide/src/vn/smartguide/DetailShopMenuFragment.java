@@ -7,23 +7,13 @@ import java.util.List;
 import java.util.Locale;
 import java.util.Map;
 
-import org.apache.http.NameValuePair;
-import org.apache.http.message.BasicNameValuePair;
-import org.json.JSONArray;
-import org.json.JSONException;
-import org.json.JSONObject;
-
-
-import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.BaseAdapter;
 import android.widget.BaseExpandableListAdapter;
 import android.widget.ExpandableListView;
-import android.widget.GridView;
 import android.widget.TextView;
 
 public class DetailShopMenuFragment extends Fragment {
@@ -168,8 +158,6 @@ public class DetailShopMenuFragment extends Fragment {
      
         public View getGroupView(int groupPosition, boolean isExpanded,
                 View convertView, ViewGroup parent) {
-        	
-            String menuName = (String) getGroup(groupPosition);
             if (convertView == null) {
             	LayoutInflater inflater = mContext.getLayoutInflater();
                 convertView = inflater.inflate(R.layout.shopmenu_group_item, null);

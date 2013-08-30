@@ -20,8 +20,6 @@ import android.os.Handler;
 import android.os.Message;
 import android.support.v4.app.DialogFragment;
 import android.support.v4.app.Fragment;
-import android.text.format.Time;
-import android.util.Log;
 import android.view.KeyEvent;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -43,8 +41,6 @@ import android.widget.TextView.OnEditorActionListener;
  */
 @SuppressLint("ValidFragment")
 public class DetailCommentFragment extends Fragment {
-
-	private MainActivity 			mActivity;
 	private CommentListAdapter 		mAdapter;
 	private Shop 					mShop;
 	private ListView				mLst;
@@ -65,7 +61,6 @@ public class DetailCommentFragment extends Fragment {
 	@Override
 	public void onAttach(Activity activity) {
 		super.onAttach(activity);
-		mActivity = (MainActivity) activity;
 	}
 
     @Override

@@ -4,11 +4,8 @@ import java.util.List;
 
 import com.google.analytics.tracking.android.EasyTracker;
 
-
-
 import android.os.Bundle;
 import android.annotation.SuppressLint;
-import android.app.Activity;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentActivity;
 import android.support.v4.app.FragmentManager;

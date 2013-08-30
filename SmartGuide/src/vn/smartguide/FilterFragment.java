@@ -302,7 +302,7 @@ public class FilterFragment extends Fragment {
 	}
 	
 	public class FindShopList extends AsyncTask<Void, Void, Boolean> {
-
+		String json ="";
 		@Override
 		protected Boolean doInBackground(Void... params) {
 			List<NameValuePair> pairs = new ArrayList<NameValuePair>();
@@ -314,21 +314,18 @@ public class FilterFragment extends Fragment {
 			pairs.add(new BasicNameValuePair("page", "0"));
 			pairs.add(new BasicNameValuePair("sort_by", GlobalVariable.mSortByString));
 
-			String json = NetworkManger.post(APILinkMaker.ShopListInCategory(), pairs);
-			((ShopListFragment)(mMainAcitivyListener).getShopListFragment()).mHaveAnimation = true;
-			(mMainAcitivyListener).getShopListFragment().update(json);
+			json = NetworkManger.post(APILinkMaker.ShopListInCategory(), pairs);
+			
 			return true;
 		}
 
 		@Override
 		protected void onPostExecute(Boolean k){
-			List<ObjectAnimator> arrayListObjectAnimators = new ArrayList<ObjectAnimator>();
-			
+			((ShopListFragment)(mMainAcitivyListener).getShopListFragment()).mHaveAnimation = true;
+			(mMainAcitivyListener).getShopListFragment().update(json);
 		}
 
 		@Override
-		protected void onPreExecute(){
-			
-		}
+		protected void onPreExecute(){}
 	}
 }

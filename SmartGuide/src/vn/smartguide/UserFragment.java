@@ -1,21 +1,16 @@
 package vn.smartguide;
 
-import java.net.Inet4Address;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.zip.Inflater;
 
 import org.apache.http.NameValuePair;
 import org.apache.http.message.BasicNameValuePair;
-import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
-import org.w3c.dom.Text;
 
 import android.animation.ObjectAnimator;
 import android.app.AlertDialog;
 import android.app.AlertDialog.Builder;
-import android.content.DialogInterface;
 import android.graphics.Bitmap;
 import android.graphics.drawable.BitmapDrawable;
 import android.graphics.drawable.Drawable;

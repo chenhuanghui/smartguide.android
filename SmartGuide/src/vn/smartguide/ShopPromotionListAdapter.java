@@ -3,19 +3,16 @@ package vn.smartguide;
 /**
  * Created by ChauSang on 7/26/13.
  */
-import java.security.acl.NotOwnerException;
 import java.util.ArrayList;
 import java.util.List;
 
 
 
 import android.app.Activity;
-import android.content.Context;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.BaseAdapter;
-import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 import android.widget.TextView;

@@ -27,7 +27,6 @@ import android.widget.ImageView;
 
 import com.nostra13.universalimageloader.core.assist.FailReason;
 import com.nostra13.universalimageloader.core.assist.ImageLoadingListener;
-import com.nostra13.universalimageloader.core.assist.ImageSize;
 
 @SuppressLint("ValidFragment")
 public class DetailShopPhotoFragment extends Fragment {

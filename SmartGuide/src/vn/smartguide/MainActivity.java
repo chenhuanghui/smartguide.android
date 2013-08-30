@@ -139,7 +139,6 @@ public class MainActivity extends FragmentActivity implements MainAcitivyListene
 	private RelativeLayout gpsBtn;
 	private RelativeLayout mTutorialBtn;
 	private RelativeLayout mBtnIntro;
-	private boolean isNeedReview = false;
 
 	// Viewpager
 	private FragmentManager mFragmentManager;
@@ -151,7 +150,6 @@ public class MainActivity extends FragmentActivity implements MainAcitivyListene
 	private boolean mShowCamera 				= false;
 	private boolean mShowUser 					= false;
 	private boolean mIsShowFilter				= false;
-	private boolean mIsNeedGotoDetail 			= false;
 	private boolean mShowMenu 					= false;
 	private boolean mIsNeedToggleMap			= false;
 	private boolean mIsNeedToggleUser 			= false;

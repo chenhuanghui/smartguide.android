@@ -1,7 +1,6 @@
 package vn.smartguide;
 
 import android.graphics.Bitmap;
-import android.view.View;
 
 public class Comment {
 	public String mUser;

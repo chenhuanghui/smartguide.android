@@ -192,7 +192,7 @@ public class WellcomeActivity extends FragmentActivity{
 			
 			@Override
 			public void onClick(View v) {
-				authButton.callOnClick();
+				authButton.performClick();
 			}
 		});
 	}

@@ -23,11 +23,9 @@ import android.os.Environment;
 import android.provider.MediaStore;
 import android.app.Activity;
 import android.content.Intent;
-import android.database.Cursor;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.Matrix;
-import android.view.Menu;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
@@ -90,7 +88,6 @@ public class TakePictureActivity extends Activity {
 		BitmapFactory.decodeFile(imgPath, bmOpt);
 		int photoW = 640;
 		int photoH = 480;
-		float aspectRatio = (float) photoW / (float) photoH;
 
 		int targetW = 320;
 		int targetH = 240;

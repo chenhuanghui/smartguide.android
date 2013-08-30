@@ -4,18 +4,14 @@ import java.util.ArrayList;
 import java.util.List;
 
 import org.apache.http.NameValuePair;
-import org.apache.http.entity.mime.MinimalField;
 import org.apache.http.message.BasicNameValuePair;
-import org.json.JSONObject;
 
 import android.animation.Animator;
 import android.animation.Animator.AnimatorListener;
-import android.animation.AnimatorSet;
 import android.animation.ObjectAnimator;
 import android.animation.TimeInterpolator;
 import android.app.Activity;
 import android.content.res.Resources;
-import android.graphics.BitmapFactory;
 import android.graphics.drawable.Drawable;
 import android.os.AsyncTask;
 import android.os.Bundle;
@@ -25,13 +21,10 @@ import android.view.View;
 import android.view.View.OnClickListener;
 import android.view.ViewGroup;
 import android.view.animation.AccelerateDecelerateInterpolator;
-import android.widget.AbsListView;
 import android.widget.Button;
 import android.widget.FrameLayout;
 import android.widget.ImageButton;
-import android.widget.ImageView;
 import android.widget.LinearLayout;
-import android.widget.ListAdapter;
 import android.widget.RelativeLayout;
 
 /**
@@ -250,9 +243,6 @@ public class DetailMenuFragment extends Fragment {
 
         LinearLayout layoutUpper = (LinearLayout) getView().findViewById(R.id.layoutHalfUpperMenu);
         LinearLayout layoutInfoShop = (LinearLayout) getView().findViewById(R.id.layoutInfoShop);
-        
-        ImageButton btnShop = (ImageButton) getView().findViewById(R.id.btnShop3);
-
         mShowInfoBar = !mShowInfoBar;
 
         ObjectAnimator animator = null;

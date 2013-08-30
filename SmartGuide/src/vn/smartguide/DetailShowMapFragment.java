@@ -7,14 +7,12 @@ import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
 import android.support.v4.app.Fragment;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.view.View.OnLayoutChangeListener;
 import android.view.ViewGroup;
 import android.widget.ImageButton;
-import android.widget.ImageView;
 
 import com.google.android.gms.maps.CameraUpdate;
 import com.google.android.gms.maps.CameraUpdateFactory;
@@ -109,8 +107,6 @@ public class DetailShowMapFragment extends Fragment {
 		    			}
 		    		}
 		    	}).bitmap(url);
-		    	
-		    	Log.d("CycrixDebug", "Download= " + url);
 			}
 		});
     	
