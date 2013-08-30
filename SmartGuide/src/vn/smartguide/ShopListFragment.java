@@ -72,8 +72,10 @@ public class ShopListFragment extends Fragment {
 	private ObjectAnimator mFadeInMiddle = null;
 	
 	public boolean mHaveAnimation = false;
+	public boolean isMore = false;
 	
 	private String mSearchString = "";
+	private int indexPage = 0;
 	
 	public void updateSGP(int id, int sgp){
 		if (mShopList == null || mShopList.size() == 0)
@@ -114,8 +116,6 @@ public class ShopListFragment extends Fragment {
 		mLoadingMiddle = (ImageView) getView().findViewById(R.id.loadingMidleS);
 		mLoadingBackground = (ImageView) getView().findViewById(R.id.loadingBackgroundS);
 		mLoadingOptical = (RelativeLayout) getView().findViewById(R.id.foregroundLoading);
-		
-		//mForeGround = (RelativeLayout) getView().findViewById(R.id.foreground);
 		
 		mRotateAnimation = ObjectAnimator.ofFloat(mLoadingCircle, "rotation", 0, 360).setDuration(1100);
 		mRotateAnimation.setInterpolator(new LinearInterpolator());
@@ -179,6 +179,7 @@ public class ShopListFragment extends Fragment {
 	public void search(String search){
 		indexPage = 0;
 		isSearch = true;
+		
 		// get search result
 		mSearchString = search;
 		new SearchShopListTask(search).execute();
@@ -196,8 +197,6 @@ public class ShopListFragment extends Fragment {
 
 	}
 
-	public int indexPage = 0;
-	public boolean isMore = false;
 	
 	public void setForeground(){
 		mLoadingOptical.setVisibility(View.VISIBLE);
@@ -223,12 +222,9 @@ public class ShopListFragment extends Fragment {
 		protected void onPostExecute(Boolean k){
 			if (k == true){
 				getActivity().runOnUiThread(new Runnable() {
-					
 					@Override
 					public void run() {
-						// TODO Auto-generated method stub
 						if (mHaveAnimation){
-							//mForeGround.setBackgroundColor(Color.parseColor("#00000000"));
 							List<ObjectAnimator> arrayListObjectAnimators = new ArrayList<ObjectAnimator>();
 							arrayListObjectAnimators.add(mFadeOutCircle);
 							arrayListObjectAnimators.add(mFadeOutMiddle);
@@ -270,11 +266,8 @@ public class ShopListFragment extends Fragment {
 		protected void onPreExecute(){
 			if (mHaveAnimation){
 				getActivity().runOnUiThread(new Runnable() {
-					
 					@Override
 					public void run() {
-						// TODO Auto-generated method stub
-						//mForeGround.setBackgroundColor(Color.parseColor("#282e3a"));
 						mLoadingCircle.setVisibility(View.VISIBLE);
 						mLoadingMiddle.setVisibility(View.VISIBLE);
 						mLoadingBackground.setVisibility(View.VISIBLE);
@@ -357,8 +350,6 @@ public class ShopListFragment extends Fragment {
 						GlobalVariable.imageLoader.resume();	
 					}
 				} catch (JSONException e) {
-					// TODO Auto-generated catch block
-					e.printStackTrace();
 				}
 			}
 		}
@@ -580,11 +571,9 @@ public class ShopListFragment extends Fragment {
 	public class SearchShopListTask extends AsyncTask<Void, Void, Boolean> {
 		private String json = null;
 		private String mName;
-		private boolean isComeToEnd = false;
 		
 		public SearchShopListTask(String name) {
 			mName = name;
-			isComeToEnd = false;
 		}
 
 		@Override
@@ -626,12 +615,9 @@ public class ShopListFragment extends Fragment {
 					
 					@Override
 					public void onAnimationEnd(Animator animation) {
-						// TODO Auto-generated method stub
-						if (isComeToEnd)
-							return;
-						
 						mLoadingOptical.setVisibility(View.INVISIBLE);
 						mLoadingBackground.setVisibility(View.INVISIBLE);
+						
 						if (mShopList != null){
 							mAdapter = new ShopListAdapter(getActivity().getBaseContext(), getActivity());
 							gridView.setAdapter(mAdapter);
@@ -639,8 +625,6 @@ public class ShopListFragment extends Fragment {
 							((MainActivity) mMainAcitivyListener).updateMapAsync();
 							((MainActivity) mMainAcitivyListener).jumpToBound();
 						}
-						
-						isComeToEnd = true;
 					}
 					
 					@Override
