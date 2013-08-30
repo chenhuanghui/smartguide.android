@@ -1,37 +1,24 @@
 package vn.smartguide;
 
-import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
-import java.util.List;
 
 import org.json.JSONException;
 import org.json.JSONObject;
 
-import com.facebook.FacebookException;
-import com.facebook.Request;
-import com.facebook.Response;
-import com.facebook.Session;
-import com.facebook.SessionState;
-import com.facebook.UiLifecycleHelper;
-import com.facebook.model.GraphUser;
-import com.facebook.widget.LoginButton;
-import com.facebook.widget.LoginButton.OnErrorListener;
-import com.google.analytics.tracking.android.EasyTracker;
-
-import android.os.AsyncTask;
-import android.os.Bundle;
-import android.os.Handler;
 import android.animation.Animator;
-import android.animation.AnimatorSet;
 import android.animation.Animator.AnimatorListener;
+import android.animation.AnimatorSet;
 import android.animation.ObjectAnimator;
 import android.app.Activity;
 import android.app.AlertDialog;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
-import android.view.Display;
+import android.os.AsyncTask;
+import android.os.Bundle;
+import android.support.v4.app.FragmentActivity;
+import android.telephony.PhoneNumberUtils;
 import android.view.Gravity;
 import android.view.Menu;
 import android.view.View;
@@ -43,8 +30,17 @@ import android.widget.EditText;
 import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.TextView;
-import android.support.v4.app.FragmentActivity;
-import android.telephony.PhoneNumberUtils;
+
+import com.facebook.FacebookException;
+import com.facebook.Request;
+import com.facebook.Response;
+import com.facebook.Session;
+import com.facebook.SessionState;
+import com.facebook.UiLifecycleHelper;
+import com.facebook.model.GraphUser;
+import com.facebook.widget.LoginButton;
+import com.facebook.widget.LoginButton.OnErrorListener;
+import com.google.analytics.tracking.android.EasyTracker;
 
 public class WellcomeActivity extends FragmentActivity{
 
@@ -72,16 +68,10 @@ public class WellcomeActivity extends FragmentActivity{
 	
 	String userID = "";
 	LoginButton authButton = null;
-	
-	private ObjectAnimator mSloganSlideUp = null;
-	private ObjectAnimator mLogoFadeIn = null;
-	private ObjectAnimator mLogoSlideUp = null;
-	private ObjectAnimator mSmartGuideSlideUp = null;
+		
 	private ObjectAnimator mNumberFieldSlideUp = null;
 	private ObjectAnimator mSendButtonSlideUp = null;
-	private ObjectAnimator mStatusTextFadeIn = null;
 	private ObjectAnimator mFacebookBtnFadeIn = null;
-	private ObjectAnimator mSkipBtnFadeIn = null;
 	private ObjectAnimator mStatusTextFlash = null;
 
 	private Intent resultData;
@@ -122,14 +112,15 @@ public class WellcomeActivity extends FragmentActivity{
 		// Set up animation		
 		mFacebookBtnFadeIn = ObjectAnimator.ofFloat(mLogin, "alpha", 0.0f, 1.0f);
 		mFacebookBtnFadeIn.setInterpolator(new AccelerateDecelerateInterpolator());
-		mSkipBtnFadeIn = ObjectAnimator.ofFloat(mSkip, "alpha", 0.0f, 1.0f);
-		mSkipBtnFadeIn.setInterpolator(new AccelerateDecelerateInterpolator());
+//		mSkipBtnFadeIn = ObjectAnimator.ofFloat(mSkip, "alpha", 0.0f, 1.0f);
+//		mSkipBtnFadeIn.setInterpolator(new AccelerateDecelerateInterpolator());
 		
 		mStatusTextFlash = ObjectAnimator.ofFloat(mStatusText, "alpha", 0.3f, 1.0f);
 		mStatusTextFlash.setInterpolator(new LinearInterpolator());
 		mStatusTextFlash.setDuration(1000);
 		mStatusTextFlash.setRepeatCount(Animation.INFINITE);
 		mStatusTextFlash.setRepeatMode(Animation.REVERSE);
+		mStatusTextFlash.start();
 		
 		mSendButton.setOnClickListener(new View.OnClickListener() {
 			@Override
@@ -192,7 +183,7 @@ public class WellcomeActivity extends FragmentActivity{
 			
 			@Override
 			public void onClick(View v) {
-				authButton.callOnClick();
+				authButton.performClick();
 			}
 		});
 	}
@@ -207,174 +198,6 @@ public class WellcomeActivity extends FragmentActivity{
 		if (isShow)
 			return;
 		isShow = true;
-		wellcomeAnimation();
-	}
-	
-	int halfWidth = 0;
-	public void wellcomeAnimation(){
-		Display display = getWindowManager().getDefaultDisplay(); 
-		mWidth = display.getWidth();
-		mHeight = display.getHeight();
-		
-		halfWidth = mWidth / 2;
-		
-		mStatusText.setX(halfWidth - mStatusText.getWidth() / 2);
-		mLogo.setX(halfWidth - mLogo.getWidth() / 2);
-		mSlogan.setX(halfWidth - mSlogan.getWidth() / 2);
-		mSmartGuide.setX(halfWidth - mSmartGuide.getWidth() / 2);
-		mNumberField.setX(halfWidth - (padding + mNumberField.getWidth() + mSendButton.getWidth()) / 2);
-		mSendButton.setX(mNumberField.getX() + padding + mNumberField.getWidth());
-		
-		mLogoFadeIn = ObjectAnimator.ofFloat(mLogo, "alpha", 0.0f, 1.0f);
-		mLogoFadeIn.setInterpolator(new AccelerateDecelerateInterpolator());
-		
-		mLogoSlideUp = ObjectAnimator.ofFloat(mLogo, "translationY", mHeight, mHeight / 2 - 100 - 95);
-		mLogoSlideUp.setInterpolator(new AccelerateDecelerateInterpolator());
-		mLogoSlideUp.addListener(new AnimatorListener() {
-			@Override
-			public void onAnimationStart(Animator animation) {
-				new Handler().postDelayed(new Runnable() {
-
-					@Override
-					public void run() {
-						mSmartGuide.setVisibility(View.VISIBLE);
-						mSmartGuideSlideUp.start();
-					}
-				}, 500);
-			}
-			
-			@Override
-			public void onAnimationRepeat(Animator animation) {}
-			
-			@Override
-			public void onAnimationEnd(Animator animation) {}
-			
-			@Override
-			public void onAnimationCancel(Animator animation) {}
-		});
-		
-		List<ObjectAnimator> ListLogoAnimators = new ArrayList<ObjectAnimator>();
-		ListLogoAnimators.add(mLogoFadeIn);
-		ListLogoAnimators.add(mLogoSlideUp);
-		
-		ObjectAnimator[] objectAnimators = ListLogoAnimators.toArray(new ObjectAnimator[ListLogoAnimators.size()]);
-		AnimatorSet animSetXY = new AnimatorSet();
-		animSetXY.playTogether(objectAnimators);
-		animSetXY.setDuration(1000);//1sec
-		animSetXY.start();
-		
-		mSmartGuideSlideUp = ObjectAnimator.ofFloat(mSmartGuide, "translationY", mHeight, mHeight / 2 + 10);
-		mSmartGuideSlideUp.setDuration(1000);
-		mSmartGuideSlideUp.setInterpolator(new AccelerateDecelerateInterpolator());
-		mSmartGuideSlideUp.addListener(new AnimatorListener() {
-			@Override
-			public void onAnimationStart(Animator animation) {
-				new Handler().postDelayed(new Runnable() {
-					@Override
-					public void run() {
-						mSlogan.setVisibility(View.VISIBLE);
-						mSloganSlideUp.start();
-					}
-				}, 500);
-			}
-			
-			@Override
-			public void onAnimationRepeat(Animator animation) {}
-			
-			@Override
-			public void onAnimationEnd(Animator animation) {}
-			
-			@Override
-			public void onAnimationCancel(Animator animation) {}
-		});
-		
-		//mSmartGuideSlideUp.start();
-		
-		mSloganSlideUp = ObjectAnimator.ofFloat(mSlogan, "translationY", mHeight, mHeight / 2 + 65);
-		mSloganSlideUp.setDuration(1000);
-		mSloganSlideUp.setInterpolator(new AccelerateDecelerateInterpolator());
-		mSloganSlideUp.addListener(new AnimatorListener() {
-			@Override
-			public void onAnimationStart(Animator animation) {
-				// TODO Auto-generated method stub
-				new Handler().postDelayed(new Runnable() {
-					
-					@Override
-					public void run() {
-						mNumberFieldSlideUp.start();
-					}
-				}, 600);
-			}
-			
-			@Override
-			public void onAnimationRepeat(Animator animation) {}
-			
-			@Override
-			public void onAnimationEnd(Animator animation) {}
-			
-			@Override
-			public void onAnimationCancel(Animator animation) {}
-		});
-		
-		mNumberFieldSlideUp = ObjectAnimator.ofFloat(mNumberField, "translationY", mHeight, mHeight / 2 - 15);
-		mNumberFieldSlideUp.setDuration(1000);
-		mNumberFieldSlideUp.setInterpolator(new AccelerateDecelerateInterpolator());
-		mNumberFieldSlideUp.addListener(new AnimatorListener() {
-			
-			@Override
-			public void onAnimationStart(Animator arg0) {
-				List<ObjectAnimator> arrayListObjectAnimators = new ArrayList<ObjectAnimator>();
-				
-				mNumberField.setVisibility(View.VISIBLE);
-				mSendButton.setVisibility(View.VISIBLE);
-				
-				mSendButtonSlideUp = ObjectAnimator.ofFloat(mSendButton, "translationY", mHeight, mHeight / 2 - 15);
-				mSendButtonSlideUp.setDuration(1000);
-				mSendButtonSlideUp.setInterpolator(new AccelerateDecelerateInterpolator());
-				
-				
-				mLogoSlideUp = ObjectAnimator.ofFloat(mLogo, "translationY", mLogo.getY(), marginTop);
-				mLogoSlideUp.setDuration(1000);
-				mLogoSlideUp.setInterpolator(new AccelerateDecelerateInterpolator());
-				
-				mSmartGuideSlideUp = ObjectAnimator.ofFloat(mSmartGuide, "translationY", mSmartGuide.getY(), mLogo.getHeight() + marginTop + 17);
-				mSmartGuideSlideUp.setDuration(1000);
-				mSmartGuideSlideUp.setInterpolator(new AccelerateDecelerateInterpolator());
-				
-				mSloganSlideUp.cancel();
-				mSloganSlideUp = ObjectAnimator.ofFloat(mSlogan, "translationY", mSlogan.getY(), mLogo.getHeight() + marginTop + 17 + mSmartGuide.getHeight() + 12);
-				mSloganSlideUp.setDuration(1000);
-				mSloganSlideUp.setInterpolator(new AccelerateDecelerateInterpolator());
-			
-				arrayListObjectAnimators.add(mSendButtonSlideUp);
-				arrayListObjectAnimators.add(mLogoSlideUp);
-				arrayListObjectAnimators.add(mSloganSlideUp);
-				arrayListObjectAnimators.add(mSmartGuideSlideUp);
-				
-				ObjectAnimator[] objectAnimators = arrayListObjectAnimators.toArray(new ObjectAnimator[arrayListObjectAnimators.size()]);
-				AnimatorSet animSetXY = new AnimatorSet();
-				animSetXY.playTogether(objectAnimators);
-				animSetXY.start();
-			}
-			
-			@Override
-			public void onAnimationRepeat(Animator arg0) {}
-			
-			@Override
-			public void onAnimationEnd(Animator arg0) {
-				// TODO Auto-generated method stub
-				mStatusText.setVisibility(View.VISIBLE);
-				mStatusText.setY(mHeight / 2 - 50);
-				mStatusTextFadeIn = ObjectAnimator.ofFloat(mStatusText, "alpha", 0.0f, 1.0f);
-				mStatusTextFadeIn.setInterpolator(new LinearInterpolator());
-				mStatusTextFadeIn.setDuration(1500);
-				mStatusTextFadeIn.start();
-				mStatusTextFlash.start();
-			}
-			
-			@Override
-			public void onAnimationCancel(Animator arg0) {}
-		});
 	}
 	
 	@Override
@@ -470,10 +293,9 @@ public class WellcomeActivity extends FragmentActivity{
 	
 	public class GetActivateCode extends AsyncTask<Void, Void, Boolean> {    	
 
-		String mJson = "";
 		@Override
 		protected Boolean doInBackground(Void... params) {
-			mJson = NetworkManger.get(GlobalVariable.urlGetActivateCode + phoneNumber, false);
+			NetworkManger.get(GlobalVariable.urlGetActivateCode + phoneNumber, false);
 			return true;
 		}
 
@@ -522,52 +344,40 @@ public class WellcomeActivity extends FragmentActivity{
 					
 					mStatusText.setText("Đăng nhập facebook");
 					
-					mLogin.setX(halfWidth - (mLogin.getWidth() + mSkip.getWidth() + 10) / 2);
-					mLogin.setY(mNumberField.getY());
-					
-					mSkip.setX( mLogin.getWidth() + 10 + mLogin.getX());
-					mSkip.setY(mNumberField.getY());
-					
 					mNumberFieldSlideUp = ObjectAnimator.ofFloat(mNumberField, "alpha", 1.0f, 0.0f);
-					mNumberFieldSlideUp.setInterpolator(new AccelerateDecelerateInterpolator());
-					mNumberFieldSlideUp.setDuration(200); 
-					mNumberFieldSlideUp.addListener(new AnimatorListener() {
+					mNumberFieldSlideUp.setInterpolator(new AccelerateDecelerateInterpolator());				
+					
+					mSendButtonSlideUp = ObjectAnimator.ofFloat(mSendButton, "alpha", 1.0f, 0.0f);
+					mSendButtonSlideUp.setInterpolator(new AccelerateDecelerateInterpolator());
+					
+					ObjectAnimator[] objectAnimators = new ObjectAnimator[] {mNumberFieldSlideUp, mSendButtonSlideUp};
+					AnimatorSet animSetXY = new AnimatorSet();
+					animSetXY.playTogether(objectAnimators);
+					animSetXY.setDuration(1200);//1sec
+					animSetXY.addListener(new AnimatorListener() {
+						
+						public void onAnimationStart(Animator arg0) { }
+						public void onAnimationRepeat(Animator arg0) { }
+						public void onAnimationCancel(Animator arg0) { }
 						
 						@Override
-						public void onAnimationStart(Animator animation) {
-							mSendButtonSlideUp = ObjectAnimator.ofFloat(mSendButton, "alpha", 1.0f, 0.0f);
-							mSendButtonSlideUp.setInterpolator(new AccelerateDecelerateInterpolator());
-							mSendButtonSlideUp.setDuration(200);
-							mSendButtonSlideUp.start();
-						}
+						public void onAnimationEnd(Animator arg0) {
 						
-						@Override
-						public void onAnimationRepeat(Animator animation) {}
-						
-						@Override
-						public void onAnimationEnd(Animator animation) {
 							mNumberField.setVisibility(View.INVISIBLE);
 							mSendButton.setVisibility(View.INVISIBLE);
 							
 							mLogin.setVisibility(View.VISIBLE);
-							mSkip.setVisibility(View.VISIBLE);
+//							mSkip.setVisibility(View.VISIBLE);
 							
-							List<ObjectAnimator> ListLogoAnimators = new ArrayList<ObjectAnimator>();
-							ListLogoAnimators.add(mFacebookBtnFadeIn);
-							ListLogoAnimators.add(mSkipBtnFadeIn);
-							
-							ObjectAnimator[] objectAnimators = ListLogoAnimators.toArray(new ObjectAnimator[ListLogoAnimators.size()]);
+//							ObjectAnimator[] objectAnimators = new ObjectAnimator[] {mFacebookBtnFadeIn, mSkipBtnFadeIn};
+							ObjectAnimator[] objectAnimators = new ObjectAnimator[] {mFacebookBtnFadeIn};
 							AnimatorSet animSetXY = new AnimatorSet();
 							animSetXY.playTogether(objectAnimators);
 							animSetXY.setDuration(1200);//1sec
 							animSetXY.start();
 						}
-						
-						@Override
-						public void onAnimationCancel(Animator animation) {}
 					});
-					
-					mNumberFieldSlideUp.start();
+					animSetXY.start();
 				}
 				
 			} catch (JSONException e) {
@@ -599,7 +409,7 @@ public class WellcomeActivity extends FragmentActivity{
 				" qua tin nhắn. Chọn Đồng ý để tiếp tục hoặc hủy để thay đổi số điện thoại");
 		builder.setCancelable(true);
 		
-		builder.setPositiveButton("Đồng ý", new DialogInterface.OnClickListener() {
+		builder.setNegativeButton("Đồng ý", new DialogInterface.OnClickListener() {
 			public void onClick(DialogInterface dialog, int which) {
 				isConfirm = true;
 				mStatusText.setText("Chờ và nhập mã xác nhận...");
@@ -608,7 +418,7 @@ public class WellcomeActivity extends FragmentActivity{
 			}
 		});
 		
-		builder.setNegativeButton("Hủy", new DialogInterface.OnClickListener() {
+		builder.setPositiveButton("Hủy", new DialogInterface.OnClickListener() {
 			public void onClick(DialogInterface dialog, int which) {
 				mStatusText.setText("Nhập số điện thoại...");
 				mNumberField.setText("");
