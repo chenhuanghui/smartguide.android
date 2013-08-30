@@ -5,27 +5,37 @@
     android:background="@drawable/wc_bg"
     android:orientation="vertical">
 
-    <ImageView
-        android:id="@+id/logoF"
+    <LinearLayout
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:src="@drawable/logo"
-        android:visibility="invisible" />
+        android:layout_centerHorizontal="true"
+        android:layout_centerVertical="true"
+        android:gravity="center_horizontal"
+        android:orientation="vertical" >
 
-    <ImageView
-        android:id="@+id/smartguideF"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:src="@drawable/smartguide"
-        android:visibility="invisible" />
+        <ImageView
+            android:id="@+id/logoF"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:src="@drawable/logo"
+            android:visibility="visible" />
 
-    <ImageView
-        android:id="@+id/sloganF"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_alignParentLeft="true"
-        android:layout_alignParentTop="true"
-        android:src="@drawable/slogan"
-        android:visibility="invisible" />
+        <ImageView
+            android:id="@+id/smartguideF"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="16dp"
+            android:src="@drawable/smartguide"
+            android:visibility="visible" />
+
+        <ImageView
+            android:id="@+id/sloganF"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="8dp"
+            android:src="@drawable/slogan"
+            android:visibility="visible" />
+
+    </LinearLayout>
 	
 </RelativeLayout>
