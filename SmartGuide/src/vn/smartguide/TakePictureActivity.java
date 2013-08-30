@@ -7,12 +7,10 @@ import java.util.Calendar;
 
 import org.apache.http.HttpEntity;
 import org.apache.http.HttpResponse;
-import org.apache.http.client.HttpClient;
 import org.apache.http.client.methods.HttpPost;
 import org.apache.http.entity.mime.MultipartEntity;
 import org.apache.http.entity.mime.content.FileBody;
 import org.apache.http.entity.mime.content.StringBody;
-import org.apache.http.impl.client.DefaultHttpClient;
 import org.apache.http.util.EntityUtils;
 
 import com.google.analytics.tracking.android.EasyTracker;
@@ -21,6 +19,7 @@ import android.net.Uri;
 import android.os.Bundle;
 import android.os.Environment;
 import android.provider.MediaStore;
+import android.annotation.SuppressLint;
 import android.app.Activity;
 import android.content.Intent;
 import android.graphics.Bitmap;
@@ -41,6 +40,7 @@ public class TakePictureActivity extends Activity {
 	private Button mSendBtn;
 	private EditText mDescription;
 
+	@SuppressLint("SimpleDateFormat")
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
@@ -79,6 +79,7 @@ public class TakePictureActivity extends Activity {
 		EasyTracker.getInstance(this).activityStop(this);  // Add this method.
 	}
 
+	@SuppressLint("SimpleDateFormat")
 	private void setPhoto()
 	{
 		String imgPath = outputFileUri.getPath();

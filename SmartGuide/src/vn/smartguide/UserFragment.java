@@ -231,6 +231,7 @@ public class UserFragment extends Fragment{
 			return pos;
 		}
 
+		@SuppressWarnings("deprecation")
 		@Override
 		public View getView(final int position, View convertView, ViewGroup parent) {
 			
@@ -254,7 +255,8 @@ public class UserFragment extends Fragment{
 					@Override
 					public void run() {
 						new HttpConnection(new Handler() {
-			        		@Override
+			        		@SuppressWarnings("deprecation")
+							@Override
 			        		public void handleMessage(Message message) {
 			        			
 			        			switch (message.what) {

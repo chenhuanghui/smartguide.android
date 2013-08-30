@@ -31,9 +31,7 @@ import android.widget.ImageView;
 public class ShopDetailFragment extends Fragment {
 	
 	private final int NUM_PAGES = 2;
-
-    private Activity mActivity = null;
-    private MainAcitivyListener mMainAcitivyListener = null;
+	
     private List<Fragment> mDetailFragmentList;
     private DetailPromoFragment mPromoFragment;
     private DetailPromo1Fragment mPromo1Fragment;
@@ -49,8 +47,6 @@ public class ShopDetailFragment extends Fragment {
     @Override
     public void onAttach(Activity activity) {
         super.onAttach(activity);
-        mActivity = activity;
-        mMainAcitivyListener = (MainAcitivyListener) mActivity;
     }
 
     @Override
@@ -115,7 +111,8 @@ public class ShopDetailFragment extends Fragment {
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
     }
     
-    private class ScreenSlidePagerAdapter extends FragmentStatePagerAdapter {
+    @SuppressWarnings("unused")
+	private class ScreenSlidePagerAdapter extends FragmentStatePagerAdapter {
     	
         public ScreenSlidePagerAdapter(FragmentManager fm) {
             super(fm);

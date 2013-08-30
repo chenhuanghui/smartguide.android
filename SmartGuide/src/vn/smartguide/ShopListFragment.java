@@ -434,9 +434,6 @@ public class ShopListFragment extends Fragment {
 					}
 
 				final LinearLayout mShopTypeScore = (LinearLayout)MyView.findViewById(R.id.shop_type_score);
-				TextView mShopTotalScore = (TextView)mShopTypeScore.findViewById(R.id.shop_score);
-				ImageView mShopType = (ImageView)mShopTypeScore.findViewById(R.id.shop_type_image);
-
 				final ImageView mShopCover = (ImageView)MyView.findViewById(R.id.shop_cover);
 				GlobalVariable.imageLoader.displayImage(mShop.mLogo, mShopCover);
 //				new Handler().postDelayed(new Runnable() {
@@ -512,13 +509,11 @@ public class ShopListFragment extends Fragment {
 
 		@Override
 		public Object getItem(int arg0) {
-			// TODO Auto-generated method stub
 			return null;
 		}
 
 		@Override
 		public long getItemId(int arg0) {
-			// TODO Auto-generated method stub
 			return 0;
 		}
 	}
