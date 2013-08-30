@@ -1,12 +1,6 @@
 package vn.smartguide;
 
-import android.app.Activity;
 import android.content.Context;
-import android.database.sqlite.SQLiteDatabase;
-import android.location.Criteria;
-import android.location.Location;
-import android.location.LocationManager;
-
 import com.loopj.android.http.AsyncHttpClient;
 import com.nostra13.universalimageloader.core.DisplayImageOptions;
 import com.nostra13.universalimageloader.core.ImageLoader;
@@ -28,7 +22,6 @@ import java.util.List;
  */
 
 public final class GlobalVariable {
-
 	// AysnHttpClient
 	public static AsyncHttpClient mAsyncHttpClient = new AsyncHttpClient();
 
@@ -37,75 +30,78 @@ public final class GlobalVariable {
 	public static DisplayImageOptions displayImageOptions;
 
 	// Animation time for next page -> ViewPager
-	public static int timeTransfer = 1000;
+	public static int timeTransfer 		= 1000;
 
 	// Secret key and Client key to get token
-	public static String clientID = "1_orazuv2dl3k8ossssg8804o4kwksw8kwcskkk404w40gwcwws";
-	public static String serectID = "4xvgf3r9dxs8k8g8o8k0gss0s0wc8so4g4wg40c8s44kgcwsks";
-	public static String grantType = "?grant_type=http://dev.smartguide.com/app_dev.php/grants/bingo";
-	public static String serverOAuth = "https://devapi.smartguide.vn/oauth/v2/token";
+	public static String serverOAuth 	= APILinkMaker.mHostName + "oauth/v2/token";
+	public static String clientID 		= "1_orazuv2dl3k8ossssg8804o4kwksw8kwcskkk404w40gwcwws";
+	public static String serectID 		= "4xvgf3r9dxs8k8g8o8k0gss0s0wc8so4g4wg40c8s44kgcwsks";
+	public static String grantType 		= "?grant_type=http://dev.smartguide.com/app_dev.php/grants/bingo";
 
-	public static String tokenID = "NWRiNTRhMDI1MDQwOWY4ZDk4MDAzOTA5ZDQ2MTY5YmQwYzM0YTM5Y2RiZTcxZDQ3ZTEyNDU3YThiNzQ3N2UxMg";
+	public static String tokenID 		= "NWRiNTRhMDI1MDQwOWY4ZDk4MDAzOTA5ZDQ2MTY5YmQwYzM0YTM5Y2RiZTcxZDQ3ZTEyNDU3YThiNzQ3N2UxMg";
 	public static String refreshTokenID = "NzRkYmFiMTc2YTZlZGVlZTk3OTcxNGM4M2MwNjYwYmVjYTEwMWIxYTcyNzU5M2JhYzI3OTBiNjA2MDAyMDk5Nw";
 
-	public static String getTokenURL = serverOAuth + grantType + "&client_id=" + clientID + "&client_secret=" + serectID; 
+	public static String getTokenURL 	= serverOAuth + grantType + "&client_id=" + clientID + "&client_secret=" + serectID; 
 
 	// Activate Code
-	public static String activateCode = "";
-	public static String phoneNumber = "";
-	public static String urlGetActivateCode = "https://devapi.smartguide.vn/user/activation?phone=";
-	public static String urlChekcActivateCode = "https://devapi.smartguide.vn/user/check?phone=";
-	public static String footerURL = "";
+	public static String urlGetActivateCode 	= APILinkMaker.mHostName + "user/activation?phone=";
+	public static String urlChekcActivateCode 	= APILinkMaker.mHostName + "user/check?phone=";
+	public static String activateCode 			= "";
+	public static String phoneNumber 			= "";
+	public static String footerURL 				= "";
 
 	// Database
-	public static String databaseName ="SmartGuideDB.db";
-	public static DatabaseManger smartGuideDB = null;
+	public static String databaseName 			= "SmartGuideDB.db";
+	public static DatabaseManger smartGuideDB 	= null;
 
 	// Time
-	public static int delayToShopDetail = 700;
-	public static int focusInterval = 500;
-	public static int timeChangeAds = 10000;
-	public static int timeToResumeImageDownloader = 3500;
+	public static int delayToShopDetail 			= 700;
+	public static int focusInterval 				= 500;
+	public static int timeChangeAds 				= 10000;
+	public static int timeToResumeImageDownloader 	= 3500;
 
 	// Load more setting
-	public static int needLoadMore = 5;
-	public static int itemPerPage = 10;
+	public static int needLoadMore 	= 5;
+	public static int itemPerPage 	= 10;
 
 	// Category
-	public static List<Category> mCateogries = null;
+	public static List<Category> mCateogries;
 
 	// Facebook
 	public static String userIDFacebook = "";
-	public static String avatarFace ="";
-	public static String userID = "";
-	public static String id ="";
-	public static String user_id ="";
-	public static String name ="";
-	public static boolean gender=false;
-	public static String email="";
-	public static String dob="";
-	public static String job="";
-	public static String avatar="";
+	public static String avatarFace 	= "";
+	public static String userID 		= "";
+	public static String id 			= "";
+	public static String user_id 		= "";
+	public static String name 			= "";
+	public static boolean gender		= false;
+	public static String email			= "";
+	public static String dob			= "";
+	public static String job			= "";
+	public static String avatar			= "";
 	public static boolean isNeedUpdateFacebook = false;
-	public static String nameFace = "";
+	public static String nameFace 		= "";
 
 	// Filter String
-	public static String mFilterString = "";
-	public static String mSortByString = "0";
-	public static String mCityID = "1";
-	public static String mVersion = "0";
-	public static boolean isNeedUpdateCityList = false;
-	public static List<String> mCityNames = new ArrayList<String>();
-	public static List<String> mCityIDes = new ArrayList<String>();
+	public static String mFilterString 	= "";
+	public static String mSortByString 	= "0";
+	public static String mCityID 		= "1";
+	public static String mVersion 		= "0";
+	public static boolean isNeedUpdateCityList 	= false;
+	public static List<String> mCityNames 		= new ArrayList<String>();
+	public static List<String> mCityIDes 		= new ArrayList<String>();
 
 	public static float mLat = -1;
 	public static float mLng = -1;
 
-	// Camera Intent request code
-	
+	// for launching reason
+	public static int mMode 				= 1;
+	public static String mURL 				= "";
+	public static String reviewString 		= "";
+	public static boolean isNeedPostReview 	= false;
 
 	// Shop
-	public static Shop mCurrentShop = null;
+	public static Shop mCurrentShop;
 
 	public static boolean mIsLaunching = false;
 
@@ -118,12 +114,12 @@ public final class GlobalVariable {
 	}
 
 	public static HashMap<String, String> getTokenIDViaOAuth2(){
+	
 		HttpGet httpGet = new HttpGet(getTokenURL + GlobalVariable.footerURL);
 		JSONObject key;
 
 		try{
-			DefaultHttpClient httpClient = new DefaultHttpClient(NetworkManger.ccm, NetworkManger.params);
-			HttpResponse httpResponse = httpClient.execute(httpGet);
+			HttpResponse httpResponse = NetworkManger.httpclient.execute(httpGet);
 			HttpEntity httpEntity = httpResponse.getEntity();
 			key = new JSONObject(EntityUtils.toString(httpEntity));
 
@@ -236,25 +232,4 @@ public final class GlobalVariable {
 			mCityIDes.add(city.get("cityID"));
 		}
 	}
-
-	public static void updateLocation(Activity activity){
-		LocationManager mgr = (LocationManager) activity.getSystemService(Context.LOCATION_SERVICE);
-		Criteria criteria = new Criteria();
-		String best = mgr.getBestProvider(criteria, true);
-		Location location = mgr.getLastKnownLocation(LocationManager.NETWORK_PROVIDER);
-		if (location != null){
-			mLat = (float) location.getLatitude();
-			mLng = (float) location.getLongitude();
-		}
-
-		mLat = 10.7602819f;
-		mLng = 106.6886185999993f;
-	}
-
-	// for launching reason
-	// for launching reason
-	public static int mMode = 1;
-	public static String mURL = "";
-	public static String reviewString = "";
-	public static boolean isNeedPostReview = false;
 }

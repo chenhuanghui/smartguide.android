@@ -53,26 +53,26 @@ import java.util.List;
  */
 public class ShopListFragment extends Fragment {
 
-	private MainAcitivyListener mMainAcitivyListener = null;
-	private GridView gridView = null;
-	public List<Shop> mShopList = null;
-	private ShopListAdapter mAdapter = null;
+	private MainAcitivyListener mMainAcitivyListener;
+	private GridView gridView;
+	public List<Shop> mShopList;
+	private ShopListAdapter mAdapter;
 	
 	String mJson = "";
 	
-	private ImageView mLoadingCircle = null;
-	private ImageView mLoadingMiddle = null;
-	private ImageView mLoadingBackground = null;
-	private RelativeLayout mLoadingOptical = null;
+	private ImageView mLoadingCircle;
+	private ImageView mLoadingMiddle;
+	private ImageView mLoadingBackground;
+	private RelativeLayout mLoadingOptical;
 	
-	private ObjectAnimator mRotateAnimation = null;
-	private ObjectAnimator mFadeOutCircle = null;
-	private ObjectAnimator mFadeOutMiddle = null;
-	private ObjectAnimator mFadeInCircle = null;
-	private ObjectAnimator mFadeInMiddle = null;
+	private ObjectAnimator mRotateAnimation;
+	private ObjectAnimator mFadeOutCircle;
+	private ObjectAnimator mFadeOutMiddle;
+	private ObjectAnimator mFadeInCircle;
+	private ObjectAnimator mFadeInMiddle;
 	
-	public boolean mHaveAnimation = false;
-	public boolean isMore = false;
+	public boolean mHaveAnimation 	= false;
+	public boolean isMore 			= false;
 	
 	private String mSearchString = "";
 	private int indexPage = 0;
@@ -364,7 +364,7 @@ public class ShopListFragment extends Fragment {
 		Context MyContext;
 		Activity mActivity;
 		List<View> mViewList;
-
+		
 		public ShopListAdapter(Context _MyContext, Activity activity)
 		{
 			MyContext = _MyContext;

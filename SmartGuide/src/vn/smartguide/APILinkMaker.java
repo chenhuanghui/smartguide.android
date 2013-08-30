@@ -1,8 +1,9 @@
 package vn.smartguide;
 
 public final class APILinkMaker {
-	private static String mHostName = "https://devapi.smartguide.vn/api/";
-
+	public static String mHostName = "https://devapi.smartguide.vn/";
+	private static String mApiDomain = "api/";
+	
 	private static String mShopListInCategory 	= 	"shop/list"; 
 	private static String mGroupByCity 			= 	"group";
 	private static String mVersion 				= 	"version";
@@ -32,110 +33,110 @@ public final class APILinkMaker {
 	private static String mGetReward			=	"reward/receive";
 	
 	public static String ShopListInCategory(){
-		return mHostName + mShopListInCategory;
+		return mHostName + mApiDomain + mShopListInCategory;
 	}
 	
 	public static String mGroupByCity(){
-		return mHostName + mGroupByCity;
+		return mHostName + mApiDomain + mGroupByCity;
 	}
 	
 	public static String mGetVersion(){
-		return mHostName + mVersion;
+		return mHostName + mApiDomain + mVersion;
 	}
 	
 	public static String mPushInforFacebook(){
-		return mHostName + mInfoFacebook;
+		return mHostName + mApiDomain + mInfoFacebook;
 	}
 	
 	public static String mGetCityList(){
-		return mHostName + mCityList;
+		return mHostName + mApiDomain + mCityList;
 	}
 	
 	public static String mGetPromotionDetail() {
-		return mHostName + mPromotionDetail;
+		return mHostName + mApiDomain + mPromotionDetail;
 	}
 	
 	public static String mGetShopUser() {
-		return mHostName + mShopUser;
+		return mHostName + mApiDomain + mShopUser;
 	}
 	
 	public static String mGetShopItem() {
-		return mHostName + mShopItem;
+		return mHostName + mApiDomain + mShopItem;
 	}
 	
 	public static String mGetUserImage() {
-		return mHostName + mUserImage;
+		return mHostName + mApiDomain + mUserImage;
 	}
 	
 	public static String mGetShopImage() {
-		return mHostName + mShopImage;
+		return mHostName + mApiDomain + mShopImage;
 	}
 	
 	public static String mUploadImage(){
-		return mHostName + mUpImage;
+		return mHostName + mApiDomain + mUpImage;
 	}
 	
 	public static String mGetTotalSGP(){
-		return mHostName + mTotalSGP;
+		return mHostName + mApiDomain + mTotalSGP;
 	}
 	
 	public static String mGetSGP(){
-		return mHostName + mSGP;
+		return mHostName + mApiDomain + mSGP;
 	}
 	
 	public static String mGetAds(){
-		return mHostName + mAds;
+		return mHostName + mApiDomain + mAds;
 	}
 	
 	public static String mGetCommentGet() {
-		return mHostName + mCommentGet;
+		return mHostName + mApiDomain + mCommentGet;
 	}
 	
 	public static String mGetCommentPost() {
-		return mHostName + mCommentPost;
+		return mHostName + mApiDomain + mCommentPost;
 	}
 	
 	public static String mPushLikeAction(){
-		return mHostName + mLikeAction;
+		return mHostName + mApiDomain + mLikeAction;
 	}
 	
 	public static String mPushUnlikeAction(){
-		return mHostName + mUnlikeAction;
+		return mHostName + mApiDomain + mUnlikeAction;
 	}
 	
 	public static String mGetAwardType1(){
-		return mHostName + mAwardType1;
+		return mHostName + mApiDomain + mAwardType1;
 	}
 	
 	public static String mGetAwardType2(){
-		return mHostName + mAwardType2;
+		return mHostName + mApiDomain + mAwardType2;
 	}
 	
 	public static String mGetUserCollection(){
-		return mHostName + mCollection;
+		return mHostName + mApiDomain + mCollection;
 	}
 	
 	public static String mPostReview(){
-		return mHostName + mReview;
+		return mHostName + mApiDomain + mReview;
 	}
 	
 	public static String mPostContact(){
-		return mHostName + mContact;
+		return mHostName + mApiDomain + mContact;
 	}
 	
 	public static String mSearch(){
-		return mHostName + mSearch;
+		return mHostName + mApiDomain + mSearch;
 	}
 	
 	public static String mGetFeedback(){
-		return mHostName + mFeedback;
+		return mHostName + mApiDomain + mFeedback;
 	}
 
 	public static String mGetRewardList(){
-		return mHostName + mGetRewardList;
+		return mHostName + mApiDomain + mGetRewardList;
 	}
 	
 	public static String mGetReward(){
-		return mHostName + mGetReward;
+		return mHostName + mApiDomain + mGetReward;
 	}
 }

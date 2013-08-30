@@ -112,6 +112,7 @@ public class ShopDetailFragment extends Fragment {
         for (Fragment f : mDetailFragmentList) {
         	transaction.add(R.id.layoutDetailPager, f).hide(f);
         }
+        
         transaction.add(R.id.layoutDetailPager, mPromo1Fragment).hide(mPromo1Fragment);
         transaction.add(R.id.layoutDetailPager, mPromo2Fragment).hide(mPromo2Fragment);
         transaction.add(R.id.layoutDetailPager, mNoPromoFragment).hide(mNoPromoFragment);
@@ -278,17 +279,13 @@ public class ShopDetailFragment extends Fragment {
 				pairs.add(new BasicNameValuePair("user_id", GlobalVariable.userID));
 				pairs.add(new BasicNameValuePair("shop_id", Integer.toString(mShop.mID)));
 
-				// Fuck you
 				pairs.add(new BasicNameValuePair("user_lat", Float.toString(GlobalVariable.mLat)));
 				pairs.add(new BasicNameValuePair("user_lng", Float.toString(GlobalVariable.mLng)));
 			
 				String json = NetworkManger.post(APILinkMaker.mGetShopUser(), pairs);
 				JSONObject jRoot = new JSONObject(json);
-				parseJsonShopDetail(jRoot);
-				
-				
+				parseJsonShopDetail(jRoot);				
 			} catch (JSONException e) {
-				e.printStackTrace();
 			}
 
 			return true;

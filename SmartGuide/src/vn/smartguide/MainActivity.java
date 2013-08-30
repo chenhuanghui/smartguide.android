@@ -914,10 +914,7 @@ public class MainActivity extends FragmentActivity implements MainAcitivyListene
 
 		// Tạo database
 		GlobalVariable.createDatbase(this);
-
-		// Update GPS
-		GlobalVariable.updateLocation(this);
-
+		
 		// Create menu
 		menu = new SlidingMenu(this);
 		menu.setMode(SlidingMenu.LEFT);
