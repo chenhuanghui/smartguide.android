@@ -92,24 +92,14 @@
                     android:layout_gravity="center_horizontal"
                     android:gravity="center_vertical"
                     android:orientation="vertical" >
-
-                    <RadioButton
-                        android:id="@+id/radioGetAward"
-                        style="@style/RadioButton"
-                        android:layout_width="wrap_content"
-                        android:layout_height="17dp"
-                        android:checked="true"
-                        android:text="MOST GET AWARD"
-                        android:textColor="#8494B8"
-                        android:textSize="14dp" />
-
+                    
                     <RadioButton
                         android:id="@+id/radioMostPoint"
                         style="@style/RadioButton"
+                        android:checked="true"
                         android:layout_width="wrap_content"
                         android:layout_height="17dp"
-                        android:checked="false"
-                        android:text="MOST GET POINT"
+                        android:text="QUAN TÂM NHẤT"
                         android:textColor="#8494B8"
                         android:textSize="14dp" />
 
@@ -119,7 +109,7 @@
                         android:layout_width="wrap_content"
                         android:layout_height="17dp"
                         android:checked="false"
-                        android:text="MOST LIKE"
+                        android:text="ƯA THÍCH NHẤT"
                         android:textColor="#8494B8"
                         android:textSize="14dp" />
 
@@ -129,7 +119,7 @@
                         android:layout_width="wrap_content"
                         android:layout_height="17dp"
                         android:checked="false"
-                        android:text="MOST VIEW"
+                        android:text="XEM NHIỀU NHẤT"
                         android:textColor="#8494B8"
                         android:textSize="14dp" />
 
@@ -139,7 +129,7 @@
                         android:layout_width="match_parent"
                         android:layout_height="17dp"
                         android:checked="false"
-                        android:text="DISTANCE"
+                        android:text="KHOẢNG CÁCH"
                         android:textColor="#8494B8"
                         android:textSize="14dp" />
                 </RadioGroup>

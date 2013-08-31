@@ -44,7 +44,6 @@ public class FilterFragment extends Fragment {
 	};
 	
 	private final int[] mRadioIDArr = new int[] {
-			R.id.radioGetAward,
 			R.id.radioMostPoint,
 			R.id.radioMostLike,
 			R.id.radioMostView,
@@ -90,7 +89,6 @@ public class FilterFragment extends Fragment {
 	public void onActivityCreated(Bundle savedInstanceState) {
 
 		super.onActivityCreated(savedInstanceState);
-		mRadioGetAward = (RadioButton)getView().findViewById(R.id.radioGetAward);
 		mRadioMostPoint = (RadioButton)getView().findViewById(R.id.radioMostPoint);
 		mRadioMostLike = (RadioButton)getView().findViewById(R.id.radioMostLike);
 		mRadioMostView = (RadioButton)getView().findViewById(R.id.radioMostView);
@@ -108,9 +106,6 @@ public class FilterFragment extends Fragment {
 				
 				GlobalVariable.mFilterString = "";
 				GlobalVariable.mSortByString = "";
-				
-				if (mRadioGetAward.isChecked())
-					GlobalVariable.mSortByString = "4";
 				
 				if (mRadioMostPoint.isChecked())
 					GlobalVariable.mSortByString = "3";

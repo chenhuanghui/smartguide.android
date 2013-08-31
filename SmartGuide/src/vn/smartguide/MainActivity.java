@@ -922,7 +922,6 @@ public class MainActivity extends FragmentActivity implements MainAcitivyListene
 		try{
 			NetworkManger.init();
 		}catch(Exception e){
-
 		}
 
 		// Scanner
