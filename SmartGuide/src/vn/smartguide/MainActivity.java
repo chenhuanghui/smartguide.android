@@ -91,6 +91,7 @@ import vn.smartguide.UserFragment.GiftItem;
 
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Currency;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Locale;
@@ -406,6 +407,12 @@ public class MainActivity extends FragmentActivity implements MainAcitivyListene
 
 	public void toggleShowContent() {
 		mShowContent = !mShowContent;
+		
+		if (mShowContent && mViewPager.getCurrentItem() == 2)
+			disableFilterMap();
+		else
+			enableFilterUserMap();
+		
 		ObjectAnimator animator = null;
 		int height = findViewById(R.id.layoutContentHolder).getHeight();
 		View layout = findViewById(R.id.layoutContentFrame);
@@ -2221,16 +2228,25 @@ public class MainActivity extends FragmentActivity implements MainAcitivyListene
 	
 	public void enableUserMap(){
 		mUserButton.setClickable(true);
-		mUserButton.setImageResource(R.drawable.user_btn);
 		mMapButton.setClickable(true);
+		mUserButton.setImageResource(R.drawable.user_btn);
 		mMapButton.setImageResource(R.drawable.map_btn);
 	}
 	
 	public void disableUserMap(){
 		mUserButton.setClickable(false);
-		mUserButton.setImageResource(R.drawable.user_btn);
 		mMapButton.setClickable(false);
+		mUserButton.setImageResource(R.drawable.user_btn);
 		mMapButton.setImageResource(R.drawable.menu_map_lock);
+	}
+	
+	public void enableFilterUserMap(){
+		mFilterBtn.setClickable(true);
+		mMapButton.setClickable(true);
+		mUserButton.setClickable(true);
+		mFilterBtn.setImageResource(R.drawable.menu_filter);
+		mMapButton.setImageResource(R.drawable.map_btn);
+		mUserButton.setImageResource(R.drawable.user_btn);
 	}
 }
 
