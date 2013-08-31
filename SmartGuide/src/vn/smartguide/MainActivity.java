@@ -207,6 +207,9 @@ public class MainActivity extends FragmentActivity implements MainAcitivyListene
 	private float downX, downY, upX, upY;
 	private boolean mIsCanWipe = false;
 
+	// User button
+	ImageButton mUserButton;
+	
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
@@ -903,7 +906,6 @@ public class MainActivity extends FragmentActivity implements MainAcitivyListene
 	}
 
 	public void init(){
-
 		((RelativeLayout)findViewById(R.id.rootOfroot)).setOnTouchListener(this);
 		((RelativeLayout)findViewById(R.id.layoutQR)).setOnTouchListener(this);
 
@@ -1151,7 +1153,8 @@ public class MainActivity extends FragmentActivity implements MainAcitivyListene
 		});
 
 		// Set user button
-		((ImageButton)findViewById(R.id.btnUser)).setOnClickListener(new View.OnClickListener() {
+		mUserButton = ((ImageButton)findViewById(R.id.btnUser));
+		mUserButton.setOnClickListener(new View.OnClickListener() {
 			@Override
 			public void onClick(View view) {
 				toogleUser();
@@ -1166,10 +1169,14 @@ public class MainActivity extends FragmentActivity implements MainAcitivyListene
 			public void onClick(View view) {
 				mFiterFragment.toggle();
 				mIsShowFilter = !mIsShowFilter;
-				if (mIsShowFilter)
+				if (mIsShowFilter){
+					disableUserMap();
 					setNaviText("BỘ LỌC");
-				else
+				}
+				else{
+					enableUserMap();
 					setNaviText(mPreviousNavi);
+				}
 
 				createDestroyMap();
 			}
@@ -2210,6 +2217,20 @@ public class MainActivity extends FragmentActivity implements MainAcitivyListene
 		mMapButton.setImageResource(R.drawable.menu_map_lock);
 		mFilterBtn.setClickable(false);
 		mMapButton.setClickable(false);
+	}
+	
+	public void enableUserMap(){
+		mUserButton.setClickable(true);
+		mUserButton.setImageResource(R.drawable.user_btn);
+		mMapButton.setClickable(true);
+		mMapButton.setImageResource(R.drawable.map_btn);
+	}
+	
+	public void disableUserMap(){
+		mUserButton.setClickable(false);
+		mUserButton.setImageResource(R.drawable.user_btn);
+		mMapButton.setClickable(false);
+		mMapButton.setImageResource(R.drawable.menu_map_lock);
 	}
 }
 
