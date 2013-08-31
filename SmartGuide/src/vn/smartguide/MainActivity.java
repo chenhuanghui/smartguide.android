@@ -206,7 +206,7 @@ public class MainActivity extends FragmentActivity implements MainAcitivyListene
 	static final int MIN_DISTANCE = 100;
 	private float downX, downY, upX, upY;
 	private boolean mIsCanWipe = false;
-	
+
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
@@ -277,6 +277,17 @@ public class MainActivity extends FragmentActivity implements MainAcitivyListene
 
 	@Override
 	public void goToPage(int index) {
+		switch (index){
+		case 0:
+			enableFilterMap();
+			break;
+		case 1:
+			enableFilterMap();
+			break;
+		case 2:
+			disableFilterMap();
+
+		}
 		mViewPager.setCurrentItem(index, true);
 	}
 
@@ -289,6 +300,7 @@ public class MainActivity extends FragmentActivity implements MainAcitivyListene
 		int pageWillGo = current_index + 1;
 		switch (pageWillGo){
 		case 1:
+			enableFilterMap();
 			int lengthOfFilterString = GlobalVariable.mFilterString.length();
 			if (lengthOfFilterString >= 2)
 				setNaviText("NHIỀU DANH MỤC");
@@ -324,6 +336,7 @@ public class MainActivity extends FragmentActivity implements MainAcitivyListene
 
 			break;
 		case 2:
+			disableFilterMap();
 			setNaviText(GlobalVariable.mCurrentShop.mName);
 			break;
 		}
@@ -342,6 +355,7 @@ public class MainActivity extends FragmentActivity implements MainAcitivyListene
 		try{
 			switch (pageWillGo){
 			case 1:
+				enableFilterMap();
 				int lengthOfFilterString = GlobalVariable.mFilterString.length();
 				if (lengthOfFilterString >= 2)
 					setNaviText("NHIỀU DANH MỤC");
@@ -377,6 +391,7 @@ public class MainActivity extends FragmentActivity implements MainAcitivyListene
 				break;
 
 			case 0:
+				enableFilterMap();
 				setNaviText("DANH MỤC");
 				break;
 			}	
@@ -401,11 +416,11 @@ public class MainActivity extends FragmentActivity implements MainAcitivyListene
 		animator.setInterpolator(new AccelerateDecelerateInterpolator());
 		animator.start();
 	}
-	
+
 	///////////////////////////////////////////////////////////////////////////
 	// Map stuff
 	///////////////////////////////////////////////////////////////////////////
-	
+
 	private Shop mMapSelectedShop;
 
 	public void updateMap() {
@@ -414,10 +429,10 @@ public class MainActivity extends FragmentActivity implements MainAcitivyListene
 
 	public void updateMapAsync() {
 		final GoogleMap map = mMapFragment.getMap();
-		
+
 		if (map == null)
 			return;
-		
+
 		map.clear();
 		map.setInfoWindowAdapter(new InfoWindowAdapter() {
 
@@ -441,7 +456,7 @@ public class MainActivity extends FragmentActivity implements MainAcitivyListene
 				TextView txtAddress = (TextView) view.findViewById(R.id.txtAddress);
 
 				txtDistance.setText(Float.toString(s.mDistance) + " km");
-				
+
 				if (s.mPromotionStatus && s.mPromotion != null) {
 					switch (s.mPromotion.getType()) {
 					case 1: {
@@ -460,7 +475,7 @@ public class MainActivity extends FragmentActivity implements MainAcitivyListene
 					}
 					break;
 					}
-					
+
 				} else { 
 					txtPoint.setText("");
 					txtMinPoint.setText("");
@@ -469,7 +484,7 @@ public class MainActivity extends FragmentActivity implements MainAcitivyListene
 
 				txtShopNae.setText(s.mName);
 				txtAddress.setText(s.mAddress);
-				
+
 				// Get diretion
 				mMapSelectedShop = s;
 				if (s.polyline == null)
@@ -579,31 +594,31 @@ public class MainActivity extends FragmentActivity implements MainAcitivyListene
 			}
 		}
 	}
-	
+
 	public void jumpToBound() {
-		
+
 		if (mBound == null || mMapFragment.getMap() == null)
 			return;
 		mMapFragment.getMap().animateCamera(CameraUpdateFactory.newLatLngBounds(mBound, 0));
 	}
-	
+
 	private void RequestDirection(Shop nearby, final GoogleMap googleMap) {
 		if (googleMap.getMyLocation() == null)
 			return;
-		
+
 		double myLat = googleMap.getMyLocation().getLatitude();
 		double myLon = googleMap.getMyLocation().getLongitude();
 		double dstLat = nearby.mLat;
 		double dstLon = nearby.mLng;
 		Handler handler = new Handler() {
-			
+
 			private Shop nearby;
-			
+
 			public Handler init(Shop nearby) {
 				this.nearby = nearby;
 				return this;
 			}
-			
+
 			@Override
 			public void handleMessage(Message message) {
 				switch (message.what) {
@@ -630,32 +645,32 @@ public class MainActivity extends FragmentActivity implements MainAcitivyListene
 		}.init(nearby);
 		GetDirection(myLat, myLon, dstLat, dstLon, handler);
 	}
-	
+
 	private void ShowDirection(GoogleMap googleMap) {
 
 		if (mMapSelectedShop != null && mMapSelectedShop.polyline != null)
 			mMapSelectedShop.polyline.setVisible(true);
 		else
 			return;
-		
+
 		for (Shop nearby : getShopListFragment().mShopList) {
 			if (nearby.polyline != null)
 				nearby.polyline.setVisible(nearby.equals(mMapSelectedShop));
 		}
-		
+
 		LatLngBounds.Builder builder = LatLngBounds.builder();
 		for (LatLng latlng : mMapSelectedShop.polyline.getPoints()) {
 			builder.include(latlng);
 		}
-		
+
 		googleMap.animateCamera(CameraUpdateFactory.newLatLngBounds(builder.build(), 24));
 	}
-	
+
 	private void HandleDirectionResponse(JSONObject rootJson, Shop nearby, GoogleMap googleMap) {
-		
-//		if (nearby.polyline != null)
-//			return;
-		
+
+		//		if (nearby.polyline != null)
+		//			return;
+
 		// Decode polyline string
 		String encoded_points = null;
 		try {
@@ -668,7 +683,7 @@ public class MainActivity extends FragmentActivity implements MainAcitivyListene
 
 		// Store the polyline
 		nearby.polyline = googleMap.addPolyline(mapOption.color(0xff8080FF));
-		
+
 		// If this polyline is not being selected
 		if (mMapSelectedShop != nearby) {
 			// Hide it
@@ -677,62 +692,62 @@ public class MainActivity extends FragmentActivity implements MainAcitivyListene
 			ShowDirection(googleMap);
 		}
 	}
-	
+
 	public static PolylineOptions decodePoints(String encoded_points){
-		
+
 		int index = 0;
 		int lat = 0;
 		int lng = 0;
 		PolylineOptions polylineOption = new PolylineOptions();
 
 		try {
-		    int shift;
-		    int result;
-		    
-		    while (index < encoded_points.length()) {
-		        shift = 0;
-		        result = 0;
-		        
-		        while (true) {
-		            int b = encoded_points.charAt(index++) - '?';
-		            result |= ((b & 31) << shift);
-		            shift += 5;
-		            if (b < 32)
-		                break;
-		        }
-		        lat += ((result & 1) != 0 ? ~(result >> 1) : result >> 1);
+			int shift;
+			int result;
 
-		        shift = 0;
-		        result = 0;
-		        
-		        while (true) {
-		            int b = encoded_points.charAt(index++) - '?';
-		            result |= ((b & 31) << shift);
-		            shift += 5;
-		            if (b < 32)
-		                break;
-		        }
-		        lng += ((result & 1) != 0 ? ~(result >> 1) : result >> 1);
-		        /* Add the new Lat/Lng to the Array. */
-		        polylineOption = polylineOption.add(new LatLng((lat/1e5),(lng/1e5)));
-		    }
-		    return polylineOption;
-		    
+			while (index < encoded_points.length()) {
+				shift = 0;
+				result = 0;
+
+				while (true) {
+					int b = encoded_points.charAt(index++) - '?';
+					result |= ((b & 31) << shift);
+					shift += 5;
+					if (b < 32)
+						break;
+				}
+				lat += ((result & 1) != 0 ? ~(result >> 1) : result >> 1);
+
+				shift = 0;
+				result = 0;
+
+				while (true) {
+					int b = encoded_points.charAt(index++) - '?';
+					result |= ((b & 31) << shift);
+					shift += 5;
+					if (b < 32)
+						break;
+				}
+				lng += ((result & 1) != 0 ? ~(result >> 1) : result >> 1);
+				/* Add the new Lat/Lng to the Array. */
+				polylineOption = polylineOption.add(new LatLng((lat/1e5),(lng/1e5)));
+			}
+			return polylineOption;
+
 		} catch(Exception e) {
-		    e.printStackTrace();
+			e.printStackTrace();
 		}
 		return polylineOption;
 	}
-	
+
 	public static void GetDirection(double srcLat, double srcLon, double dstLat, double dstLon, Handler handler) {
-		
+
 		final String URLFormat = "http://maps.googleapis.com/maps/api/directions/json?origin=%f,%f&destination=%f,%f&sensor=true";
 
 		String URL = String.format(Locale.US, URLFormat, srcLat, srcLon, dstLat, dstLon);
-		
+
 		new HttpConnection(handler).get(URL);
 	}
-	
+
 	///////////////////////////////////////////////////////////////////////////
 
 	public void initToggleCamera(){
@@ -888,7 +903,7 @@ public class MainActivity extends FragmentActivity implements MainAcitivyListene
 	}
 
 	public void init(){
-		
+
 		((RelativeLayout)findViewById(R.id.rootOfroot)).setOnTouchListener(this);
 		((RelativeLayout)findViewById(R.id.layoutQR)).setOnTouchListener(this);
 
@@ -912,7 +927,7 @@ public class MainActivity extends FragmentActivity implements MainAcitivyListene
 
 		// Tạo database
 		GlobalVariable.createDatbase(this);
-		
+
 		// Create menu
 		menu = new SlidingMenu(this);
 		menu.setMode(SlidingMenu.LEFT);
@@ -935,7 +950,7 @@ public class MainActivity extends FragmentActivity implements MainAcitivyListene
 				mShowMenu = false;
 			}
 		});
-		
+
 		// Create fragment list
 		mFragmentManager = getSupportFragmentManager();
 		mFragmentList = new ArrayList<Fragment>();
@@ -1001,7 +1016,7 @@ public class MainActivity extends FragmentActivity implements MainAcitivyListene
 				startActivity(new Intent(mActivity, TutorialActivity.class));
 			}
 		});
-		
+
 		mBtnIntro = (RelativeLayout)menu.getMenu().findViewById(R.id.btnIntro);
 		mBtnIntro.setOnClickListener(new OnClickListener() {
 			@Override
@@ -1009,7 +1024,7 @@ public class MainActivity extends FragmentActivity implements MainAcitivyListene
 				startActivity(new Intent(mActivity, IntroActivity.class));
 			}
 		});
-		
+
 		gpsBtn = (RelativeLayout)menu.getMenu().findViewById(R.id.GPSButton);
 		gpsBtn.setOnClickListener(new OnClickListener() {
 			@Override
@@ -1275,7 +1290,7 @@ public class MainActivity extends FragmentActivity implements MainAcitivyListene
 	void updateLocation(){
 		final String items[] = GlobalVariable.mCityNames.toArray(new String[GlobalVariable.mCityNames.size()]);
 
-		AlertDialog.Builder ab=new AlertDialog.Builder(MainActivity.this);
+		AlertDialog.Builder ab = new AlertDialog.Builder(MainActivity.this);
 		ab.setTitle("Chọn thành phố:");
 		ab.setPositiveButton("OK", new DialogInterface.OnClickListener() {
 
@@ -1399,7 +1414,7 @@ public class MainActivity extends FragmentActivity implements MainAcitivyListene
 	}
 
 	void updateInformation(){
-		
+
 		getAndUploadContact();
 		// Update SGP at Setting view
 		new GetUserCollection().execute();
@@ -1630,7 +1645,7 @@ public class MainActivity extends FragmentActivity implements MainAcitivyListene
 		mLocationBtn.setClickable(false);
 		((ImageButton) findViewById(R.id.btnSearch)).setClickable(false);
 		((ImageButton) findViewById(R.id.btnQRToggle)).setClickable(false);
-		
+
 		mFilterBtn.setImageResource(R.drawable.menu_filter_lock);
 		mMapButton.setImageResource(R.drawable.menu_map_lock);
 	}
@@ -1856,7 +1871,7 @@ public class MainActivity extends FragmentActivity implements MainAcitivyListene
 		@Override
 		protected void onPreExecute(){}
 	}
-	
+
 	public class GetRewardList extends AsyncTask<Void, Void, Boolean> {
 		String result = null;
 
@@ -1864,7 +1879,7 @@ public class MainActivity extends FragmentActivity implements MainAcitivyListene
 		protected Boolean doInBackground(Void... params) {
 			List<NameValuePair> pairs = new ArrayList<NameValuePair>();
 			pairs.add(new BasicNameValuePair("user_id", GlobalVariable.userID));
-			
+
 			result = NetworkManger.post(APILinkMaker.mGetRewardList(), pairs);
 			return true;
 		}
@@ -1874,7 +1889,7 @@ public class MainActivity extends FragmentActivity implements MainAcitivyListene
 			try {
 				JSONArray jGiftArr = new JSONArray(result);
 				List<GiftItem> giftList = new ArrayList<GiftItem>();
-				
+
 				// Parse json to get reward list
 				for (int i = 0; i < jGiftArr.length(); i++) {
 					JSONObject jGift = jGiftArr.getJSONObject(i);
@@ -1885,9 +1900,9 @@ public class MainActivity extends FragmentActivity implements MainAcitivyListene
 					item.status 	= jGift.getInt("status");
 					giftList.add(item);
 				}
-				
+
 				mUserFragment.updateRewardList(giftList);
-				
+
 			} catch (JSONException e) {
 				// TODO Auto-generated catch block
 				e.printStackTrace();
@@ -2181,6 +2196,20 @@ public class MainActivity extends FragmentActivity implements MainAcitivyListene
 	@Override
 	public void updateTotalSGP(String score) {
 		mTotalSGP.setText(score + " P");
+	}
+	
+	public void enableFilterMap(){
+		mFilterBtn.setClickable(true);
+		mMapButton.setClickable(true);
+		mFilterBtn.setImageResource(R.drawable.menu_filter);
+		mMapButton.setImageResource(R.drawable.map_btn);
+	}
+	
+	public void disableFilterMap(){
+		mFilterBtn.setImageResource(R.drawable.menu_filter_lock);
+		mMapButton.setImageResource(R.drawable.menu_map_lock);
+		mFilterBtn.setClickable(false);
+		mMapButton.setClickable(false);
 	}
 }
 
