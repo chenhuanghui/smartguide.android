@@ -105,7 +105,8 @@
                 android:layout_height="55dp"
                 android:layout_gravity="center_horizontal"
                 android:layout_margin="10dp"
-                android:scaleType="fitXY" />
+                android:scaleType="fitXY"
+                android:background="@drawable/ava_loading" />
 
             <LinearLayout
                 android:id="@+id/shop_cover_layout_tran"

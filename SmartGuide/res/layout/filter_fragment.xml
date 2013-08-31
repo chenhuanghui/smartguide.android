@@ -154,7 +154,7 @@
                     android:background="@drawable/dummy"
                     android:cropToPadding="false"
                     android:scaleType="centerInside"
-                    android:src="@drawable/Done" />
+                    android:src="@drawable/done" />
             </LinearLayout>
 
             <LinearLayout
