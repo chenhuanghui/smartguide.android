@@ -154,7 +154,7 @@
                     android:background="@drawable/dummy"
                     android:cropToPadding="false"
                     android:scaleType="centerInside"
-                    android:src="@drawable/done_icon" />
+                    android:src="@drawable/Done" />
             </LinearLayout>
 
             <LinearLayout

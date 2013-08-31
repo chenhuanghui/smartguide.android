@@ -22,7 +22,7 @@
                 android:id="@+id/imgCover"
                 android:layout_width="fill_parent"
                 android:layout_height="fill_parent"
-                android:background="@drawable/cover_noimage"
+                android:background="@drawable/cover_loading"
                 android:cropToPadding="false"
                 android:scaleType="fitXY"
                 android:visibility="visible" />
@@ -43,7 +43,8 @@
                     <ImageView
                         android:id="@+id/imgLogo"
                         android:layout_width="match_parent"
-                        android:layout_height="match_parent"/>
+                        android:layout_height="match_parent"
+                        android:background="@drawable/ava_loading"/>
                 </LinearLayout>
 
                 <LinearLayout

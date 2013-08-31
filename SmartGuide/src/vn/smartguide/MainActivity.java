@@ -1049,7 +1049,10 @@ public class MainActivity extends FragmentActivity implements MainAcitivyListene
 		updateBtn.setOnClickListener(new View.OnClickListener() {
 			@Override
 			public void onClick(View arg0) {
-				startActivityForResult(new Intent(mActivity, UpdateActivity.class), UpdateRequestCode);
+				//startActivityForResult(new Intent(mActivity, UpdateActivity.class), UpdateRequestCode);
+				Uri uri = Uri.parse("https://play.google.com/store/apps/details?id=vn.smartguide");
+				Intent intent = new Intent(Intent.ACTION_VIEW, uri);
+				startActivity(intent);
 			}
 		});
 

@@ -399,19 +399,19 @@ public class WellcomeActivity extends FragmentActivity{
 				" qua tin nhắn. Chọn Đồng ý để tiếp tục hoặc hủy để thay đổi số điện thoại");
 		builder.setCancelable(true);
 		
-		builder.setNegativeButton("Hủy", new DialogInterface.OnClickListener() {
-			public void onClick(DialogInterface dialog, int which) {
-				mStatusText.setText("Nhập số điện thoại...");
-				mNumberField.setText("");
-			}
-		});
-		
-		builder.setPositiveButton("Đồng ý", new DialogInterface.OnClickListener() {
+		builder.setNegativeButton("Đồng ý", new DialogInterface.OnClickListener() {
 			public void onClick(DialogInterface dialog, int which) {
 				isConfirm = true;
 				mStatusText.setText("Chờ và nhập mã xác nhận...");
 				mNumberField.setText("");
 				new GetActivateCode().execute();
+			}
+		});
+		
+		builder.setPositiveButton("Hủy", new DialogInterface.OnClickListener() {
+			public void onClick(DialogInterface dialog, int which) {
+				mStatusText.setText("Nhập số điện thoại...");
+				mNumberField.setText("");
 			}
 		});
 		
