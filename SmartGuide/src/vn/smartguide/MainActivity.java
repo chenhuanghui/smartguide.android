@@ -1699,7 +1699,7 @@ public class MainActivity extends FragmentActivity implements MainAcitivyListene
 					mSGPText.setVisibility(View.VISIBLE);
 					mContentText.setVisibility(View.VISIBLE);
 					mShopNameText.setText(JSResult.getString("shop_name"));
-					mSGPText.setText(JSResult.getString("money") + " VNĐ?");
+					mSGPText.setText(JSResult.getString("money") + " VNĐ");
 					mContentText.setText("Bạn nhận được phiếu giảm giá");
 
 					try {
