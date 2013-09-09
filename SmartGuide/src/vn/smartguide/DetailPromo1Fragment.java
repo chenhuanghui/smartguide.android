@@ -58,7 +58,8 @@ public class DetailPromo1Fragment extends DetailPromoFragment {
         gridView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
 			@Override
 			public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-				mMainAcitivyListener.getAwardTypeOne(mPromoListAdapter.mItemList.get(position).id);
+				if (mTotalScore >= mPromoListAdapter.mItemList.get(position).required)
+					mMainAcitivyListener.getAwardTypeOne(mPromoListAdapter.mItemList.get(position).id);
 			}
 		});
         mActivity = getActivity();
