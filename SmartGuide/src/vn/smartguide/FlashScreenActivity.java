@@ -103,7 +103,7 @@ public class FlashScreenActivity extends Activity {
 
 
 			ImageLoader.getInstance().init(config);
-			GlobalVariable.imageLoader = ImageLoader.getInstance();
+			GlobalVariable.imageLoader = ImageLoader.getInstance(); 
 
 			List<NameValuePair> pairs = new ArrayList<NameValuePair>();
 			pairs.add(new BasicNameValuePair("city", GlobalVariable.mCityID));

@@ -1,10 +1,11 @@
 package vn.smartguide;
 
 import java.io.BufferedReader;
+import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
+import java.io.InputStream;
 import java.io.InputStreamReader;
-import java.io.OutputStreamWriter;
 
 import org.apache.http.HttpEntity;
 import org.apache.http.HttpResponse;
@@ -21,7 +22,9 @@ import org.apache.http.params.HttpParams;
 
 import android.content.Context;
 import android.graphics.Bitmap;
+import android.graphics.Bitmap.Config;
 import android.graphics.BitmapFactory;
+import android.graphics.BitmapFactory.Options;
 import android.os.Handler;
 import android.os.Message;
  
@@ -49,6 +52,7 @@ public class HttpConnection implements Runnable {
     private Handler handler;
     private String data;
     private Context ct;
+    private String fileName;
  
     private HttpClient httpClient;
  
@@ -90,8 +94,9 @@ public class HttpConnection implements Runnable {
         create(BITMAP, url, null);
     }
     
-    public void getFile(String url, Context ct) {
+    public void getFile(String url, Context ct, String fileName) {
     	this.ct = ct;
+    	this.fileName = fileName;
     	create(GET_FILE, url, null);
     }
  
@@ -141,40 +146,7 @@ public class HttpConnection implements Runnable {
         				HttpConnection.DID_ERROR, e));
         }
         ConnectionManager.getInstance().didComplete(this);
-    }
-    
-    public Object runSync() throws Exception {
-
-    	httpClient = new DefaultHttpClient();
-    	HttpParams params = httpClient.getParams();
-    	HttpConnectionParams.setSoTimeout(params, 10000);
-    	HttpConnectionParams.setConnectionTimeout(params, 10000);
-
-    	HttpResponse response = null;
-    	switch (method) {
-    	case GET:
-    		response = httpClient.execute(new HttpGet(url));
-    		break;
-    	case POST:
-    		HttpPost httpPost = new HttpPost(url);
-    		httpPost.setEntity(new StringEntity(data));
-    		httpPost.addHeader("Content-Type", "text/html; charset=UTF-8");
-    		response = httpClient.execute(httpPost);
-    		break;
-    	case PUT:
-    		HttpPut httpPut = new HttpPut(url);
-    		httpPut.setEntity(new StringEntity(data));
-    		response = httpClient.execute(httpPut);
-    		break;
-    	case DELETE:
-    		response = httpClient.execute(new HttpDelete(url));
-    		break;
-    	case BITMAP:
-    		response = httpClient.execute(new HttpGet(url));
-    		return processBitmapEntity(response.getEntity());
-    	}
-    	return processEntity(response.getEntity());
-    }
+    }    
  
     private String processEntity(HttpEntity entity) throws IllegalStateException,
             IOException {
@@ -196,7 +168,13 @@ public class HttpConnection implements Runnable {
     private Bitmap processBitmapEntity(HttpEntity entity) throws IOException {
     	
         BufferedHttpEntity bufHttpEntity = new BufferedHttpEntity(entity);
-        Bitmap bm = BitmapFactory.decodeStream(bufHttpEntity.getContent());
+        long len = bufHttpEntity.getContentLength();
+        
+        Options bitmapOption = new Options();
+        bitmapOption.inScaled = false;
+        bitmapOption.inPreferredConfig = Config.ARGB_8888;
+        
+        Bitmap bm = BitmapFactory.decodeStream(bufHttpEntity.getContent(), null, bitmapOption);
         if (handler != null) 
         	handler.sendMessage(Message.obtain(handler, DID_SUCCEED, bm));
         return bm;
@@ -204,25 +182,26 @@ public class HttpConnection implements Runnable {
  
     private void processGetFile(HttpEntity entity) throws IOException {
     	
-    	InputStreamReader in = new InputStreamReader(entity.getContent());
-    	FileOutputStream jsonFile = ct.openFileOutput(
-    			"songlist.json", Context.MODE_PRIVATE);
-    	OutputStreamWriter out = new OutputStreamWriter(jsonFile);
+    	InputStream in = entity.getContent();    	
+    	String cachePath = ct.getCacheDir().getAbsolutePath();
+    	File imageCacheFolder = new File(cachePath + "/" + GlobalVariable.IMAGE_FILE_PATH);
+    	imageCacheFolder.mkdirs();
+    	FileOutputStream out = new FileOutputStream(cachePath + "/" + GlobalVariable.IMAGE_FILE_PATH + fileName);
     	
-    	char[] buffer = new char[1024 * 5];
+    	byte[] buffer = new byte[1024 * 5];
     	int justRead = 0;
     	int hasRead = 0;
     	while ((justRead = in.read(buffer)) != -1) {
     		out.write(buffer, 0, justRead);
     		hasRead += justRead;
-    		handler.sendMessage(Message.obtain(handler, DID_STATUS, hasRead,
-    				(int) entity.getContentLength()));
+    		handler.sendMessage(Message.obtain(handler, DID_STATUS, hasRead, (int) entity.getContentLength()));
     	}
     	
-    	handler.sendMessage(Message.obtain(handler, DID_SUCCEED, "songlist.json"));
+    	// 22/8: 
     	
-    	out.close();
-    	jsonFile.close();
+    	handler.sendMessage(Message.obtain(handler, DID_SUCCEED, fileName));
+    	
     	in.close();
+    	out.close();
     }
 }

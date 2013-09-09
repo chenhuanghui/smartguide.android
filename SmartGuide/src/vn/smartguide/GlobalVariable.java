@@ -22,8 +22,17 @@ import java.util.List;
  */
 
 public final class GlobalVariable {
+	
+	// ImageLoader
+	public static final int IMAGE_FILE_NAME_LENGTH  = 20;
+	public static final int SAMPLE_LENGTH 			= 3;
+	public static final String IMAGE_FILE_PATH 		= "imageCache/";
+	
 	// AysnHttpClient
 	public static AsyncHttpClient mAsyncHttpClient = new AsyncHttpClient();
+	
+	// Cycrix ImageLoader
+	public static CyImageLoader cyImageLoader;
 
 	// ImageLoader & DisplayImageOptions for asyn downloading image
 	public static ImageLoader imageLoader;

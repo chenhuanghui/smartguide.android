@@ -31,7 +31,7 @@
             android:layout_centerVertical="true"
             android:layout_toLeftOf="@+id/btnToggleFilter"
             android:layout_toRightOf="@+id/btnSearch"
-            android:ellipsize="end"
+            android:ellipsize="middle"
             android:gravity="center_horizontal"
             android:singleLine="true"
             android:text="DANH MỤC"

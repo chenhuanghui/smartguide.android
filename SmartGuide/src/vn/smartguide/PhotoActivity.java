@@ -1,118 +1,219 @@
 package vn.smartguide;
 
+import java.util.ArrayList;
 import java.util.List;
 
-import com.google.analytics.tracking.android.EasyTracker;
+import org.apache.http.NameValuePair;
+import org.apache.http.message.BasicNameValuePair;
+import org.json.JSONArray;
+import org.json.JSONException;
 
-import android.os.Bundle;
+import vn.smartguide.CyImageLoader.Listener;
 import android.annotation.SuppressLint;
+import android.app.Activity;
+import android.content.Intent;
+import android.graphics.Bitmap;
+import android.graphics.Point;
+import android.os.AsyncTask;
+import android.os.Bundle;
+import android.provider.ContactsContract.CommonDataKinds.Photo;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentActivity;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentStatePagerAdapter;
 import android.support.v4.view.ViewPager;
+import android.util.Log;
 import android.view.LayoutInflater;
-import android.view.Menu;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.ProgressBar;
 import android.widget.TextView;
 
+import com.google.analytics.tracking.android.EasyTracker;
+
 public class PhotoActivity extends FragmentActivity{
 
-	private DetailShopPhotoFragment mParentFragment;
-	private PhotoPagerAdapter mAdapter;
-	private boolean mIsUser;
-	private List<ImageStr> mImageList;
+//	private DetailShopPhotoFragment mParentFragment;
+	private static List<ImageStr> 	sImageList;
+	private static boolean 			sIsUser;
+	private static int 				sShopID;
+	
+	private PhotoPagerAdapter 	mAdapter;
+	private boolean 			mIsUser;
+	private List<ImageStr> 		mImageList;
+	private int 				mShopID;
+	
+	public static void newInstance(Activity act, List<ImageStr> imageList, boolean isUser, int shopID) {
+		
+		sImageList = imageList;
+		sIsUser = isUser;
+		sShopID = shopID;
+		
+		Intent intent = new Intent(act, PhotoActivity.class);
+		act.startActivity(intent);
+	}
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.photo_dialog);
 
-		mParentFragment = DetailShopPhotoFragment.thiz;
-		mIsUser = getIntent().getBooleanExtra("isUser", true);
+		mImageList = sImageList;
+		mIsUser = sIsUser;
+		mShopID = sShopID;
 
-		if (mIsUser)
-			mImageList = mParentFragment.mUserURLList;
-		else
-			mImageList = mParentFragment.mShopURLList;
-
+		sImageList = null;
+		
 		ViewPager pager = (ViewPager) findViewById(R.id.pagerPhotoFull);
-		try{
 		mAdapter = new PhotoPagerAdapter(getSupportFragmentManager());
-		}catch(Exception ex){
-			ex.getMessage();
-		}
+		mAdapter.setData(mImageList);
 		pager.setAdapter(mAdapter);
-	}
-
-	@Override
-	public boolean onCreateOptionsMenu(Menu menu) {
-		// Inflate the menu; this adds items to the action bar if it is present.
-		getMenuInflater().inflate(R.menu.photo, menu);
-		return true;
-	}
-
-	public void loadMore() {
-
-		mParentFragment.loadMoreUser(this);
-	}
-
-	public void loadImage() {
-
-		mParentFragment.loadImage(mImageList, mIsUser);
-	}
-
-	public void refresh() {
-		mAdapter.notifyDataSetChanged();
 	}
 
 	public class PhotoPagerAdapter extends FragmentStatePagerAdapter {
 
-		private PhotoFullFragment[] fragArr = new PhotoFullFragment[getCount()];
+		private List<PhotoFullFragment> fragArr = new ArrayList<PhotoFullFragment>();
+		private List<ImageStr> mItemList = new ArrayList<ImageStr>();
+		private boolean mIsLoadingMore;
+		private boolean mEnd;
+		private int mPageLoaded = 1;
 
 		public PhotoPagerAdapter(FragmentManager fm) {
 			super(fm);
-			for (int i = 0; i < fragArr.length; i++)
-				fragArr[i] = new PhotoFullFragment(mImageList.get(i));
+		}
+		
+		public void setData(List<ImageStr> imageList) {
+			
+			mItemList.clear();
+			mItemList.addAll(imageList);
+			fragArr.clear();
+			for (ImageStr item : mItemList) {
+				item.loadFail = false;
+				fragArr.add(new PhotoFullFragment(item));
+			}
+			notifyDataSetChanged();
+		}
+		
+		public void loadMore() {
+			
+			if (mIsLoadingMore || mEnd)
+				return;
+			
+			mIsLoadingMore = true;
+			new GetImage(mPageLoaded + 1).execute();
 		}
 
 		@Override
 		public int getCount() {
-			return mImageList.size();
+			return fragArr.size();
 		}
 
 		@Override
 		public Fragment getItem(int position) {
 
-			if (mIsUser && (getCount() - position >= 5)) {
+			if (getCount() - position <= 5)
 				loadMore();
+			
+			try {
+				PhotoFullFragment f = fragArr.get(position);
+				f.mImageItem = mItemList.get(position);
+				return f;
+			} catch (Exception e) {
+				e.printStackTrace();
 			}
 			
-			PhotoFullFragment f = fragArr[position % fragArr.length];
-			f.mImageItem = mImageList.get(position);
-			f.refresh(f.getView());
-			return f;
+			return null;
 		}
 
 		@Override
 		public void notifyDataSetChanged() {
 
 			super.notifyDataSetChanged();
-			for (int i = 0; i < fragArr.length; i++)
-				fragArr[i].refresh(fragArr[i].getView());
+			for (int i = 0; i < fragArr.size(); i++)
+				fragArr.get(i).refresh();
+		}
+		
+		///////////////////////////////////////////////////////////////////////////
+		// Network Asynctask
+		///////////////////////////////////////////////////////////////////////////
+		
+		private class GetImage extends AsyncTask<Void, Void, Boolean> {
+
+			private int mPage;
+			private JSONArray jImgArr;
+
+			public GetImage(int page) {
+				
+				mPage = page;
+			}
+
+			@Override
+			protected Boolean doInBackground(Void... params) {
+
+				try {
+					List<NameValuePair> pairs = new ArrayList<NameValuePair>();
+					pairs.add(new BasicNameValuePair("shop_id", Integer.toString(mShopID)));
+					pairs.add(new BasicNameValuePair("page", Integer.toString(mPage)));
+
+					String json = null;
+					if (mIsUser)
+						NetworkManger.post(APILinkMaker.mGetUserImage(), pairs);
+					else
+						NetworkManger.post(APILinkMaker.mGetShopImage(), pairs);
+//					String json = NetworkManger.post(APILinkMaker.mGetUserImage(), pairs);
+					
+					jImgArr = new JSONArray(json);
+
+				} catch (JSONException e) {
+					e.printStackTrace();
+				}
+
+				return true;
+			}
+
+			protected void onPostExecute(Boolean k) {
+				
+				try {
+					int beforeSize = mItemList.size();
+					DetailShopPhotoFragment.parseJsonImage(jImgArr, mItemList);
+					if (beforeSize == mItemList.size())
+						mEnd = true;
+					else {
+						mPageLoaded++;
+						cycrixDebug("Loaded " + mItemList.size() + " item, " + mPageLoaded + " pages");
+						for (int i = beforeSize; i < mItemList.size(); i++) {
+							fragArr.add(new PhotoFullFragment(mItemList.get(i)));
+							cycrixDebug(mItemList.get(i).url);
+						}
+					}
+				} catch (JSONException e) {
+				
+					e.printStackTrace();
+				}
+
+				notifyDataSetChanged();
+				mIsLoadingMore = false;
+			}
+			
+			protected void onPreExecute() { }
 		}
 	}
 
 	@SuppressLint("ValidFragment")
 	public class PhotoFullFragment extends Fragment {
 
-		ImageStr mImageItem;
+		private ImageStr mImageItem;
 
 		public PhotoFullFragment(ImageStr imageItem) {
 			mImageItem = imageItem;
+		}
+		
+		@Override
+		public void onCreate(Bundle savedInstanceState) {
+			
+			super.onCreate(savedInstanceState);
+			View v = getView();
 		}
 
 		@Override
@@ -120,10 +221,26 @@ public class PhotoActivity extends FragmentActivity{
 				Bundle savedInstanceState) {
 
 			View v = inflater.inflate(R.layout.photo_full_item, container, false);
-
-			refresh(v);
-
 			return v;
+		}
+		
+		@Override
+		public void onViewCreated(View view, Bundle savedInstanceState) {
+			
+			refresh(view);
+			super.onViewCreated(view, savedInstanceState);
+		}
+		
+		@Override
+		public void onDestroy() {
+
+			super.onDestroy();
+			View v = getView();
+		}
+		
+		public void refresh() {
+			
+			refresh(getView());
 		}
 
 		public void refresh(View v) {
@@ -136,13 +253,57 @@ public class PhotoActivity extends FragmentActivity{
 			TextView txtTitle = (TextView) v.findViewById(R.id.txtTit);
 			TextView txtDsc = (TextView) v.findViewById(R.id.txtDesc);
 
-			if (mImageItem.bm != null) {
-				img.setImageBitmap(mImageItem.bm);
-				prgWait.setVisibility(View.INVISIBLE);
-			} else if (!mImageItem.loading) {
-				loadImage();
-				prgWait.setVisibility(View.VISIBLE);
-			}
+			Point size = new Point();
+			getWindowManager().getDefaultDisplay().getSize(size);
+			
+//			Bitmap bm = mImageItem.bm.get();
+			
+			if (mImageItem.loadFail)
+				img.setImageResource(R.drawable.ava_loading);
+			else
+				GlobalVariable.cyImageLoader.loadImage(mImageItem.url, new Listener() {
+
+					private PhotoFullFragment frag;
+
+					public Listener init(PhotoFullFragment frag) {
+
+						this.frag = frag;
+						return this;
+					}
+
+					@Override
+					public void loadFinish(int from, Bitmap image) {
+
+						View rootView = frag.getView();
+
+						if (rootView == null)
+							return;
+
+						switch (from) {
+						case CyImageLoader.FROM_NETWORK:
+						case CyImageLoader.FROM_DISK:
+						case CyImageLoader.FROM_MEMORY: {
+							ImageView img = (ImageView) rootView.findViewById(R.id.imgFullPhoto);
+							img.setImageBitmap(image);
+							break;
+						}
+						}
+					}
+
+					@Override
+					public void loadFail(Exception e) {
+
+						mImageItem.loadFail = true;
+						View rootView = frag.getView();
+
+						if (rootView == null)
+							return;
+
+						ImageView img = (ImageView) rootView.findViewById(R.id.imgFullPhoto);
+						img.setImageResource(R.drawable.ava_loading);
+					}
+
+				}.init(this), size, PhotoActivity.this);
 
 			if (!mIsUser) {
 				txtTitle.setVisibility(View.INVISIBLE);
@@ -158,7 +319,7 @@ public class PhotoActivity extends FragmentActivity{
 			super.onActivityCreated(savedInstanceState);
 		}
 	}
-	
+
 	@Override
 	public void onStart() {
 		super.onStart();
@@ -169,5 +330,17 @@ public class PhotoActivity extends FragmentActivity{
 	public void onStop() {
 		super.onStop();
 		EasyTracker.getInstance(this).activityStop(this);  // Add this method.
+	}
+	
+	///////////////////////////////////////////////////////////////////////////
+	// Debug stuff
+	///////////////////////////////////////////////////////////////////////////
+	
+	private static boolean isDebug = true;
+	private static final String TAG = "CycrixDebug";
+	private static final String HEADER = "PhotoActivity";
+	private static void cycrixDebug(String message) {
+		
+		if (isDebug) Log.d(TAG, HEADER + ": " + message);
 	}
 }

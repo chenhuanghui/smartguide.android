@@ -14,7 +14,7 @@ public class ConnectionManager {
     private ArrayList<Runnable> active = new ArrayList<Runnable>();
     private ArrayList<Runnable> queue = new ArrayList<Runnable>();
  
-    private static ConnectionManager instance;
+    public static ConnectionManager instance;
  
     public static ConnectionManager getInstance() {
         if (instance == null)
@@ -43,5 +43,4 @@ public class ConnectionManager {
         active.remove(runnable);
         startNext();
     }
- 
 }

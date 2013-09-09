@@ -917,6 +917,9 @@ public class MainActivity extends FragmentActivity implements MainAcitivyListene
 		((RelativeLayout)findViewById(R.id.layoutQR)).setOnTouchListener(this);
 
 		mActivity = this;
+		
+		// init cyImageLoader
+		GlobalVariable.cyImageLoader = new CyImageLoader(this);
 
 		// init
 		try{
@@ -1345,6 +1348,8 @@ public class MainActivity extends FragmentActivity implements MainAcitivyListene
 	@Override
 	public void onDestroy() {
 		super.onDestroy();
+		ConnectionManager.instance = null;
+		GlobalVariable.smartGuideDB = null;
 		mUiHelper.onDestroy();
 	}
 

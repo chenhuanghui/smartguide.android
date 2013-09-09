@@ -144,10 +144,10 @@ public class AdsFragment extends Fragment {
 	};
 	
 	public void startDownImage(){
-		new DownloadImage().execute();
+//		new DownloadImage().execute();
 	}
 	
-	public class DownloadImage extends AsyncTask<Void, Void, Boolean> {
+	private class DownloadImage extends AsyncTask<Void, Void, Boolean> {
 
 		String mJson = "";
 		List<String> mURL = new ArrayList<String>();
