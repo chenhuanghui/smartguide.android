@@ -103,6 +103,7 @@ public class MainActivity extends FragmentActivity implements MainAcitivyListene
 	private final int FlashScreenRequestCode 	= 55555;
 	private final int ReviewRequestCode			= 33333;
 	private final int UpdateRequestCode			= 22222;
+	private final int TutorialRequestCode		= 11111;
 
 	// Load qrcode lib
 	static {
@@ -214,7 +215,7 @@ public class MainActivity extends FragmentActivity implements MainAcitivyListene
 	
 	//Exit para
 	private boolean doubleBackToExitPressedOnce = false;
-	
+	private boolean isFirstTime = false;
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
@@ -226,8 +227,10 @@ public class MainActivity extends FragmentActivity implements MainAcitivyListene
 
 		init();
 
-		if (GlobalVariable.getActivateCodeFromDB() == false)
+		if (GlobalVariable.getActivateCodeFromDB() == false){
 			startActivityForResult(new Intent(this, WellcomeActivity.class), WelcomeRequestCode);
+			isFirstTime = true;
+		}
 		else
 			startActivityForResult(new Intent(this, FlashScreenActivity.class), FlashScreenRequestCode);
 	}
@@ -259,7 +262,10 @@ public class MainActivity extends FragmentActivity implements MainAcitivyListene
 				new Handler().postDelayed(new Runnable() {
 					@Override
 					public void run() {
-						updateInformation();
+						if (isFirstTime)
+							startActivityForResult(new Intent(MainActivity.this, TutorialActivity.class), TutorialRequestCode);
+						else
+							updateInformation();
 					}
 				}, 500);
 			}
@@ -274,13 +280,19 @@ public class MainActivity extends FragmentActivity implements MainAcitivyListene
 			else
 				finish();
 			break;
-
+			
 		case ReviewRequestCode:
 			if(GlobalVariable.isNeedPostReview == true){
 				new PostReview().execute();
 			}
 			break;
+			
+		case TutorialRequestCode:
+			updateInformation();
+			break;
 		}
+		
+		
 	}
 
 	@Override
@@ -1452,7 +1464,7 @@ public class MainActivity extends FragmentActivity implements MainAcitivyListene
 
 	void updateInformation(){
 
-		getAndUploadContact();
+		//getAndUploadContact();		
 		// Update SGP at Setting view
 		new GetUserCollection().execute();
 		new GetRewardList().execute();
