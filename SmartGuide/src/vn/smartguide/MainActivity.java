@@ -49,6 +49,7 @@ import android.widget.ProgressBar;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.TextView.OnEditorActionListener;
+import android.widget.Toast;
 
 import com.facebook.Request;
 import com.facebook.Response;
@@ -209,7 +210,10 @@ public class MainActivity extends FragmentActivity implements MainAcitivyListene
 	private boolean mIsCanWipe = false;
 
 	// User button
-	ImageButton mUserButton;
+	private ImageButton mUserButton;
+	
+	//Exit para
+	private boolean doubleBackToExitPressedOnce = false;
 	
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
@@ -350,10 +354,25 @@ public class MainActivity extends FragmentActivity implements MainAcitivyListene
 	@Override
 	public void goPreviousPage() {
 		int current_index = mViewPager.getCurrentItem();
+		
 		if (current_index == 0){
-			confirmExit();
-			return;
-		}
+			if (doubleBackToExitPressedOnce) {
+	            super.onBackPressed();
+	            return;
+	        }
+			
+	        doubleBackToExitPressedOnce = true;
+	        Toast.makeText(this, "Nhấn back lần nữa để thoát chương trình", Toast.LENGTH_SHORT).show();
+	        new Handler().postDelayed(new Runnable() {
+
+	            @Override
+	            public void run() {
+	             doubleBackToExitPressedOnce = false;   
+
+	            }
+	        }, 2000);
+		}else
+			doubleBackToExitPressedOnce = false;
 
 		int pageWillGo = current_index - 1;
 		try{
