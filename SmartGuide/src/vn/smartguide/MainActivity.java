@@ -216,6 +216,8 @@ public class MainActivity extends FragmentActivity implements MainAcitivyListene
 	//Exit para
 	private boolean doubleBackToExitPressedOnce = false;
 	private boolean isFirstTime = false;
+	private boolean mIsNeedGotoDetail = false;
+	
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
@@ -291,8 +293,6 @@ public class MainActivity extends FragmentActivity implements MainAcitivyListene
 			updateInformation();
 			break;
 		}
-		
-		
 	}
 
 	@Override
@@ -1152,12 +1152,15 @@ public class MainActivity extends FragmentActivity implements MainAcitivyListene
 		mMirrorFront = (RelativeLayout) findViewById(R.id.monitor_front);
 		mCloseBtn = (ImageButton)findViewById(R.id.closeButton);
 		mCloseBtn.setOnClickListener(new View.OnClickListener() {
-
 			@Override
 			public void onClick(View v) {
 				isCanScan = true;
 				mIsCanWipe = true;
-				toggleCamera();
+				if (mIsNeedGotoDetail){
+					new QCToDetail("sa").execute();
+				}
+				else
+					toggleCamera();
 			}
 		});
 
@@ -1794,13 +1797,15 @@ public class MainActivity extends FragmentActivity implements MainAcitivyListene
 	public class GetSGPPoint extends AsyncTask<Void, Void, Boolean> {
 		JSONObject JSResult = null;
 		int id = -1;
+		
 		@Override
 		protected Boolean doInBackground(Void... params) {
 			isNeedUpdateSGP = false;
+			mIsNeedGotoDetail = false;
+			
 			List<NameValuePair> pairs = new ArrayList<NameValuePair>();
 			pairs.add(new BasicNameValuePair("user_id", GlobalVariable.userID));
 			pairs.add(new BasicNameValuePair("code", mQRCode));
-
 
 			String json = NetworkManger.post(APILinkMaker.mGetSGP(), pairs);
 			try {
@@ -1869,13 +1874,15 @@ public class MainActivity extends FragmentActivity implements MainAcitivyListene
 						new GetUserCollection().execute();
 					else
 						new UpdateTotalSGP().execute();
-
+					
+					mIsNeedGotoDetail = true;
 					break;
 				}
 			}catch(Exception ex){
 				return;
 
 			}
+			
 			mMirror.setVisibility(View.VISIBLE);
 			mMirrorFront.setVisibility(View.VISIBLE);
 		}
@@ -2282,6 +2289,30 @@ public class MainActivity extends FragmentActivity implements MainAcitivyListene
 		mFilterBtn.setImageResource(R.drawable.menu_filter);
 		mMapButton.setImageResource(R.drawable.map_btn);
 		mUserButton.setImageResource(R.drawable.user_btn);
+	}
+	
+	public class QCToDetail extends AsyncTask<Void, Void, Boolean> {
+		String mJson;
+
+		public QCToDetail(String mjson){
+			mJson = mjson;
+		}
+
+		@Override
+		protected Boolean doInBackground(Void... params) {
+			
+			return true;
+		}
+
+		@Override
+		protected void onPostExecute(Boolean k){
+			mProgressBar.setVisibility(View.INVISIBLE);
+		}
+
+		@Override
+		protected void onPreExecute(){
+			mProgressBar.setVisibility(View.VISIBLE);
+		}
 	}
 }
 
