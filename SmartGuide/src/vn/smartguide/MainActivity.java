@@ -1529,7 +1529,8 @@ public class MainActivity extends FragmentActivity implements MainAcitivyListene
 		// Update SGP at Setting view
 		new GetUserCollection().execute();
 		new GetRewardList().execute();
-
+		new FindShopList().execute();
+		
 		// Update name and avatar facebook if possible
 		ImageView avatar = (ImageView)menu.getMenu().findViewById(R.id.userAvatarSetting);
 		TextView name = (TextView)menu.getMenu().findViewById(R.id.textView);
@@ -2385,6 +2386,34 @@ public class MainActivity extends FragmentActivity implements MainAcitivyListene
 		isCanScan = true;
 		mMirror.setVisibility(View.INVISIBLE);
 		mProgressBar.setVisibility(View.INVISIBLE);
+	}
+	
+	public class FindShopList extends AsyncTask<Void, Void, Boolean> {
+		
+		@Override
+		protected Boolean doInBackground(Void... params) {
+			GlobalVariable.json10FirstShop = "";
+			List<NameValuePair> pairs = new ArrayList<NameValuePair>();
+			pairs.add(new BasicNameValuePair("group_list", "1,2,3,4,5,6,7,8"));
+			pairs.add(new BasicNameValuePair("city_id", GlobalVariable.mCityID));
+			pairs.add(new BasicNameValuePair("user_id", GlobalVariable.userID));
+			pairs.add(new BasicNameValuePair("user_lat", Float.toString(GlobalVariable.mLat)));
+			pairs.add(new BasicNameValuePair("user_lng", Float.toString(GlobalVariable.mLng)));
+			pairs.add(new BasicNameValuePair("page", "0"));
+			pairs.add(new BasicNameValuePair("sort_by", "0"));
+
+			GlobalVariable.json10FirstShop = NetworkManger.post(APILinkMaker.ShopListInCategory(), pairs);
+			return true;
+		}
+
+		@Override
+		protected void onPostExecute(Boolean k){
+			
+		}
+
+		@Override
+		protected void onPreExecute(){
+		}
 	}
 }
 

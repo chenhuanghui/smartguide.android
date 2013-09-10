@@ -124,6 +124,8 @@ public final class GlobalVariable {
 	private static boolean isFirstTimeGetGPS = false;
 	private static MainAcitivyListener mMainAcitivyListener;
 	
+	public static String json10FirstShop = "";
+	
 	public static void createDatbase(Context applicationcontext){
 		smartGuideDB = new DatabaseManger(applicationcontext);
 	}

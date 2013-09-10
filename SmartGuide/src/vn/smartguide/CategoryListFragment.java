@@ -127,8 +127,20 @@ public class CategoryListFragment extends Fragment {
 		gridView.setAdapter(new ImageAdapter(mActivity.getBaseContext(), mActivity));
 		gridView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
 			public void onItemClick(AdapterView<?> parent, View v, int position, long id) {
-				if (position == 0)
+				if (position == 0){
 					GlobalVariable.mFilterString = "1,2,3,4,5,6,7,8";
+					if (GlobalVariable.json10FirstShop.length() != 0 && GlobalVariable.mSortByString.compareTo("0") == 0){
+						(mMainAcitivyListener).getShopListFragment().update(GlobalVariable.json10FirstShop);
+						
+						new Handler().postDelayed(new Runnable() {
+							@Override
+							public void run() {
+								(mMainAcitivyListener).goNextPage();
+							}
+						}, 500);
+						return;
+					}
+				}
 				else
 					GlobalVariable.mFilterString = Integer.toString(position);
 

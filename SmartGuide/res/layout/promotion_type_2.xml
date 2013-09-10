@@ -2,44 +2,161 @@
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:orientation="vertical"
-    android:background="@drawable/bg">
+    android:background="@drawable/bg"
+    android:orientation="vertical" >
 
-    <LinearLayout 
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="10dp" >
+
+        <LinearLayout
+            android:id="@+id/linearLayout2"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_centerHorizontal="true"
+            android:gravity="center_horizontal"
+            android:padding="4dp" >
+
+            <ImageView
+                android:id="@+id/imageView2"
+                android:layout_width="10dp"
+                android:layout_height="15dp"
+                android:layout_alignParentLeft="true"
+                android:layout_alignParentTop="true"
+                android:background="@drawable/icon_clock" />
+
+            <TextView
+                android:id="@+id/textView"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_alignTop="@+id/imageView2"
+                android:layout_marginLeft="5dp"
+                android:layout_toRightOf="@+id/imageView2"
+                android:text="Thời gian khuyến mãi"
+                android:textColor="#7C7C7C"
+                android:textSize="9dp"
+                android:textStyle="italic" />
+
+            <TextView
+                android:id="@+id/txtPromoDuration"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_alignBaseline="@+id/textView"
+                android:layout_alignBottom="@+id/textView"
+                android:layout_alignParentRight="true"
+                android:layout_marginLeft="12dp"
+                android:text="1 - 30/08/2013"
+                android:textColor="#7C7C7C"
+                android:textSize="12dp"
+                android:textStyle="bold" />
+        </LinearLayout>
+    </RelativeLayout>
+	
+    <ImageView
+            android:id="@+id/imageView3"
+            android:layout_width="fill_parent"
+            android:layout_height="1px"
+            android:layout_below="@+id/linearLayout2"
+            android:background="#BEBEBE"
+            android:layout_marginLeft="10dp"
+            android:layout_marginRight="10dp" />
+    
+    <LinearLayout
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_gravity="center_vertical|center_horizontal"
-        android:orientation="vertical">
-    <ImageView
-        android:id="@+id/imageView1"
-        android:layout_marginTop="20dp"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:src="@drawable/gift"
-        android:layout_gravity="center_horizontal|center_vertical"/>
+        android:orientation="vertical" >
 
-    <TextView
-        android:id="@+id/textView1"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="Click để nhận được phần quà trị giá"
-        android:textColor="#272D39"
-        android:textSize="13dp"
-        android:layout_marginTop="10dp"
-        android:layout_gravity="center_vertical|center_horizontal" />
+        <RelativeLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="10dp"
+            android:layout_marginRight="10dp" >
 
-    <Button
-        android:id="@+id/imageButton1"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:background="@drawable/reward_bar_highlight"
-        android:layout_marginLeft="20dp"
-        android:layout_marginRight="20dp"
-        android:layout_marginTop="10dp"
-        android:text="300,000 vnđ"
-        android:textStyle="italic"
-        android:textColor="#ffffff" />
+            <RelativeLayout
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_centerHorizontal="true"
+                android:layout_centerVertical="true" >
 
-	</LinearLayout>
+                <ImageView
+                    android:id="@+id/imageView1"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="left"
+                    android:layout_marginLeft="10dp"
+                    android:layout_marginTop="5dp"
+                    android:src="@drawable/gift" />
+                
+            </RelativeLayout>
+        </RelativeLayout>
+
+        <TextView
+            android:id="@+id/textView1"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center_vertical|center_horizontal"
+            android:layout_marginTop="10dp"
+            android:text="Click để nhận được phần quà trị giá"
+            android:textColor="#272D39"
+            android:textSize="13dp"
+            android:textStyle="italic" />
+
+        <Button
+            android:id="@+id/imageButton1"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="20dp"
+            android:layout_marginRight="20dp"
+            android:layout_marginTop="10dp"
+            android:background="@drawable/reward_bar_highlight"
+            android:text="300,000 vnđ"
+            android:textColor="#ffffff"
+            android:textStyle="italic" />
+    </LinearLayout>
+
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content" >
+
+        <RelativeLayout
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_centerHorizontal="true"
+            android:layout_centerVertical="true" >
+
+            <LinearLayout
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal" >
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Tích lũy"
+                    android:textColor="#000000"
+                    android:textSize="13dp"
+                    android:textStyle="italic" />
+                <TextView
+                    android:id="@+id/textView1"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="25P"
+                    android:textColor="#C95436"
+                    android:textSize="14dp"
+                    android:textStyle="bold"
+                    android:layout_marginLeft="3dp" />
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="trên một lượt quét thẻ"
+                    android:textColor="#000000"
+                    android:textSize="13dp"
+                    android:layout_marginLeft="3dp"
+                    android:textStyle="italic" />
+            </LinearLayout>
+        </RelativeLayout>
+    </RelativeLayout>
 
 </LinearLayout>
