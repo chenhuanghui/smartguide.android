@@ -191,6 +191,7 @@ public class ShopDetailFragment extends Fragment {
     	
     	// Prepare data
     	getShopDetail();
+    	
     	if (s.mPromotionStatus) {
     		if (s.mPromotion.getType() == 1) {
     			mPromoFragment = mPromo1Fragment;
@@ -265,6 +266,8 @@ public class ShopDetailFragment extends Fragment {
 	    	((DetailShopPhotoFragment) mDetailFragmentList.get(3)).setData(mShop);
 	    	((DetailCommentFragment) mDetailFragmentList.get(4)).setData(mShop);
 	    	((DetailShowMapFragment) mDetailFragmentList.get(5)).setData(mShop);
+	    	
+	    	GlobalVariable.mCurrentShop = mShop;
 		}
 		
 		protected void onPreExecute(){ }

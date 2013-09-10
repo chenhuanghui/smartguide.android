@@ -133,7 +133,7 @@ public class MainActivity extends FragmentActivity implements MainAcitivyListene
 	private TextView mSGPText;
 	private ImageButton mCloseBtn;
 	private Activity mActivity;
-	private TextView mTotalSGP;
+	//private TextView mTotalSGP;
 
 	// Slide menu
 	SlidingMenu menu;
@@ -944,6 +944,8 @@ public class MainActivity extends FragmentActivity implements MainAcitivyListene
 	}
 
 	public void init(){
+		GlobalVariable.getLocationByNetwork(this);
+		
 		((RelativeLayout)findViewById(R.id.rootOfroot)).setOnTouchListener(this);
 		((RelativeLayout)findViewById(R.id.layoutQR)).setOnTouchListener(this);
 
@@ -1050,7 +1052,7 @@ public class MainActivity extends FragmentActivity implements MainAcitivyListene
 		mLocationTV = (TextView) menu.getMenu().findViewById(R.id.textView7);
 		mNaviText = (TextView) findViewById(R.id.txtNavi);
 		mAvatarFaceBtn = (ImageButton)menu.getMenu().findViewById(R.id.imageView1);
-		mTotalSGP = (TextView)menu.getMenu().findViewById(R.id.SGPScoreSetting);
+		//mTotalSGP = (TextView)menu.getMenu().findViewById(R.id.SGPScoreSetting);
 		mTutorialBtn = (RelativeLayout)menu.getMenu().findViewById(R.id.tutorialBtn);
 		mTutorialBtn.setOnClickListener(new OnClickListener() {
 			@Override
@@ -1156,10 +1158,11 @@ public class MainActivity extends FragmentActivity implements MainAcitivyListene
 			public void onClick(View v) {
 				isCanScan = true;
 				mIsCanWipe = true;
-				if (mIsNeedGotoDetail){
-					new QCToDetail("sa").execute();
-				}
-				else
+				
+//				if (mIsNeedGotoDetail){
+//					new QCToDetail().execute();
+//				}
+//				else
 					toggleCamera();
 			}
 		});
@@ -1711,6 +1714,8 @@ public class MainActivity extends FragmentActivity implements MainAcitivyListene
 			pairs.add(new BasicNameValuePair("user_id", GlobalVariable.userID));
 			pairs.add(new BasicNameValuePair("promotion_2_id", Integer.toString(mAwardId)));
 			pairs.add(new BasicNameValuePair("code", mQRCode));
+			pairs.add(new BasicNameValuePair("user_lat", Float.toString(GlobalVariable.mLat)));
+			pairs.add(new BasicNameValuePair("user_lng", Float.toString(GlobalVariable.mLng)));
 
 			String json = NetworkManger.post(APILinkMaker.mGetAwardType2(), pairs);
 			try {
@@ -1806,7 +1811,9 @@ public class MainActivity extends FragmentActivity implements MainAcitivyListene
 			List<NameValuePair> pairs = new ArrayList<NameValuePair>();
 			pairs.add(new BasicNameValuePair("user_id", GlobalVariable.userID));
 			pairs.add(new BasicNameValuePair("code", mQRCode));
-
+			pairs.add(new BasicNameValuePair("user_lat", Float.toString(GlobalVariable.mLat)));
+			pairs.add(new BasicNameValuePair("user_lng", Float.toString(GlobalVariable.mLng)));
+			
 			String json = NetworkManger.post(APILinkMaker.mGetSGP(), pairs);
 			try {
 				JSResult = new JSONObject(json);
@@ -1914,7 +1921,7 @@ public class MainActivity extends FragmentActivity implements MainAcitivyListene
 				JSONObject obj = new JSONObject(JSResult);
 				String score = Integer.toString(obj.getInt("score"));
 				mUserFragment.updateScore(score);
-				mTotalSGP.setText(score + " P");
+				//mTotalSGP.setText(score + " P");
 
 				List<Shop> mShops = Shop.getListForUse(obj.getJSONArray("collection"));
 				mUserFragment.update(mShops);
@@ -2071,7 +2078,6 @@ public class MainActivity extends FragmentActivity implements MainAcitivyListene
 		@Override
 		protected void onPostExecute(Boolean k){
 			try {
-				mTotalSGP.setText(Integer.toString((new JSONObject(mJson)).getInt("score")) + " p");
 				mUserFragment.updateScore(Integer.toString((new JSONObject(mJson)).getInt("score")));
 				new GetUserCollection().execute();
 			} catch (JSONException e) {
@@ -2251,7 +2257,7 @@ public class MainActivity extends FragmentActivity implements MainAcitivyListene
 
 	@Override
 	public void updateTotalSGP(String score) {
-		mTotalSGP.setText(score + " P");
+//		mTotalSGP.setText(score + " P");
 	}
 	
 	public void enableFilterMap(){
@@ -2292,12 +2298,6 @@ public class MainActivity extends FragmentActivity implements MainAcitivyListene
 	}
 	
 	public class QCToDetail extends AsyncTask<Void, Void, Boolean> {
-		String mJson;
-
-		public QCToDetail(String mjson){
-			mJson = mjson;
-		}
-
 		@Override
 		protected Boolean doInBackground(Void... params) {
 			
@@ -2311,6 +2311,10 @@ public class MainActivity extends FragmentActivity implements MainAcitivyListene
 
 		@Override
 		protected void onPreExecute(){
+			mMirrorFront.setVisibility(View.INVISIBLE);
+			mShopNameText.setVisibility(View.INVISIBLE);
+			mSGPText.setVisibility(View.INVISIBLE);
+			mContentText.setVisibility(View.INVISIBLE);
 			mProgressBar.setVisibility(View.VISIBLE);
 		}
 	}
