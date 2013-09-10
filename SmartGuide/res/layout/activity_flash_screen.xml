@@ -6,15 +6,17 @@
     android:orientation="vertical">
 
     <LinearLayout
+        android:id="@+id/root"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_centerHorizontal="true"
-        android:layout_centerVertical="true"
+		android:layout_marginTop="0dp"
         android:gravity="center_horizontal"
         android:orientation="vertical" >
 
         <ImageView
             android:id="@+id/logoF"
+            android:layout_marginTop="0dp"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:src="@drawable/logo"

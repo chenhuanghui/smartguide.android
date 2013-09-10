@@ -22,12 +22,16 @@ import android.os.Handler;
 import android.app.Activity;
 import android.content.Intent;
 import android.graphics.Bitmap;
+import android.view.Display;
 import android.view.Menu;
+import android.widget.ImageView;
+import android.widget.LinearLayout;
 
 public class FlashScreenActivity extends Activity {
 	private boolean isFinish = false;
 	Intent resultData = null;
-	
+	private boolean isArrange = false;
+
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
@@ -36,18 +40,36 @@ public class FlashScreenActivity extends Activity {
 		resultData = new Intent();
 		resultData.putExtra("Database", "OK");
 		resultData.putExtra("Connection", "OK");
+
+		
+	}
+
+	@Override
+	public void onWindowFocusChanged(boolean hasFocus) {
+		if (isArrange)
+			return;
+		isArrange = true;
+
+		Display display = getWindowManager().getDefaultDisplay();
+		@SuppressWarnings("deprecation")
+		int mHeight = display.getHeight() / 4;
+
+		ImageView layout = (ImageView) findViewById(R.id.logoF);
+		LinearLayout.LayoutParams lp = new LinearLayout.LayoutParams(LinearLayout.LayoutParams.WRAP_CONTENT, LinearLayout.LayoutParams.WRAP_CONTENT);
+		lp.setMargins(0, mHeight, 0, 0);
+		layout.setLayoutParams(lp);
 		
 		new InitInformation().execute();
-		
+
 		new Handler().postDelayed(new Runnable() {
-			
+
 			@Override
 			public void run() {
 				if (isFinish) {
 					finish();
 					overridePendingTransition(android.R.anim.slide_in_left, android.R.anim.slide_out_right);
 				}
-				
+
 				isFinish = true;
 			}
 		}, 2000);
@@ -92,7 +114,7 @@ public class FlashScreenActivity extends Activity {
 			.imageScaleType(ImageScaleType.EXACTLY)
 			.displayer(new RoundedBitmapDisplayer(20))
 			.build();
-			
+
 			ImageLoaderConfiguration config = new ImageLoaderConfiguration.Builder(getApplicationContext())
 			.threadPoolSize(6)
 			.threadPriority(Thread.NORM_PRIORITY-1)
@@ -108,9 +130,9 @@ public class FlashScreenActivity extends Activity {
 			List<NameValuePair> pairs = new ArrayList<NameValuePair>();
 			pairs.add(new BasicNameValuePair("city", GlobalVariable.mCityID));
 			pairs.add(new BasicNameValuePair("env", Integer.toString(GlobalVariable.mMode)));
-			
+
 			json = NetworkManger.post(APILinkMaker.mGroupByCity(), pairs);
-			
+
 			if (json != ""){
 				resultData = new Intent();
 				resultData.putExtra("Database", "OK");
@@ -128,7 +150,7 @@ public class FlashScreenActivity extends Activity {
 						GlobalVariable.mCateogries = Category.getListCategory(object.getJSONArray("content"));
 						pairs = new ArrayList<NameValuePair>();
 						pairs.add(new BasicNameValuePair("type", "1")); // lấy version của city
-						
+
 						json = NetworkManger.post(APILinkMaker.mGetVersion(), pairs);
 						String version = json.substring(1, json.length() - 1);
 						if (version.compareTo(GlobalVariable.mVersion) != 0){
@@ -169,10 +191,10 @@ public class FlashScreenActivity extends Activity {
 
 		@Override
 		protected void onPreExecute(){
-			
+
 		}
 	}
-	
+
 	@Override
 	public void onStart() {
 		super.onStart();
@@ -184,9 +206,9 @@ public class FlashScreenActivity extends Activity {
 		super.onStop();
 		EasyTracker.getInstance(this).activityStop(this);
 	}
-	
-	 @Override
-	 public void onBackPressed() {
-	    return;
-	 }
+
+	@Override
+	public void onBackPressed() {
+		return;
+	}
 }

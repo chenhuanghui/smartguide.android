@@ -1584,7 +1584,6 @@ public class MainActivity extends FragmentActivity implements MainAcitivyListene
 			mMapButton.setImageResource(R.drawable.menu_map_lock);
 			mFilterBtn.setClickable(false);
 			mMapButton.setClickable(false);
-
 		}
 		else{
 			setNaviText(mPreviousNavi);
