@@ -158,9 +158,9 @@ public class PhotoActivity extends FragmentActivity{
 
 					String json = null;
 					if (mIsUser)
-						NetworkManger.post(APILinkMaker.mGetUserImage(), pairs);
+						json = NetworkManger.post(APILinkMaker.mGetUserImage(), pairs);
 					else
-						NetworkManger.post(APILinkMaker.mGetShopImage(), pairs);
+						json = NetworkManger.post(APILinkMaker.mGetShopImage(), pairs);
 //					String json = NetworkManger.post(APILinkMaker.mGetUserImage(), pairs);
 					
 					jImgArr = new JSONArray(json);
