@@ -132,6 +132,7 @@ public class MainActivity extends FragmentActivity implements MainAcitivyListene
 	private TextView mContentText;
 	private TextView mSGPText;
 	private ImageButton mCloseBtn;
+	private ImageView mScanCover;
 	private Activity mActivity;
 	//private TextView mTotalSGP;
 
@@ -848,6 +849,7 @@ public class MainActivity extends FragmentActivity implements MainAcitivyListene
 		if (mShowCamera){
 			isCanScan = true;
 			mIsCanWipe = true;
+			mScanCover.setVisibility(View.VISIBLE);
 			
 			if (GlobalVariable.mLat == -1){
 				mMirrorFront.setVisibility(View.INVISIBLE);
@@ -860,8 +862,10 @@ public class MainActivity extends FragmentActivity implements MainAcitivyListene
 				Toast.makeText(mActivity, "Vui lòng chờ lấy tọa độ GPS", Toast.LENGTH_LONG).show();
 			}
 		}
-		else
+		else{
 			isCanScan = false;
+			mScanCover.setVisibility(View.INVISIBLE);
+		}
 
 		ObjectAnimator animatorPopup = null;
 		ObjectAnimator animatorOptical= null;
@@ -939,6 +943,7 @@ public class MainActivity extends FragmentActivity implements MainAcitivyListene
 				SymbolSet syms = scanner.getResults();
 				for (Symbol sym : syms) {
 					mQRCode = sym.getData();
+					mScanCover.setVisibility(View.INVISIBLE);
 					switch (mScanningCode) {
 					case 1:
 						isCanScan = false;
@@ -1285,8 +1290,10 @@ public class MainActivity extends FragmentActivity implements MainAcitivyListene
 				OnSearchButtonClick();
 			}
 		});
+		
 		//
 		mProgressBar = (ProgressBar)findViewById(R.id.progressBar1);
+		mScanCover = (ImageView)findViewById(R.id.scanCover); 
 		initToggleCamera();
 	}
 
