@@ -9,6 +9,7 @@ import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import vn.smartguide.DetailMenuFragment.Listener;
 import android.animation.ObjectAnimator;
 import android.animation.TimeInterpolator;
 import android.app.Activity;
@@ -22,7 +23,6 @@ import android.support.v4.app.FragmentTransaction;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.view.ViewTreeObserver;
 import android.view.animation.AccelerateDecelerateInterpolator;
 import android.widget.ImageView;
 /**
@@ -62,23 +62,24 @@ public class ShopDetailFragment extends Fragment {
         super.onViewCreated(view, savedInstanceState);
 
         // Set Viewpager adapter
+        FragmentManager manager = getFragmentManager();
+        
         mPromo1Fragment 	= new DetailPromo1Fragment();
         mPromo2Fragment 	= new DetailPromo2Fragment();
         mNoPromoFragment 	= new DetailNoPromoFragment();
         mDetailFragmentList = new ArrayList<Fragment>();
-        mDetailFragmentList.add(new DetailShopInfoFragment());
-        mDetailFragmentList.add(new DetailShopMenuFragment());
-        mDetailFragmentList.add(new DetailShopTakePhoto());
-        mDetailFragmentList.add(new DetailShopPhotoFragment());
-        mDetailFragmentList.add(new DetailCommentFragment());
-        mDetailFragmentList.add(new DetailShowMapFragment());
+        mDetailFragmentList.add(manager.findFragmentById(R.id.shopInfoFrag));
+        mDetailFragmentList.add(manager.findFragmentById(R.id.shopMenuFrag));
+        mDetailFragmentList.add(manager.findFragmentById(R.id.shopPhotoFrag));
+        mDetailFragmentList.add(manager.findFragmentById(R.id.shopCommentFrag));
+        mDetailFragmentList.add(manager.findFragmentById(R.id.shopShowMapFrag));
         
         mPromoFragment = mPromo1Fragment;
         
         FragmentTransaction transaction = getFragmentManager().beginTransaction();
         
         for (Fragment f : mDetailFragmentList) {
-        	transaction.add(R.id.layoutDetailPager, f).hide(f);
+        	transaction.hide(f);
         }
         
         transaction.add(R.id.layoutDetailPager, mPromo1Fragment).hide(mPromo1Fragment);
@@ -88,25 +89,17 @@ public class ShopDetailFragment extends Fragment {
         
         mLogoImageView = (ImageView) getView().findViewById(R.id.imgLogo);
         mCoverImageView = (ImageView) getView().findViewById(R.id.imgCover);
+        
+        DetailMenuFragment menu = (DetailMenuFragment) getFragmentManager().findFragmentById(R.id.detailMenuFragment);
+        menu.setListener(new Listener() {
+        	@Override
+        	public void onButtonClick(int buttonIndex) {
+        		
+        		onInfoButtonClick(buttonIndex);
+        	}
+        });
     }
-
-    @Override
-    public void onResume() {
-    	super.onResume();
-
-    	try {
-    		getView().getViewTreeObserver().addOnGlobalLayoutListener(new ViewTreeObserver.OnGlobalLayoutListener() {
-    			@Override
-    			public void onGlobalLayout() {
-    				((DetailMenuFragment) getFragmentManager().findFragmentById(R.id.detailMenuFragment))
-    				.attach2DetailView();
-    			}
-    		});
-    	} catch (Exception e) {
-    		e.printStackTrace();
-    	}
-    }
-
+    
     @Override
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
     }
@@ -144,25 +137,11 @@ public class ShopDetailFragment extends Fragment {
     		f = mDetailFragmentList.get(index);
     	}
     	
-    	DetailShowMapFragment mapFragment = (DetailShowMapFragment) mDetailFragmentList.get(5);
-    	if (mActiveFragment == mapFragment) {
-    		mapFragment.destroyMap();
-    	} else if (f == mapFragment) {
-    		mapFragment.createMap();
-    	}
-    	
     	if (f == mActiveFragment)
     		return;
     	
     	getFragmentManager().beginTransaction().hide(mActiveFragment).show(f).commit();
 		mActiveFragment = f;
-		
-		switch(index){
-		case 2:
-			Intent intent = new Intent(getActivity(), TakePictureActivity.class);
-	    	getActivity().startActivity(intent);
-			break;
-		}
     }
     
     private int mCoverHeight;
@@ -217,16 +196,16 @@ public class ShopDetailFragment extends Fragment {
     	if (mShop.mCover.compareTo("null") != 0)
     		GlobalVariable.imageLoader.displayImage(mShop.mCover, mCoverImageView, GlobalVariable.displayImageOptions);
     	
-    	DetailMenuFragment menu = (DetailMenuFragment) getFragmentManager().findFragmentById(R.id.detailMenuFragment);
-    	menu.updateLikeDis(s.mNumOfLike, s.mNumOfDislike, s.mLikeStatus);
-    	
-    	if (mPromoFragment == mNoPromoFragment) {
-    		if (menu.mYindex == 0)
-    			menu.toggleShopInfo();
-    		menu.turnToShopInfo();
-    	} else if (menu.mYindex == 1) {
-    		menu.toggleShopInfo();
-    	}
+//    	DetailMenuFragment menu = (DetailMenuFragment) getFragmentManager().findFragmentById(R.id.detailMenuFragment);
+//    	menu.updateLikeDis(s.mNumOfLike, s.mNumOfDislike, s.mLikeStatus);
+//    	
+//    	if (mPromoFragment == mNoPromoFragment) {
+//    		if (menu.mYindex == 0)
+//    			menu.toggleShopInfo();
+//    		menu.turnToShopInfo();
+//    	} else if (menu.mYindex == 1) {
+//    		menu.toggleShopInfo();
+//    	}
     	
     	mPromoFragment.setData(s);
     	((DetailShopInfoFragment) mDetailFragmentList.get(0)).setData(s);
@@ -263,9 +242,9 @@ public class ShopDetailFragment extends Fragment {
 
 		protected void onPostExecute(Boolean k) {
 			((DetailShopMenuFragment) mDetailFragmentList.get(1)).setData(mShop);
-	    	((DetailShopPhotoFragment) mDetailFragmentList.get(3)).setData(mShop);
-	    	((DetailCommentFragment) mDetailFragmentList.get(4)).setData(mShop);
-	    	((DetailShowMapFragment) mDetailFragmentList.get(5)).setData(mShop);
+	    	((DetailShopPhotoFragment) mDetailFragmentList.get(2)).setData(mShop);
+	    	((DetailCommentFragment) mDetailFragmentList.get(3)).setData(mShop);
+	    	((DetailShowMapFragment) mDetailFragmentList.get(4)).setData(mShop);
 	    	
 	    	GlobalVariable.mCurrentShop = mShop;
 		}
