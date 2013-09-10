@@ -1575,6 +1575,11 @@ public class MainActivity extends FragmentActivity implements MainAcitivyListene
 		mShowUser = !mShowUser;
 
 		if (mShowUser){
+			if (GlobalVariable.avatarFace.compareTo("null") != 0)
+				setNaviText(GlobalVariable.nameFace);
+			else
+				setNaviText("User");
+			
 			mFilterBtn.setImageResource(R.drawable.menu_filter_lock);
 			mMapButton.setImageResource(R.drawable.menu_map_lock);
 			mFilterBtn.setClickable(false);
@@ -1582,6 +1587,8 @@ public class MainActivity extends FragmentActivity implements MainAcitivyListene
 
 		}
 		else{
+			setNaviText(mPreviousNavi);
+			
 			mFilterBtn.setImageResource(R.drawable.menu_filter_lock);
 			mMapButton.setImageResource(R.drawable.menu_map_lock);
 
