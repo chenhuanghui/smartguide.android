@@ -212,12 +212,12 @@ public class MainActivity extends FragmentActivity implements MainAcitivyListene
 
 	// User button
 	private ImageButton mUserButton;
-	
+
 	//Exit para
 	private boolean doubleBackToExitPressedOnce = false;
 	private boolean isFirstTime = false;
 	private boolean mIsNeedGotoDetail = false;
-	
+
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
@@ -282,13 +282,13 @@ public class MainActivity extends FragmentActivity implements MainAcitivyListene
 			else
 				finish();
 			break;
-			
+
 		case ReviewRequestCode:
 			if(GlobalVariable.isNeedPostReview == true){
 				new PostReview().execute();
 			}
 			break;
-			
+
 		case TutorialRequestCode:
 			updateInformation();
 			break;
@@ -366,23 +366,23 @@ public class MainActivity extends FragmentActivity implements MainAcitivyListene
 	@Override
 	public void goPreviousPage() {
 		int current_index = mViewPager.getCurrentItem();
-		
+
 		if (current_index == 0){
 			if (doubleBackToExitPressedOnce) {
-	            super.onBackPressed();
-	            return;
-	        }
-			
-	        doubleBackToExitPressedOnce = true;
-	        Toast.makeText(this, "Nhấn back lần nữa để thoát chương trình", Toast.LENGTH_SHORT).show();
-	        new Handler().postDelayed(new Runnable() {
+				super.onBackPressed();
+				return;
+			}
 
-	            @Override
-	            public void run() {
-	             doubleBackToExitPressedOnce = false;   
+			doubleBackToExitPressedOnce = true;
+			Toast.makeText(this, "Nhấn back lần nữa để thoát chương trình", Toast.LENGTH_SHORT).show();
+			new Handler().postDelayed(new Runnable() {
 
-	            }
-	        }, 2000);
+				@Override
+				public void run() {
+					doubleBackToExitPressedOnce = false;   
+
+				}
+			}, 2000);
 		}else
 			doubleBackToExitPressedOnce = false;
 
@@ -438,12 +438,12 @@ public class MainActivity extends FragmentActivity implements MainAcitivyListene
 
 	public void toggleShowContent() {
 		mShowContent = !mShowContent;
-		
+
 		if (mShowContent && mViewPager.getCurrentItem() == 2)
 			disableFilterMap();
 		else
 			enableFilterUserMap();
-		
+
 		ObjectAnimator animator = null;
 		int height = findViewById(R.id.layoutContentHolder).getHeight();
 		View layout = findViewById(R.id.layoutContentFrame);
@@ -799,6 +799,42 @@ public class MainActivity extends FragmentActivity implements MainAcitivyListene
 	}
 
 	public void toggleCamera() {
+		
+		if (!mShowCamera && (mScanningCode == 1 || mScanningCode == 2)){
+			LocationManager locationManager = locationManager = (LocationManager) getSystemService(LOCATION_SERVICE);
+			boolean isGPSOn = locationManager.isProviderEnabled(LocationManager.GPS_PROVIDER);
+			boolean isWifiOn = locationManager.isProviderEnabled(LocationManager.NETWORK_PROVIDER);
+
+			if(!isGPSOn){// || !isWifiOn){
+				AlertDialog.Builder alertDialog = new AlertDialog.Builder(mActivity);
+				String message = "";
+				
+				if (!isGPSOn)// && !isWifiOn)
+					message = "Bạn cần bật GPS và wireless location trước khi scan code!!";
+				else
+					if (!isGPSOn)
+						message = "Bạn cần bật GPS trước khi scan code!!";
+					else
+						message = "Bạn cần bật wireless location trước khi scan code!!";
+
+				alertDialog.setMessage(message);
+
+				alertDialog.setPositiveButton("Thiết lập", new DialogInterface.OnClickListener() {
+					public void onClick(DialogInterface dialog,int which) {
+						startActivity(new Intent(Settings.ACTION_LOCATION_SOURCE_SETTINGS));
+					}
+				});
+
+				alertDialog.setNegativeButton("Hủy", new DialogInterface.OnClickListener() {
+					public void onClick(DialogInterface dialog, int which) {
+						dialog.cancel();
+					}
+				});
+				alertDialog.show();
+				return;
+			}
+		}
+
 		RelativeLayout layoutQR = (RelativeLayout) findViewById(R.id.layoutQR);
 		if (layoutQR.getVisibility() == View.GONE) {
 			layoutQR.setVisibility(View.VISIBLE);
@@ -812,6 +848,17 @@ public class MainActivity extends FragmentActivity implements MainAcitivyListene
 		if (mShowCamera){
 			isCanScan = true;
 			mIsCanWipe = true;
+			
+			if (GlobalVariable.mLat == -1){
+				mMirrorFront.setVisibility(View.INVISIBLE);
+				mMirror.setVisibility(View.VISIBLE);
+				mShopNameText.setVisibility(View.INVISIBLE);
+				mSGPText.setVisibility(View.INVISIBLE);
+				mContentText.setVisibility(View.INVISIBLE);
+				mProgressBar.setVisibility(View.VISIBLE);
+				isCanScan = false;
+				Toast.makeText(mActivity, "Vui lòng chờ lấy tọa độ GPS", Toast.LENGTH_LONG).show();
+			}
 		}
 		else
 			isCanScan = false;
@@ -944,13 +991,14 @@ public class MainActivity extends FragmentActivity implements MainAcitivyListene
 	}
 
 	public void init(){
-		GlobalVariable.getLocationByNetwork(this);
-		
+
+		GlobalVariable.getLocation(this);
+
 		((RelativeLayout)findViewById(R.id.rootOfroot)).setOnTouchListener(this);
 		((RelativeLayout)findViewById(R.id.layoutQR)).setOnTouchListener(this);
 
 		mActivity = this;
-		
+
 		// init cyImageLoader
 		GlobalVariable.cyImageLoader = new CyImageLoader(this);
 
@@ -1158,12 +1206,12 @@ public class MainActivity extends FragmentActivity implements MainAcitivyListene
 			public void onClick(View v) {
 				isCanScan = true;
 				mIsCanWipe = true;
-				
-//				if (mIsNeedGotoDetail){
-//					new QCToDetail().execute();
-//				}
-//				else
-					toggleCamera();
+
+				//				if (mIsNeedGotoDetail){
+				//					new QCToDetail().execute();
+				//				}
+				//				else
+				toggleCamera();
 			}
 		});
 
@@ -1802,18 +1850,18 @@ public class MainActivity extends FragmentActivity implements MainAcitivyListene
 	public class GetSGPPoint extends AsyncTask<Void, Void, Boolean> {
 		JSONObject JSResult = null;
 		int id = -1;
-		
+
 		@Override
 		protected Boolean doInBackground(Void... params) {
 			isNeedUpdateSGP = false;
 			mIsNeedGotoDetail = false;
-			
+
 			List<NameValuePair> pairs = new ArrayList<NameValuePair>();
 			pairs.add(new BasicNameValuePair("user_id", GlobalVariable.userID));
 			pairs.add(new BasicNameValuePair("code", mQRCode));
 			pairs.add(new BasicNameValuePair("user_lat", Float.toString(GlobalVariable.mLat)));
 			pairs.add(new BasicNameValuePair("user_lng", Float.toString(GlobalVariable.mLng)));
-			
+
 			String json = NetworkManger.post(APILinkMaker.mGetSGP(), pairs);
 			try {
 				JSResult = new JSONObject(json);
@@ -1881,7 +1929,7 @@ public class MainActivity extends FragmentActivity implements MainAcitivyListene
 						new GetUserCollection().execute();
 					else
 						new UpdateTotalSGP().execute();
-					
+
 					mIsNeedGotoDetail = true;
 					break;
 				}
@@ -1889,7 +1937,7 @@ public class MainActivity extends FragmentActivity implements MainAcitivyListene
 				return;
 
 			}
-			
+
 			mMirror.setVisibility(View.VISIBLE);
 			mMirrorFront.setVisibility(View.VISIBLE);
 		}
@@ -2257,37 +2305,37 @@ public class MainActivity extends FragmentActivity implements MainAcitivyListene
 
 	@Override
 	public void updateTotalSGP(String score) {
-//		mTotalSGP.setText(score + " P");
+		//		mTotalSGP.setText(score + " P");
 	}
-	
+
 	public void enableFilterMap(){
 		mFilterBtn.setClickable(true);
 		mMapButton.setClickable(true);
 		mFilterBtn.setImageResource(R.drawable.menu_filter);
 		mMapButton.setImageResource(R.drawable.map_btn);
 	}
-	
+
 	public void disableFilterMap(){
 		mFilterBtn.setImageResource(R.drawable.menu_filter_lock);
 		mMapButton.setImageResource(R.drawable.menu_map_lock);
 		mFilterBtn.setClickable(false);
 		mMapButton.setClickable(false);
 	}
-	
+
 	public void enableUserMap(){
 		mUserButton.setClickable(true);
 		mMapButton.setClickable(true);
 		mUserButton.setImageResource(R.drawable.user_btn);
 		mMapButton.setImageResource(R.drawable.map_btn);
 	}
-	
+
 	public void disableUserMap(){
 		mUserButton.setClickable(false);
 		mMapButton.setClickable(false);
 		mUserButton.setImageResource(R.drawable.user_btn);
 		mMapButton.setImageResource(R.drawable.menu_map_lock);
 	}
-	
+
 	public void enableFilterUserMap(){
 		mFilterBtn.setClickable(true);
 		mMapButton.setClickable(true);
@@ -2296,11 +2344,11 @@ public class MainActivity extends FragmentActivity implements MainAcitivyListene
 		mMapButton.setImageResource(R.drawable.map_btn);
 		mUserButton.setImageResource(R.drawable.user_btn);
 	}
-	
+
 	public class QCToDetail extends AsyncTask<Void, Void, Boolean> {
 		@Override
 		protected Boolean doInBackground(Void... params) {
-			
+
 			return true;
 		}
 
@@ -2317,6 +2365,13 @@ public class MainActivity extends FragmentActivity implements MainAcitivyListene
 			mContentText.setVisibility(View.INVISIBLE);
 			mProgressBar.setVisibility(View.VISIBLE);
 		}
+	}
+
+	@Override
+	public void finishGetSGP() {
+		isCanScan = true;
+		mMirror.setVisibility(View.INVISIBLE);
+		mProgressBar.setVisibility(View.INVISIBLE);
 	}
 }
 

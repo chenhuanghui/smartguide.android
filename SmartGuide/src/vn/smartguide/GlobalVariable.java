@@ -5,6 +5,7 @@ import android.location.Location;
 import android.location.LocationListener;
 import android.location.LocationManager;
 import android.os.Bundle;
+import android.widget.Toast;
 
 import com.loopj.android.http.AsyncHttpClient;
 import com.nostra13.universalimageloader.core.DisplayImageOptions;
@@ -119,6 +120,10 @@ public final class GlobalVariable {
 
 	public static boolean mIsLaunching = false;
 
+	// GPS
+	private static boolean isFirstTimeGetGPS = false;
+	private static MainAcitivyListener mMainAcitivyListener;
+	
 	public static void createDatbase(Context applicationcontext){
 		smartGuideDB = new DatabaseManger(applicationcontext);
 	}
@@ -247,12 +252,21 @@ public final class GlobalVariable {
 		}
 	}
 	
-	public static void getLocationByNetwork(Context context){
+	public static void getLocation(Context context){
+		mMainAcitivyListener = (MainAcitivyListener) context;
 		LocationManager locationManager = (LocationManager) context.getSystemService(Context.LOCATION_SERVICE);
-
+		
+		final Context mcontext = context;
+		
 		LocationListener locationListener = new LocationListener() {
 			@Override
 			public void onLocationChanged(Location location) {
+				if (!isFirstTimeGetGPS){
+					isFirstTimeGetGPS = true;
+					Toast.makeText(mcontext, "Đã lấy được tọa độ GPS. Bạn có thể thực hiện chức năng scan code", Toast.LENGTH_LONG).show();
+					mMainAcitivyListener.finishGetSGP();
+				}
+				
 				GlobalVariable.mLat = (float)location.getLatitude();
 				GlobalVariable.mLng = (float)location.getLongitude();
 			}
@@ -264,6 +278,7 @@ public final class GlobalVariable {
 
 			@Override
 			public void onProviderEnabled(String provider) {
+				Toast.makeText(mcontext, "Đang lấy tọa độ GPS", Toast.LENGTH_SHORT).show();
 			}
 
 			@Override
@@ -274,6 +289,6 @@ public final class GlobalVariable {
 
 		// Register the listener with the Location Manager to receive location updates
 		locationManager.requestLocationUpdates(LocationManager.NETWORK_PROVIDER, 0, 0, locationListener);
-		//locationManager.requestLocationUpdates(LocationManager.GPS_PROVIDER, 0, 0, locationListener);
+		locationManager.requestLocationUpdates(LocationManager.GPS_PROVIDER, 0, 0, locationListener);
 	}
 }

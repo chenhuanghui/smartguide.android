@@ -18,5 +18,6 @@ public interface MainAcitivyListener {
 	public void userToDetail();
 	public void setLocation(String cityName);
 	public void updateTotalSGP(String score);
+	public void finishGetSGP();
 	//public void getShopList();
 }
