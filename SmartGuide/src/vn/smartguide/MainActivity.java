@@ -124,7 +124,9 @@ public class MainActivity extends FragmentActivity implements MainAcitivyListene
 	private boolean isNeedUpdateSGP = false;
 	private boolean isCanScan = true;
 	private ProgressBar mProgressBar;
-
+	private TextView QRCodeTextView;
+	private ImageButton mCloseQRC;
+	
 	// QR Code layout
 	private LinearLayout mMirror;
 	private RelativeLayout mMirrorFront;
@@ -806,17 +808,17 @@ public class MainActivity extends FragmentActivity implements MainAcitivyListene
 			boolean isGPSOn = locationManager.isProviderEnabled(LocationManager.GPS_PROVIDER);
 			boolean isWifiOn = locationManager.isProviderEnabled(LocationManager.NETWORK_PROVIDER);
 
-			if(!isGPSOn){// || !isWifiOn){
+			if(!isGPSOn && !isWifiOn){
 				AlertDialog.Builder alertDialog = new AlertDialog.Builder(mActivity);
 				String message = "";
 				
-				if (!isGPSOn)// && !isWifiOn)
-					message = "Bạn cần bật GPS và wireless location trước khi scan code!!";
-				else
-					if (!isGPSOn)
-						message = "Bạn cần bật GPS trước khi scan code!!";
-					else
-						message = "Bạn cần bật wireless location trước khi scan code!!";
+				//if (!isGPSOn)// && !isWifiOn)
+					message = "Bạn cần bật GPS hoặc wireless location trước khi scan code!!";
+				//else
+//					if (!isGPSOn)
+//						message = "Bạn cần bật GPS trước khi scan code!!";
+//					else
+//						message = "Bạn cần bật wireless location trước khi scan code!!";
 
 				alertDialog.setMessage(message);
 
@@ -847,6 +849,18 @@ public class MainActivity extends FragmentActivity implements MainAcitivyListene
 		mShowCamera = !mShowCamera;
 
 		if (mShowCamera){
+			mCloseQRC.setVisibility(View.VISIBLE);
+			
+			switch(mScanningCode){
+			case 1:
+				QRCodeTextView.setText("Tích điểm - Cửa hàng sẽ cung cấp thẻ cho bạn");
+				break;
+			case 2:
+			case 3:
+				QRCodeTextView.setText("Nhận quà - Cửa hàng sẽ cung cấp thẻ cho bạn");
+				break;
+			}
+			
 			isCanScan = true;
 			mIsCanWipe = true;
 			mScanCover.setVisibility(View.VISIBLE);
@@ -863,6 +877,7 @@ public class MainActivity extends FragmentActivity implements MainAcitivyListene
 			}
 		}
 		else{
+			QRCodeTextView.setText("CHẠM VÀO ĐỂ NHẬN ĐIỂM");
 			isCanScan = false;
 			mScanCover.setVisibility(View.INVISIBLE);
 		}
@@ -1294,6 +1309,14 @@ public class MainActivity extends FragmentActivity implements MainAcitivyListene
 		//
 		mProgressBar = (ProgressBar)findViewById(R.id.progressBar1);
 		mScanCover = (ImageView)findViewById(R.id.scanCover); 
+		QRCodeTextView = (TextView)findViewById(R.id.textViewGetScore);
+		mCloseQRC = (ImageButton)findViewById(R.id.closeQRCode);
+		mCloseQRC.setOnClickListener(new OnClickListener() {
+			@Override
+			public void onClick(View arg0) {				
+				toggleCamera();
+			}
+		});
 		initToggleCamera();
 	}
 
@@ -1832,7 +1855,9 @@ public class MainActivity extends FragmentActivity implements MainAcitivyListene
 		}
 
 		@Override
-		protected void onPreExecute(){}
+		protected void onPreExecute(){
+			mCloseQRC.setVisibility(View.INVISIBLE);
+		}
 	}
 
 	public class PushFacebookInfo extends AsyncTask<Void, Void, Boolean> {
@@ -1958,6 +1983,7 @@ public class MainActivity extends FragmentActivity implements MainAcitivyListene
 
 		@Override
 		protected void onPreExecute(){
+			mCloseQRC.setVisibility(View.INVISIBLE);
 			mProgressBar.setVisibility(View.VISIBLE);
 		}
 	}
@@ -2120,6 +2146,7 @@ public class MainActivity extends FragmentActivity implements MainAcitivyListene
 
 		@Override
 		protected void onPreExecute(){
+			mCloseQRC.setVisibility(View.INVISIBLE);
 			mProgressBar.setVisibility(View.VISIBLE);
 		}
 	}
