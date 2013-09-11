@@ -4,6 +4,8 @@ import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
+import android.text.SpannableString;
+import android.text.style.UnderlineSpan;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -41,7 +43,10 @@ public class DetailShopInfoFragment extends Fragment {
     	txtDescription.setText(s.mContent);
     	txtAddress.setText(s.mAddress);
     	txtPhone.setText(s.mTel);
-    	txtWeb.setText("");
+    	
+    	SpannableString spanString = new SpannableString(s.mWeb);
+    	spanString.setSpan(new UnderlineSpan(), 0, spanString.length(), 0);
+    	txtWeb.setText(spanString);
     	
     	if (s.mTel == "" || s.mTel.compareTo("null") == 0){
     		mCallBtn.setVisibility(View.INVISIBLE);

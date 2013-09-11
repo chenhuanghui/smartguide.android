@@ -8,13 +8,22 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:background="#ffffff"
+        android:gravity="center_horizontal"
         android:orientation="vertical" >
+
+        <TextView
+            android:id="@+id/textView1"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="23dp"
+            android:text="DANH MỤC SẢN PHẨM"
+            android:textColor="#000000"
+            android:textStyle="bold" />
 
         <ExpandableListView
             android:id="@+id/lstShopMenu"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginTop="23dp"
             android:childDivider="@drawable/dummy"
             android:divider="@drawable/dummy"
             android:groupIndicator="@drawable/dummy"

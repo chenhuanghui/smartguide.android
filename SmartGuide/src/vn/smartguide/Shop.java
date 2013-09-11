@@ -34,6 +34,7 @@ public class Shop {
 	public int mDislike;
 	
 	public String mContent;
+	public String mWeb;
 	public Boolean mPromotionStatus = true;
 	public Promotion mPromotion;
 	public String mTel;
@@ -78,6 +79,12 @@ public class Shop {
 					mShop.mTel = object.getString("tel");
 				}catch(Exception ex){	
 					mShop.mTel = "";
+				}
+				
+				try{
+					mShop.mWeb = object.getString("website");
+				}catch(Exception ex){	
+					mShop.mWeb = "";
 				}
 				
 				mShop.mAddress = object.getString("address");

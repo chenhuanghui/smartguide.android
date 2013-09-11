@@ -16,12 +16,14 @@ import android.widget.Button;
 import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
+import android.widget.RelativeLayout;
 
 /**
  * Created by cycrixlaptop on 7/29/13.
  */
 public class DetailMenuFragment extends Fragment {
 	
+	// Constants
 	public static final int BUTTON_PROMOTION 	= -1;
 	public static final int BUTTON_INFO 		= 0;
 	public static final int BUTTON_SHOP_MENU 	= 1;
@@ -29,13 +31,28 @@ public class DetailMenuFragment extends Fragment {
 	public static final int BUTTON_SHOP_COMMENT = 3;
 	public static final int BUTTON_SHOW_MAP 	= 4;
 	
-	 
-    private final int[] mXindexArr = new int[] {
-    		R.id.btnInfo,
-    		R.id.btnShopMenu,
-    		R.id.btnShopPhoto,
-    		R.id.btnShopComment,
-    		R.id.btnShowMap,
+	private static final int[] mXindexArr = new int[] {
+		R.id.btnInfo,
+		R.id.btnShopMenu,
+		R.id.btnShopPhoto,
+		R.id.btnShopComment,
+		R.id.btnShowMap,
+	};
+    
+    private static final int[] ICON_BUTTON = new int[] {
+    	R.drawable.icon_shopinfo,
+    	R.drawable.icon_shopmenu,
+    	R.drawable.icon_shopphoto,
+    	R.drawable.icon_shopcomment,
+    	R.drawable.icon_shopmap,
+    };
+    
+    private static final int[] ICON_BUTTON_HL = new int[] {
+    	R.drawable.icon_shopinfo_hi,
+    	R.drawable.icon_shopmenu_hi,
+    	R.drawable.icon_shopphoto_hi,
+    	R.drawable.icon_shopcomment_hi,
+    	R.drawable.icon_shopmap_hi,
     };
 	
 	// GUI element
@@ -45,7 +62,8 @@ public class DetailMenuFragment extends Fragment {
 	private Button btnShopInfoDock;
 	private ImageView imgDivider;
 	private ImageView imgPicker;
-	private LinearLayout layout5button;
+	private ImageView imgPickerBg;
+	private RelativeLayout layout5button;
 	
 	// GUI size
 	private boolean mFirstTimeClick = true;
@@ -53,6 +71,7 @@ public class DetailMenuFragment extends Fragment {
 	private int 	mBtnShopInfoWidth;
 	private int 	mBtnPromotionWidth;
 	private int		mPickerWidth;
+	private int		mPickerBgWidth;
 	
 	// Data
 	private Listener 	mListener 		= new Listener();
@@ -61,6 +80,7 @@ public class DetailMenuFragment extends Fragment {
     
     // Others
     private AnimatorSet animatorSet;
+    private AnimatorSet animatorSet2;
 
     ///////////////////////////////////////////////////////////////////////////
     // Overrided methods
@@ -85,7 +105,8 @@ public class DetailMenuFragment extends Fragment {
         btnShopInfoDock 	= (Button) getView().findViewById(R.id.btnShopInfoDock);
         imgDivider 			= (ImageView) getView().findViewById(R.id.imgDivider);
         imgPicker 			= (ImageView) getView().findViewById(R.id.imgPick);
-        layout5button 		= (LinearLayout) getView().findViewById(R.id.layout5Button);
+        imgPickerBg			= (ImageView) getView().findViewById(R.id.imgPickerBg);
+        layout5button 		= (RelativeLayout) getView().findViewById(R.id.layout5Button);
         
         // Set GUI event
         btnPromotion.setOnClickListener(new OnClickListener() {
@@ -126,15 +147,15 @@ public class DetailMenuFragment extends Fragment {
 			public void onLayoutChange(View v, int left, int top, int right, int bottom,
 					int oldLeft, int oldTop, int oldRight, int oldBottom) {
 				
-				int w = btnPromotion.getWidth() - imgPicker.getWidth();
-				imgPicker.setTranslationX(w / 2);
+				
+				imgPicker.setTranslationX(btnPromotion.getWidth() - imgPicker.getWidth() / 2);
 				btnShopInfo.setWidth(btnShopInfoDock.getWidth());
+				View dummy = getView().findViewById(R.id.imgPickerDummy);
+				imgPickerBg.setTranslationX(((right - left - btnPromotionDock.getWidth()) / 5 - dummy.getWidth()) / 2);
 				
 				getView().removeOnLayoutChangeListener(this);
 			}			
 		});
-        
-        
     }
     
     ///////////////////////////////////////////////////////////////////////////
@@ -153,14 +174,24 @@ public class DetailMenuFragment extends Fragment {
     	if (!mShowInfoBar)
     		return;
     	
+    	if (animatorSet2 != null)
+    		animatorSet2.cancel();
+    	
     	mButtonIndex = buttonIndex;
     	
+    	updateButtonHighLight(buttonIndex);
     	if (animate) {
     		ObjectAnimator pickerAnimator = null;
+    		ObjectAnimator pickerBgAnimator = null;
         	pickerAnimator = ObjectAnimator.ofFloat(imgPicker, "translationX", calculatePickerPos());
-        	pickerAnimator.start();
+			pickerBgAnimator = ObjectAnimator.ofFloat(imgPickerBg, "translationX", calculatePickerBgPos());
+			animatorSet2 = new AnimatorSet();
+			animatorSet2.playTogether(pickerAnimator, pickerBgAnimator);
+			animatorSet2.setInterpolator(new AccelerateDecelerateInterpolator());
+			animatorSet2.start();
     	} else {
     		imgPicker.setTranslationX(calculatePickerPos());
+    		imgPickerBg.setTranslationX(calculatePickerBgPos());
     	}
     	
     	if (invokeListener)
@@ -295,10 +326,11 @@ public class DetailMenuFragment extends Fragment {
     	
     	mFirstTimeClick = false;
     	
-    	mBtnPromotionWidth = btnPromotionDock.getWidth();
-    	mBtnShopInfoWidth = btnShopInfoDock.getWidth();
-    	mRootWidth = getView().findViewById(R.id.layoutDetailMenu).getWidth();
-    	mPickerWidth = imgPicker.getWidth();
+    	mBtnPromotionWidth 	= btnPromotionDock.getWidth();
+    	mBtnShopInfoWidth 	= btnShopInfoDock.getWidth();
+    	mRootWidth 			= getView().findViewById(R.id.layoutDetailMenu).getWidth();
+    	mPickerWidth 		= imgPicker.getWidth();
+    	mPickerBgWidth 		= imgPickerBg.getWidth();
     }
     
     private int calculatePickerPos() {
@@ -317,6 +349,31 @@ public class DetailMenuFragment extends Fragment {
     	}
     	
     	return result;
+    }
+    
+    private int calculatePickerBgPos() {
+    	
+    	int result = 0;
+    	
+		int w = mRootWidth - mBtnPromotionWidth;
+		int r = w * mButtonIndex / 5;
+		r += (w / 5 - mPickerBgWidth) / 2;
+		result = r;
+    	
+    	return result;
+    }
+    
+    private void updateButtonHighLight(int index) {
+    	
+    	for (int i = 0; i < mXindexArr.length; i++) {
+    		
+    		ImageButton btn = (ImageButton) getView().findViewById(mXindexArr[i]);
+    		if (i == index) {
+    			 btn.setImageResource(ICON_BUTTON_HL[i]);
+    		} else {
+    			btn.setImageResource(ICON_BUTTON[i]);
+    		}
+    	}
     }
 
     ///////////////////////////////////////////////////////////////////////////
