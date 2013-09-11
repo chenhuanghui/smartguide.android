@@ -404,7 +404,7 @@ public class DetailCommentFragment extends Fragment {
 			
 				String json = NetworkManger.post(APILinkMaker.mGetCommentPost(), pairs).trim();
 
-				return json.equalsIgnoreCase("1");
+				return true;
 				
 			} catch (Exception e) {
 				e.printStackTrace();

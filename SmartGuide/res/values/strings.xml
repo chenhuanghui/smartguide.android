@@ -31,5 +31,6 @@
     <string name="title_activity_search">SearchActivity</string>
     <string name="title_activity_tutorial">TutorialActivity</string>
     <string name="title_activity_intro">IntroActivity</string>
+    <string name="title_activity_tutor">TutorActivity</string>
 
 </resources>

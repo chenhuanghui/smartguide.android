@@ -266,7 +266,7 @@ public class MainActivity extends FragmentActivity implements MainAcitivyListene
 					@Override
 					public void run() {
 						if (isFirstTime)
-							startActivityForResult(new Intent(MainActivity.this, TutorialActivity.class), TutorialRequestCode);
+							startActivityForResult(new Intent(MainActivity.this, TutorActivity.class), TutorialRequestCode);
 						else
 							updateInformation();
 					}
@@ -1110,7 +1110,7 @@ public class MainActivity extends FragmentActivity implements MainAcitivyListene
 		mTutorialBtn.setOnClickListener(new OnClickListener() {
 			@Override
 			public void onClick(View v) {
-				startActivity(new Intent(mActivity, TutorialActivity.class));
+				startActivity(new Intent(mActivity, TutorActivity.class));
 			}
 		});
 

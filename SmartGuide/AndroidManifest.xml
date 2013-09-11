@@ -26,12 +26,12 @@
     <application
         android:allowBackup="true"
         android:icon="@drawable/ic_launcher"
-        android:label="@string/app_name">
+        android:label="@string/app_name" >
         <activity
             android:name="vn.smartguide.MainActivity"
             android:label="@string/app_name"
-            android:theme="@android:style/Theme.Light.NoTitleBar"
             android:screenOrientation="portrait"
+            android:theme="@android:style/Theme.Light.NoTitleBar"
             android:windowSoftInputMode="adjustNothing" >
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
@@ -42,14 +42,14 @@
         <activity
             android:name="vn.smartguide.WellcomeActivity"
             android:label="@string/title_activity_wellcome"
-            android:theme="@android:style/Theme.Light.NoTitleBar"
-            android:screenOrientation="portrait" >
+            android:screenOrientation="portrait"
+            android:theme="@android:style/Theme.Light.NoTitleBar" >
         </activity>
         <activity
             android:name="vn.smartguide.FlashScreenActivity"
             android:label="@string/title_activity_flash_screen"
-            android:theme="@android:style/Theme.Light.NoTitleBar"
-            android:screenOrientation="portrait" >
+            android:screenOrientation="portrait"
+            android:theme="@android:style/Theme.Light.NoTitleBar" >
         </activity>
 
         <meta-data
@@ -62,43 +62,49 @@
         <activity
             android:name="vn.smartguide.PhotoActivity"
             android:label=""
-            android:theme="@android:style/Theme.Light.NoTitleBar"
-            android:screenOrientation="portrait" >
+            android:screenOrientation="portrait"
+            android:theme="@android:style/Theme.Light.NoTitleBar" >
         </activity>
-        <activity android:name="com.facebook.LoginActivity"
+        <activity
+            android:name="com.facebook.LoginActivity"
             android:screenOrientation="portrait" />
         <activity
             android:name="vn.smartguide.MapActivity"
             android:label="@string/title_activity_map"
-            android:theme="@android:style/Theme.Light.NoTitleBar"
-            android:screenOrientation="portrait" >
+            android:screenOrientation="portrait"
+            android:theme="@android:style/Theme.Light.NoTitleBar" >
         </activity>
         <activity
             android:name="vn.smartguide.ReviewActivity"
-            android:theme="@android:style/Theme.Light.NoTitleBar"
-            android:screenOrientation="portrait" >
+            android:screenOrientation="portrait"
+            android:theme="@android:style/Theme.Light.NoTitleBar" >
         </activity>
         <activity
             android:name="vn.smartguide.TakePictureActivity"
+            android:screenOrientation="portrait"
             android:theme="@android:style/Theme.Light.NoTitleBar"
-            android:windowSoftInputMode="adjustResize|stateAlwaysVisible"
-            android:screenOrientation="portrait" >
+            android:windowSoftInputMode="adjustResize|stateAlwaysVisible" >
         </activity>
         <activity
             android:name="vn.smartguide.UpdateActivity"
-            android:theme="@android:style/Theme.Light.NoTitleBar"
-            android:screenOrientation="portrait" >
+            android:screenOrientation="portrait"
+            android:theme="@android:style/Theme.Light.NoTitleBar" >
         </activity>
         <activity
             android:name="vn.smartguide.TutorialActivity"
-            android:theme="@android:style/Theme.Light.NoTitleBar"
-            android:screenOrientation="portrait" >
+            android:screenOrientation="portrait"
+            android:theme="@android:style/Theme.Light.NoTitleBar" >
         </activity>
         <activity
             android:name="vn.smartguide.IntroActivity"
             android:label="@string/title_activity_intro"
-            android:theme="@android:style/Theme.Light.NoTitleBar"
-            android:screenOrientation="portrait" >
+            android:screenOrientation="portrait"
+            android:theme="@android:style/Theme.Light.NoTitleBar" >
+        </activity>
+        <activity
+            android:name="vn.smartguide.TutorActivity"
+            android:label="@string/title_activity_tutor"
+            android:theme="@android:style/Theme.Light.NoTitleBar" >
         </activity>
     </application>
 
