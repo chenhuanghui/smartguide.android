@@ -298,4 +298,16 @@ public class ShopDetailFragment extends Fragment {
     		mShop.mShopImageList.add(new ImageStr(jShopImage.getString(i), null));
     	}
     }
+    
+    public void releaseMemory(){
+    	try{
+	    	mLogoImageView.setImageBitmap(null);
+	    	mCoverImageView.setImageBitmap(null);
+	    	((DetailShopPhotoFragment) mDetailFragmentList.get(2)).releaseMemory();
+	    	((DetailCommentFragment) mDetailFragmentList.get(3)).releaseMemory();
+	    	((DetailShowMapFragment) mDetailFragmentList.get(4)).releaseMemory();
+    	}catch(Exception ex){
+    		
+    	}
+    }
 }

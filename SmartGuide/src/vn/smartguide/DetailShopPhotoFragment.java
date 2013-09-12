@@ -103,7 +103,12 @@ public class DetailShopPhotoFragment extends Fragment {
 		mShopAdapter.setData(s.mShopImageList);
 		mUserAdapter.setData(s.mUserImageList);
 	}
-
+	
+	public void releaseMemory(){
+		mShopAdapter.setData(new ArrayList<ImageStr>());
+		mUserAdapter.setData(new ArrayList<ImageStr>());
+	}
+	
 	public class PhotoListAdapter extends BaseAdapter {
 
 		public LayoutInflater 	inflater 	= getActivity().getLayoutInflater();

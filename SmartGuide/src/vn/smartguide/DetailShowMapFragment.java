@@ -57,6 +57,14 @@ public class DetailShowMapFragment extends Fragment {
 		super.onActivityCreated(savedInstanceState);
 	}
 
+	public void releaseMemory(){
+		try{
+		((ImageButton) getView().findViewById(R.id.imgDetailMap)).setImageBitmap(null);
+		}catch(Exception ex){
+			
+		}
+	}
+	
 	public void setData(Shop s) {
 
 		mShop = s;

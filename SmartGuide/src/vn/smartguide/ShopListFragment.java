@@ -42,30 +42,30 @@ public class ShopListFragment extends Fragment {
 	private GridView gridView;
 	public List<Shop> mShopList;
 	private ShopListAdapter mAdapter;
-	
+
 	String mJson = "";
-	
+
 	private ImageView mLoadingCircle;
 	private ImageView mLoadingMiddle;
 	private ImageView mLoadingBackground;
 	private RelativeLayout mLoadingOptical;
-	
+
 	private ObjectAnimator mRotateAnimation;
 	private ObjectAnimator mFadeOutCircle;
 	private ObjectAnimator mFadeOutMiddle;
 	private ObjectAnimator mFadeInCircle;
 	private ObjectAnimator mFadeInMiddle;
-	
+
 	public boolean mHaveAnimation 	= false;
 	public boolean isMore 			= false;
-	
+
 	private String mSearchString = "";
 	private int indexPage = 0;
-	
+
 	public void updateSGP(int id, int sgp){
 		if (mShopList == null || mShopList.size() == 0)
 			return;
-		
+
 		for(int i = 0; i < mShopList.size(); i++){
 			if (mShopList.get(i).mID == id){
 				View view = mAdapter.mViewList.get(i);
@@ -77,7 +77,7 @@ public class ShopListFragment extends Fragment {
 			}
 		}
 	}
-	
+
 	@Override
 	public void onAttach(Activity activity) {
 		super.onAttach(activity);
@@ -94,27 +94,27 @@ public class ShopListFragment extends Fragment {
 	@Override
 	public void onViewCreated(View view, Bundle savedInstanceState) {
 		super.onViewCreated(view, savedInstanceState);
-		
+
 		gridView = (GridView) getView().findViewById(R.id.grid_view_shop_list);
-		
+
 		mLoadingCircle = (ImageView) getView().findViewById(R.id.loadingCircleS);
 		mLoadingMiddle = (ImageView) getView().findViewById(R.id.loadingMidleS);
 		mLoadingBackground = (ImageView) getView().findViewById(R.id.loadingBackgroundS);
 		mLoadingOptical = (RelativeLayout) getView().findViewById(R.id.foregroundLoading);
-		
+
 		mRotateAnimation = ObjectAnimator.ofFloat(mLoadingCircle, "rotation", 0, 360).setDuration(1100);
 		mRotateAnimation.setInterpolator(new LinearInterpolator());
 		mRotateAnimation.setRepeatCount(ObjectAnimator.INFINITE);
 		mRotateAnimation.setRepeatMode(ObjectAnimator.INFINITE);
-		
+
 		mFadeInCircle = ObjectAnimator.ofFloat(mLoadingCircle, "alpha", 0.0f, 1.0f);
 		mFadeInCircle.setDuration(200);
 		mFadeInCircle.setInterpolator(new LinearInterpolator());
-		
+
 		mFadeInMiddle = ObjectAnimator.ofFloat(mLoadingMiddle, "alpha", 1.0f, 1.0f);
 		mFadeInMiddle.setDuration(200);
 		mFadeInMiddle.setInterpolator(new LinearInterpolator());
-		
+
 		mShopList = new ArrayList<Shop>();
 		mAdapter = new ShopListAdapter(getActivity().getBaseContext(), getActivity());
 		gridView.setAdapter(mAdapter);
@@ -131,45 +131,45 @@ public class ShopListFragment extends Fragment {
 				}
 			}
 		});
-		
+
 		mFadeOutCircle = ObjectAnimator.ofFloat(mLoadingCircle, "alpha", 1.0f, 0.0f);
 		mFadeOutCircle.setDuration(1000);
 		mFadeOutCircle.setInterpolator(new AccelerateDecelerateInterpolator());
-		
+
 		mFadeOutMiddle = ObjectAnimator.ofFloat(mLoadingMiddle, "alpha", 1.0f, 0.0f);
 		mFadeOutMiddle.setDuration(1000);
 		mFadeOutMiddle.setInterpolator(new AccelerateDecelerateInterpolator());
 		mFadeOutCircle.addListener(new AnimatorListener() {
 			@Override
 			public void onAnimationStart(Animator animation) {}
-			
+
 			@Override
 			public void onAnimationRepeat(Animator animation) {}
-			
+
 			@Override
 			public void onAnimationEnd(Animator animation) {
 				mRotateAnimation.cancel();
 				mHaveAnimation = false;
 				updateShopList();
 			}
-			
+
 			@Override
 			public void onAnimationCancel(Animator animation) {}
 		});
-		
+
 	}
 
 	private boolean isSearch = false;
-	
+
 	public void search(String search){
 		indexPage = 0;
 		isSearch = true;
-		
+
 		// get search result
 		mSearchString = search;
 		new SearchShopListTask(search).execute();
 	}
-	
+
 	public void update(String json){
 		indexPage = 0;
 		isSearch = false;
@@ -182,11 +182,11 @@ public class ShopListFragment extends Fragment {
 
 	}
 
-	
+
 	public void setForeground(){
 		mLoadingOptical.setVisibility(View.VISIBLE);
 	}
-	
+
 	public class UpdateTask extends AsyncTask<Void, Void, Boolean> {
 
 		@Override
@@ -213,29 +213,29 @@ public class ShopListFragment extends Fragment {
 							List<ObjectAnimator> arrayListObjectAnimators = new ArrayList<ObjectAnimator>();
 							arrayListObjectAnimators.add(mFadeOutCircle);
 							arrayListObjectAnimators.add(mFadeOutMiddle);
-							
+
 							ObjectAnimator[] objectAnimators = arrayListObjectAnimators.toArray(new ObjectAnimator[arrayListObjectAnimators.size()]);
 							AnimatorSet animSetXY = new AnimatorSet();
 							animSetXY.playTogether(objectAnimators);
 							animSetXY.addListener(new AnimatorListener() {
-								
+
 								@Override
 								public void onAnimationStart(Animator animation) {}
-								
+
 								@Override
 								public void onAnimationRepeat(Animator animation) {}
-								
+
 								@Override
 								public void onAnimationEnd(Animator animation) {
 									// TODO Auto-generated method stub
 									mLoadingOptical.setVisibility(View.INVISIBLE);
 									mLoadingBackground.setVisibility(View.INVISIBLE);
 								}
-								
+
 								@Override
 								public void onAnimationCancel(Animator animation) {
 									// TODO Auto-generated method stub
-									
+
 								}
 							});
 							animSetXY.start();
@@ -256,13 +256,13 @@ public class ShopListFragment extends Fragment {
 						mLoadingCircle.setVisibility(View.VISIBLE);
 						mLoadingMiddle.setVisibility(View.VISIBLE);
 						mLoadingBackground.setVisibility(View.VISIBLE);
-						
+
 						List<ObjectAnimator> arrayListObjectAnimators = new ArrayList<ObjectAnimator>();
-						
+
 						arrayListObjectAnimators.add(mFadeInMiddle);
 						arrayListObjectAnimators.add(mFadeInCircle);
 						arrayListObjectAnimators.add(mRotateAnimation);
-						
+
 						ObjectAnimator[] objectAnimators = arrayListObjectAnimators.toArray(new ObjectAnimator[arrayListObjectAnimators.size()]);
 						AnimatorSet animSetXY = new AnimatorSet();
 						animSetXY.playTogether(objectAnimators);
@@ -272,7 +272,7 @@ public class ShopListFragment extends Fragment {
 			}
 		}
 	}
-	
+
 	public void updateShopList(){
 		if (mShopList != null){
 			mAdapter = new ShopListAdapter(getActivity().getBaseContext(), getActivity());
@@ -280,7 +280,7 @@ public class ShopListFragment extends Fragment {
 			mAdapter.notifyDataSetChanged();
 		}
 	}
-	
+
 	public class FetchMoreShopListTask extends AsyncTask<Void, Void, Boolean> {
 		private String json = null;
 
@@ -295,7 +295,7 @@ public class ShopListFragment extends Fragment {
 			pairs.add(new BasicNameValuePair("page", Integer.toString(++indexPage)));
 			pairs.add(new BasicNameValuePair("sort_by", GlobalVariable.mSortByString));
 			pairs.add(new BasicNameValuePair("shop_name", mSearchString));
-			
+
 			try {
 				if (isSearch)
 					json = NetworkManger.post(APILinkMaker.mSearch(), pairs);
@@ -323,15 +323,15 @@ public class ShopListFragment extends Fragment {
 								mShopList.add(shopList.get(i));
 								mAdapter.mViewList.add(null);
 							}
-							
+
 							if (shopList.size() % GlobalVariable.itemPerPage == 0)
 								isMore = true;
 							else
 								isMore = false;
-							
+
 							mAdapter.notifyDataSetChanged();
 						}
-						
+
 						GlobalVariable.imageLoader.resume();	
 					}
 				} catch (JSONException e) {
@@ -343,13 +343,13 @@ public class ShopListFragment extends Fragment {
 		protected void onPreExecute(){
 		}
 	}
-	
+
 	public class ShopListAdapter extends BaseAdapter
 	{
 		Context MyContext;
 		Activity mActivity;
 		List<View> mViewList;
-		
+
 		public ShopListAdapter(Context _MyContext, Activity activity)
 		{
 			MyContext = _MyContext;
@@ -363,7 +363,7 @@ public class ShopListFragment extends Fragment {
 				isMore = false;
 			else if (mShopList.size() % 10 == 0)
 				isMore = true;
-			
+
 			indexPage = 0;
 		}
 
@@ -379,12 +379,12 @@ public class ShopListFragment extends Fragment {
 			View MyView = null;
 			try{
 				final int index = position;
-				
+
 				if (mViewList.get(position) != null)
 					return mViewList.get(position);
 
 				MyView = convertView;
-				
+
 				final Shop mShop = mShopList.get(position);
 				LayoutInflater li = mActivity.getLayoutInflater();
 				if (mShop.mPromotionStatus == true){
@@ -400,9 +400,9 @@ public class ShopListFragment extends Fragment {
 					MyView = li.inflate(R.layout.shop_list_item, null);
 					MyView.findViewById(R.id.shop_type_image).setVisibility(View.INVISIBLE);
 					MyView.findViewById(R.id.shop_score).setVisibility(View.INVISIBLE);
-					
+
 				}
-					
+
 
 				final TextView mDistantTV = (TextView)MyView.findViewById(R.id.shop_distance);
 				if (mShop.mDistance == - 1)
@@ -436,36 +436,36 @@ public class ShopListFragment extends Fragment {
 				final LinearLayout mShopTypeScore = (LinearLayout)MyView.findViewById(R.id.shop_type_score);
 				final ImageView mShopCover = (ImageView)MyView.findViewById(R.id.shop_cover);
 				GlobalVariable.imageLoader.displayImage(mShop.mLogo, mShopCover);
-//				new Handler().postDelayed(new Runnable() {
-//					
-//					@Override
-//					public void run() {
-//						new HttpConnection(new Handler() {
-//			        		@Override
-//			        		public void handleMessage(Message message) {
-//			        			
-//			        			switch (message.what) {
-//			        			case HttpConnection.DID_START: {
-//			        				break;
-//			        			}
-//			        			case HttpConnection.DID_SUCCEED: {
-//			        				Bitmap response = (Bitmap) message.obj;
-//			        				mShopCover.setBackgroundDrawable((new BitmapDrawable(getActivity().getResources(), response)));
-//			        				break;
-//			        			}
-//			        			case HttpConnection.DID_ERROR: {
-//			        				Exception e = (Exception) message.obj;
-//			        				e.printStackTrace();
-//			        				break;
-//			        			}
-//			        			}
-//			        		}
-//			        		
-//			        	}).bitmap(mShop.mLogo);
-//					}
-//				}, 2000);
-				
-				
+				//				new Handler().postDelayed(new Runnable() {
+				//					
+				//					@Override
+				//					public void run() {
+				//						new HttpConnection(new Handler() {
+				//			        		@Override
+				//			        		public void handleMessage(Message message) {
+				//			        			
+				//			        			switch (message.what) {
+				//			        			case HttpConnection.DID_START: {
+				//			        				break;
+				//			        			}
+				//			        			case HttpConnection.DID_SUCCEED: {
+				//			        				Bitmap response = (Bitmap) message.obj;
+				//			        				mShopCover.setBackgroundDrawable((new BitmapDrawable(getActivity().getResources(), response)));
+				//			        				break;
+				//			        			}
+				//			        			case HttpConnection.DID_ERROR: {
+				//			        				Exception e = (Exception) message.obj;
+				//			        				e.printStackTrace();
+				//			        				break;
+				//			        			}
+				//			        			}
+				//			        		}
+				//			        		
+				//			        	}).bitmap(mShop.mLogo);
+				//					}
+				//				}, 2000);
+
+
 				final LinearLayout mShopNameContent = (LinearLayout)MyView.findViewById(R.id.shop_name_content);
 				TextView mShopName = (TextView) mShopNameContent.findViewById(R.id.shop_name_real);
 				mShopName.setText(mShop.mName);
@@ -477,7 +477,7 @@ public class ShopListFragment extends Fragment {
 
 				RelativeLayout touch_layout = (RelativeLayout)MyView.findViewById(R.id.root_layout_item_list);
 				touch_layout.setOnClickListener(new View.OnClickListener() {
-					
+
 					@Override
 					public void onClick(View v) {
 						mDistantTV.setBackgroundResource(R.drawable.shop_distance_red);
@@ -485,11 +485,11 @@ public class ShopListFragment extends Fragment {
 						mShopTypeScore.setBackgroundResource(R.drawable.shop_type_red);
 						shop_cover_layout_tran.setBackgroundResource(R.drawable.shop_avatar_red_tran);
 						mShopNameContent.setBackgroundResource(R.drawable.shop_content_red);
-						
+
 						Shop s = mShopList.get(index);
 						GlobalVariable.mCurrentShop = s;
 						mMainAcitivyListener.getDetailFragment().setData(GlobalVariable.mCurrentShop );
-						
+
 						new Handler().postDelayed(new Runnable() {
 							@Override
 							public void run() {
@@ -498,7 +498,7 @@ public class ShopListFragment extends Fragment {
 						}, 500);
 					}
 				});
-				
+
 				setImageType((ImageView)MyView.findViewById(R.id.shop_type_icon), mShop.mGroupShop);
 				mViewList.set(position, MyView);
 			}catch(Exception ex){
@@ -517,7 +517,7 @@ public class ShopListFragment extends Fragment {
 			return 0;
 		}
 	}
-	
+
 	public void setImageType(ImageView image, int type){
 		switch(type){
 		case 1:
@@ -544,14 +544,14 @@ public class ShopListFragment extends Fragment {
 		case 8:
 			image.setBackgroundResource(R.drawable.iconpin_education);
 			break;
-			
+
 		}
 	}
-	
+
 	public class SearchShopListTask extends AsyncTask<Void, Void, Boolean> {
 		private String json = null;
 		private String mName;
-		
+
 		public SearchShopListTask(String name) {
 			mName = name;
 		}
@@ -581,23 +581,23 @@ public class ShopListFragment extends Fragment {
 				List<ObjectAnimator> arrayListObjectAnimators = new ArrayList<ObjectAnimator>();
 				arrayListObjectAnimators.add(mFadeOutCircle);
 				arrayListObjectAnimators.add(mFadeOutMiddle);
-				
+
 				ObjectAnimator[] objectAnimators = arrayListObjectAnimators.toArray(new ObjectAnimator[arrayListObjectAnimators.size()]);
 				AnimatorSet animSetXY = new AnimatorSet();
 				animSetXY.playTogether(objectAnimators);
 				animSetXY.addListener(new AnimatorListener() {
-					
+
 					@Override
 					public void onAnimationStart(Animator animation) {}
-					
+
 					@Override
 					public void onAnimationRepeat(Animator animation) {}
-					
+
 					@Override
 					public void onAnimationEnd(Animator animation) {
 						mLoadingOptical.setVisibility(View.INVISIBLE);
 						mLoadingBackground.setVisibility(View.INVISIBLE);
-						
+
 						if (mShopList != null){
 							mAdapter = new ShopListAdapter(getActivity().getBaseContext(), getActivity());
 							gridView.setAdapter(mAdapter);
@@ -606,11 +606,11 @@ public class ShopListFragment extends Fragment {
 							((MainActivity) mMainAcitivyListener).jumpToBound();
 						}
 					}
-					
+
 					@Override
 					public void onAnimationCancel(Animator animation) {}
 				});
-				
+
 				animSetXY.start();
 			}
 		}
@@ -621,17 +621,26 @@ public class ShopListFragment extends Fragment {
 			mLoadingMiddle.setVisibility(View.VISIBLE);
 			mLoadingOptical.setVisibility(View.VISIBLE);
 			mLoadingBackground.setVisibility(View.VISIBLE);
-			
+
 			List<ObjectAnimator> arrayListObjectAnimators = new ArrayList<ObjectAnimator>();
-			
+
 			arrayListObjectAnimators.add(mFadeInMiddle);
 			arrayListObjectAnimators.add(mFadeInCircle);
 			arrayListObjectAnimators.add(mRotateAnimation);
-			
+
 			ObjectAnimator[] objectAnimators = arrayListObjectAnimators.toArray(new ObjectAnimator[arrayListObjectAnimators.size()]);
 			AnimatorSet animSetXY = new AnimatorSet();
 			animSetXY.playTogether(objectAnimators);
 			animSetXY.start();
+		}
+	}
+
+	public void releaseMemory(){
+		try{
+			mShopList = new ArrayList<Shop>();
+			updateShopList();
+		}catch(Exception ex){
+			
 		}
 	}
 }

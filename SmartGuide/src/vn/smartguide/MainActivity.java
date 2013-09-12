@@ -303,9 +303,11 @@ public class MainActivity extends FragmentActivity implements MainAcitivyListene
 		switch (index){
 		case 0:
 			enableFilterMap();
+			mShopListFragment.releaseMemory();
 			break;
 		case 1:
 			enableFilterMap();
+			mShopDetailFragment.releaseMemory();
 			break;
 		case 2:
 			disableFilterMap();
@@ -393,6 +395,7 @@ public class MainActivity extends FragmentActivity implements MainAcitivyListene
 		try{
 			switch (pageWillGo){
 			case 1:
+				mShopDetailFragment.releaseMemory();
 				enableFilterMap();
 				int lengthOfFilterString = GlobalVariable.mFilterString.length();
 				if (lengthOfFilterString >= 2)
@@ -431,6 +434,7 @@ public class MainActivity extends FragmentActivity implements MainAcitivyListene
 			case 0:
 				enableFilterMap();
 				setNaviText("DANH MỤC");
+				mShopListFragment.releaseMemory();
 				break;
 			}	
 		}catch(Exception ex){
