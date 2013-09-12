@@ -75,12 +75,11 @@ public class DetailMenuFragment extends Fragment {
 	
 	// Data
 	private Listener 	mListener 		= new Listener();
-    private boolean 	mShowInfoBar 	= false;
+    public  boolean 	mShowInfoBar 	= false;
     private int			mButtonIndex	= BUTTON_INFO;
     
     // Others
     private AnimatorSet animatorSet;
-    private AnimatorSet animatorSet2;
 
     ///////////////////////////////////////////////////////////////////////////
     // Overrided methods
@@ -174,9 +173,6 @@ public class DetailMenuFragment extends Fragment {
     	if (!mShowInfoBar)
     		return;
     	
-    	if (animatorSet2 != null)
-    		animatorSet2.cancel();
-    	
     	mButtonIndex = buttonIndex;
     	
     	updateButtonHighLight(buttonIndex);
@@ -185,7 +181,7 @@ public class DetailMenuFragment extends Fragment {
     		ObjectAnimator pickerBgAnimator = null;
         	pickerAnimator = ObjectAnimator.ofFloat(imgPicker, "translationX", calculatePickerPos());
 			pickerBgAnimator = ObjectAnimator.ofFloat(imgPickerBg, "translationX", calculatePickerBgPos());
-			animatorSet2 = new AnimatorSet();
+			AnimatorSet animatorSet2 = new AnimatorSet();
 			animatorSet2.playTogether(pickerAnimator, pickerBgAnimator);
 			animatorSet2.setInterpolator(new AccelerateDecelerateInterpolator());
 			animatorSet2.start();
@@ -245,11 +241,13 @@ public class DetailMenuFragment extends Fragment {
     				public void onAnimationEnd(Animator arg0) {	
     					btnShopInfoDock.setVisibility(View.INVISIBLE);
     					btnShopInfo.setVisibility(View.INVISIBLE);
+    					animatorSet = null;
     				}
     				
     				public void onAnimationCancel(Animator arg0) { 
     					btnShopInfoDock.setVisibility(View.INVISIBLE);
     					btnShopInfo.setVisibility(View.INVISIBLE);
+    					animatorSet = null;
     				}
     			});
     		} else {
@@ -282,10 +280,12 @@ public class DetailMenuFragment extends Fragment {
     				
     				public void onAnimationEnd(Animator arg0) {	
     					layout5button.setVisibility(View.INVISIBLE);
+    					animatorSet = null;
     				}
     				
     				public void onAnimationCancel(Animator arg0) {
     					layout5button.setVisibility(View.INVISIBLE);
+    					animatorSet = null;
     				}
     			});
     		}

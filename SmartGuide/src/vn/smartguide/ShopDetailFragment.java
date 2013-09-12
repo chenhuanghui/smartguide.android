@@ -196,16 +196,17 @@ public class ShopDetailFragment extends Fragment {
     	if (mShop.mCover.compareTo("null") != 0)
     		GlobalVariable.imageLoader.displayImage(mShop.mCover, mCoverImageView, GlobalVariable.displayImageOptions);
     	
-//    	DetailMenuFragment menu = (DetailMenuFragment) getFragmentManager().findFragmentById(R.id.detailMenuFragment);
+    	DetailMenuFragment menu = (DetailMenuFragment) getFragmentManager().findFragmentById(R.id.detailMenuFragment);
 //    	menu.updateLikeDis(s.mNumOfLike, s.mNumOfDislike, s.mLikeStatus);
 //    	
-//    	if (mPromoFragment == mNoPromoFragment) {
-//    		if (menu.mYindex == 0)
-//    			menu.toggleShopInfo();
-//    		menu.turnToShopInfo();
-//    	} else if (menu.mYindex == 1) {
-//    		menu.toggleShopInfo();
-//    	}
+    	if (mPromoFragment == mNoPromoFragment) {
+    		if (!menu.mShowInfoBar)
+    			menu.toggleShopInfo(false, false);
+    		menu.switchToButton(0, false, true);
+    	} else if (menu.mShowInfoBar) {
+    		menu.switchToButton(0, false, false);
+    		menu.toggleShopInfo(false, true);
+    	}
     	
     	mPromoFragment.setData(s);
     	((DetailShopInfoFragment) mDetailFragmentList.get(0)).setData(s);
@@ -218,7 +219,7 @@ public class ShopDetailFragment extends Fragment {
     	new GetShopDetail().execute();
     }
     
-    public class GetShopDetail extends AsyncTask<Void, Void, Boolean> {    	
+    public class GetShopDetail extends AsyncTask<Void, Void, Boolean> {
 
 		@Override
 		protected Boolean doInBackground(Void... params) {

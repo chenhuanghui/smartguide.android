@@ -31,7 +31,8 @@
             android:layout_toLeftOf="@+id/txtItemPrice"
             android:text="TextView"
             android:textColor="#494949"
-            android:textSize="11dp" />
+            android:textSize="11dp"
+            android:textStyle="bold" />
 
     </RelativeLayout>
 

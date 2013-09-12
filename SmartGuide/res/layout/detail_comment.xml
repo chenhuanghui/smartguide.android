@@ -73,7 +73,6 @@
             android:layout_above="@+id/relativeLayout1"
             android:layout_alignParentLeft="true"
             android:layout_alignParentTop="true"
-            android:layout_marginTop="38dp"
             android:divider="#00000000"
             android:padding="8dp"
             android:scrollbarAlwaysDrawVerticalTrack="true"
