@@ -863,7 +863,7 @@ public class MainActivity extends FragmentActivity implements MainAcitivyListene
 			
 			isCanScan = true;
 			mIsCanWipe = true;
-			mScanCover.setVisibility(View.VISIBLE);
+			//mScanCover.setVisibility(View.VISIBLE);
 			
 			if (GlobalVariable.mLat == -1){
 				mMirrorFront.setVisibility(View.INVISIBLE);
@@ -879,7 +879,7 @@ public class MainActivity extends FragmentActivity implements MainAcitivyListene
 		else{
 			QRCodeTextView.setText("CHẠM VÀO ĐỂ NHẬN ĐIỂM");
 			isCanScan = false;
-			mScanCover.setVisibility(View.INVISIBLE);
+			//mScanCover.setVisibility(View.INVISIBLE);
 		}
 
 		ObjectAnimator animatorPopup = null;
@@ -933,6 +933,7 @@ public class MainActivity extends FragmentActivity implements MainAcitivyListene
 
 	public void InitCamera(){
 		// create camera & qrcode scanner
+		previewing = true;
 		preview = (FrameLayout)findViewById(R.id.cameraPreview);
 		autoFocusHandler = new Handler();
 		mCamera = getCameraInstance();
@@ -955,10 +956,12 @@ public class MainActivity extends FragmentActivity implements MainAcitivyListene
 
 			if (result != 0) {
 				mCamera.setPreviewCallback(null);
+				previewing = false;
+				
 				SymbolSet syms = scanner.getResults();
 				for (Symbol sym : syms) {
 					mQRCode = sym.getData();
-					mScanCover.setVisibility(View.INVISIBLE);
+					//mScanCover.setVisibility(View.INVISIBLE);
 					switch (mScanningCode) {
 					case 1:
 						isCanScan = false;
