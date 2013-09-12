@@ -102,6 +102,8 @@ public class DetailShopPhotoFragment extends Fragment {
 		mShop = s;
 		mShopAdapter.setData(s.mShopImageList);
 		mUserAdapter.setData(s.mUserImageList);
+		mShopAdapter.notifyDataSetChanged();
+		mUserAdapter.notifyDataSetChanged();
 	}
 	
 	public void releaseMemory(){
