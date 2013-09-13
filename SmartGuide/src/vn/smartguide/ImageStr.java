@@ -11,6 +11,7 @@ public class ImageStr {
 	public boolean loadFail;
 	
 	public ImageStr(String u, String d) {
+		
 		url = u;
 		description = d;
 	}

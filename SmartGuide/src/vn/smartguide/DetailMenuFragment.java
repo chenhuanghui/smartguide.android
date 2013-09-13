@@ -146,14 +146,13 @@ public class DetailMenuFragment extends Fragment {
 			public void onLayoutChange(View v, int left, int top, int right, int bottom,
 					int oldLeft, int oldTop, int oldRight, int oldBottom) {
 				
-				
-				imgPicker.setTranslationX(btnPromotion.getWidth() - imgPicker.getWidth() / 2);
+				imgPicker.setTranslationX((btnPromotion.getWidth() - imgPicker.getWidth()) / 2);
 				btnShopInfo.setWidth(btnShopInfoDock.getWidth());
 				View dummy = getView().findViewById(R.id.imgPickerDummy);
 				imgPickerBg.setTranslationX(((right - left - btnPromotionDock.getWidth()) / 5 - dummy.getWidth()) / 2);
 				
 				getView().removeOnLayoutChangeListener(this);
-			}			
+			}
 		});
     }
     

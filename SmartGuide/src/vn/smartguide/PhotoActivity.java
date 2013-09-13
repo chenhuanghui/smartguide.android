@@ -97,7 +97,7 @@ public class PhotoActivity extends FragmentActivity{
 		
 		public void loadMore() {
 			
-			if (mIsLoadingMore || mEnd)
+			if (!mIsUser && mIsLoadingMore || mEnd)
 				return;
 			
 			mIsLoadingMore = true;
