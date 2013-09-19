@@ -31,8 +31,12 @@ public class TutorActivity extends FragmentActivity {
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.activity_intro);
+
+		ViewPager pager = ((ViewPager) findViewById(R.id.pagerIntro));
+		pager.setAdapter(new IntroPagerAdapter(getSupportFragmentManager())); 
 		
-		((ViewPager) findViewById(R.id.pagerIntro)).setAdapter(new IntroPagerAdapter(getSupportFragmentManager())); 
+		CirclePageIndicator titleIndicator = (CirclePageIndicator)findViewById(R.id.indicator);
+		titleIndicator.setViewPager(pager);
 	}
 
 	public class IntroPagerAdapter extends FragmentStatePagerAdapter {
@@ -52,12 +56,12 @@ public class TutorActivity extends FragmentActivity {
 		public Fragment getItem(int position) {
 
 			IntroPagerFragment f = new IntroPagerFragment();
-			
+
 			Bundle args = new Bundle();
-            args.putInt("rid", INTRO_RESOURCE_ARR[position]);
-            f.setArguments(args);
-            
-            return f;
+			args.putInt("rid", INTRO_RESOURCE_ARR[position]);
+			f.setArguments(args);
+
+			return f;
 		}
 
 		@Override
@@ -77,10 +81,10 @@ public class TutorActivity extends FragmentActivity {
 		@Override
 		public View onCreateView(LayoutInflater inflater, ViewGroup container,
 				Bundle savedInstanceState) {
-			
+
 			super.onCreateView(inflater, container, savedInstanceState);
 
-			View v = inflater.inflate(R.layout.tutor_item, container, false);
+			View v = inflater.inflate(R.layout.intro_item, container, false);
 			int rid = getArguments().getInt("rid");
 			((ImageView) v.findViewById(R.id.imgIntro)).setImageResource(rid);
 

@@ -1,6 +1,7 @@
 package vn.smartguide;
 
 import vn.smartguide.PhotoActivity.PhotoFullFragment;
+import vn.smartguide.TutorActivity.IntroPagerAdapter;
 import android.os.Bundle;
 import android.annotation.SuppressLint;
 import android.app.Activity;
@@ -33,7 +34,11 @@ public class IntroActivity extends FragmentActivity {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.activity_intro);
 		
-		((ViewPager) findViewById(R.id.pagerIntro)).setAdapter(new IntroPagerAdapter(getSupportFragmentManager())); 
+		ViewPager pager = ((ViewPager) findViewById(R.id.pagerIntro));
+		pager.setAdapter(new IntroPagerAdapter(getSupportFragmentManager())); 
+		
+		CirclePageIndicator titleIndicator = (CirclePageIndicator)findViewById(R.id.indicator);
+		titleIndicator.setViewPager(pager);
 	}
 
 	public class IntroPagerAdapter extends FragmentStatePagerAdapter {
