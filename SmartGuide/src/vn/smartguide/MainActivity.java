@@ -189,7 +189,7 @@ public class MainActivity extends FragmentActivity implements MainAcitivyListene
 	// Navigation text
 	private TextView mNaviText = null;
 	private String mPreviousNavi = "";
-	private String mCurrentNavi = "DANH MỤC";
+	private String mCurrentNavi = "DANH Má»¤C";
 
 	// Location choice in setting view
 	private int mChoiceLocation = -1;
@@ -328,33 +328,33 @@ public class MainActivity extends FragmentActivity implements MainAcitivyListene
 			enableFilterMap();
 			int lengthOfFilterString = GlobalVariable.mFilterString.length();
 			if (lengthOfFilterString >= 2)
-				setNaviText("NHIỀU DANH MỤC");
+				setNaviText("NHIá»€U DANH Má»¤C");
 			else{
 				int shopType = Integer.valueOf(GlobalVariable.mFilterString);
 				switch(shopType){
 				case 1:
-					setNaviText("ẨM THỰC");
+					setNaviText("áº¨M THá»°C");
 					break;
 				case 2:
 					setNaviText("CAFE & BAR");
 					break;
 				case 3:
-					setNaviText("LÀM ĐẸP");
+					setNaviText("LÃ€M Ä�áº¸P");
 					break;
 				case 4:
-					setNaviText("GIẢI TRÍ");
+					setNaviText("GIáº¢I TRÃ�");
 					break;
 				case 5:
-					setNaviText("THỜI TRANG");
+					setNaviText("THá»œI TRANG");
 					break;
 				case 6:
-					setNaviText("DU LỊCH");
+					setNaviText("DU Lá»ŠCH");
 					break;
 				case 7:
-					setNaviText("SẢN PHẨM");
+					setNaviText("Sáº¢N PHáº¨M");
 					break;					
 				case 8:
-					setNaviText("GIÁO DỤC");
+					setNaviText("GIÃ�O Dá»¤C");
 					break;
 				}
 			}
@@ -379,7 +379,7 @@ public class MainActivity extends FragmentActivity implements MainAcitivyListene
 			}
 
 			doubleBackToExitPressedOnce = true;
-			Toast.makeText(this, "Nhấn back lần nữa để thoát chương trình", Toast.LENGTH_SHORT).show();
+			Toast.makeText(this, "Nháº¥n back láº§n ná»¯a Ä‘á»ƒ thoÃ¡t chÆ°Æ¡ng trÃ¬nh", Toast.LENGTH_SHORT).show();
 			new Handler().postDelayed(new Runnable() {
 
 				@Override
@@ -399,33 +399,33 @@ public class MainActivity extends FragmentActivity implements MainAcitivyListene
 				enableFilterMap();
 				int lengthOfFilterString = GlobalVariable.mFilterString.length();
 				if (lengthOfFilterString >= 2)
-					setNaviText("NHIỀU DANH MỤC");
+					setNaviText("NHIá»€U DANH Má»¤C");
 				else{
 					int shopType = Integer.valueOf(GlobalVariable.mFilterString);
 					switch(shopType){
 					case 1:
-						setNaviText("ẨM THỰC");
+						setNaviText("áº¨M THá»°C");
 						break;
 					case 2:
 						setNaviText("CAFE & BAR");
 						break;
 					case 3:
-						setNaviText("LÀM ĐẸP");
+						setNaviText("LÃ€M Ä�áº¸P");
 						break;
 					case 4:
-						setNaviText("GIẢI TRÍ");
+						setNaviText("GIáº¢I TRÃ�");
 						break;
 					case 5:
-						setNaviText("THỜI TRANG");
+						setNaviText("THá»œI TRANG");
 						break;
 					case 6:
-						setNaviText("DU LỊCH");
+						setNaviText("DU Lá»ŠCH");
 						break;
 					case 7:
-						setNaviText("SẢN PHẨM");
+						setNaviText("Sáº¢N PHáº¨M");
 						break;					
 					case 8:
-						setNaviText("GIÁO DỤC");
+						setNaviText("GIÃ�O Dá»¤C");
 						break;
 					}
 				}
@@ -433,12 +433,12 @@ public class MainActivity extends FragmentActivity implements MainAcitivyListene
 
 			case 0:
 				enableFilterMap();
-				setNaviText("DANH MỤC");
+				setNaviText("DANH Má»¤C");
 				mShopListFragment.releaseMemory();
 				break;
 			}	
 		}catch(Exception ex){
-			setNaviText("DANH MỤC");
+			setNaviText("DANH Má»¤C");
 		}
 		mViewPager.setCurrentItem(current_index - 1, true);
 	}
@@ -817,22 +817,22 @@ public class MainActivity extends FragmentActivity implements MainAcitivyListene
 				String message = "";
 				
 				//if (!isGPSOn)// && !isWifiOn)
-					message = "Bạn cần bật GPS hoặc wireless location trước khi scan code!!";
+					message = "Báº¡n cáº§n báº­t GPS hoáº·c wireless location trÆ°á»›c khi scan code!!";
 				//else
 //					if (!isGPSOn)
-//						message = "Bạn cần bật GPS trước khi scan code!!";
+//						message = "Báº¡n cáº§n báº­t GPS trÆ°á»›c khi scan code!!";
 //					else
-//						message = "Bạn cần bật wireless location trước khi scan code!!";
+//						message = "Báº¡n cáº§n báº­t wireless location trÆ°á»›c khi scan code!!";
 
 				alertDialog.setMessage(message);
 
-				alertDialog.setPositiveButton("Thiết lập", new DialogInterface.OnClickListener() {
+				alertDialog.setPositiveButton("Thiáº¿t láº­p", new DialogInterface.OnClickListener() {
 					public void onClick(DialogInterface dialog,int which) {
 						startActivity(new Intent(Settings.ACTION_LOCATION_SOURCE_SETTINGS));
 					}
 				});
 
-				alertDialog.setNegativeButton("Hủy", new DialogInterface.OnClickListener() {
+				alertDialog.setNegativeButton("Há»§y", new DialogInterface.OnClickListener() {
 					public void onClick(DialogInterface dialog, int which) {
 						dialog.cancel();
 					}
@@ -857,11 +857,11 @@ public class MainActivity extends FragmentActivity implements MainAcitivyListene
 			
 			switch(mScanningCode){
 			case 1:
-				QRCodeTextView.setText("Tích điểm - Cửa hàng sẽ cung cấp thẻ cho bạn");
+				QRCodeTextView.setText("TÃ­ch Ä‘iá»ƒm - Cá»­a hÃ ng sáº½ cung cáº¥p tháº» cho báº¡n");
 				break;
 			case 2:
 			case 3:
-				QRCodeTextView.setText("Nhận quà - Cửa hàng sẽ cung cấp thẻ cho bạn");
+				QRCodeTextView.setText("Nháº­n quÃ  - Cá»­a hÃ ng sáº½ cung cáº¥p tháº» cho báº¡n");
 				break;
 			}
 			
@@ -877,11 +877,11 @@ public class MainActivity extends FragmentActivity implements MainAcitivyListene
 				mContentText.setVisibility(View.INVISIBLE);
 				mProgressBar.setVisibility(View.VISIBLE);
 				isCanScan = false;
-				Toast.makeText(mActivity, "Vui lòng chờ lấy tọa độ GPS", Toast.LENGTH_LONG).show();
+				Toast.makeText(mActivity, "Vui lÃ²ng chá»� láº¥y tá»�a Ä‘á»™ GPS", Toast.LENGTH_LONG).show();
 			}
 		}
 		else{
-			QRCodeTextView.setText("CHẠM VÀO ĐỂ NHẬN ĐIỂM");
+			QRCodeTextView.setText("CHáº M VÃ€O Ä�á»‚ NHáº¬N Ä�Iá»‚M");
 			isCanScan = false;
 			//mScanCover.setVisibility(View.INVISIBLE);
 		}
@@ -1044,7 +1044,7 @@ public class MainActivity extends FragmentActivity implements MainAcitivyListene
 		StrictMode.ThreadPolicy policy = new StrictMode.ThreadPolicy.Builder().permitAll().build();
 		StrictMode.setThreadPolicy(policy);
 
-		// Tạo database
+		// Táº¡o database
 		GlobalVariable.createDatbase(this);
 
 		// Create menu
@@ -1151,16 +1151,16 @@ public class MainActivity extends FragmentActivity implements MainAcitivyListene
 				LocationManager locationManager = locationManager = (LocationManager) getSystemService(LOCATION_SERVICE);
 				if(!locationManager.isProviderEnabled(LocationManager.GPS_PROVIDER)){
 					AlertDialog.Builder alertDialog = new AlertDialog.Builder(mActivity);
-					alertDialog.setMessage("GPS chưa được bật. Bạn có muốn thay đổi thiết lập");
+					alertDialog.setMessage("GPS chÆ°a Ä‘Æ°á»£c báº­t. Báº¡n cÃ³ muá»‘n thay Ä‘á»•i thiáº¿t láº­p");
 
-					alertDialog.setPositiveButton("Thiết lập", new DialogInterface.OnClickListener() {
+					alertDialog.setPositiveButton("Thiáº¿t láº­p", new DialogInterface.OnClickListener() {
 						public void onClick(DialogInterface dialog,int which) {
 							Intent intent = new Intent(Settings.ACTION_LOCATION_SOURCE_SETTINGS);
 							startActivity(intent);
 						}
 					});
 
-					alertDialog.setNegativeButton("Hủy", new DialogInterface.OnClickListener() {
+					alertDialog.setNegativeButton("Há»§y", new DialogInterface.OnClickListener() {
 						public void onClick(DialogInterface dialog, int which) {
 							dialog.cancel();
 						}
@@ -1268,6 +1268,8 @@ public class MainActivity extends FragmentActivity implements MainAcitivyListene
 		mMapButton.setOnClickListener(new View.OnClickListener() {
 			@Override
 			public void onClick(View view) {
+				if (mViewPager.getCurrentItem() == 0)
+					return;
 				toggleShowContent();
 				createDestroyMap();
 			}
@@ -1292,7 +1294,7 @@ public class MainActivity extends FragmentActivity implements MainAcitivyListene
 				mIsShowFilter = !mIsShowFilter;
 				if (mIsShowFilter){
 					disableUserMap();
-					setNaviText("BỘ LỌC");
+					setNaviText("Bá»˜ Lá»ŒC");
 				}
 				else{
 					enableUserMap();
@@ -1429,7 +1431,7 @@ public class MainActivity extends FragmentActivity implements MainAcitivyListene
 		final String items[] = GlobalVariable.mCityNames.toArray(new String[GlobalVariable.mCityNames.size()]);
 
 		AlertDialog.Builder ab = new AlertDialog.Builder(MainActivity.this);
-		ab.setTitle("Chọn thành phố:");
+		ab.setTitle("Chá»�n thÃ nh phá»‘:");
 		ab.setPositiveButton("OK", new DialogInterface.OnClickListener() {
 
 			@Override
@@ -1592,8 +1594,8 @@ public class MainActivity extends FragmentActivity implements MainAcitivyListene
 
 	void exitWithError(){
 		AlertDialog.Builder dlgAlert  = new AlertDialog.Builder(this);                      
-		dlgAlert.setMessage("Bật kết nối mạng và thử lại");
-		dlgAlert.setTitle("Lỗi kết nối mạng");
+		dlgAlert.setMessage("Báº­t káº¿t ná»‘i máº¡ng vÃ  thá»­ láº¡i");
+		dlgAlert.setTitle("Lá»—i káº¿t ná»‘i máº¡ng");
 		dlgAlert.setPositiveButton("OK",new DialogInterface.OnClickListener() {
 			public void onClick(DialogInterface dialog, int whichButton) {
 				finish(); 
@@ -1835,8 +1837,8 @@ public class MainActivity extends FragmentActivity implements MainAcitivyListene
 					mSGPText.setVisibility(View.VISIBLE);
 					mContentText.setVisibility(View.VISIBLE);
 					mShopNameText.setText(JSResult.getString("shop_name"));
-					mSGPText.setText(JSResult.getString("money") + " VNĐ");
-					mContentText.setText("Bạn nhận được phiếu giảm giá");
+					mSGPText.setText(JSResult.getString("money") + " VNÄ�");
+					mContentText.setText("Báº¡n nháº­n Ä‘Æ°á»£c phiáº¿u giáº£m giÃ¡");
 
 					try {
 						String url = new JSONObject(mQRCode).getString("url");
@@ -1949,7 +1951,7 @@ public class MainActivity extends FragmentActivity implements MainAcitivyListene
 					mShopNameText.setText(JSResult.getString("shop_name"));
 					sgp = JSResult.getInt("sgp");
 					mSGPText.setText(Integer.toString(sgp) + "SGP");
-					mContentText.setText("Chúc mừng bạn nhận được");
+					mContentText.setText("ChÃºc má»«ng báº¡n nháº­n Ä‘Æ°á»£c");
 
 					int total_sgp = JSResult.getInt("total_sgp");
 
@@ -2117,7 +2119,7 @@ public class MainActivity extends FragmentActivity implements MainAcitivyListene
 					mContentText.setVisibility(View.VISIBLE);
 					mShopNameText.setText(JSResult.getString("shop_name"));
 					mSGPText.setText(JSResult.getString("award"));
-					mContentText.setText("Chúc mừng bạn nhận được");
+					mContentText.setText("ChÃºc má»«ng báº¡n nháº­n Ä‘Æ°á»£c");
 					int total_sgp = JSResult.getInt("total_sgp");
 
 					try {
@@ -2331,17 +2333,17 @@ public class MainActivity extends FragmentActivity implements MainAcitivyListene
 
 	public void confirmExit(){
 		AlertDialog.Builder builder = new AlertDialog.Builder(this);
-		builder.setMessage("Bạn muốn đóng ứng dụng");
+		builder.setMessage("Báº¡n muá»‘n Ä‘Ã³ng á»©ng dá»¥ng");
 		builder.setCancelable(true);
 
-		builder.setPositiveButton("Có", new DialogInterface.OnClickListener() {
+		builder.setPositiveButton("CÃ³", new DialogInterface.OnClickListener() {
 			public void onClick(DialogInterface dialog, int which) {
 				stopAds();
 				finish();
 			}
 		});
 
-		builder.setNegativeButton("Không", new DialogInterface.OnClickListener() {
+		builder.setNegativeButton("KhÃ´ng", new DialogInterface.OnClickListener() {
 			public void onClick(DialogInterface dialog, int which) {
 			}
 		});

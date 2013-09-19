@@ -84,7 +84,7 @@ public class WellcomeActivity extends FragmentActivity{
 
 			public void call(Session session, SessionState state, Exception exception) {
 				if (state.isOpened()) {
-					mStatusText.setText("Vui lòng chờ cập nhật thông tin...");
+					mStatusText.setText("Vui lÃ²ng chá»� cáº­p nháº­t thÃ´ng tin...");
 					makeMeRequest(session);
 				} else if (state.isClosed()) {
 				}
@@ -133,7 +133,7 @@ public class WellcomeActivity extends FragmentActivity{
 
 						confirmPhone();
 					}else{
-						mStatusText.setText("Số điện thoại không hợp lệ...");
+						mStatusText.setText("Sá»‘ Ä‘iá»‡n thoáº¡i khÃ´ng há»£p lá»‡...");
 						mNumberField.setText("");
 					}
 				}else{
@@ -332,7 +332,7 @@ public class WellcomeActivity extends FragmentActivity{
 
 					mNumberField.setText("");
 
-					mStatusText.setText("Đăng nhập facebook");
+					mStatusText.setText("Ä�Äƒng nháº­p facebook");
 
 					mNumberFieldSlideUp = ObjectAnimator.ofFloat(mNumberField, "alpha", 1.0f, 0.0f);
 					mNumberFieldSlideUp.setInterpolator(new AccelerateDecelerateInterpolator());				
@@ -369,12 +369,15 @@ public class WellcomeActivity extends FragmentActivity{
 					});
 					animSetXY.start();
 				}
+				else{
+					mStatusText.setText("MÃ£ xÃ¡c nháº­n khÃ´ng há»£p lá»‡");
+					mNumberField.setText("");
+				}
 
 			} catch (JSONException e) {
-				mStatusText.setText("Mã xác nhận không hợp lệ");
+				mStatusText.setText("MÃ£ xÃ¡c nháº­n khÃ´ng há»£p lá»‡");
 				mNumberField.setText("");
 			}
-
 		}
 		protected void onPreExecute(){ }
 	}
@@ -395,22 +398,22 @@ public class WellcomeActivity extends FragmentActivity{
 
 		AlertDialog.Builder builder = new AlertDialog.Builder(this);
 
-		builder.setMessage(phoneNumber +"\nMã kích hoạt SmartGuide sẽ được gửi đến số điện thoại trên" +
-				" qua tin nhắn. Chọn Đồng ý để tiếp tục hoặc hủy để thay đổi số điện thoại");
+		builder.setMessage(phoneNumber +"\nMÃ£ kÃ­ch hoáº¡t SmartGuide sáº½ Ä‘Æ°á»£c gá»­i Ä‘áº¿n sá»‘ Ä‘iá»‡n thoáº¡i trÃªn" +
+				" qua tin nháº¯n. Chá»�n Ä�á»“ng Ã½ Ä‘á»ƒ tiáº¿p tá»¥c hoáº·c há»§y Ä‘á»ƒ thay Ä‘á»•i sá»‘ Ä‘iá»‡n thoáº¡i");
 		builder.setCancelable(true);
 
-		builder.setNegativeButton("Đồng ý", new DialogInterface.OnClickListener() {
+		builder.setNegativeButton("Ä�á»“ng Ã½", new DialogInterface.OnClickListener() {
 			public void onClick(DialogInterface dialog, int which) {
 				isConfirm = true;
-				mStatusText.setText("Chờ và nhập mã xác nhận...");
+				mStatusText.setText("Chá»� vÃ  nháº­p mÃ£ xÃ¡c nháº­n...");
 				mNumberField.setText("");
 				new GetActivateCode().execute();
 			}
 		});
 
-		builder.setPositiveButton("Hủy", new DialogInterface.OnClickListener() {
+		builder.setPositiveButton("Há»§y", new DialogInterface.OnClickListener() {
 			public void onClick(DialogInterface dialog, int which) {
-				mStatusText.setText("Nhập số điện thoại...");
+				mStatusText.setText("Nháº­p sá»‘ Ä‘iá»‡n thoáº¡i...");
 				mNumberField.setText("");
 			}
 		});
