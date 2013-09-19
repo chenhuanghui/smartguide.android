@@ -429,6 +429,9 @@ public class WellcomeActivity extends FragmentActivity{
 		if (phone.charAt(0) == '+')
 			phone = phone.substring(1);
 		
+		if (phone.charAt(0) != '0')
+			return "84" + phone;
+		
 		try{
 			String first3c = phone.substring(0, 2);
 			if (first3c.compareTo("84") == 0)

@@ -162,6 +162,7 @@ public final class GlobalVariable {
 	}
 
 	public static HashMap<String, String> getRefreshIDViaOAuth2(){
+		
 		HttpGet httpGet = new HttpGet(serverOAuth + "?grant_type=refresh_token&client_id=" + clientID + "&client_secret=" + serectID + "&refresh_token=" + refreshTokenID);
 		JSONObject key;
 
@@ -223,8 +224,10 @@ public final class GlobalVariable {
 		}
 
 		userIDFacebook = token.get("userID");
+		
 		if(avatarFace == "" || avatarFace.compareTo("null") == 0)
 			avatarFace = token.get("avatar");
+		
 		if (nameFace == "" || nameFace.compareTo("null") == 0)
 			nameFace = token.get("name");
 		return true;
@@ -265,7 +268,7 @@ public final class GlobalVariable {
 			public void onLocationChanged(Location location) {
 				if (!isFirstTimeGetGPS){
 					isFirstTimeGetGPS = true;
-					Toast.makeText(mcontext, "Đã lấy được tọa độ GPS. Bạn có thể thực hiện chức năng scan code", Toast.LENGTH_LONG).show();
+					Toast.makeText(mcontext, "Ä�Ã£ láº¥y Ä‘Æ°á»£c tá»�a Ä‘á»™ GPS. Báº¡n cÃ³ thá»ƒ thá»±c hiá»‡n chá»©c nÄƒng scan code", Toast.LENGTH_LONG).show();
 					mMainAcitivyListener.finishGetSGP();
 				}
 				
@@ -280,7 +283,7 @@ public final class GlobalVariable {
 
 			@Override
 			public void onProviderEnabled(String provider) {
-				Toast.makeText(mcontext, "Đang lấy tọa độ GPS", Toast.LENGTH_SHORT).show();
+				Toast.makeText(mcontext, "Ä�ang láº¥y tá»�a Ä‘á»™ GPS", Toast.LENGTH_SHORT).show();
 			}
 
 			@Override

@@ -24,6 +24,7 @@ public class TutorActivity extends FragmentActivity {
 		R.drawable.tutorial2,
 		R.drawable.tutorial3,
 		R.drawable.tutorial4,
+		R.drawable.tutorial_end
 	};
 
 	@Override
@@ -79,7 +80,7 @@ public class TutorActivity extends FragmentActivity {
 			
 			super.onCreateView(inflater, container, savedInstanceState);
 
-			View v = inflater.inflate(R.layout.intro_item, container, false);
+			View v = inflater.inflate(R.layout.tutor_item, container, false);
 			int rid = getArguments().getInt("rid");
 			((ImageView) v.findViewById(R.id.imgIntro)).setImageResource(rid);
 
