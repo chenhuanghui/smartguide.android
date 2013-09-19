@@ -304,10 +304,14 @@ public class MainActivity extends FragmentActivity implements MainAcitivyListene
 		case 0:
 			enableFilterMap();
 			mShopListFragment.releaseMemory();
+			mMapButton.setClickable(false);
+			mMapButton.setImageResource(R.drawable.menu_map_lock);
 			break;
 		case 1:
 			enableFilterMap();
 			mShopDetailFragment.releaseMemory();
+			mMapButton.setClickable(true);
+			mMapButton.setImageResource(R.drawable.map_btn);
 			break;
 		case 2:
 			disableFilterMap();
@@ -364,7 +368,12 @@ public class MainActivity extends FragmentActivity implements MainAcitivyListene
 			disableFilterMap();
 			setNaviText(GlobalVariable.mCurrentShop.mName);
 			break;
+		case 0:
+			mMapButton.setClickable(false);
+			mMapButton.setImageResource(R.drawable.menu_map_lock);
+			break;
 		}
+		
 		mViewPager.setCurrentItem(pageWillGo, true);
 	}
 
@@ -433,6 +442,8 @@ public class MainActivity extends FragmentActivity implements MainAcitivyListene
 
 			case 0:
 				enableFilterMap();
+				mMapButton.setClickable(false);
+				mMapButton.setImageResource(R.drawable.menu_map_lock);
 				setNaviText("DANH Má»¤C");
 				mShopListFragment.releaseMemory();
 				break;
@@ -454,9 +465,12 @@ public class MainActivity extends FragmentActivity implements MainAcitivyListene
 		ObjectAnimator animator = null;
 		int height = findViewById(R.id.layoutContentHolder).getHeight();
 		View layout = findViewById(R.id.layoutContentFrame);
-		if (mShowContent)
+		if (mShowContent){
 			animator = ObjectAnimator.ofFloat(layout, "translationY", -height, 0);
+			mMapButton.setImageResource(R.drawable.menu_map);
+		}
 		else{
+			mMapButton.setImageResource(R.drawable.menu_list);
 			animator = ObjectAnimator.ofFloat(layout, "translationY", 0, -height);
 			updateMap();
 		}
@@ -1326,6 +1340,7 @@ public class MainActivity extends FragmentActivity implements MainAcitivyListene
 				toggleCamera();
 			}
 		});
+		
 		initToggleCamera();
 	}
 
@@ -1590,6 +1605,9 @@ public class MainActivity extends FragmentActivity implements MainAcitivyListene
 		//new UpdateCityList().execute();
 		mCategoryListFragment.firstTimeUpdate();
 		mAdsFragment.startDownImage();
+		
+		mMapButton.setClickable(true);
+		mMapButton.setImageResource(R.drawable.map_btn);
 	}
 
 	void exitWithError(){
