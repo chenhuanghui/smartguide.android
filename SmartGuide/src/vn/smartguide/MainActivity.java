@@ -88,6 +88,7 @@ import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import vn.smartguide.CategoryListFragment.Listener;
 import vn.smartguide.UserFragment.GiftItem;
 
 import java.util.ArrayList;
@@ -1091,7 +1092,6 @@ public class MainActivity extends FragmentActivity implements MainAcitivyListene
 		mFragmentList.add(Fragment.instantiate(this, ShopListFragment.class.getName()));
 		mFragmentList.add(Fragment.instantiate(this, ShopDetailFragment.class.getName()));
 
-
 		// Create viewpager & add fragment list into
 		mViewPager = (SViewPager) findViewById(R.id.contentViewPager);
 		mViewPager.setOffscreenPageLimit(5);
@@ -1106,17 +1106,17 @@ public class MainActivity extends FragmentActivity implements MainAcitivyListene
 			@Override
 			public void onPageSelected(int i) {
 				if (i == 2){
-					final Fragment scroll = getSupportFragmentManager().findFragmentById(R.id.adsFragment);
-					final FragmentTransaction tr = getSupportFragmentManager().beginTransaction();
-					//tr.setCustomAnimations(R.anim.slide_up, R.anim.slide_down);
-					tr.hide(scroll);
-					tr.commit();
+//					final Fragment scroll = getSupportFragmentManager().findFragmentById(R.id.adsFragment);
+//					final FragmentTransaction tr = getSupportFragmentManager().beginTransaction();
+//					//tr.setCustomAnimations(R.anim.slide_up, R.anim.slide_down);
+//					tr.hide(scroll);
+//					tr.commit();
 				}
 				else{
-					final Fragment scroll = getSupportFragmentManager().findFragmentById(R.id.adsFragment);
-					final FragmentTransaction tr = getSupportFragmentManager().beginTransaction();
-					tr.show(scroll);
-					tr.commit();
+//					final Fragment scroll = getSupportFragmentManager().findFragmentById(R.id.adsFragment);
+//					final FragmentTransaction tr = getSupportFragmentManager().beginTransaction();
+//					tr.show(scroll);
+//					tr.commit();
 				}
 			}
 
@@ -1132,6 +1132,37 @@ public class MainActivity extends FragmentActivity implements MainAcitivyListene
 		mUserFragment = ((UserFragment) getSupportFragmentManager().findFragmentById(R.id.userFragment));
 		mFiterFragment = ((FilterFragment) getSupportFragmentManager().findFragmentById(R.id.filterFragment));
 		mMapFragment = new SupportMapFragment();
+		
+		// Set up category list fragment
+		mCategoryListFragment.setListener(new Listener() {
+			
+			@Override
+			public boolean onCategoryClick(int position) {
+				if (GlobalVariable.json10FirstShop.length() != 0 && 
+						GlobalVariable.mSortByString.compareTo("0") == 0) {
+					getShopListFragment().update(GlobalVariable.json10FirstShop);
+					goNextPage();
+					return true;
+				} else 
+					return false;
+			}
+			
+			@Override
+			public void onFinishFirstTimeUpdate() {
+				setLocation(GlobalVariable.mCityNames.get(GlobalVariable.mCityIDes.indexOf(GlobalVariable.mCityID)));
+			}
+			
+			@Override
+			public void onFinishLoadShopList(String json, boolean success, Exception e) {
+				getShopListFragment().update(json);
+			}
+			
+			@Override
+			public void onFinishAnimation() {
+			
+				goNextPage();
+			}
+		});
 
 		stopAds();
 

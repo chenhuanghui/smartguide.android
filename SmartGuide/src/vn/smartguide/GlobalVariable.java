@@ -49,8 +49,13 @@ public final class GlobalVariable {
 
 	// Secret key and Client key to get token
 	public static String serverOAuth 	= APILinkMaker.mHostName + "oauth/v2/token";
+	// Dev
 	public static String clientID 		= "1_orazuv2dl3k8ossssg8804o4kwksw8kwcskkk404w40gwcwws";
 	public static String serectID 		= "4xvgf3r9dxs8k8g8o8k0gss0s0wc8so4g4wg40c8s44kgcwsks";
+	// Production 
+//	public static String clientID 		= "1_53obx9yqlcco80w8wkoowgccw44o0w0ook0okogwosg84wscg8";
+//	public static String serectID 		= "t3p0k1rvstcgwcsggo8ossgcwo8cckso88sscgcsks8w0wsk8";
+	
 	public static String grantType 		= "?grant_type=http://dev.smartguide.com/app_dev.php/grants/bingo";
 
 	public static String tokenID 		= "NWRiNTRhMDI1MDQwOWY4ZDk4MDAzOTA5ZDQ2MTY5YmQwYzM0YTM5Y2RiZTcxZDQ3ZTEyNDU3YThiNzQ3N2UxMg";
@@ -110,7 +115,7 @@ public final class GlobalVariable {
 	public static float mLng = -1;
 
 	// for launching reason
-	public static int mMode 				= 1;
+	public static int mMode 				= 1; 	// 0:LOCK 1:NORMAL
 	public static String mURL 				= "";
 	public static String reviewString 		= "";
 	public static boolean isNeedPostReview 	= false;
@@ -122,7 +127,6 @@ public final class GlobalVariable {
 
 	// GPS
 	private static boolean isFirstTimeGetGPS = false;
-	private static MainAcitivyListener mMainAcitivyListener;
 	
 	public static String json10FirstShop = "";
 	
@@ -250,7 +254,7 @@ public final class GlobalVariable {
 		mCityIDes = new ArrayList<String>();
 
 		ArrayList<HashMap<String, String>> list = smartGuideDB.getCity();
-		for(int i = 0; i < list.size(); i++){ 
+		for(int i = 0; i < list.size(); i++) {
 			HashMap<String, String> city = list.get(i);
 			mCityNames.add(city.get("name"));
 			mCityIDes.add(city.get("cityID"));
@@ -258,7 +262,8 @@ public final class GlobalVariable {
 	}
 	
 	public static void getLocation(Context context){
-		mMainAcitivyListener = (MainAcitivyListener) context;
+
+		final MainAcitivyListener mMainAcitivyListener = (MainAcitivyListener) context;
 		LocationManager locationManager = (LocationManager) context.getSystemService(Context.LOCATION_SERVICE);
 		
 		final Context mcontext = context;

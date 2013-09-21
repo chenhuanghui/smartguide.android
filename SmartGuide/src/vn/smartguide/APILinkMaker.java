@@ -2,6 +2,7 @@ package vn.smartguide;
 
 public final class APILinkMaker {
 	public static String mHostName = "https://devapi.smartguide.vn/";
+//	public static String mHostName = "https://api.smartguide.vn/";
 	private static String mApiDomain = "api/";
 	
 	private static String mShopListInCategory 	= 	"shop/list"; 

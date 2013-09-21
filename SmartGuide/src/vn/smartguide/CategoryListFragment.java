@@ -34,9 +34,7 @@ import android.widget.TextView;
 
 public class CategoryListFragment extends Fragment {
 
-	private Activity mActivity;
-	private MainAcitivyListener mMainAcitivyListener;
-
+	// GUI elements
 	private ImageView mLoadingCircle;
 	private ImageView mLoadingMiddle;
 	private ImageView mLoadingBackground;
@@ -47,18 +45,20 @@ public class CategoryListFragment extends Fragment {
 	private ObjectAnimator mFadeOutMiddle;
 	private ObjectAnimator mFadeInCircle;
 	private ObjectAnimator mFadeInMiddle;
+	
+	private AnimatorSet mBeginLoadAniSet;
+	private AnimatorSet mEndLoadAniSet;
 
-	private boolean mIsCanGoNextPage = false;
+	private GridView gridView;
+	private ImageAdapter mAdapter;
 
-	GridView gridView = null; 
+	// Data
+	private Listener mListener = new Listener();
 
-	@Override
-	public void onAttach(Activity activity) {
-		super.onAttach(activity);
-		mActivity = activity;
-		mMainAcitivyListener = (MainAcitivyListener) mActivity;
-	}
-
+	///////////////////////////////////////////////////////////////////////////
+	// Override methods
+	///////////////////////////////////////////////////////////////////////////
+	
 	@Override
 	public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState){
 		super.onCreateView(inflater, container, savedInstanceState);
@@ -70,12 +70,14 @@ public class CategoryListFragment extends Fragment {
 	public void onViewCreated(View view, Bundle savedInstanceState) {
 		super.onViewCreated(view, savedInstanceState);
 
+		// Get GUI element
 		gridView = (GridView) getView().findViewById(R.id.grid_view);
 		mLoadingCircle = (ImageView) getView().findViewById(R.id.loadingCircle);
 		mLoadingMiddle = (ImageView) getView().findViewById(R.id.loadingMidle);
 		mLoadingBackground = (ImageView) getView().findViewById(R.id.loadingBackground);
 		mLoadingOptical = (RelativeLayout) getView().findViewById(R.id.bgloading);
 
+		// Set up animation
 		mFadeOutCircle = ObjectAnimator.ofFloat(mLoadingCircle, "alpha", 1.0f, 0.0f);
 		mFadeOutCircle.setDuration(1000);
 		mFadeOutCircle.setInterpolator(new LinearInterpolator());
@@ -83,31 +85,6 @@ public class CategoryListFragment extends Fragment {
 		mFadeOutMiddle = ObjectAnimator.ofFloat(mLoadingMiddle, "alpha", 1.0f, 0.0f);
 		mFadeOutMiddle.setDuration(1000);
 		mFadeOutMiddle.setInterpolator(new LinearInterpolator());
-		mFadeOutCircle.addListener(new AnimatorListener() {
-			@Override
-			public void onAnimationStart(Animator animation) {}
-
-			@Override
-			public void onAnimationRepeat(Animator animation) {}
-
-			@Override
-			public void onAnimationEnd(Animator animation) {
-				mRotateAnimation.cancel();
-				if (mIsCanGoNextPage){
-					(mMainAcitivyListener).goNextPage();
-					new Handler().postDelayed(new Runnable() {
-						@Override
-						public void run() {
-							(mMainAcitivyListener).startAds();
-							//GlobalVariable.imageLoader.resume();
-						}
-					}, GlobalVariable.timeToResumeImageDownloader);
-				}
-			}
-
-			@Override
-			public void onAnimationCancel(Animator animation) {}
-		});
 
 		mRotateAnimation = ObjectAnimator.ofFloat(mLoadingCircle, "rotation", 0, 360).setDuration(1100);
 		mRotateAnimation.setInterpolator(new LinearInterpolator());
@@ -121,45 +98,95 @@ public class CategoryListFragment extends Fragment {
 		mFadeInMiddle = ObjectAnimator.ofFloat(mLoadingMiddle, "alpha", 1.0f, 1.0f);
 		mFadeInMiddle.setDuration(200);
 		mFadeInMiddle.setInterpolator(new LinearInterpolator());
-	}
-
-	void updateCategoryList() {
-		gridView.setAdapter(new ImageAdapter(mActivity.getBaseContext(), mActivity));
-		gridView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
-			public void onItemClick(AdapterView<?> parent, View v, int position, long id) {
-				if (position == 0){
-					GlobalVariable.mFilterString = "1,2,3,4,5,6,7,8";
-					if (GlobalVariable.json10FirstShop.length() != 0 && GlobalVariable.mSortByString.compareTo("0") == 0){
-						(mMainAcitivyListener).getShopListFragment().update(GlobalVariable.json10FirstShop);
-						
-						new Handler().postDelayed(new Runnable() {
-							@Override
-							public void run() {
-								(mMainAcitivyListener).goNextPage();
-							}
-						}, 500);
-						return;
-					}
-				}
-				else
-					GlobalVariable.mFilterString = Integer.toString(position);
-
-				new FindShopList().execute();
+		
+		mBeginLoadAniSet = new AnimatorSet();
+		mBeginLoadAniSet.playTogether(mFadeInMiddle, mFadeInCircle, mRotateAnimation);
+		mBeginLoadAniSet.addListener(new AnimatorListener() {
+			
+			public void onAnimationStart(Animator animation) {
+				mLoadingCircle.setVisibility(View.VISIBLE);
+				mLoadingMiddle.setVisibility(View.VISIBLE);
+				mLoadingBackground.setVisibility(View.VISIBLE);
+				mLoadingOptical.setVisibility(View.VISIBLE);
+			}
+			
+			public void onAnimationRepeat(Animator animation) {	}
+			public void onAnimationEnd(Animator animation) { }	
+			public void onAnimationCancel(Animator animation) { }
+		});
+		
+		mEndLoadAniSet = new AnimatorSet();
+		mEndLoadAniSet.playTogether(mFadeOutCircle, mFadeOutMiddle);
+		mEndLoadAniSet.addListener(new AnimatorListener() {
+			
+			public void onAnimationStart(Animator animation) { }
+			public void onAnimationRepeat(Animator animation) { }
+			public void onAnimationEnd(Animator animation) {
+				mLoadingBackground.setVisibility(View.INVISIBLE);
+				mLoadingOptical.setVisibility(View.INVISIBLE);
+				mRotateAnimation.cancel();
+			}
+			
+			public void onAnimationCancel(Animator animation) {
+				onAnimationEnd(animation);
 			}
 		});
-		((ImageAdapter) gridView.getAdapter()).notifyDataSetChanged();
-		mMainAcitivyListener.goToPage(0);
+	}
+
+	///////////////////////////////////////////////////////////////////////////
+	// Public methods
+	///////////////////////////////////////////////////////////////////////////
+	
+	public void setListener(Listener listener) {
+		if (listener == null)
+			listener = new Listener();
+		mListener = listener;
+	}
+	
+	public void updateCategoryList() {
+		
+		if (mAdapter == null) {
+			mAdapter = new ImageAdapter();
+			gridView.setAdapter(mAdapter);
+			gridView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+				public void onItemClick(AdapterView<?> parent, View v, int position, long id) {
+					if (position == 0){
+						GlobalVariable.mFilterString = "1,2,3,4,5,6,7,8";
+						
+						if (mListener.onCategoryClick(position))
+							return;
+					}
+					else
+						GlobalVariable.mFilterString = Integer.toString(position);
+
+					new FindShopList().execute();
+				}
+			});
+		} else
+			mAdapter.notifyDataSetChanged();
 	}
 
 	public boolean mIsRunning = false;
-	public void autoUpdate(){
+	public void autoUpdate() {
 		if (mIsRunning == true)
 			return;
 		mIsRunning = true;
 		new UpdateNumber().execute();
 	}
 
+	///////////////////////////////////////////////////////////////////////////
+	// Network AsyncTask
+	///////////////////////////////////////////////////////////////////////////
+	
 	public class FindShopList extends AsyncTask<Void, Void, Boolean> {
+		
+		private String json; 
+
+		@Override
+		protected void onPreExecute() {
+			mListener.onStartLoadShopList();
+			mBeginLoadAniSet.start();
+		}
 
 		@Override
 		protected Boolean doInBackground(Void... params) {
@@ -172,73 +199,37 @@ public class CategoryListFragment extends Fragment {
 			pairs.add(new BasicNameValuePair("page", "0"));
 			pairs.add(new BasicNameValuePair("sort_by", GlobalVariable.mSortByString));
 
-			String json = NetworkManger.post(APILinkMaker.ShopListInCategory(), pairs);
-			mIsCanGoNextPage = true;
-			(mMainAcitivyListener).getShopListFragment().update(json);
+			json = NetworkManger.post(APILinkMaker.ShopListInCategory(), pairs);
+//			(mMainAcitivyListener).getShopListFragment().update(json);	/////////
 			return true;
 		}
 
 		@Override
-		protected void onPostExecute(Boolean k){
-			List<ObjectAnimator> arrayListObjectAnimators = new ArrayList<ObjectAnimator>();
-
-			arrayListObjectAnimators.add(mFadeOutCircle);
-			arrayListObjectAnimators.add(mFadeOutMiddle);
-
-			ObjectAnimator[] objectAnimators = arrayListObjectAnimators.toArray(new ObjectAnimator[arrayListObjectAnimators.size()]);
-			AnimatorSet animSetXY = new AnimatorSet();
-			animSetXY.playTogether(objectAnimators);
-			animSetXY.addListener(new AnimatorListener() {
-				@Override
+		protected void onPostExecute(Boolean k) {
+			mListener.onFinishLoadShopList(json, true, null);
+			mEndLoadAniSet.addListener(new AnimatorListener() {
+				
 				public void onAnimationStart(Animator animation) {}
-
-				@Override
-				public void onAnimationRepeat(Animator animation) {}
-
-				@Override
+				public void onAnimationRepeat(Animator animation) {}			
 				public void onAnimationEnd(Animator animation) {
-					mLoadingBackground.setVisibility(View.INVISIBLE);
-					mLoadingOptical.setVisibility(View.INVISIBLE);
+					mEndLoadAniSet.removeListener(this);
+					mListener.onFinishAnimation();
 				}
-
-				@Override
-				public void onAnimationCancel(Animator animation) {}
+				
+				public void onAnimationCancel(Animator animation) {
+					onAnimationEnd(animation);
+				}
 			});
-
-			animSetXY.start();
-		}
-
-		@Override
-		protected void onPreExecute(){
-			mIsCanGoNextPage = false;
-			(mMainAcitivyListener).stopAds();
-
-			mLoadingCircle.setVisibility(View.VISIBLE);
-			mLoadingMiddle.setVisibility(View.VISIBLE);
-			mLoadingBackground.setVisibility(View.VISIBLE);
-			mLoadingOptical.setVisibility(View.VISIBLE);
-
-			List<ObjectAnimator> arrayListObjectAnimators = new ArrayList<ObjectAnimator>();
-
-			arrayListObjectAnimators.add(mFadeInMiddle);
-			arrayListObjectAnimators.add(mFadeInCircle);
-			arrayListObjectAnimators.add(mRotateAnimation);
-
-			ObjectAnimator[] objectAnimators = arrayListObjectAnimators.toArray(new ObjectAnimator[arrayListObjectAnimators.size()]);
-			AnimatorSet animSetXY = new AnimatorSet();
-			animSetXY.playTogether(objectAnimators);
-			animSetXY.start();
+			mEndLoadAniSet.start();
 		}
 	}
-
-	@Override
-	public void onActivityResult(int requestCode, int resultCode, Intent data) {
-
-	}
-
-	List<View> mCategory = null;
 
 	public class UpdateNumber extends AsyncTask<Void, Void, Boolean> {
+		
+		@Override
+		protected void onPreExecute() {
+			mBeginLoadAniSet.start();
+		}
 
 		@Override
 		protected Boolean doInBackground(Void... params) {
@@ -259,90 +250,124 @@ public class CategoryListFragment extends Fragment {
 
 		@Override
 		protected void onPostExecute(Boolean k){
-			List<ObjectAnimator> arrayListObjectAnimators = new ArrayList<ObjectAnimator>();
 
-			arrayListObjectAnimators.add(mFadeOutCircle);
-			arrayListObjectAnimators.add(mFadeOutMiddle);
-
-			ObjectAnimator[] objectAnimators = arrayListObjectAnimators.toArray(new ObjectAnimator[arrayListObjectAnimators.size()]);
-			AnimatorSet animSetXY = new AnimatorSet();
-			animSetXY.playTogether(objectAnimators);
-			animSetXY.addListener(new AnimatorListener() {
-
-				@Override
+			mEndLoadAniSet.addListener(new AnimatorListener() {
+				
 				public void onAnimationStart(Animator animation) {}
-
-				@Override
-				public void onAnimationRepeat(Animator animation) {}
-
-				@Override
+				public void onAnimationRepeat(Animator animation) {}			
 				public void onAnimationEnd(Animator animation) {
-					mLoadingBackground.setVisibility(View.INVISIBLE);
-					mLoadingOptical.setVisibility(View.INVISIBLE);
+					mEndLoadAniSet.removeListener(this);
 					updateCategoryList();
 					mIsRunning = false;
 				}
-
-				@Override
-				public void onAnimationCancel(Animator animation) {}
+				
+				public void onAnimationCancel(Animator animation) {
+					onAnimationEnd(animation);
+				}
 			});
+			mEndLoadAniSet.start();
+		}
+	}
+	
+	public void firstTimeUpdate(){
+		new FirstTimeUpdate().execute();
+	}
+	
+	public class FirstTimeUpdate extends AsyncTask<Void, Void, Boolean> {
+		
+		private String mJson = "";
+		
+		@Override
+		protected void onPreExecute() {
+			mBeginLoadAniSet.start();
+		}
+		
+		@Override
+		protected Boolean doInBackground(Void... params) {
+			mJson = NetworkManger.get(APILinkMaker.mGetCityList(), true);
+			try{
+				JSONArray cityList = new JSONArray(mJson);
+				for (int i = 0; i < cityList.length(); i++) {
+					JSONObject city = cityList.getJSONObject(i);
 
-			animSetXY.start();
+					HashMap<String, String> token =  new  HashMap<String, String>();
+					token.put("cityID", Integer.toString(city.getInt("id")));
+					token.put("name", city.getString("name"));
+					token.put("googlename", city.getString("google_name"));
+					GlobalVariable.smartGuideDB.insertCity(token);
+				}
+
+				GlobalVariable.getCityList();
+
+				List<NameValuePair> pairs = new ArrayList<NameValuePair>();
+				pairs.add(new BasicNameValuePair("city", GlobalVariable.mCityID));
+				pairs.add(new BasicNameValuePair("env", Integer.toString(GlobalVariable.mMode)));
+
+				String json = NetworkManger.post(APILinkMaker.mGroupByCity(), pairs);
+
+				JSONObject object = new JSONObject(json);
+				GlobalVariable.mCateogries = Category.getListCategory(object.getJSONArray("content"));
+
+			} catch(Exception e) {
+				e.printStackTrace();
+			}
+			return true;
 		}
 
 		@Override
-		protected void onPreExecute(){
-			mLoadingCircle.setVisibility(View.VISIBLE);
-			mLoadingMiddle.setVisibility(View.VISIBLE);
-			mLoadingBackground.setVisibility(View.VISIBLE);
-			mLoadingOptical.setVisibility(View.VISIBLE);
+		protected void onPostExecute(Boolean k) {
+			mEndLoadAniSet.addListener(new AnimatorListener() {
 
-			mIsCanGoNextPage = false;
-
-			List<ObjectAnimator> arrayListObjectAnimators = new ArrayList<ObjectAnimator>();
-
-			arrayListObjectAnimators.add(mFadeInMiddle);
-			arrayListObjectAnimators.add(mFadeInCircle);
-			arrayListObjectAnimators.add(mRotateAnimation);
-
-			ObjectAnimator[] objectAnimators = arrayListObjectAnimators.toArray(new ObjectAnimator[arrayListObjectAnimators.size()]);
-			AnimatorSet animSetXY = new AnimatorSet();
-			animSetXY.playTogether(objectAnimators);
-			animSetXY.start();
+				public void onAnimationStart(Animator animation) {}
+				public void onAnimationRepeat(Animator animation) {}
+				public void onAnimationEnd(Animator animation) {
+					mIsRunning = false;
+					mEndLoadAniSet.removeListener(this);
+				}
+				public void onAnimationCancel(Animator animation) {
+					onAnimationEnd(animation);
+				}
+			});
+			mListener.onFinishFirstTimeUpdate();
+			updateCategoryList();
+			mEndLoadAniSet.start();
 		}
 	}
+	
+	///////////////////////////////////////////////////////////////////////////
+	// Adapter
+	///////////////////////////////////////////////////////////////////////////
 
 	public class ImageAdapter extends BaseAdapter
 	{
-		Context MyContext;
-		Activity mActivity;
-		public ImageAdapter(Context _MyContext, Activity activity)
-		{
-			MyContext = _MyContext;
-			mActivity = activity;
-			mCategory = new ArrayList<View>();
-			for(int i = 0; i < 9; i++)
-				mCategory.add(null);
+		private LayoutInflater li;
+		private final int[] ICON_ID = new int[] { R.drawable.icon1, R.drawable.icon12, 
+				R.drawable.icon13, R.drawable.icon14, R.drawable.icon15,R.drawable.icon16, 
+				R.drawable.icon17, R.drawable.icon18, R.drawable.icon19 };
+		private final String[] LABEL = new String[] { "TẤT CẢ", "ẨM THỰC", "CAFE & BAR", "LÀM ĐẸP",
+				"GIẢI TRÍ", "THỜI TRANG", "DU LỊCH", "SẢN PHẨM", "GIÁO DỤC" };
+		
+		public ImageAdapter() {
+			li = getActivity().getLayoutInflater();
 		}
 
 		@Override
-		public int getCount()
-		{
+		public int getCount() {
 			return 9;
 		}
 
-		public int getTotalShop(){
-			int sum = 0;
-			for(int i = 0; i < GlobalVariable.mCateogries.size(); i++)
-				sum += GlobalVariable.mCateogries.get(i).mNum;
+		public int getTotalShop() {
+			int sum = 0;			
+			for (Category cate : GlobalVariable.mCateogries)
+				sum += cate.mNum;
 			return sum;
 		}
 
 		@Override
 		public View getView(int position, View convertView, ViewGroup parent)
 		{
-			if (mCategory.get(position) != null)
-				return mCategory.get(position);
+			if (convertView == null)
+				convertView = li.inflate(R.layout.category_item, null);
 
 			Category category = null;
 			if (position != 0 && GlobalVariable.mCateogries != null) 
@@ -350,83 +375,37 @@ public class CategoryListFragment extends Fragment {
 
 			View MyView = convertView;
 
-			LayoutInflater li = mActivity.getLayoutInflater();
-			MyView = li.inflate(R.layout.category_item, null);
-
-			TextView tv = (TextView)MyView.findViewById(R.id.grid_item_text);
+			TextView tv = (TextView) MyView.findViewById(R.id.grid_item_text);
 			tv.setTypeface(Typeface.DEFAULT_BOLD);
-
-			ImageView iv = (ImageView)MyView.findViewById(R.id.grid_item_image);
-
-			TextView num = (TextView)MyView.findViewById(R.id.amountShop);
-			ImageView pic = (ImageView)MyView.findViewById(R.id.amountPic);
+			ImageView iv = (ImageView) MyView.findViewById(R.id.grid_item_image);
+			TextView num = (TextView) MyView.findViewById(R.id.amountShop);
+			ImageView pic = (ImageView) MyView.findViewById(R.id.amountPic);
 
 			int numShop = 0;
 
-			if (GlobalVariable.mCateogries != null){
-				if (category != null){
+			if (GlobalVariable.mCateogries != null) {
+				if (category != null)
+					// Single category
 					numShop = category.mNum;
-					if (numShop == 0){
-						pic.setVisibility(View.INVISIBLE);
-						num.setVisibility(View.INVISIBLE);
-					}
-					else if (numShop>= 99)
-						num.setText("99+");
-					else num.setText(Integer.toString(numShop));
-				}else{
+				else
+					// All categories
 					numShop = getTotalShop();
-					if (numShop == 0)
-						pic.setVisibility(View.INVISIBLE);
-					else if (numShop>= 99)
-						num.setText("99+");
-					else num.setText(Integer.toString(numShop));
-				}
-			}else{
+				
+				if (numShop == 0) {
+					pic.setVisibility(View.INVISIBLE);
+					num.setVisibility(View.INVISIBLE);
+				} else if (numShop > 99)
+					num.setText("99+");
+				else num.setText(Integer.toString(numShop));
+				
+			} else {
 				pic.setVisibility(View.INVISIBLE);
 				num.setVisibility(View.INVISIBLE);
 			}
 
-			switch (position)
-			{
-			case 0:
-				iv.setImageResource(R.drawable.icon1);
-				tv.setText("TẤT CẢ");
-				break;
-			case 1:
-				iv.setImageResource(R.drawable.icon12);
-				tv.setText("ẨM THỰC");
-				break;
-			case 2:
-				iv.setImageResource(R.drawable.icon13);
-				tv.setText("CAFE & BAR");
-				break;
-			case 3:
-				iv.setImageResource(R.drawable.icon14);
-				tv.setText("LÀM ĐẸP");
-				break;
-			case 4:
-				iv.setImageResource(R.drawable.icon15);
-				tv.setText("GIẢI TRÍ");
-				break;
-			case 5:
-				iv.setImageResource(R.drawable.icon16);
-				tv.setText("THỜI TRANG");
-				break;
-			case 6:
-				iv.setImageResource(R.drawable.icon17);
-				tv.setText("DU LỊCH");
-				break;
-			case 7:
-				iv.setImageResource(R.drawable.icon18);
-				tv.setText("SẢN PHẨM");
-				break;
-			case 8:
-				iv.setImageResource(R.drawable.icon19);
-				tv.setText("GIÁO DỤC");
-				break;
-			}
+			iv.setImageResource(ICON_ID[position]);
+			tv.setText(LABEL[position]);
 
-			mCategory.set(position, MyView);
 			return MyView;
 		}
 
@@ -437,105 +416,25 @@ public class CategoryListFragment extends Fragment {
 
 		@Override
 		public long getItemId(int arg0) {
-			return 0;
+			return arg0;
 		}
 	}
-
-	void firstTimeUpdate(){
-		new FirstTimeUpdate().execute();
-	}
-	public class FirstTimeUpdate extends AsyncTask<Void, Void, Boolean> {
-		String mJson = "";
-		@Override
-		protected Boolean doInBackground(Void... params) {
-			mJson = NetworkManger.get(APILinkMaker.mGetCityList(), true);
-			try{
-				JSONArray cityList = new JSONArray(mJson);
-				for(int i = 0; i < cityList.length(); i++){
-					JSONObject city = cityList.getJSONObject(i);
-
-					HashMap<String, String> token =  new  HashMap<String, String>();
-					token.put("cityID", Integer.toString(city.getInt("id")));
-					token.put("name", city.getString("name"));
-					token.put("googlename", city.getString("google_name"));
-					GlobalVariable.smartGuideDB.insertCity(token);
-				}
-				
-				GlobalVariable.getCityList();
-
-				List<NameValuePair> pairs = new ArrayList<NameValuePair>();
-				pairs.add(new BasicNameValuePair("city", GlobalVariable.mCityID));
-				pairs.add(new BasicNameValuePair("env", Integer.toString(GlobalVariable.mMode)));
-
-				String json = NetworkManger.post(APILinkMaker.mGroupByCity(), pairs);
-
-				try {
-					JSONObject object = new JSONObject(json);
-					GlobalVariable.mCateogries = Category.getListCategory(object.getJSONArray("content"));
-					
-				} catch (JSONException e) {
-					return false;
-				}
-
-			}catch(Exception ex){
-				ex.getMessage();
-			}
-			return true;
-		}
-
-		@Override
-		protected void onPostExecute(Boolean k){
-			List<ObjectAnimator> arrayListObjectAnimators = new ArrayList<ObjectAnimator>();
-
-			arrayListObjectAnimators.add(mFadeOutCircle);
-			arrayListObjectAnimators.add(mFadeOutMiddle);
-
-			ObjectAnimator[] objectAnimators = arrayListObjectAnimators.toArray(new ObjectAnimator[arrayListObjectAnimators.size()]);
-			AnimatorSet animSetXY = new AnimatorSet();
-			animSetXY.playTogether(objectAnimators);
-			animSetXY.addListener(new AnimatorListener() {
-
-				@Override
-				public void onAnimationStart(Animator animation) {}
-
-				@Override
-				public void onAnimationRepeat(Animator animation) {}
-
-				@Override
-				public void onAnimationEnd(Animator animation) {
-					mMainAcitivyListener.setLocation(GlobalVariable.mCityNames.get(GlobalVariable.mCityIDes.indexOf(GlobalVariable.mCityID)));
-					updateCategoryList();
-					mLoadingBackground.setVisibility(View.INVISIBLE);
-					mLoadingOptical.setVisibility(View.INVISIBLE);
-					mIsRunning = false;
-				}
-
-				@Override
-				public void onAnimationCancel(Animator animation) {}
-			});
-
-			animSetXY.start();
-		}
-
-		@Override
-		protected void onPreExecute(){
-			mLoadingCircle.setVisibility(View.VISIBLE);
-			mLoadingMiddle.setVisibility(View.VISIBLE);
-			mLoadingBackground.setVisibility(View.VISIBLE);
-			mLoadingOptical.setVisibility(View.VISIBLE);
-
-			mIsCanGoNextPage = false;
-
-			List<ObjectAnimator> arrayListObjectAnimators = new ArrayList<ObjectAnimator>();
-
-			arrayListObjectAnimators.add(mFadeInMiddle);
-			arrayListObjectAnimators.add(mFadeInCircle);
-			arrayListObjectAnimators.add(mRotateAnimation);
-
-			ObjectAnimator[] objectAnimators = arrayListObjectAnimators.toArray(new ObjectAnimator[arrayListObjectAnimators.size()]);
-			AnimatorSet animSetXY = new AnimatorSet();
-			animSetXY.playTogether(objectAnimators);
-			animSetXY.start();
-		}
+	
+	///////////////////////////////////////////////////////////////////////////
+	// Listener
+	///////////////////////////////////////////////////////////////////////////
+	public static class Listener {
+		/**
+		 * 
+		 * @param position
+		 * @param json
+		 * @return true: first 10 shops read
+		 * false: otherwise
+		 */
+		public void onFinishFirstTimeUpdate() {}
+		public boolean onCategoryClick(int position) { return false; }
+		public void onStartLoadShopList() {}
+		public void onFinishLoadShopList(String json, boolean success, Exception e) {}
+		public void onFinishAnimation() {}
 	}
 }

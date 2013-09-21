@@ -104,6 +104,13 @@
         <activity
             android:name="vn.smartguide.TutorActivity"
             android:label="@string/title_activity_tutor"
+            android:screenOrientation="portrait"
+            android:theme="@android:style/Theme.Light.NoTitleBar" >
+        </activity>
+        <activity
+            android:name="vn.smartguide.ShopDetailActivity"
+            android:label="@string/title_activity_shop_detail"
+            android:screenOrientation="portrait"
             android:theme="@android:style/Theme.Light.NoTitleBar" >
         </activity>
     </application>
