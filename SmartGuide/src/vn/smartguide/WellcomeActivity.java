@@ -75,6 +75,7 @@ public class WellcomeActivity extends FragmentActivity{
 
 	private Intent resultData;
 
+	TextView m84TV;
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
@@ -184,6 +185,8 @@ public class WellcomeActivity extends FragmentActivity{
 				authButton.performClick();
 			}
 		});
+		
+		m84TV = (TextView) findViewById(R.id.m84TV);
 	}
 
 	@Override
@@ -404,6 +407,7 @@ public class WellcomeActivity extends FragmentActivity{
 
 		builder.setNegativeButton("Ä�á»“ng Ã½", new DialogInterface.OnClickListener() {
 			public void onClick(DialogInterface dialog, int which) {
+				m84TV.setVisibility(View.INVISIBLE);
 				isConfirm = true;
 				mStatusText.setText("Chá»� vÃ  nháº­p mÃ£ xÃ¡c nháº­n...");
 				mNumberField.setText("");

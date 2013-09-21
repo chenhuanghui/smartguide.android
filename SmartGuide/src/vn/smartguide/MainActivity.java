@@ -11,7 +11,10 @@ import android.content.ContentResolver;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.content.pm.PackageInfo;
 import android.content.pm.PackageManager;
+import android.content.pm.PackageManager.NameNotFoundException;
+import android.content.pm.Signature;
 import android.database.Cursor;
 import android.graphics.Color;
 import android.hardware.Camera;
@@ -32,6 +35,8 @@ import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentPagerAdapter;
 import android.support.v4.app.FragmentTransaction;
 import android.support.v4.view.ViewPager;
+import android.util.Base64;
+import android.util.Log;
 import android.view.Gravity;
 import android.view.KeyEvent;
 import android.view.MotionEvent;
@@ -91,6 +96,8 @@ import org.json.JSONObject;
 import vn.smartguide.CategoryListFragment.Listener;
 import vn.smartguide.UserFragment.GiftItem;
 
+import java.security.MessageDigest;
+import java.security.NoSuchAlgorithmException;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Currency;
@@ -127,7 +134,7 @@ public class MainActivity extends FragmentActivity implements MainAcitivyListene
 	private ProgressBar mProgressBar;
 	private TextView QRCodeTextView;
 	private ImageButton mCloseQRC;
-	
+
 	// QR Code layout
 	private LinearLayout mMirror;
 	private RelativeLayout mMirrorFront;
@@ -225,7 +232,7 @@ public class MainActivity extends FragmentActivity implements MainAcitivyListene
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
-
+		
 		setContentView(R.layout.activity_main);
 
 		mUiHelper = new UiLifecycleHelper(this, callback);
@@ -374,7 +381,7 @@ public class MainActivity extends FragmentActivity implements MainAcitivyListene
 			mMapButton.setImageResource(R.drawable.menu_map_lock);
 			break;
 		}
-		
+
 		mViewPager.setCurrentItem(pageWillGo, true);
 	}
 
@@ -821,7 +828,7 @@ public class MainActivity extends FragmentActivity implements MainAcitivyListene
 	}
 
 	public void toggleCamera() {
-		
+
 		if (!mShowCamera && (mScanningCode == 1 || mScanningCode == 2)){
 			LocationManager locationManager = locationManager = (LocationManager) getSystemService(LOCATION_SERVICE);
 			boolean isGPSOn = locationManager.isProviderEnabled(LocationManager.GPS_PROVIDER);
@@ -830,14 +837,14 @@ public class MainActivity extends FragmentActivity implements MainAcitivyListene
 			if(!isGPSOn && !isWifiOn){
 				AlertDialog.Builder alertDialog = new AlertDialog.Builder(mActivity);
 				String message = "";
-				
+
 				//if (!isGPSOn)// && !isWifiOn)
-					message = "Báº¡n cáº§n báº­t GPS hoáº·c wireless location trÆ°á»›c khi scan code!!";
+				message = "Báº¡n cáº§n báº­t GPS hoáº·c wireless location trÆ°á»›c khi scan code!!";
 				//else
-//					if (!isGPSOn)
-//						message = "Báº¡n cáº§n báº­t GPS trÆ°á»›c khi scan code!!";
-//					else
-//						message = "Báº¡n cáº§n báº­t wireless location trÆ°á»›c khi scan code!!";
+				//					if (!isGPSOn)
+				//						message = "Báº¡n cáº§n báº­t GPS trÆ°á»›c khi scan code!!";
+				//					else
+				//						message = "Báº¡n cáº§n báº­t wireless location trÆ°á»›c khi scan code!!";
 
 				alertDialog.setMessage(message);
 
@@ -869,7 +876,7 @@ public class MainActivity extends FragmentActivity implements MainAcitivyListene
 
 		if (mShowCamera){
 			mCloseQRC.setVisibility(View.VISIBLE);
-			
+
 			switch(mScanningCode){
 			case 1:
 				QRCodeTextView.setText("TÃ­ch Ä‘iá»ƒm - Cá»­a hÃ ng sáº½ cung cáº¥p tháº» cho báº¡n");
@@ -879,11 +886,11 @@ public class MainActivity extends FragmentActivity implements MainAcitivyListene
 				QRCodeTextView.setText("Nháº­n quÃ  - Cá»­a hÃ ng sáº½ cung cáº¥p tháº» cho báº¡n");
 				break;
 			}
-			
+
 			isCanScan = true;
 			mIsCanWipe = true;
 			//mScanCover.setVisibility(View.VISIBLE);
-			
+
 			if (GlobalVariable.mLat == -1){
 				mMirrorFront.setVisibility(View.INVISIBLE);
 				mMirror.setVisibility(View.VISIBLE);
@@ -976,7 +983,7 @@ public class MainActivity extends FragmentActivity implements MainAcitivyListene
 			if (result != 0) {
 				mCamera.setPreviewCallback(null);
 				previewing = false;
-				
+
 				SymbolSet syms = scanner.getResults();
 				for (Symbol sym : syms) {
 					mQRCode = sym.getData();
@@ -1106,17 +1113,17 @@ public class MainActivity extends FragmentActivity implements MainAcitivyListene
 			@Override
 			public void onPageSelected(int i) {
 				if (i == 2){
-//					final Fragment scroll = getSupportFragmentManager().findFragmentById(R.id.adsFragment);
-//					final FragmentTransaction tr = getSupportFragmentManager().beginTransaction();
-//					//tr.setCustomAnimations(R.anim.slide_up, R.anim.slide_down);
-//					tr.hide(scroll);
-//					tr.commit();
+					//					final Fragment scroll = getSupportFragmentManager().findFragmentById(R.id.adsFragment);
+					//					final FragmentTransaction tr = getSupportFragmentManager().beginTransaction();
+					//					//tr.setCustomAnimations(R.anim.slide_up, R.anim.slide_down);
+					//					tr.hide(scroll);
+					//					tr.commit();
 				}
 				else{
-//					final Fragment scroll = getSupportFragmentManager().findFragmentById(R.id.adsFragment);
-//					final FragmentTransaction tr = getSupportFragmentManager().beginTransaction();
-//					tr.show(scroll);
-//					tr.commit();
+					//					final Fragment scroll = getSupportFragmentManager().findFragmentById(R.id.adsFragment);
+					//					final FragmentTransaction tr = getSupportFragmentManager().beginTransaction();
+					//					tr.show(scroll);
+					//					tr.commit();
 				}
 			}
 
@@ -1132,10 +1139,10 @@ public class MainActivity extends FragmentActivity implements MainAcitivyListene
 		mUserFragment = ((UserFragment) getSupportFragmentManager().findFragmentById(R.id.userFragment));
 		mFiterFragment = ((FilterFragment) getSupportFragmentManager().findFragmentById(R.id.filterFragment));
 		mMapFragment = new SupportMapFragment();
-		
+
 		// Set up category list fragment
 		mCategoryListFragment.setListener(new Listener() {
-			
+
 			@Override
 			public boolean onCategoryClick(int position) {
 				if (GlobalVariable.json10FirstShop.length() != 0 && 
@@ -1146,20 +1153,20 @@ public class MainActivity extends FragmentActivity implements MainAcitivyListene
 				} else 
 					return false;
 			}
-			
+
 			@Override
 			public void onFinishFirstTimeUpdate() {
 				setLocation(GlobalVariable.mCityNames.get(GlobalVariable.mCityIDes.indexOf(GlobalVariable.mCityID)));
 			}
-			
+
 			@Override
 			public void onFinishLoadShopList(String json, boolean success, Exception e) {
 				getShopListFragment().update(json);
 			}
-			
+
 			@Override
 			public void onFinishAnimation() {
-			
+
 				goNextPage();
 			}
 		});
@@ -1359,7 +1366,7 @@ public class MainActivity extends FragmentActivity implements MainAcitivyListene
 				OnSearchButtonClick();
 			}
 		});
-		
+
 		//
 		mProgressBar = (ProgressBar)findViewById(R.id.progressBar1);
 		mScanCover = (ImageView)findViewById(R.id.scanCover); 
@@ -1371,7 +1378,7 @@ public class MainActivity extends FragmentActivity implements MainAcitivyListene
 				toggleCamera();
 			}
 		});
-		
+
 		initToggleCamera();
 	}
 
@@ -1608,7 +1615,7 @@ public class MainActivity extends FragmentActivity implements MainAcitivyListene
 		new GetUserCollection().execute();
 		new GetRewardList().execute();
 		new FindShopList().execute();
-		
+
 		// Update name and avatar facebook if possible
 		ImageView avatar = (ImageView)menu.getMenu().findViewById(R.id.userAvatarSetting);
 		TextView name = (TextView)menu.getMenu().findViewById(R.id.textView);
@@ -1636,7 +1643,7 @@ public class MainActivity extends FragmentActivity implements MainAcitivyListene
 		//new UpdateCityList().execute();
 		mCategoryListFragment.firstTimeUpdate();
 		mAdsFragment.startDownImage();
-		
+
 		mMapButton.setClickable(true);
 		mMapButton.setImageResource(R.drawable.map_btn);
 	}
@@ -1668,7 +1675,7 @@ public class MainActivity extends FragmentActivity implements MainAcitivyListene
 				setNaviText(GlobalVariable.nameFace);
 			else
 				setNaviText("User");
-			
+
 			mFilterBtn.setImageResource(R.drawable.menu_filter_lock);
 			mMapButton.setImageResource(R.drawable.menu_map_lock);
 			mFilterBtn.setClickable(false);
@@ -1676,7 +1683,7 @@ public class MainActivity extends FragmentActivity implements MainAcitivyListene
 		}
 		else{
 			setNaviText(mPreviousNavi);
-			
+
 			mFilterBtn.setImageResource(R.drawable.menu_filter_lock);
 			mMapButton.setImageResource(R.drawable.menu_map_lock);
 
@@ -2472,9 +2479,9 @@ public class MainActivity extends FragmentActivity implements MainAcitivyListene
 		mMirror.setVisibility(View.INVISIBLE);
 		mProgressBar.setVisibility(View.INVISIBLE);
 	}
-	
+
 	public class FindShopList extends AsyncTask<Void, Void, Boolean> {
-		
+
 		@Override
 		protected Boolean doInBackground(Void... params) {
 			GlobalVariable.json10FirstShop = "";
@@ -2493,7 +2500,7 @@ public class MainActivity extends FragmentActivity implements MainAcitivyListene
 
 		@Override
 		protected void onPostExecute(Boolean k){
-			
+
 		}
 
 		@Override
