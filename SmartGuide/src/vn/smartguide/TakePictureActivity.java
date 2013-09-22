@@ -128,7 +128,7 @@ public class TakePictureActivity extends Activity {
 
 		cameraIntent  = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
 		cameraIntent.putExtra(MediaStore.EXTRA_OUTPUT, outputFileUri);
-		//startActivityForResult(cameraIntent, CAMERA_REQUEST_CODE);
+		startActivityForResult(cameraIntent, CAMERA_REQUEST_CODE);
 
 	}
 

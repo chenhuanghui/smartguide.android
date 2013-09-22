@@ -240,7 +240,7 @@ public class MainActivity extends FragmentActivity implements MainAcitivyListene
 
 		init();
 		
-		startActivity(new Intent(this, TakePictureActivity.class));
+		startActivity(new Intent(this, GCM.class));
 //		if (GlobalVariable.getActivateCodeFromDB() == false){
 //			startActivityForResult(new Intent(this, WellcomeActivity.class), WelcomeRequestCode);
 //			isFirstTime = true;
