@@ -2,6 +2,7 @@ package vn.smartguide;
 
 import java.io.File;
 import java.io.FileOutputStream;
+import java.lang.reflect.Array;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -20,6 +21,7 @@ import org.apache.http.util.EntityUtils;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import com.facebook.FacebookException;
 import com.facebook.FacebookRequestError;
 import com.facebook.HttpMethod;
 import com.facebook.Request;
@@ -28,6 +30,9 @@ import com.facebook.Response;
 import com.facebook.Session;
 import com.facebook.SessionState;
 import com.facebook.UiLifecycleHelper;
+import com.facebook.model.GraphUser;
+import com.facebook.widget.LoginButton;
+import com.facebook.widget.LoginButton.OnErrorListener;
 import com.google.analytics.tracking.android.EasyTracker;
 
 import android.net.Uri;
@@ -44,6 +49,7 @@ import android.graphics.Matrix;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.Toast;
 
@@ -57,6 +63,7 @@ public class TakePictureActivity extends Activity {
 	private Button mSendBtn;
 	private EditText mDescription;
 	private Button mFaceBtn;
+	LoginButton authButton = null;
 
 	@SuppressLint("SimpleDateFormat")
 	@Override
@@ -95,6 +102,25 @@ public class TakePictureActivity extends Activity {
 			}
 		});
 
+		authButton = (LoginButton) findViewById(R.id.authButton);
+		authButton.setOnErrorListener(new OnErrorListener() {
+
+			@Override
+			public void onError(FacebookException error) {
+			}
+		});
+
+		authButton.setPublishPermissions(Arrays.asList("publish_stream"));
+		authButton.setSessionStatusCallback(new Session.StatusCallback() {
+			@Override
+			public void call(Session session, SessionState state, Exception exception) {
+
+				if (session.isOpened()) {
+					uploadAccessToken();
+				}
+			}
+		});
+
 		String filename = new SimpleDateFormat("yyyyMMdd_HHmmss").format(Calendar.getInstance().getTime()) + ".jpg";
 		String path = Environment.getExternalStorageDirectory().getAbsolutePath() + "/" + filename;
 		File file = new File(path);
@@ -109,45 +135,52 @@ public class TakePictureActivity extends Activity {
 	public void getPermission(){
 		Session session = Session.getActiveSession();
 
-		if (session != null){
-			// Check for publish permissions    
-			List<String> permissions = session.getPermissions();
-			if (permissions.contains("publish_stream")) {
-				Session.NewPermissionsRequest newPermissionsRequest = new Session
-						.NewPermissionsRequest(this, Arrays.asList("publish_stream"));
-				session.requestNewPublishPermissions(newPermissionsRequest);
+		try{
+			if (session != null){
+				// Check for publish permissions    
+				List<String> permissions = session.getPermissions();
+				if (!permissions.contains("publish_stream")) {
+					Session.NewPermissionsRequest newPermissionsRequest = new Session
+							.NewPermissionsRequest(this, Arrays.asList("publish_stream"));
+					session.requestNewPublishPermissions(newPermissionsRequest);
+					return;
+				}
+			}else{
+				authButton.performClick();
 				return;
 			}
+		}catch(Exception ex){
+			authButton.performClick();
 		}
 
 		// For test reseaon
-//		Request.Callback callback= new Request.Callback() {
-//
-//			@Override
-//			public void onCompleted(Response response) {
-//				JSONObject graphResponse = response
-//						.getGraphObject()
-//						.getInnerJSONObject();
-//				String postId = null;
-//				try {
-//					postId = graphResponse.getString("id");
-//				} catch (JSONException e) {
-//				}
-//			}
-//		};
-//		
-//		Bundle postParams = new Bundle();
-//        postParams.putString("name", "Facebook SDK for Android");
-//        postParams.putString("caption", "Build great social apps and get more installs.");
-//        postParams.putString("description", "The Facebook SDK for Android makes it easier and faster to develop Facebook integrated Android apps.");
-//        postParams.putString("link", "https://developers.facebook.com/android");
-//        postParams.putString("picture", "https://raw.github.com/fbsamples/ios-3.x-howtos/master/Images/iossdk_logo.png");
-//        
-//		Request request = new Request(session, "me/feed", postParams, 
-//				HttpMethod.POST, callback);
-//
-//		RequestAsyncTask task = new RequestAsyncTask(request);
-//		task.execute();
+		//		Request.Callback callback= new Request.Callback() {
+		//
+		//			@Override
+		//			public void onCompleted(Response response) {
+		//				JSONObject graphResponse = response
+		//						.getGraphObject()
+		//						.getInnerJSONObject();
+		//				String postId = null;
+		//				try {
+		//					postId = graphResponse.getString("id");
+		//				} catch (JSONException e) {
+		//				}
+		//			}
+		//		};
+		//		
+		//		Bundle postParams = new Bundle();
+		//        postParams.putString("name", "Facebook SDK for Android");
+		//        postParams.putString("caption", "Build great social apps and get more installs.");
+		//        postParams.putString("description", "The Facebook SDK for Android makes it easier and faster to develop Facebook integrated Android apps.");
+		//        postParams.putString("link", "https://developers.facebook.com/android");
+		//        postParams.putString("picture", "https://raw.github.com/fbsamples/ios-3.x-howtos/master/Images/iossdk_logo.png");
+		//        
+		//		Request request = new Request(session, "me/feed", postParams, 
+		//				HttpMethod.POST, callback);
+		//
+		//		RequestAsyncTask task = new RequestAsyncTask(request);
+		//		task.execute();
 	}
 
 	@Override
@@ -239,12 +272,13 @@ public class TakePictureActivity extends Activity {
 			// Check for publish permissions    
 			List<String> permissions = session.getPermissions();
 			if (permissions.contains("publish_stream")) {
+				Toast.makeText(this, session.getAccessToken(), Toast.LENGTH_LONG).show();
 				new UpFaceAT(session.getAccessToken()).execute();
 				return;
 			}
 		}
 	}
-	
+
 	public class UpFaceAT extends AsyncTask<Void, Void, Boolean> {
 		String mAT = "";
 		public UpFaceAT(String at){
