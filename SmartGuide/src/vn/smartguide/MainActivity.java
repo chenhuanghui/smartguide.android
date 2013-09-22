@@ -239,7 +239,8 @@ public class MainActivity extends FragmentActivity implements MainAcitivyListene
 		mUiHelper.onCreate(savedInstanceState);
 
 		init();
-
+		
+//		startActivity(new Intent(this, TakePictureActivity.class));
 		if (GlobalVariable.getActivateCodeFromDB() == false){
 			startActivityForResult(new Intent(this, WellcomeActivity.class), WelcomeRequestCode);
 			isFirstTime = true;

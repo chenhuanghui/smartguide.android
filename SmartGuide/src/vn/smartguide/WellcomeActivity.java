@@ -2,6 +2,7 @@ package vn.smartguide;
 
 import java.util.Arrays;
 import java.util.HashMap;
+import java.util.List;
 
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -185,7 +186,7 @@ public class WellcomeActivity extends FragmentActivity{
 				authButton.performClick();
 			}
 		});
-		
+
 		m84TV = (TextView) findViewById(R.id.m84TV);
 	}
 
@@ -244,9 +245,9 @@ public class WellcomeActivity extends FragmentActivity{
 		Request request = Request.newMeRequest(session, new Request.GraphUserCallback() {
 
 			public void onCompleted(GraphUser user, Response response) {
-
 				if (session == Session.getActiveSession()) {
 					if (user != null) {
+						GlobalVariable.faceAccessToken = session.getAccessToken();
 						GlobalVariable.id = user.getId();
 						GlobalVariable.user_id = userID;
 						GlobalVariable.name = user.getName();
@@ -270,10 +271,11 @@ public class WellcomeActivity extends FragmentActivity{
 
 						GlobalVariable.smartGuideDB.insertFacebook(token);
 						GlobalVariable.isNeedUpdateFacebook = true;
-
+						
 						exit();
 					}
 				}
+				
 				if (response.getError() != null) {
 				}
 			}
@@ -429,13 +431,13 @@ public class WellcomeActivity extends FragmentActivity{
 
 	public String formatPhone(String phone){
 		String result = "";
-		
+
 		if (phone.charAt(0) == '+')
 			phone = phone.substring(1);
-		
+
 		if (phone.charAt(0) != '0')
 			return "84" + phone;
-		
+
 		try{
 			String first3c = phone.substring(0, 2);
 			if (first3c.compareTo("84") == 0)
@@ -447,7 +449,7 @@ public class WellcomeActivity extends FragmentActivity{
 			return result;
 		}
 	}
-	
+
 	public boolean validatePhoneNumber(String phone){
 		if (phone.length() != 11 && phone.length() != 12)
 			return false;

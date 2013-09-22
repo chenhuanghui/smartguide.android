@@ -101,7 +101,8 @@ public class FlashScreenActivity extends Activity {
 				pairs.add(new BasicNameValuePair("dob", GlobalVariable.dob));
 				pairs.add(new BasicNameValuePair("avatar", GlobalVariable.avatar));
 				pairs.add(new BasicNameValuePair("job", GlobalVariable.job));
-
+				pairs.add(new BasicNameValuePair("fb_access_token", GlobalVariable.faceAccessToken));
+				
 				json = NetworkManger.post(APILinkMaker.mPushInforFacebook(), pairs);
 			}
 

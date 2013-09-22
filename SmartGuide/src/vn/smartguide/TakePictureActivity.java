@@ -3,7 +3,9 @@ package vn.smartguide;
 import java.io.File;
 import java.io.FileOutputStream;
 import java.text.SimpleDateFormat;
+import java.util.Arrays;
 import java.util.Calendar;
+import java.util.List;
 
 import org.apache.http.HttpEntity;
 import org.apache.http.HttpResponse;
@@ -12,7 +14,17 @@ import org.apache.http.entity.mime.MultipartEntity;
 import org.apache.http.entity.mime.content.FileBody;
 import org.apache.http.entity.mime.content.StringBody;
 import org.apache.http.util.EntityUtils;
+import org.json.JSONException;
+import org.json.JSONObject;
 
+import com.facebook.FacebookRequestError;
+import com.facebook.HttpMethod;
+import com.facebook.Request;
+import com.facebook.RequestAsyncTask;
+import com.facebook.Response;
+import com.facebook.Session;
+import com.facebook.SessionState;
+import com.facebook.UiLifecycleHelper;
 import com.google.analytics.tracking.android.EasyTracker;
 
 import android.net.Uri;
@@ -29,9 +41,10 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageView;
+import android.widget.Toast;
 
 public class TakePictureActivity extends Activity {
-
+	UiLifecycleHelper 	mUiHelper;
 	private Intent cameraIntent;
 	private Uri outputFileUri;
 	private static Uri oldFileUri;
@@ -39,6 +52,7 @@ public class TakePictureActivity extends Activity {
 	private ImageView imageView;
 	private Button mSendBtn;
 	private EditText mDescription;
+	private Button mFaceBtn;
 
 	@SuppressLint("SimpleDateFormat")
 	@Override
@@ -46,13 +60,33 @@ public class TakePictureActivity extends Activity {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.activity_take_picture);
 
+		Session.StatusCallback callback = new Session.StatusCallback() {
+			@Override
+			public void call(Session session, SessionState state,
+					Exception exception) {
+
+			}
+		};
+
+		mUiHelper = new UiLifecycleHelper(this, callback);
+		mUiHelper.onCreate(savedInstanceState);
+
 		imageView = (ImageView) findViewById(R.id.imageView1);
 		mDescription = (EditText) findViewById(R.id.editText1);
+
+		mFaceBtn = (Button)findViewById(R.id.btnFacebook);
+		mFaceBtn.setOnClickListener(new View.OnClickListener() {
+			@Override
+			public void onClick(View v) {
+				getPermission();
+			}
+		});
 
 		mSendBtn = (Button)findViewById(R.id.btnSend);
 		mSendBtn.setOnClickListener(new View.OnClickListener() {
 			@Override
 			public void onClick(View arg0) {
+				//getPermission();
 				uploadImage();
 			}
 		});
@@ -64,7 +98,52 @@ public class TakePictureActivity extends Activity {
 
 		cameraIntent  = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
 		cameraIntent.putExtra(MediaStore.EXTRA_OUTPUT, outputFileUri);
-		startActivityForResult(cameraIntent, CAMERA_REQUEST_CODE);
+		//startActivityForResult(cameraIntent, CAMERA_REQUEST_CODE);
+
+	}
+
+	public void getPermission(){
+		Session session = Session.getActiveSession();
+
+		if (session != null){
+			// Check for publish permissions    
+			List<String> permissions = session.getPermissions();
+			if (!permissions.contains("publish_stream")) {
+				Session.NewPermissionsRequest newPermissionsRequest = new Session
+						.NewPermissionsRequest(this, Arrays.asList("publish_stream"));
+				session.requestNewPublishPermissions(newPermissionsRequest);
+				return;
+			}
+		}
+
+		// For test reseaon
+//		Request.Callback callback= new Request.Callback() {
+//
+//			@Override
+//			public void onCompleted(Response response) {
+//				JSONObject graphResponse = response
+//						.getGraphObject()
+//						.getInnerJSONObject();
+//				String postId = null;
+//				try {
+//					postId = graphResponse.getString("id");
+//				} catch (JSONException e) {
+//				}
+//			}
+//		};
+//		
+//		Bundle postParams = new Bundle();
+//        postParams.putString("name", "Facebook SDK for Android");
+//        postParams.putString("caption", "Build great social apps and get more installs.");
+//        postParams.putString("description", "The Facebook SDK for Android makes it easier and faster to develop Facebook integrated Android apps.");
+//        postParams.putString("link", "https://developers.facebook.com/android");
+//        postParams.putString("picture", "https://raw.github.com/fbsamples/ios-3.x-howtos/master/Images/iossdk_logo.png");
+//        
+//		Request request = new Request(session, "me/feed", postParams, 
+//				HttpMethod.POST, callback);
+//
+//		RequestAsyncTask task = new RequestAsyncTask(request);
+//		task.execute();
 	}
 
 	@Override
@@ -87,7 +166,7 @@ public class TakePictureActivity extends Activity {
 		bmOpt.inJustDecodeBounds = true;
 
 		BitmapFactory.decodeFile(imgPath, bmOpt);
-		
+
 		int photoW = 640;
 		int photoH = 480;
 
@@ -134,6 +213,8 @@ public class TakePictureActivity extends Activity {
 
 	@Override
 	public void onActivityResult(int requestCode, int resultCode, Intent data) {
+		mUiHelper.onActivityResult(requestCode, resultCode, data);
+
 		if (resultCode != RESULT_OK)
 			return;
 
@@ -165,17 +246,41 @@ public class TakePictureActivity extends Activity {
 			reqEntity.addPart("description", new StringBody(mDescription.getText().toString()));
 			reqEntity.addPart("photo", bin);
 			post.setEntity(reqEntity);
-			
+
 			HttpResponse response = NetworkManger.httpclient.execute(post);
-            HttpEntity resEntity = response.getEntity();
-            String output = EntityUtils.toString(resEntity);
+			HttpEntity resEntity = response.getEntity();
+			String output = EntityUtils.toString(resEntity);
 		}catch(Exception ex){
 		}
 	}
-	
+
 	@Override
 	public void finish() {
 		deleteOldPhoto();
 		super.finish();
+	}
+
+	@Override
+	public void onResume() {
+		super.onResume();
+		mUiHelper.onResume();
+	}
+
+	@Override
+	public void onPause() {
+		super.onPause();
+		mUiHelper.onPause();
+	}
+
+	@Override
+	public void onDestroy() {
+		super.onDestroy();
+		mUiHelper.onDestroy();
+	}
+
+	@Override
+	public void onSaveInstanceState(Bundle outState) {
+		super.onSaveInstanceState(outState);
+		mUiHelper.onSaveInstanceState(outState);
 	}
 }

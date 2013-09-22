@@ -101,7 +101,7 @@ public final class GlobalVariable {
 	public static String avatar			= "";
 	public static boolean isNeedUpdateFacebook = false;
 	public static String nameFace 		= "";
-
+	public static String faceAccessToken = "";
 	// Filter String
 	public static String mFilterString 	= "";
 	public static String mSortByString 	= "0";
