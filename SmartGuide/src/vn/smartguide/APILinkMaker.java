@@ -32,6 +32,7 @@ public final class APILinkMaker {
 	private static String mFeedback				=	"get_feedback";
 	private static String mGetRewardList		=	"reward/list";
 	private static String mGetReward			=	"reward/receive";
+	private static String mFaceAccessToken		=	"user/facebook/access_token";
 	
 	public static String ShopListInCategory(){
 		return mHostName + mApiDomain + mShopListInCategory;
@@ -139,5 +140,9 @@ public final class APILinkMaker {
 	
 	public static String mGetReward(){
 		return mHostName + mApiDomain + mGetReward;
+	}
+	
+	public static String mUpFaceAccessToken(){
+		return mHostName + mApiDomain + mFaceAccessToken;
 	}
 }

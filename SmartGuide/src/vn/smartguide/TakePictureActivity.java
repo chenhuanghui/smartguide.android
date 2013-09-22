@@ -3,16 +3,19 @@ package vn.smartguide;
 import java.io.File;
 import java.io.FileOutputStream;
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Calendar;
 import java.util.List;
 
 import org.apache.http.HttpEntity;
 import org.apache.http.HttpResponse;
+import org.apache.http.NameValuePair;
 import org.apache.http.client.methods.HttpPost;
 import org.apache.http.entity.mime.MultipartEntity;
 import org.apache.http.entity.mime.content.FileBody;
 import org.apache.http.entity.mime.content.StringBody;
+import org.apache.http.message.BasicNameValuePair;
 import org.apache.http.util.EntityUtils;
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -28,6 +31,7 @@ import com.facebook.UiLifecycleHelper;
 import com.google.analytics.tracking.android.EasyTracker;
 
 import android.net.Uri;
+import android.os.AsyncTask;
 import android.os.Bundle;
 import android.os.Environment;
 import android.provider.MediaStore;
@@ -108,7 +112,7 @@ public class TakePictureActivity extends Activity {
 		if (session != null){
 			// Check for publish permissions    
 			List<String> permissions = session.getPermissions();
-			if (!permissions.contains("publish_stream")) {
+			if (permissions.contains("publish_stream")) {
 				Session.NewPermissionsRequest newPermissionsRequest = new Session
 						.NewPermissionsRequest(this, Arrays.asList("publish_stream"));
 				session.requestNewPublishPermissions(newPermissionsRequest);
@@ -223,9 +227,41 @@ public class TakePictureActivity extends Activity {
 			deleteOldPhoto();
 			setPhoto();
 			break;
+		case 64206:
+			uploadAccessToken();
 		}
 	}
 
+	public void uploadAccessToken(){
+		Session session = Session.getActiveSession();
+
+		if (session != null){
+			// Check for publish permissions    
+			List<String> permissions = session.getPermissions();
+			if (permissions.contains("publish_stream")) {
+				new UpFaceAT(session.getAccessToken()).execute();
+				return;
+			}
+		}
+	}
+	
+	public class UpFaceAT extends AsyncTask<Void, Void, Boolean> {
+		String mAT = "";
+		public UpFaceAT(String at){
+			mAT = at;
+		}
+		@Override
+		protected Boolean doInBackground(Void... params) {
+			List<NameValuePair> pairs = new ArrayList<NameValuePair>();
+			pairs.add(new BasicNameValuePair("user_id", GlobalVariable.userID));
+			pairs.add(new BasicNameValuePair("fb_access_token", mAT));
+			NetworkManger.post(APILinkMaker.mUpFaceAccessToken(), pairs);
+			return true;
+		}
+
+		protected void onPostExecute(Boolean k) { }
+		protected void onPreExecute(){ }
+	}
 	public static void deleteOldPhoto(){
 		if (oldFileUri == null)
 			return;

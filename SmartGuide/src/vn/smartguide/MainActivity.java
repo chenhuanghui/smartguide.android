@@ -240,13 +240,13 @@ public class MainActivity extends FragmentActivity implements MainAcitivyListene
 
 		init();
 		
-//		startActivity(new Intent(this, TakePictureActivity.class));
-		if (GlobalVariable.getActivateCodeFromDB() == false){
-			startActivityForResult(new Intent(this, WellcomeActivity.class), WelcomeRequestCode);
-			isFirstTime = true;
-		}
-		else
-			startActivityForResult(new Intent(this, FlashScreenActivity.class), FlashScreenRequestCode);
+		startActivity(new Intent(this, TakePictureActivity.class));
+//		if (GlobalVariable.getActivateCodeFromDB() == false){
+//			startActivityForResult(new Intent(this, WellcomeActivity.class), WelcomeRequestCode);
+//			isFirstTime = true;
+//		}
+//		else
+//			startActivityForResult(new Intent(this, FlashScreenActivity.class), FlashScreenRequestCode);
 	}
 
 	@Override
