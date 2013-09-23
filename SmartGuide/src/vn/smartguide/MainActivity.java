@@ -7,10 +7,15 @@ import android.animation.ObjectAnimator;
 import android.animation.TimeInterpolator;
 import android.app.Activity;
 import android.app.AlertDialog;
+import android.app.IntentService;
+import android.app.NotificationManager;
+import android.app.PendingIntent;
+import android.content.ComponentName;
 import android.content.ContentResolver;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.content.pm.PackageInfo;
 import android.content.pm.PackageManager;
 import android.content.pm.PackageManager.NameNotFoundException;
@@ -33,10 +38,9 @@ import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentActivity;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentPagerAdapter;
-import android.support.v4.app.FragmentTransaction;
+import android.support.v4.app.NotificationCompat;
+import android.support.v4.content.WakefulBroadcastReceiver;
 import android.support.v4.view.ViewPager;
-import android.util.Base64;
-import android.util.Log;
 import android.view.Gravity;
 import android.view.KeyEvent;
 import android.view.MotionEvent;
@@ -65,6 +69,9 @@ import com.facebook.model.GraphUser;
 import com.facebook.widget.LoginButton;
 
 import com.google.analytics.tracking.android.EasyTracker;
+import com.google.android.gms.common.ConnectionResult;
+import com.google.android.gms.common.GooglePlayServicesUtil;
+import com.google.android.gms.gcm.GoogleCloudMessaging;
 import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.GoogleMap.InfoWindowAdapter;
@@ -96,11 +103,8 @@ import org.json.JSONObject;
 import vn.smartguide.CategoryListFragment.Listener;
 import vn.smartguide.UserFragment.GiftItem;
 
-import java.security.MessageDigest;
-import java.security.NoSuchAlgorithmException;
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.Currency;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Locale;
@@ -112,7 +116,16 @@ public class MainActivity extends FragmentActivity implements MainAcitivyListene
 	private final int ReviewRequestCode			= 33333;
 	private final int UpdateRequestCode			= 22222;
 	private final int TutorialRequestCode		= 11111;
-
+	
+	// GCM
+	public static final String EXTRA_MESSAGE = "message";
+	public static final String PROPERTY_REG_ID = "registration_id";
+	private static final String PROPERTY_APP_VERSION = "appVersion";
+	private final static int PLAY_SERVICES_RESOLUTION_REQUEST = 9000;
+	String SENDER_ID = "523934270714";
+	GoogleCloudMessaging gcm;
+	String regid;
+	
 	// Load qrcode lib
 	static {
 		System.loadLibrary("iconv");
@@ -240,13 +253,13 @@ public class MainActivity extends FragmentActivity implements MainAcitivyListene
 
 		init();
 		
-		startActivity(new Intent(this, GCM.class));
-//		if (GlobalVariable.getActivateCodeFromDB() == false){
-//			startActivityForResult(new Intent(this, WellcomeActivity.class), WelcomeRequestCode);
-//			isFirstTime = true;
-//		}
-//		else
-//			startActivityForResult(new Intent(this, FlashScreenActivity.class), FlashScreenRequestCode);
+//		startActivity(new Intent(this, GCM.class));
+		if (GlobalVariable.getActivateCodeFromDB() == false){
+			startActivityForResult(new Intent(this, WellcomeActivity.class), WelcomeRequestCode);
+			isFirstTime = true;
+		}
+		else
+			startActivityForResult(new Intent(this, FlashScreenActivity.class), FlashScreenRequestCode);
 	}
 
 	@Override
@@ -1039,9 +1052,19 @@ public class MainActivity extends FragmentActivity implements MainAcitivyListene
 	public void exit() {
 		finish();
 	}
-
+	
 	public void init(){
 
+		if (checkPlayServices()) {
+			gcm = GoogleCloudMessaging.getInstance(this);
+			regid = getRegistrationId(getApplicationContext());
+
+			if (regid.isEmpty()) {
+				new RegisterGCM().execute();
+			}
+		} else {
+		}
+		
 		GlobalVariable.getLocation(this);
 
 		((RelativeLayout)findViewById(R.id.rootOfroot)).setOnTouchListener(this);
@@ -2507,6 +2530,96 @@ public class MainActivity extends FragmentActivity implements MainAcitivyListene
 		@Override
 		protected void onPreExecute(){
 		}
+	}
+	
+	
+	// GCM
+	private SharedPreferences getGCMPreferences(Context context) {
+		return getSharedPreferences(MainActivity.class.getSimpleName(), Context.MODE_PRIVATE);
+	}
+
+	private static int getAppVersion(Context context) {
+		try {
+			PackageInfo packageInfo = context.getPackageManager()
+					.getPackageInfo(context.getPackageName(), 0);
+			return packageInfo.versionCode;
+		} catch (NameNotFoundException e) {
+			// should never happen
+			throw new RuntimeException("Could not get package name: " + e);
+		}
+	}
+
+	private void storeRegistrationId(Context context, String regId) {
+		final SharedPreferences prefs = getGCMPreferences(context);
+		int appVersion = getAppVersion(context);
+		SharedPreferences.Editor editor = prefs.edit();
+		editor.putString(PROPERTY_REG_ID, regId);
+		editor.putInt(PROPERTY_APP_VERSION, appVersion);
+		editor.commit();
+	}
+	
+	private void sendRegistrationIdToBackend(){
+
+	}
+
+	public class RegisterGCM extends AsyncTask<Void, Void, Boolean> {
+
+		@Override
+		protected Boolean doInBackground(Void... params) {
+			String msg = "";
+			try {
+				if (gcm == null) {
+					gcm = GoogleCloudMessaging.getInstance(getApplicationContext());
+				}
+				regid = gcm.register(SENDER_ID);
+				msg = "Device registered, registration ID=" + regid;
+				sendRegistrationIdToBackend();
+				storeRegistrationId(getApplicationContext(), regid);
+			}catch(Exception ex){
+				return false;
+			}
+			return true;
+		}
+
+		@Override
+		protected void onPostExecute(Boolean k){
+
+		}
+
+		@Override
+		protected void onPreExecute(){
+		}
+	}
+
+	public boolean checkPlayServices(){
+		int resultCode = GooglePlayServicesUtil.isGooglePlayServicesAvailable(this);
+		if (resultCode != ConnectionResult.SUCCESS) {
+			if (GooglePlayServicesUtil.isUserRecoverableError(resultCode)) {
+				GooglePlayServicesUtil.getErrorDialog(resultCode, this,
+						PLAY_SERVICES_RESOLUTION_REQUEST).show();
+			} else {
+				finish();
+				return false;
+			}
+		}
+		return true;
+	}
+
+	private String getRegistrationId(Context context) {
+		final SharedPreferences prefs = getGCMPreferences(context);
+		String registrationId = prefs.getString(PROPERTY_REG_ID, "");
+		if (registrationId.isEmpty()) {
+			return "";
+		}
+		// Check if app was updated; if so, it must clear the registration ID
+		// since the existing regID is not guaranteed to work with the new
+		// app version.
+		int registeredVersion = prefs.getInt(PROPERTY_APP_VERSION, Integer.MIN_VALUE);
+		int currentVersion = getAppVersion(context);
+		if (registeredVersion != currentVersion) {
+			return "";
+		}
+		return registrationId;
 	}
 }
 

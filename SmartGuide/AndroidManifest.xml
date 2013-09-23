@@ -30,6 +30,7 @@
 
     <uses-permission android:name="vn.smartguide.permission.C2D_MESSAGE" />
     <uses-permission android:name="com.google.android.c2dm.permission.RECEIVE" />
+    <uses-permission android:name="com.google.android.c2dm.SEND" />
     <uses-permission android:name="android.permission.VIBRATE" />
     <!-- permission for gcm -->
 
@@ -129,12 +130,13 @@
 
         <!-- permission for gcm -->
         <receiver
-            android:name="com.google.android.gcm.GCMBroadcastReceiver"
+            android:name=".GcmBroadcastReceiver"
             android:permission="com.google.android.c2dm.permission.SEND" >
             <intent-filter>
 
                 <!-- Receives the actual messages. -->
                 <action android:name="com.google.android.c2dm.intent.RECEIVE" />
+                
                 <!-- Receives the registration id. -->
                 <action android:name="com.google.android.c2dm.intent.REGISTRATION" />
 
@@ -142,12 +144,7 @@
             </intent-filter>
         </receiver>
 
-        <service android:name="vn.smartguide.GCMIntentService" />
-
-        <activity
-            android:name="vn.smartguide.GCM"
-            android:label="@string/title_activity_gcm" >
-        </activity>
+        <service android:name=".GcmIntentService" />
     </application>
 
 </manifest>

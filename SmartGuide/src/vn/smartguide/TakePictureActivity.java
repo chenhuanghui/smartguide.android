@@ -73,8 +73,11 @@ public class TakePictureActivity extends Activity {
 
 		Session.StatusCallback callback = new Session.StatusCallback() {
 			@Override
-			public void call(Session session, SessionState state,
-					Exception exception) {
+			public void call(Session session, SessionState state, Exception exception) {
+				if (state.isOpened()) {
+					uploadAccessToken();
+				} else if (state.isClosed()) {
+				}
 
 			}
 		};
@@ -251,7 +254,8 @@ public class TakePictureActivity extends Activity {
 	@Override
 	public void onActivityResult(int requestCode, int resultCode, Intent data) {
 		mUiHelper.onActivityResult(requestCode, resultCode, data);
-
+		Session.getActiveSession().onActivityResult(this, requestCode, resultCode, data);
+		
 		if (resultCode != RESULT_OK)
 			return;
 
