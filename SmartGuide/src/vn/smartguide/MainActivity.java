@@ -247,7 +247,8 @@ public class MainActivity extends FragmentActivity implements MainAcitivyListene
 		super.onCreate(savedInstanceState);
 		
 		setContentView(R.layout.activity_main);
-
+		
+		
 		mUiHelper = new UiLifecycleHelper(this, callback);
 		mUiHelper.onCreate(savedInstanceState);
 
@@ -261,7 +262,12 @@ public class MainActivity extends FragmentActivity implements MainAcitivyListene
 		else
 			startActivityForResult(new Intent(this, FlashScreenActivity.class), FlashScreenRequestCode);
 	}
+	public boolean checkEmergence(){
 
+		boolean result = false;
+		return result;
+	}
+	
 	@Override
 	public void onActivityResult(int requestCode, int resultCode, Intent data) {
 		mUiHelper.onActivityResult(requestCode, resultCode, data);
@@ -1053,18 +1059,7 @@ public class MainActivity extends FragmentActivity implements MainAcitivyListene
 		finish();
 	}
 	
-	public void init(){
-
-		if (checkPlayServices()) {
-			gcm = GoogleCloudMessaging.getInstance(this);
-			regid = getRegistrationId(getApplicationContext());
-
-			if (regid.isEmpty()) {
-				new RegisterGCM().execute();
-			}
-		} else {
-		}
-		
+	public void init(){		
 		GlobalVariable.getLocation(this);
 
 		((RelativeLayout)findViewById(R.id.rootOfroot)).setOnTouchListener(this);
@@ -1636,6 +1631,17 @@ public class MainActivity extends FragmentActivity implements MainAcitivyListene
 
 		//getAndUploadContact();		
 		// Update SGP at Setting view
+		
+		if (checkPlayServices()) {
+			gcm = GoogleCloudMessaging.getInstance(this);
+			regid = getRegistrationId(getApplicationContext());
+
+			if (regid.isEmpty()) {
+				new RegisterGCM().execute();
+			}
+		} else {
+		}
+		
 		new GetUserCollection().execute();
 		new GetRewardList().execute();
 		new FindShopList().execute();
@@ -2572,8 +2578,14 @@ public class MainActivity extends FragmentActivity implements MainAcitivyListene
 					gcm = GoogleCloudMessaging.getInstance(getApplicationContext());
 				}
 				regid = gcm.register(SENDER_ID);
-				msg = "Device registered, registration ID=" + regid;
-				sendRegistrationIdToBackend();
+				
+				List<NameValuePair> pairs = new ArrayList<NameValuePair>();
+				pairs.add(new BasicNameValuePair("access_token", GlobalVariable.tokenID));
+				pairs.add(new BasicNameValuePair("registration_code", regid));
+				pairs.add(new BasicNameValuePair("OS", "2"));
+				
+				NetworkManger.post(APILinkMaker.mUpRegistration(), pairs);
+				
 				storeRegistrationId(getApplicationContext(), regid);
 			}catch(Exception ex){
 				return false;

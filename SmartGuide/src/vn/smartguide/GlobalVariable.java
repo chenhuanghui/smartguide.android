@@ -50,11 +50,11 @@ public final class GlobalVariable {
 	// Secret key and Client key to get token
 	public static String serverOAuth 	= APILinkMaker.mHostName + "oauth/v2/token";
 	// Dev
-	public static String clientID 		= "1_orazuv2dl3k8ossssg8804o4kwksw8kwcskkk404w40gwcwws";
-	public static String serectID 		= "4xvgf3r9dxs8k8g8o8k0gss0s0wc8so4g4wg40c8s44kgcwsks";
+//	public static String clientID 		= "1_orazuv2dl3k8ossssg8804o4kwksw8kwcskkk404w40gwcwws";
+//	public static String serectID 		= "4xvgf3r9dxs8k8g8o8k0gss0s0wc8so4g4wg40c8s44kgcwsks";
 	// Pro 
-//	public static String clientID 		= "2_1ydn30vohlc0w4s84gs4sk88wkc40ssw480gssog88ccsccgww";
-//	public static String serectID 		= "4607whn23ke808gg8s0kgcs4ck8gg80wwok884w4k4ggkswcgs";
+	public static String clientID 		= "1_53obx9yqlcco80w8wkoowgccw44o0w0ook0okogwosg84wscg8";
+	public static String serectID 		= "t3p0k1rvstcgwcsggo8ossgcwo8cckso88sscgcsks8w0wsk8";
 	
 	public static String grantType 		= "?grant_type=http://dev.smartguide.com/app_dev.php/grants/bingo";
 

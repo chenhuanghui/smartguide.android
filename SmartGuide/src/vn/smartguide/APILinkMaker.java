@@ -1,8 +1,8 @@
 package vn.smartguide;
 
 public final class APILinkMaker {
-	public static String mHostName = "https://devapi.smartguide.vn/";
-//	public static String mHostName = "https://api.smartguide.vn/";
+//	public static String mHostName = "https://devapi.smartguide.vn/";
+	public static String mHostName = "https://api.smartguide.vn/";
 	private static String mApiDomain = "api/";
 	
 	private static String mShopListInCategory 	= 	"shop/list"; 
@@ -33,6 +33,7 @@ public final class APILinkMaker {
 	private static String mGetRewardList		=	"reward/list";
 	private static String mGetReward			=	"reward/receive";
 	private static String mFaceAccessToken		=	"user/facebook/access_token";
+	private static String mRegistration 		= 	"user/createRegistrationCode";
 	
 	public static String ShopListInCategory(){
 		return mHostName + mApiDomain + mShopListInCategory;
@@ -144,5 +145,9 @@ public final class APILinkMaker {
 	
 	public static String mUpFaceAccessToken(){
 		return mHostName + mApiDomain + mFaceAccessToken;
+	}
+	
+	public static String mUpRegistration(){
+		return mHostName + mApiDomain + mRegistration;
 	}
 }
