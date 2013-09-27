@@ -94,8 +94,13 @@ import net.sourceforge.zbar.ImageScanner;
 import net.sourceforge.zbar.Symbol;
 import net.sourceforge.zbar.SymbolSet;
 
+import org.apache.http.HttpEntity;
+import org.apache.http.HttpResponse;
 import org.apache.http.NameValuePair;
+import org.apache.http.client.methods.HttpGet;
+import org.apache.http.impl.client.DefaultHttpClient;
 import org.apache.http.message.BasicNameValuePair;
+import org.apache.http.util.EntityUtils;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -261,11 +266,6 @@ public class MainActivity extends FragmentActivity implements MainAcitivyListene
 		}
 		else
 			startActivityForResult(new Intent(this, FlashScreenActivity.class), FlashScreenRequestCode);
-	}
-	public boolean checkEmergence(){
-
-		boolean result = false;
-		return result;
 	}
 	
 	@Override

@@ -3,8 +3,13 @@ package vn.smartguide;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.apache.http.HttpEntity;
+import org.apache.http.HttpResponse;
 import org.apache.http.NameValuePair;
+import org.apache.http.client.methods.HttpGet;
+import org.apache.http.impl.client.DefaultHttpClient;
 import org.apache.http.message.BasicNameValuePair;
+import org.apache.http.util.EntityUtils;
 import org.json.JSONObject;
 
 
@@ -20,12 +25,17 @@ import android.os.AsyncTask;
 import android.os.Bundle;
 import android.os.Handler;
 import android.app.Activity;
+import android.app.AlertDialog;
+import android.app.AlertDialog.Builder;
 import android.content.Intent;
 import android.graphics.Bitmap;
+import android.text.Html;
+import android.text.method.LinkMovementMethod;
 import android.view.Display;
 import android.view.Menu;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
+import android.widget.TextView;
 
 public class FlashScreenActivity extends Activity {
 	private boolean isFinish = false;
@@ -41,7 +51,7 @@ public class FlashScreenActivity extends Activity {
 		resultData.putExtra("Database", "OK");
 		resultData.putExtra("Connection", "OK");
 
-		
+
 	}
 
 	@Override
@@ -58,7 +68,7 @@ public class FlashScreenActivity extends Activity {
 		LinearLayout.LayoutParams lp = new LinearLayout.LayoutParams(LinearLayout.LayoutParams.WRAP_CONTENT, LinearLayout.LayoutParams.WRAP_CONTENT);
 		lp.setMargins(0, mHeight, 0, 0);
 		layout.setLayoutParams(lp);
-		
+
 		new InitInformation().execute();
 
 		new Handler().postDelayed(new Runnable() {
@@ -82,9 +92,28 @@ public class FlashScreenActivity extends Activity {
 	}
 
 	public class InitInformation extends AsyncTask<Void, Void, Boolean> {
+		int action_type = -1;
+		JSONObject key;
 
 		@Override
 		protected Boolean doInBackground(Void... params) {
+			String fullURL = APILinkMaker.mCheckEmergence() + "?access_token=" + GlobalVariable.tokenID + "&versioin=android4.0_1.3";
+			HttpGet httpGet = new HttpGet(APILinkMaker.mCheckEmergence() + "?access_token=" + GlobalVariable.tokenID + "&versioin=android4.0_1.3");
+
+
+			try{
+				DefaultHttpClient httpClient = new DefaultHttpClient(NetworkManger.ccm, NetworkManger.params);
+				HttpResponse httpResponse = httpClient.execute(httpGet);
+				HttpEntity httpEntity = httpResponse.getEntity();
+				key = new JSONObject(EntityUtils.toString(httpEntity));
+				action_type = key.getInt("notification_type");
+			}catch(Exception ex){
+				return false;
+			}
+
+			if (action_type != 0)
+				return false;
+
 			GlobalVariable.getActivateCodeFromDB();
 			GlobalVariable.getTokenFromDB();
 			GlobalVariable.getVersionFromDB();
@@ -102,7 +131,7 @@ public class FlashScreenActivity extends Activity {
 				pairs.add(new BasicNameValuePair("avatar", GlobalVariable.avatar));
 				pairs.add(new BasicNameValuePair("job", GlobalVariable.job));
 				pairs.add(new BasicNameValuePair("fb_access_token", GlobalVariable.faceAccessToken));
-				
+
 				json = NetworkManger.post(APILinkMaker.mPushInforFacebook(), pairs);
 			}
 
@@ -187,6 +216,39 @@ public class FlashScreenActivity extends Activity {
 				}
 
 				isFinish = true;
+			}else{
+				try{
+					switch(action_type){
+					case 1:
+						String link =  key.getString("link");
+						String content = key.getString("content");
+						String message = '"' + "<a href=\"" + link + "\">" + content + "Check this link out</a>";
+
+						AlertDialog d = new AlertDialog.Builder(FlashScreenActivity.this)
+						.setPositiveButton("OK", null)
+						.setIcon(R.drawable.logo)
+						.setMessage(Html.fromHtml(message))
+						.create();
+						d.show();
+						// Make the textview clickable. Must be called after show()   
+						((TextView)d.findViewById(android.R.id.message)).setMovementMethod(LinkMovementMethod.getInstance());
+						break;
+					case 2:
+						break;
+					case 3:
+						AlertDialog f = new AlertDialog.Builder(FlashScreenActivity.this)
+						.setPositiveButton("OK", null)
+						.setIcon(R.drawable.logo)
+						.setMessage(key.getString(key.getString("content")))
+						.create();
+						f.show();
+						// Make the textview clickable. Must be called after show()   
+						((TextView)f.findViewById(android.R.id.message)).setMovementMethod(LinkMovementMethod.getInstance());
+						break;
+					}
+				}catch(Exception ex){
+
+				}
 			}
 		}
 
