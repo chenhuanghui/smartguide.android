@@ -1012,7 +1012,6 @@ public class MainActivity extends FragmentActivity implements MainAcitivyListene
 			
 			LuminanceSource source = new RGBLuminanceSource(bmp);
 			BinaryBitmap bitmap = new BinaryBitmap(new HybridBinarizer(source));
-			DataMatrixReader readers = new DataMatrixReader();
 			Result rs = null;
 			
 			try {
@@ -1028,7 +1027,6 @@ public class MainActivity extends FragmentActivity implements MainAcitivyListene
 				} catch (FormatException e1) {
 					return;
 				}
-				return;
 			} catch (ChecksumException e) {
 				return;
 			} catch (FormatException e) {
