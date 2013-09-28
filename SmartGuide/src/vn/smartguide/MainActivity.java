@@ -1019,7 +1019,6 @@ public class MainActivity extends FragmentActivity implements MainAcitivyListene
 			} catch (NotFoundException e) {
 				try {
 					rs = mQRCodeReader.decode(bitmap);
-					
 				} catch (NotFoundException e1) {
 					return;
 				} catch (ChecksumException e1) {
