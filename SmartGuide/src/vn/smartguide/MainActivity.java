@@ -7,10 +7,6 @@ import android.animation.ObjectAnimator;
 import android.animation.TimeInterpolator;
 import android.app.Activity;
 import android.app.AlertDialog;
-import android.app.IntentService;
-import android.app.NotificationManager;
-import android.app.PendingIntent;
-import android.content.ComponentName;
 import android.content.ContentResolver;
 import android.content.Context;
 import android.content.DialogInterface;
@@ -19,9 +15,13 @@ import android.content.SharedPreferences;
 import android.content.pm.PackageInfo;
 import android.content.pm.PackageManager;
 import android.content.pm.PackageManager.NameNotFoundException;
-import android.content.pm.Signature;
 import android.database.Cursor;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.graphics.Color;
+import android.graphics.ImageFormat;
+import android.graphics.Rect;
+import android.graphics.YuvImage;
 import android.hardware.Camera;
 import android.hardware.Camera.CameraInfo;
 import android.location.Location;
@@ -38,8 +38,6 @@ import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentActivity;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentPagerAdapter;
-import android.support.v4.app.NotificationCompat;
-import android.support.v4.content.WakefulBroadcastReceiver;
 import android.support.v4.view.ViewPager;
 import android.view.Gravity;
 import android.view.KeyEvent;
@@ -84,23 +82,24 @@ import com.google.android.gms.maps.model.LatLngBounds;
 import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.MarkerOptions;
 import com.google.android.gms.maps.model.PolylineOptions;
+import com.google.zxing.BinaryBitmap;
+import com.google.zxing.ChecksumException;
+import com.google.zxing.FormatException;
+import com.google.zxing.LuminanceSource;
+import com.google.zxing.MultiFormatReader;
+import com.google.zxing.NotFoundException;
+import com.google.zxing.Reader;
+import com.google.zxing.Result;
+import com.google.zxing.common.HybridBinarizer;
+import com.google.zxing.datamatrix.DataMatrixReader;
+import com.google.zxing.multi.qrcode.QRCodeMultiReader;
+import com.google.zxing.qrcode.QRCodeReader;
 import com.jeremyfeinstein.slidingmenu.lib.SlidingMenu;
 import com.jeremyfeinstein.slidingmenu.lib.SlidingMenu.OnClosedListener;
 import com.jeremyfeinstein.slidingmenu.lib.SlidingMenu.OnOpenedListener;
 
-import net.sourceforge.zbar.Config;
-import net.sourceforge.zbar.Image;
-import net.sourceforge.zbar.ImageScanner;
-import net.sourceforge.zbar.Symbol;
-import net.sourceforge.zbar.SymbolSet;
-
-import org.apache.http.HttpEntity;
-import org.apache.http.HttpResponse;
 import org.apache.http.NameValuePair;
-import org.apache.http.client.methods.HttpGet;
-import org.apache.http.impl.client.DefaultHttpClient;
 import org.apache.http.message.BasicNameValuePair;
-import org.apache.http.util.EntityUtils;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -108,6 +107,7 @@ import org.json.JSONObject;
 import vn.smartguide.CategoryListFragment.Listener;
 import vn.smartguide.UserFragment.GiftItem;
 
+import java.io.ByteArrayOutputStream;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
@@ -115,13 +115,12 @@ import java.util.List;
 import java.util.Locale;
 
 public class MainActivity extends FragmentActivity implements MainAcitivyListener, OnTouchListener  {
-
 	private final int WelcomeRequestCode 		= 44444;
 	private final int FlashScreenRequestCode 	= 55555;
 	private final int ReviewRequestCode			= 33333;
 	private final int UpdateRequestCode			= 22222;
 	private final int TutorialRequestCode		= 11111;
-	
+
 	// GCM
 	public static final String EXTRA_MESSAGE = "message";
 	public static final String PROPERTY_REG_ID = "registration_id";
@@ -130,19 +129,20 @@ public class MainActivity extends FragmentActivity implements MainAcitivyListene
 	String SENDER_ID = "523934270714";
 	GoogleCloudMessaging gcm;
 	String regid;
-	
+
 	// Load qrcode lib
 	static {
 		System.loadLibrary("iconv");
 	}
 
 	// QRcode 
+	DataMatrixReader mDataMatrixReader = new DataMatrixReader();
+	QRCodeReader mQRCodeReader = new QRCodeReader();
 	private Camera mCamera;
 	private CameraPreview mPreview;
 	private Handler autoFocusHandler;
 	private FrameLayout preview;
 	private View mOpticalFrame;
-	private ImageScanner scanner;
 	private boolean previewing;
 	private String mQRCode = "";
 	private int mScanningCode = 1;
@@ -250,24 +250,24 @@ public class MainActivity extends FragmentActivity implements MainAcitivyListene
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
-		
+
 		setContentView(R.layout.activity_main);
-		
-		
+
+
 		mUiHelper = new UiLifecycleHelper(this, callback);
 		mUiHelper.onCreate(savedInstanceState);
 
 		init();
-		
-//		startActivity(new Intent(this, GCM.class));
-		if (GlobalVariable.getActivateCodeFromDB() == false){
-			startActivityForResult(new Intent(this, WellcomeActivity.class), WelcomeRequestCode);
-			isFirstTime = true;
-		}
-		else
-			startActivityForResult(new Intent(this, FlashScreenActivity.class), FlashScreenRequestCode);
+//
+//		//		startActivity(new Intent(this, GCM.class));
+//		if (GlobalVariable.getActivateCodeFromDB() == false){
+//			startActivityForResult(new Intent(this, WellcomeActivity.class), WelcomeRequestCode);
+//			isFirstTime = true;
+//		}
+//		else
+//			startActivityForResult(new Intent(this, FlashScreenActivity.class), FlashScreenRequestCode);
 	}
-	
+
 	@Override
 	public void onActivityResult(int requestCode, int resultCode, Intent data) {
 		mUiHelper.onActivityResult(requestCode, resultCode, data);
@@ -991,43 +991,75 @@ public class MainActivity extends FragmentActivity implements MainAcitivyListene
 		public void onPreviewFrame(byte[] data, Camera camera) {
 			if (!isCanScan)
 				return;
-
 			Camera.Parameters parameters = camera.getParameters();
-			Camera.Size size = parameters.getPreviewSize();
+			int format = parameters.getPreviewFormat();
+			Bitmap bmp = null;
+			
+			// YUV formats require more conversion
+			if (format == ImageFormat.NV21 /*|| format == ImageFormat.YUY2 || format == ImageFormat.NV16*/)
+			{
+		    	int w = parameters.getPreviewSize().width;
+		    	int h = parameters.getPreviewSize().height;
 
-			Image barcode = new Image(size.width, size.height, "Y800");
-			barcode.setData(data);
+		    	YuvImage yuv_image = new YuvImage(data, format, w, h, null);
 
-			int result = scanner.scanImage(barcode);
+				Rect rect = new Rect(0, 0, w, h);
+				ByteArrayOutputStream output_stream = new ByteArrayOutputStream();
+				yuv_image.compressToJpeg(rect, 100, output_stream);
 
-			if (result != 0) {
-				mCamera.setPreviewCallback(null);
-				previewing = false;
-
-				SymbolSet syms = scanner.getResults();
-				for (Symbol sym : syms) {
-					mQRCode = sym.getData();
-					//mScanCover.setVisibility(View.INVISIBLE);
-					switch (mScanningCode) {
-					case 1:
-						isCanScan = false;
-						mIsCanWipe = false;
-						new GetSGPPoint().execute();
-						break;
-					case 2:
-						isCanScan = false;
-						mIsCanWipe = false;
-						new GetAwardType1().execute();
-						break;
-					case 3:
-						isCanScan = false;
-						mIsCanWipe = false;
-						new GetAwardType2().execute();
-					default:
-						break;
-					};
-				}
+				bmp = BitmapFactory.decodeByteArray(output_stream.toByteArray(), 0, output_stream.size());
 			}
+			
+			LuminanceSource source = new RGBLuminanceSource(bmp);
+			BinaryBitmap bitmap = new BinaryBitmap(new HybridBinarizer(source));
+			DataMatrixReader readers = new DataMatrixReader();
+			Result rs = null;
+			
+			try {
+				rs = mDataMatrixReader.decode(bitmap);
+			} catch (NotFoundException e) {
+				try {
+					rs = mQRCodeReader.decode(bitmap);
+					
+				} catch (NotFoundException e1) {
+					return;
+				} catch (ChecksumException e1) {
+					return;
+				} catch (FormatException e1) {
+					return;
+				}
+				return;
+			} catch (ChecksumException e) {
+				return;
+			} catch (FormatException e) {
+				return;
+			}
+
+			Toast.makeText(MainActivity.this, rs.getText(), Toast.LENGTH_LONG).show();
+			
+			mCamera.setPreviewCallback(null);
+			previewing = false;
+			
+			mQRCode = rs.getText();
+			//mScanCover.setVisibility(View.INVISIBLE);
+			switch (mScanningCode) {
+			case 1:
+				isCanScan = false;
+				mIsCanWipe = false;
+				new GetSGPPoint().execute();
+				break;
+			case 2:
+				isCanScan = false;
+				mIsCanWipe = false;
+				new GetAwardType1().execute();
+				break;
+			case 3:
+				isCanScan = false;
+				mIsCanWipe = false;
+				new GetAwardType2().execute();
+			default:
+				break;
+			};
 		}
 	};
 
@@ -1058,7 +1090,7 @@ public class MainActivity extends FragmentActivity implements MainAcitivyListene
 	public void exit() {
 		finish();
 	}
-	
+
 	public void init(){		
 		GlobalVariable.getLocation(this);
 
@@ -1075,11 +1107,6 @@ public class MainActivity extends FragmentActivity implements MainAcitivyListene
 			NetworkManger.init();
 		}catch(Exception e){
 		}
-
-		// Scanner
-		scanner = new ImageScanner();
-		scanner.setConfig(0, Config.X_DENSITY, 3);
-		scanner.setConfig(0, Config.Y_DENSITY, 3);
 
 		// Change policy
 		StrictMode.ThreadPolicy policy = new StrictMode.ThreadPolicy.Builder().permitAll().build();
@@ -1631,7 +1658,7 @@ public class MainActivity extends FragmentActivity implements MainAcitivyListene
 
 		//getAndUploadContact();		
 		// Update SGP at Setting view
-		
+
 		if (checkPlayServices()) {
 			gcm = GoogleCloudMessaging.getInstance(this);
 			regid = getRegistrationId(getApplicationContext());
@@ -1641,7 +1668,7 @@ public class MainActivity extends FragmentActivity implements MainAcitivyListene
 			}
 		} else {
 		}
-		
+
 		new GetUserCollection().execute();
 		new GetRewardList().execute();
 		new FindShopList().execute();
@@ -2537,8 +2564,8 @@ public class MainActivity extends FragmentActivity implements MainAcitivyListene
 		protected void onPreExecute(){
 		}
 	}
-	
-	
+
+
 	// GCM
 	private SharedPreferences getGCMPreferences(Context context) {
 		return getSharedPreferences(MainActivity.class.getSimpleName(), Context.MODE_PRIVATE);
@@ -2563,7 +2590,7 @@ public class MainActivity extends FragmentActivity implements MainAcitivyListene
 		editor.putInt(PROPERTY_APP_VERSION, appVersion);
 		editor.commit();
 	}
-	
+
 	private void sendRegistrationIdToBackend(){
 
 	}
@@ -2578,14 +2605,14 @@ public class MainActivity extends FragmentActivity implements MainAcitivyListene
 					gcm = GoogleCloudMessaging.getInstance(getApplicationContext());
 				}
 				regid = gcm.register(SENDER_ID);
-				
+
 				List<NameValuePair> pairs = new ArrayList<NameValuePair>();
 				pairs.add(new BasicNameValuePair("access_token", GlobalVariable.tokenID));
 				pairs.add(new BasicNameValuePair("registration_code", regid));
 				pairs.add(new BasicNameValuePair("OS", "2"));
-				
+
 				NetworkManger.post(APILinkMaker.mUpRegistration(), pairs);
-				
+
 				storeRegistrationId(getApplicationContext(), regid);
 			}catch(Exception ex){
 				return false;

@@ -149,6 +149,14 @@ public class WellcomeActivity extends FragmentActivity{
 						mNumberField.setText("");
 					}
 				}else{
+					if (timer != null)
+						timer.cancel();
+					
+					mTailText.setVisibility(View.INVISIBLE);
+					mHeadText.setVisibility(View.INVISIBLE);
+					mTimeText.setVisibility(View.INVISIBLE);
+					mResendCode.setVisibility(View.INVISIBLE);
+					
 					confirmCode = mNumberField.getText().toString();
 					mNumberField.setText("");
 					new ConfirmActivateCode().execute();
