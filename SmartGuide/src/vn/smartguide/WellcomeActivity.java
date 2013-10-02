@@ -47,74 +47,73 @@ import com.facebook.widget.LoginButton.OnErrorListener;
 import com.google.analytics.tracking.android.EasyTracker;
 
 public class WellcomeActivity extends FragmentActivity{
-
-	UiLifecycleHelper 	mUiHelper;
-	boolean isConfirm = false;
-
-	ImageView mLogo;
-	ImageView mSlogan;
-	ImageView mSmartGuide;
-
-	ImageButton mLogin;
-	ImageButton mSkip;
-
-	EditText mNumberField = null;
-	ImageButton mSendButton = null;
-	TextView mStatusText = null;
-	TextView mHeadText = null;
-	TextView mTailText = null;
 	
-	TextView mTimeText;
-	
-	String phoneNumber = "";
-	String confirmCode = "";
+	// Data
+	private boolean isConfirm = false;	
+	private String phoneNumber = "";
+	private String confirmCode = "";
+	private String userID = "";
+	private Intent resultData;
 
-	Button mResendCode;
-	
-	int mHeight = 0;
-	int mWidth = 0;
-	int padding = 5;
-	int marginTop = 40;
-
-	String userID = "";
-	LoginButton authButton = null;
+	// GUI elements
+	private ImageView mLogo;
+	private ImageView mSlogan;
+	private ImageView mSmartGuide;
+	private ImageButton mLogin;
+	private ImageButton mSkip;
+	private ImageButton mSendButton;
+	private EditText mNumberField;
+	private TextView mStatusText;
+	private TextView mHeadText;
+	private TextView mTailText;
+	private TextView mTimeText;
+	private TextView m84TV;
+	private Button mResendCode;
 
 	private ObjectAnimator mNumberFieldSlideUp;
 	private ObjectAnimator mSendButtonSlideUp;
 	private ObjectAnimator mFacebookBtnFadeIn;
 	private ObjectAnimator mStatusTextFlash;
+	
+	private LoginButton authButton = null;
 
-	private Intent resultData;
+	// Others
+	private UiLifecycleHelper 	mUiHelper;
 
-	TextView m84TV;
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.activity_wellcome);
 
+		// Set up Facebook
 		Session.StatusCallback callback = new Session.StatusCallback() {
-
 			public void call(Session session, SessionState state, Exception exception) {
 				if (state.isOpened()) {
-					mStatusText.setText("Vui lÃƒÂ²ng chÃ¡Â»ï¿½ cÃ¡ÂºÂ­p nhÃ¡ÂºÂ­t thÃƒÂ´ng tin...");
+					mStatusText.setText("Vui lòng chờ cập nhật thông tin...");
 					makeMeRequest(session);
 				} else if (state.isClosed()) {
 				}
 			}
 		};
+		
+		mUiHelper = new UiLifecycleHelper(this, callback);
+		mUiHelper.onCreate(savedInstanceState);
 
 		resultData = new Intent();
 		resultData.putExtra("GOAHEAD", "OK");
 
-		mUiHelper = new UiLifecycleHelper(this, callback);
-		mUiHelper.onCreate(savedInstanceState);
-
+		// Get GUI elements
 		mLogo = (ImageView)findViewById(R.id.logo);
 		mSlogan = (ImageView)findViewById(R.id.slogan);
 		mSmartGuide = (ImageView)findViewById(R.id.smartguide);
 		mNumberField = (EditText)findViewById(R.id.numberField);
 		mSendButton = (ImageButton)findViewById(R.id.sendCodeButton);
 		mStatusText = (TextView)findViewById(R.id.statusTextView);
+		m84TV = (TextView) findViewById(R.id.m84TV);
+		mTimeText = (TextView) findViewById(R.id.timeLeftTV);
+		mHeadText = (TextView) findViewById(R.id.headTV);
+		mTailText = (TextView) findViewById(R.id.tailTV);
+		mResendCode = (Button) findViewById(R.id.resendCodeBtn);
 
 		mLogin = (ImageButton)findViewById(R.id.viaFaceButton);
 		mSkip = (ImageButton)findViewById(R.id.skipFaceButton);
@@ -132,20 +131,21 @@ public class WellcomeActivity extends FragmentActivity{
 		mStatusTextFlash.setRepeatMode(Animation.REVERSE);
 		mStatusTextFlash.start();
 
+		// Set send button event
 		mSendButton.setOnClickListener(new View.OnClickListener() {
 			@Override
 			public void onClick(View v) {
-				if (isConfirm == false){
+				if (isConfirm == false) {
 					phoneNumber = formatPhone(mNumberField.getText().toString());
-					if (PhoneNumberUtils.isGlobalPhoneNumber(phoneNumber) && validatePhoneNumber(phoneNumber)){
+					if (PhoneNumberUtils.isGlobalPhoneNumber(phoneNumber) && validatePhoneNumber(phoneNumber)) {
 						if (phoneNumber.charAt(0) == '+'){
 							String subphone = phoneNumber.substring(1);
 							phoneNumber = subphone;
 						}
 						
 						confirmPhone();
-					}else{
-						mStatusText.setText("SÃ¡Â»â€˜ Ã„â€˜iÃ¡Â»â€¡n thoÃ¡ÂºÂ¡i khÃƒÂ´ng hÃ¡Â»Â£p lÃ¡Â»â€¡...");
+					} else {
+						mStatusText.setText("Số điện thoại không hợp lệ...");
 						mNumberField.setText("");
 					}
 				}else{
@@ -156,7 +156,6 @@ public class WellcomeActivity extends FragmentActivity{
 					mHeadText.setVisibility(View.INVISIBLE);
 					mTimeText.setVisibility(View.INVISIBLE);
 					mResendCode.setVisibility(View.INVISIBLE);
-					
 					confirmCode = mNumberField.getText().toString();
 					mNumberField.setText("");
 					new ConfirmActivateCode().execute();
@@ -204,12 +203,7 @@ public class WellcomeActivity extends FragmentActivity{
 				authButton.performClick();
 			}
 		});
-
-		m84TV = (TextView) findViewById(R.id.m84TV);
-		mTimeText = (TextView) findViewById(R.id.timeLeftTV);
-		mHeadText = (TextView) findViewById(R.id.headTV);
-		mTailText = (TextView) findViewById(R.id.tailTV);
-		mResendCode = (Button) findViewById(R.id.resendCodeBtn);
+		
 		mResendCode.setOnClickListener(new View.OnClickListener() {
 			@Override
 			public void onClick(View v) {
@@ -272,7 +266,7 @@ public class WellcomeActivity extends FragmentActivity{
 		return;
 	}
 
-	public void exit(){
+	public void exit() {
 		if (getParent() == null) 
 			setResult(Activity.RESULT_OK, resultData);
 		else
@@ -326,57 +320,83 @@ public class WellcomeActivity extends FragmentActivity{
 		request.executeAsync();
 	}
 
-	public class GetActivateCode extends AsyncTask<Void, Void, Boolean> {    	
-		@Override
-		protected Boolean doInBackground(Void... params) {
-			NetworkManger.get(GlobalVariable.urlGetActivateCode + phoneNumber, false);
-			return true;
-		}
-
-		protected void onPostExecute(Boolean k) { }
+	public class GetActivateCode extends AsyncTask<Void, Void, Boolean> {
+		
+		private Exception mEx;
+		
 		protected void onPreExecute(){ }
-	}
-
-	public class ConfirmActivateCode extends AsyncTask<Void, Void, Boolean> {    	
-
-		String mJson = "";
+		
 		@Override
 		protected Boolean doInBackground(Void... params) {
-			mJson = NetworkManger.get(GlobalVariable.urlChekcActivateCode + phoneNumber + "&code=" + confirmCode, false);
+			try {
+				NetworkManger.get_throw(GlobalVariable.urlGetActivateCode + phoneNumber, false);
+			} catch (Exception e) {
+				mEx = e;
+			}
 			return true;
 		}
 
 		protected void onPostExecute(Boolean k) { 
-			try {
-				JSONObject result = new JSONObject(mJson);
-				boolean success = result.getBoolean("result");
-				int user_id = result.getInt("user_id");
-				String avatar = result.getString("avatar");
+			if (mEx == null) {
+				isConfirm = true;
+				mStatusText.setText("Chờ và nhập mã xác nhận...");
+				mNumberField.setText("");
+			} else {
+				GlobalVariable.showToast("Không thể gởi mã xác nhận", WellcomeActivity.this);
+				mNumberField.setText("");
+			}
+		}
+	}
 
-				if (success){
-					HashMap<String, String> token =  new  HashMap<String, String>();
+	public class ConfirmActivateCode extends AsyncTask<Void, Void, Boolean> {    	
+
+		private JSONObject result;
+		private Exception mEx;
+		
+		@Override
+		protected Boolean doInBackground(Void... params) {
+			try {
+				// Check activate code
+				String mJson = NetworkManger.get_throw(GlobalVariable.urlChekcActivateCode + phoneNumber + "&code=" + confirmCode, false);
+				result = new JSONObject(mJson);
+			} catch (Exception e) {
+				mEx = e;
+			}
+			return true;
+		}
+
+		protected void onPostExecute(Boolean k) {
+			try {
+				if (mEx != null)
+					throw mEx;
+
+				boolean success = result.getBoolean("result");
+				String user_id = result.getString("user_id");
+				boolean connect_fb = result.getBoolean("connect_fb");
+
+				if (success) {
+					// Insert into DB
+					HashMap<String, String> token = new HashMap<String, String>();
 
 					token.put("activateID", confirmCode);
-					token.put("userID", Integer.toString(user_id));
+					token.put("userID", user_id);
 					token.put("phoneNumber", phoneNumber);
-					token.put("avatar", avatar);
-					token.put("nameFace", result.getString("name"));
+					token.put("avatar", result.optString("avatar"));
+					token.put("nameFace", result.optString("name"));
 
 					InputMethodManager imm = (InputMethodManager) getSystemService(Context.INPUT_METHOD_SERVICE);
 					imm.hideSoftInputFromWindow(mNumberField.getWindowToken(), 0);
 
-					userID = Integer.toString(user_id);
 					GlobalVariable.smartGuideDB.insertActivateCode(token);
-
-					boolean connect_fb = result.getBoolean("connect_fb");
-					if (connect_fb == true){
+				
+					if (connect_fb == true) {
 						exit();
 						return;
 					}
 
 					mNumberField.setText("");
 
-					mStatusText.setText("Ã„ï¿½Ã„Æ’ng nhÃ¡ÂºÂ­p facebook");
+					mStatusText.setText("Đăng nhập facebook");
 
 					mNumberFieldSlideUp = ObjectAnimator.ofFloat(mNumberField, "alpha", 1.0f, 0.0f);
 					mNumberFieldSlideUp.setInterpolator(new AccelerateDecelerateInterpolator());				
@@ -401,9 +421,9 @@ public class WellcomeActivity extends FragmentActivity{
 							mSendButton.setVisibility(View.INVISIBLE);
 
 							mLogin.setVisibility(View.VISIBLE);
-							//							mSkip.setVisibility(View.VISIBLE);
-
-							//							ObjectAnimator[] objectAnimators = new ObjectAnimator[] {mFacebookBtnFadeIn, mSkipBtnFadeIn};
+//							mSkip.setVisibility(View.VISIBLE);
+//
+//							ObjectAnimator[] objectAnimators = new ObjectAnimator[] {mFacebookBtnFadeIn, mSkipBtnFadeIn};
 							ObjectAnimator[] objectAnimators = new ObjectAnimator[] {mFacebookBtnFadeIn};
 							AnimatorSet animSetXY = new AnimatorSet();
 							animSetXY.playTogether(objectAnimators);
@@ -412,18 +432,17 @@ public class WellcomeActivity extends FragmentActivity{
 						}
 					});
 					animSetXY.start();
-				}
-				else{
-					mStatusText.setText("MÃƒÂ£ xÃƒÂ¡c nhÃ¡ÂºÂ­n khÃƒÂ´ng hÃ¡Â»Â£p lÃ¡Â»â€¡");
+
+				} else {
+					mStatusText.setText("Mã xác nhận không hợp lệ");
 					mNumberField.setText("");
 				}
 
-			} catch (JSONException e) {
-				mStatusText.setText("MÃƒÂ£ xÃƒÂ¡c nhÃ¡ÂºÂ­n khÃƒÂ´ng hÃ¡Â»Â£p lÃ¡Â»â€¡");
+			} catch (Exception e) {
+				GlobalVariable.showToast("Không xác thể nhận được", WellcomeActivity.this);
 				mNumberField.setText("");
 			}
 		}
-		protected void onPreExecute(){ }
 	}
 
 	@Override
@@ -438,15 +457,15 @@ public class WellcomeActivity extends FragmentActivity{
 		EasyTracker.getInstance(this).activityStop(this);
 	}
 
-	public void confirmPhone(){
+	public void confirmPhone() {
 
 		AlertDialog.Builder builder = new AlertDialog.Builder(this);
 
-		builder.setMessage(phoneNumber +"\nMÃƒÂ£ kÃƒÂ­ch hoÃ¡ÂºÂ¡t SmartGuide sÃ¡ÂºÂ½ Ã„â€˜Ã†Â°Ã¡Â»Â£c gÃ¡Â»Â­i Ã„â€˜Ã¡ÂºÂ¿n sÃ¡Â»â€˜ Ã„â€˜iÃ¡Â»â€¡n thoÃ¡ÂºÂ¡i trÃƒÂªn" +
-				" qua tin nhÃ¡ÂºÂ¯n. ChÃ¡Â»ï¿½n Ã„ï¿½Ã¡Â»â€œng ÃƒÂ½ Ã„â€˜Ã¡Â»Æ’ tiÃ¡ÂºÂ¿p tÃ¡Â»Â¥c hoÃ¡ÂºÂ·c hÃ¡Â»Â§y Ã„â€˜Ã¡Â»Æ’ thay Ã„â€˜Ã¡Â»â€¢i sÃ¡Â»â€˜ Ã„â€˜iÃ¡Â»â€¡n thoÃ¡ÂºÂ¡i");
+		builder.setMessage(phoneNumber +"\nMã kích hoạt SmartGuide sẽ được gửi đến số điện thoại trên" +
+				" qua tin nhắn. Chọn Đồng ý để tiếp tục hoặc hủy để thay đổi số điện thoại");
 		builder.setCancelable(true);
 
-		builder.setNegativeButton("Ã„ï¿½Ã¡Â»â€œng ÃƒÂ½", new DialogInterface.OnClickListener() {
+		builder.setNegativeButton("Đồng ý", new DialogInterface.OnClickListener() {
 			public void onClick(DialogInterface dialog, int which) {
 				InputMethodManager imm = (InputMethodManager) getSystemService(Context.INPUT_METHOD_SERVICE);
 				imm.hideSoftInputFromWindow(mNumberField.getWindowToken(), 0);
@@ -455,15 +474,15 @@ public class WellcomeActivity extends FragmentActivity{
 				
 				m84TV.setVisibility(View.INVISIBLE);
 				isConfirm = true;
-				mStatusText.setText("ChÃ¡Â»ï¿½ vÃƒÂ  nhÃ¡ÂºÂ­p mÃƒÂ£ xÃƒÂ¡c nhÃ¡ÂºÂ­n...");
+				mStatusText.setText("Chờ và nhập mã xác nhận");
 				mNumberField.setText("");
 				new GetActivateCode().execute();
 			}
 		});
 
-		builder.setPositiveButton("HÃ¡Â»Â§y", new DialogInterface.OnClickListener() {
+		builder.setPositiveButton("Hủy", new DialogInterface.OnClickListener() {
 			public void onClick(DialogInterface dialog, int which) {
-				mStatusText.setText("NhÃ¡ÂºÂ­p sÃ¡Â»â€˜ Ã„â€˜iÃ¡Â»â€¡n thoÃ¡ÂºÂ¡i...");
+				mStatusText.setText("Nhập số điện thoại...");
 				mNumberField.setText("");
 			}
 		});
@@ -473,28 +492,26 @@ public class WellcomeActivity extends FragmentActivity{
 		messageView.setGravity(Gravity.CENTER);
 	}
 
-	public String formatPhone(String phone){
-		String result = "";
-
+	public String formatPhone(String phone) {
+		
 		if (phone.charAt(0) == '+')
 			phone = phone.substring(1);
 
 		if (phone.charAt(0) != '0')
 			return "84" + phone;
-
-		try{
+		
+		try {
 			String first3c = phone.substring(0, 2);
 			if (first3c.compareTo("84") == 0)
 				return phone;
-			else{
+			else
 				return "84" + phone.substring(1);
-			}
-		}catch(Exception ex){
-			return result;
+		} catch (Exception ex) {
+			return "";
 		}
 	}
-
-	public boolean validatePhoneNumber(String phone){
+	
+	public boolean validatePhoneNumber(String phone) {
 		if (phone.length() != 11 && phone.length() != 12)
 			return false;
 		return true;
