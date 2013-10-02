@@ -10,10 +10,13 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 import vn.smartguide.DetailMenuFragment.Listener;
+import vn.smartguide.DetailPromo1Fragment.PromotionStr;
 import android.animation.ObjectAnimator;
 import android.animation.TimeInterpolator;
 import android.app.Activity;
 import android.content.Intent;
+import android.graphics.Bitmap;
+import android.graphics.Point;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
@@ -32,29 +35,28 @@ public class ShopDetailFragment extends Fragment {
 	
 	private final int NUM_PAGES = 2;
 	
+	// GUI elements
     private List<Fragment> mDetailFragmentList;
     private DetailPromoFragment mPromoFragment;
     private DetailPromo1Fragment mPromo1Fragment;
     private DetailPromo2Fragment mPromo2Fragment;
     private DetailNoPromoFragment mNoPromoFragment;
     private Fragment mActiveFragment;
-    private Shop mShop;
     
     private ImageView mLogoImageView;
     private ImageView mCoverImageView;
     
+    // Data
+    private Listener mListener = new Listener();
+    private Shop mShop;
     
-    @Override
-    public void onAttach(Activity activity) {
-        super.onAttach(activity);
-    }
+    ///////////////////////////////////////////////////////////////////////////
+    // Override methods
+    ///////////////////////////////////////////////////////////////////////////
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
-        super.onCreateView(inflater, container, savedInstanceState);
-        View root = inflater.inflate(R.layout.shop_detail, container, false);
-        
-        return root;
+        return inflater.inflate(R.layout.shop_detail, container, false);
     }
 
     @Override
@@ -87,43 +89,53 @@ public class ShopDetailFragment extends Fragment {
         transaction.add(R.id.layoutDetailPager, mNoPromoFragment).hide(mNoPromoFragment);
         transaction.commit();
         
+        // Get GUI elements
         mLogoImageView = (ImageView) getView().findViewById(R.id.imgLogo);
         mCoverImageView = (ImageView) getView().findViewById(R.id.imgCover);
         
+        // Set up menu fragment
         DetailMenuFragment menu = (DetailMenuFragment) getFragmentManager().findFragmentById(R.id.detailMenuFragment);
-        menu.setListener(new Listener() {
+        menu.setListener(new DetailMenuFragment.Listener() {
         	@Override
         	public void onButtonClick(int buttonIndex) {
-        		
         		onInfoButtonClick(buttonIndex);
+        	}
+        });
+        
+        // Set up Detal Promotion 1 Fragment
+        mPromo1Fragment.setListener(new DetailPromo1Fragment.Listener() {
+        	@Override
+        	public void onRewardClick(PromotionStr reward) {
+        		mListener.onReward1Click(reward);
+        	}
+        });
+        
+        // Set up Detal Promotion 2 Fragment
+        mPromo2Fragment.setListener(new DetailPromo2Fragment.Listener() {
+        	@Override
+        	public void onReward2Click(PromotionTypeTwo promotion) {
+        		mListener.onReward2Click(promotion);
         	}
         });
     }
     
-    @Override
-    public void onActivityResult(int requestCode, int resultCode, Intent data) {
-    }
+    ///////////////////////////////////////////////////////////////////////////
+    // Public methods
+    ///////////////////////////////////////////////////////////////////////////
     
-    @SuppressWarnings("unused")
-	private class ScreenSlidePagerAdapter extends FragmentStatePagerAdapter {
-    	
-        public ScreenSlidePagerAdapter(FragmentManager fm) {
-            super(fm);
-        }
-
-        @Override
-        public Fragment getItem(int position) {
-            return mDetailFragmentList.get(position);
-        }
-
-        @Override
-        public int getCount() {
-            return NUM_PAGES;
-        }
+    public void setListener(Listener listener) {
+    	if (listener == null)
+    		listener = new Listener();
+    	mListener = listener;
     }
+//    
+//    public DetailPromo1Fragment getPromoFragment(){
+//    	return mPromo1Fragment;
+//    }
+//    
     
-    public DetailPromo1Fragment getPromoFragment(){
-    	return mPromo1Fragment;
+    public void setSGP(int sgp) {
+    	mPromo1Fragment.setSGP(sgp);
     }
     
     public void onInfoButtonClick(int index) {
@@ -144,33 +156,13 @@ public class ShopDetailFragment extends Fragment {
 		mActiveFragment = f;
     }
     
-    private int mCoverHeight;
-    private boolean mShowCover = true;
-    public void toggleCover(boolean isShow) {
-    	
-    	View cover = getView().findViewById(R.id.layoutCover);
-		ObjectAnimator animator = null;
-		
-		mShowCover = isShow;
-		if (!mShowCover) {
-			mCoverHeight = cover.getHeight();
-			animator = ObjectAnimator.ofFloat(cover, "translationY", 0, -mCoverHeight);
-		} else {
-			mCoverHeight = cover.getHeight();
-			animator = ObjectAnimator.ofFloat(cover, "translationY", -mCoverHeight, 0);
-		}
-		
-		TimeInterpolator acce = new AccelerateDecelerateInterpolator();
-		animator.setInterpolator(acce);
-		animator.start();
-    }
-    
     public void setData(Shop s) {
     	mShop = s;
     	
     	// Prepare data
-    	getShopDetail();
+    	new GetShopDetail().execute();
     	
+    	// Set promotion fragment either 1 or 2
     	if (s.mPromotionStatus) {
     		if (s.mPromotion.getType() == 1) {
     			mPromoFragment = mPromo1Fragment;
@@ -190,15 +182,15 @@ public class ShopDetailFragment extends Fragment {
     	
     	mActiveFragment = mPromoFragment;
     	
-    	// Set data
-    	GlobalVariable.imageLoader.displayImage(mShop.mLogo, mLogoImageView, GlobalVariable.displayImageOptions);
+    	// Set image
+    	GlobalVariable.cyImageLoader.showImage(mShop.mLogo, mLogoImageView);
     	
     	if (mShop.mCover.compareTo("null") != 0)
-    		GlobalVariable.imageLoader.displayImage(mShop.mCover, mCoverImageView, GlobalVariable.displayImageOptions);
+    		GlobalVariable.cyImageLoader.showImage(mShop.mCover, mCoverImageView);
     	
     	DetailMenuFragment menu = (DetailMenuFragment) getFragmentManager().findFragmentById(R.id.detailMenuFragment);
 //    	menu.updateLikeDis(s.mNumOfLike, s.mNumOfDislike, s.mLikeStatus);
-//    	
+    	
     	if (mPromoFragment == mNoPromoFragment) {
     		if (!menu.mShowInfoBar)
     			menu.toggleShopInfo(false, false);
@@ -211,15 +203,13 @@ public class ShopDetailFragment extends Fragment {
     	mPromoFragment.setData(s);
     	((DetailShopInfoFragment) mDetailFragmentList.get(0)).setData(s);
     	
-    	if (s.mPromotionStatus == true && s.mPromotion.getType() == 1)
-    		mPromo1Fragment.runAnimation();
-    }
-    
-    public void getShopDetail() {
-    	new GetShopDetail().execute();
+//    	if (s.mPromotionStatus == true && s.mPromotion.getType() == 1)
+//    		mPromo1Fragment.runAnimation();
     }
     
     public class GetShopDetail extends AsyncTask<Void, Void, Boolean> {
+    	
+    	private Exception mEx;
 
 		@Override
 		protected Boolean doInBackground(Void... params) {
@@ -235,19 +225,25 @@ public class ShopDetailFragment extends Fragment {
 				String json = NetworkManger.post(APILinkMaker.mGetShopUser(), pairs);
 				JSONObject jRoot = new JSONObject(json);
 				parseJsonShopDetail(jRoot);				
-			} catch (JSONException e) {
+			} catch (Exception e) {
+				mEx = e;
 			}
 
 			return true;
 		}
 
 		protected void onPostExecute(Boolean k) {
-			((DetailShopMenuFragment) mDetailFragmentList.get(1)).setData(mShop);
-	    	((DetailShopPhotoFragment) mDetailFragmentList.get(2)).setData(mShop);
-	    	((DetailCommentFragment) mDetailFragmentList.get(3)).setData(mShop);
-	    	((DetailShowMapFragment) mDetailFragmentList.get(4)).setData(mShop);
-	    	
-	    	GlobalVariable.mCurrentShop = mShop;
+			
+			if (mEx == null) {
+				((DetailShopMenuFragment) mDetailFragmentList.get(1)).setData(mShop);
+		    	((DetailShopPhotoFragment) mDetailFragmentList.get(2)).setData(mShop);
+		    	((DetailCommentFragment) mDetailFragmentList.get(3)).setData(mShop);
+		    	((DetailShowMapFragment) mDetailFragmentList.get(4)).setData(mShop);
+		    	
+		    	GlobalVariable.mCurrentShop = mShop;
+			} else {
+				GlobalVariable.showToast("Không thể lấy thông tin chi tiết của shop", getActivity());
+			}
 		}
 		
 		protected void onPreExecute(){ }
@@ -257,58 +253,70 @@ public class ShopDetailFragment extends Fragment {
     	// Parse Item
     	mShop.mItemCollections.clear();
     	mShop.mGroupItemList.clear();
-    	JSONArray jCateItemArr = jRoot.getJSONArray("shop_items"); 
-    	
-    	for (int i = 0; i < jCateItemArr.length(); i++) {
-    		JSONObject jCate = jCateItemArr.getJSONObject(i);
-    		String cateName = jCate.getString("cat_name");
-    		JSONArray jItemArr = jCate.getJSONArray("items");
-    		mShop.mGroupItemList.add(cateName);
-    		mShop.mItemCollections.put(cateName, new ArrayList<Item>());
-    		for (int j = 0; j < jItemArr.length(); j++) {
-    			JSONObject jItem = jItemArr.getJSONObject(j);
-    			Item item = new Item(jItem.getString("name"), jItem.getString("price"), null, null);
-    			mShop.mItemCollections.get(mShop.mGroupItemList.get(mShop.mGroupItemList.size() - 1)).add(item);
+    	JSONArray jCateItemArr = jRoot.optJSONArray("shop_items");
+    	if (jCateItemArr != null)
+    		for (int i = 0; i < jCateItemArr.length(); i++) {
+    			JSONObject jCate = jCateItemArr.optJSONObject(i);
+    			String cateName = jCate.getString("cat_name");
+    			JSONArray jItemArr = jCate.getJSONArray("items");
+    			mShop.mGroupItemList.add(cateName);
+    			mShop.mItemCollections.put(cateName, new ArrayList<Item>());
+    			for (int j = 0; j < jItemArr.length(); j++) {
+    				JSONObject jItem = jItemArr.getJSONObject(j);
+    				Item item = new Item(jItem.getString("name"), jItem.getString("price"), null, null);
+    				mShop.mItemCollections.get(mShop.mGroupItemList.get(mShop.mGroupItemList.size() - 1)).add(item);
+    			}
     		}
-    	}
     	
     	// Parse comment
     	mShop.mCommentList.clear();
-    	JSONArray jCommentArr = jRoot.getJSONArray("shop_comments");
-    	for (int i = 0; i < jCommentArr.length(); i++) {
-    		JSONObject jComment = jCommentArr.getJSONObject(i);
-    		
-    		mShop.mCommentList.add(0, new Comment(jComment.getString("user"), jComment.getString("comment"),
-    				jComment.getString("avatar"), jComment.getString("time")));
-    	}
+    	JSONArray jCommentArr = jRoot.optJSONArray("shop_comments");
+    	if (jCommentArr != null)
+	    	for (int i = 0; i < jCommentArr.length(); i++) {
+	    		JSONObject jComment = jCommentArr.getJSONObject(i);
+	    		
+	    		mShop.mCommentList.add(0, new Comment(jComment.getString("user"), jComment.getString("comment"),
+	    				jComment.getString("avatar"), jComment.getString("time")));
+	    	}
     	
     	// Parse user image
     	mShop.mUserImageList.clear();
-    	JSONArray jUserImageArr = jRoot.getJSONArray("user_gallery");
-    	for (int i = 0; i < jUserImageArr.length(); i++) {
-    		JSONObject jUserImage = jUserImageArr.getJSONObject(i);
-
-    		mShop.mUserImageList.add(new ImageStr(
-    				jUserImage.getString("image"), jUserImage.getString("description")));
-    	}
+    	JSONArray jUserImageArr = jRoot.optJSONArray("user_gallery");
+    	if (jUserImageArr != null)
+	    	for (int i = 0; i < jUserImageArr.length(); i++) {
+	    		JSONObject jUserImage = jUserImageArr.getJSONObject(i);
+	
+	    		mShop.mUserImageList.add(new ImageStr(
+	    				jUserImage.getString("image"), jUserImage.getString("description")));
+	    	}
     	
     	// Parse shop image
     	mShop.mShopImageList.clear();
-    	JSONArray jShopImage = jRoot.getJSONArray("shop_gallery");
-    	for (int i = 0; i < jUserImageArr.length(); i++) {
-    		mShop.mShopImageList.add(new ImageStr(jShopImage.getString(i), null));
-    	}
+    	JSONArray jShopImage = jRoot.optJSONArray("shop_gallery");
+    	if (jShopImage != null)
+	    	for (int i = 0; i < jShopImage.length(); i++) {
+	    		mShop.mShopImageList.add(new ImageStr(jShopImage.getString(i), null));
+	    	}
     }
     
-    public void releaseMemory(){
-    	try{
+    public void releaseMemory() {
+    	try {
 	    	mLogoImageView.setImageBitmap(null);
 	    	mCoverImageView.setImageBitmap(null);
 	    	((DetailShopPhotoFragment) mDetailFragmentList.get(2)).releaseMemory();
 	    	((DetailCommentFragment) mDetailFragmentList.get(3)).releaseMemory();
 	    	((DetailShowMapFragment) mDetailFragmentList.get(4)).releaseMemory();
-    	}catch(Exception ex){
+    	} catch (Exception ex) {
     		
     	}
+    }
+    
+    ///////////////////////////////////////////////////////////////////////////
+    // Listener
+    ///////////////////////////////////////////////////////////////////////////
+    
+    public static class Listener {
+    	public void onReward1Click(PromotionStr reward) { }
+    	public void onReward2Click(PromotionTypeTwo promotion) { }
     }
 }

@@ -1,6 +1,7 @@
 package vn.smartguide;
 
 import java.io.IOException;
+import java.io.UnsupportedEncodingException;
 import java.security.KeyManagementException;
 import java.security.KeyStore;
 import java.security.KeyStoreException;
@@ -13,6 +14,7 @@ import org.apache.http.HttpEntity;
 import org.apache.http.HttpResponse;
 import org.apache.http.HttpVersion;
 import org.apache.http.NameValuePair;
+import org.apache.http.client.ClientProtocolException;
 import org.apache.http.client.HttpClient;
 import org.apache.http.client.entity.UrlEncodedFormEntity;
 import org.apache.http.client.methods.HttpGet;
@@ -29,6 +31,7 @@ import org.apache.http.params.HttpParams;
 import org.apache.http.params.HttpProtocolParams;
 import org.apache.http.protocol.HTTP;
 import org.apache.http.util.EntityUtils;
+import org.json.JSONException;
 import org.json.JSONObject;
 
 public final class NetworkManger {
@@ -84,6 +87,31 @@ public final class NetworkManger {
 		return result;
 	}
 	
+	public static String post_throw(String URL, List<NameValuePair> pairs) throws Exception {
+		String result = "";
+		String fullURL = URL + "?access_token=" + GlobalVariable.tokenID + GlobalVariable.footerURL;
+
+		HttpPost httppost = new HttpPost(fullURL);
+		httppost.setEntity(new UrlEncodedFormEntity(pairs, "utf-8"));
+		HttpResponse response = httpclient.execute(httppost);
+		HttpEntity entity = response.getEntity();
+		result = EntityUtils.toString(entity);
+
+		try {
+			JSONObject error = new JSONObject(result);
+
+			if (error.getString("error_description").compareTo("The access token provided has expired.") == 0 &&
+					error.getString("error").compareTo("invalid_grant") == 0){
+				GlobalVariable.smartGuideDB.updateToken(GlobalVariable.getRefreshIDViaOAuth2());
+				return post(URL, pairs);
+			}
+		} catch (Exception ex) {
+			throw ex;
+		}
+		return result;
+	}
+
+	
 	public static String get(String URL, boolean isNeedOauth){
 		String result = "";
 		
@@ -102,17 +130,42 @@ public final class NetworkManger {
 			try{
 				JSONObject error = new JSONObject(result);
 				if (error.getString("error_description").compareTo("The access token provided has expired.") == 0 &&
-						error.getString("error").compareTo("invalid_grant") == 0){
+						error.getString("error").compareTo("invalid_grant") == 0) {
 					GlobalVariable.smartGuideDB.updateToken(GlobalVariable.getRefreshIDViaOAuth2());
 					return get(URL, isNeedOauth);
 				}
-			}catch(Exception ex){
+			}catch(Exception ex) {
 				ex.getMessage();
 			}
 
 		} catch (Exception e) {
 			return result;
 		}
+		return result;
+	}
+	
+	public static String get_throw(String URL, boolean isNeedOauth) throws ClientProtocolException, IOException {
+	
+		String result = "";
+		String fullURL = "";
+		if (isNeedOauth)
+			fullURL = URL + "?access_token=" + GlobalVariable.tokenID + GlobalVariable.footerURL;
+		else
+			fullURL = URL;
+
+		HttpGet httpGet = new HttpGet(fullURL);
+		HttpResponse response = httpclient.execute(httpGet);
+		HttpEntity entity = response.getEntity();
+		result = EntityUtils.toString(entity);
+
+		try {
+			JSONObject error = new JSONObject(result);
+			if (error.getString("error_description").compareTo("The access token provided has expired.") == 0 &&
+					error.getString("error").compareTo("invalid_grant") == 0) {
+				GlobalVariable.smartGuideDB.updateToken(GlobalVariable.getRefreshIDViaOAuth2());
+				return get(URL, isNeedOauth);
+			}
+		} catch (JSONException ex) { }
 		return result;
 	}
 	

@@ -7,8 +7,10 @@ import java.util.List;
 import java.util.Locale;
 import java.util.Map;
 
+import android.app.Activity;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
+import android.support.v4.app.FragmentActivity;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -34,7 +36,7 @@ public class DetailShopMenuFragment extends Fragment {
 
         super.onActivityCreated(savedInstanceState);
         mLst = (ExpandableListView) getView().findViewById(R.id.lstShopMenu);
-        mAdapter = new ShopMenuListAdapter((MainActivity) getActivity(), mLst);
+        mAdapter = new ShopMenuListAdapter(getActivity(), mLst);
         mLst.setAdapter(mAdapter);
     }
     
@@ -95,11 +97,11 @@ public class DetailShopMenuFragment extends Fragment {
     
     public class ShopMenuListAdapter extends BaseExpandableListAdapter {
     	 
-        private MainActivity mContext;
+        private Activity mContext;
         private Map<String, List<Item>> menuCollections = new LinkedHashMap<String, List<Item>>();
         private List<String> groupMenuList = new ArrayList<String>();
      
-        public ShopMenuListAdapter(MainActivity context, ExpandableListView explst) {
+        public ShopMenuListAdapter(FragmentActivity context, ExpandableListView explst) {
         	
             mContext = context;
         }

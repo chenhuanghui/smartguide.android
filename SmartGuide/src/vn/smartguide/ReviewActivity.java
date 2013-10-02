@@ -180,7 +180,7 @@ public class ReviewActivity extends Activity {
 			runOnUiThread(new Runnable() {
 				@Override
 				public void run() {
-					try{
+					try {
 						if (mReviews.size() == 0)
 							return;
 
@@ -191,7 +191,7 @@ public class ReviewActivity extends Activity {
 							mName.setText("Anomynous User");
 						else
 							mName.setText(name);
-					}catch(Exception ex){
+					} catch(Exception ex) {
 
 					}
 				}

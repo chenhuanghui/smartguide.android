@@ -11,31 +11,39 @@ import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
-import vn.smartguide.ShopPromotionListAdapter.PromotionStr;
-
-
-import android.app.Activity;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
+import android.widget.ArrayAdapter;
 import android.widget.GridView;
+import android.widget.LinearLayout;
+import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 public class DetailPromo1Fragment extends DetailPromoFragment {
 	
-	private ShopPromotionListAdapter mPromoListAdapter;
-	private Shop mShop;
-	int mTotalScore = 0;
-	private boolean isUpdatedScore = false;
-	private Activity mActivity;
-	private MainAcitivyListener mMainAcitivyListener;
-	private TextView mCostPerSGP;
-	GridView gridView;
-	List<PromotionStr> dataList;
+	private final int FPS = 24;
 	
+	// GUI elements
+	private ShopPromotionListAdapter mPromoListAdapter;
+	private TextView mCostPerSGP;
+	private GridView gridView;
+	private TextView txtSGP;
+	private TextView txtPromoDuration;
+	private TextView txtSP;
+	
+	// Data
+	private Shop mShop;
+	private int mTotalScore = 0;
+	private boolean isUpdatedScore = false;
+	private Listener mListener = new Listener();
+	
+	///////////////////////////////////////////////////////////////////////////
+	// Override methods
+	///////////////////////////////////////////////////////////////////////////
 	
 	@Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
@@ -48,36 +56,43 @@ public class DetailPromo1Fragment extends DetailPromoFragment {
     public void onActivityCreated(Bundle savedInstanceState) {
 
         super.onActivityCreated(savedInstanceState);
-        mMainAcitivyListener = (MainAcitivyListener) getActivity();
         
         mCostPerSGP = (TextView)getView().findViewById(R.id.textView1);
+        txtPromoDuration = (TextView) getView().findViewById(R.id.txtPromoDuration);
+    	txtSGP = (TextView) getView().findViewById(R.id.txtSGP);
+    	txtSP = (TextView) getView().findViewById(R.id.txtSP);
         // Instance of ImageAdapter Class
-        mPromoListAdapter = new ShopPromotionListAdapter(getActivity());
+        mPromoListAdapter = new ShopPromotionListAdapter();
         gridView = (GridView) getView().findViewById(R.id.grid_view_shop_promotion_list);
         gridView.setAdapter(mPromoListAdapter);
         gridView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
 			@Override
 			public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-				if (mTotalScore >= mPromoListAdapter.mItemList.get(position).required)
-					mMainAcitivyListener.getAwardTypeOne(mPromoListAdapter.mItemList.get(position).id);
+				if (mTotalScore >= mPromoListAdapter.getItem(position).required)
+//					mMainAcitivyListener.getAwardTypeOne(mPromoListAdapter.mItemList.get(position).id);
+					mListener.onRewardClick(mPromoListAdapter.getItem(position));
 			}
 		});
-        mActivity = getActivity();
     }
     
-    TextView txtSGP = null;
+	///////////////////////////////////////////////////////////////////////////
+	// Public methods
+	///////////////////////////////////////////////////////////////////////////
     
+    public void setListener(Listener listener) {
+    	if (listener == null)
+    		listener = new Listener();
+    	mListener = listener;
+    }
+    
+    @Override
     public void setData(Shop s) {
     	
-    	mShop = s;
-    	
-    	TextView txtPromoDuration = (TextView) getView().findViewById(R.id.txtPromoDuration);
-    	txtSGP = (TextView) getView().findViewById(R.id.txtSGP);
-    	TextView txtSP = (TextView) getView().findViewById(R.id.txtSP);
+    	mShop = s;   
     	
     	txtPromoDuration.setText(s.mPromotion.mDuration);
     	
-    	if (s.mPromotionStatus == false){
+    	if (s.mPromotionStatus == false) {
     		txtSP.setText("");
     		txtSGP.setText("");
     		new GetPromotionDetail().execute();
@@ -85,11 +100,9 @@ public class DetailPromo1Fragment extends DetailPromoFragment {
     		return;
     	}
 
-    	switch (s.mPromotion.getType()) {
-    	case 1:    		
-    	{   
+    	if (s.mPromotion.getType() == 1) {
     		PromotionTypeOne promo = (PromotionTypeOne) s.mPromotion;
-    		//for test resean
+    		//for test reason
     		mTotalScore = promo.mSGP;
     		//mTotalScore = 50;
     		isUpdatedScore = true;
@@ -98,25 +111,43 @@ public class DetailPromo1Fragment extends DetailPromoFragment {
     		mCostPerSGP.setText(Integer.toString(promo.mCost / 1000) + "K VNĐ/1 SGP");
     		new GetPromotionDetail().execute();
     	}
-    	break;
-    	}
     	
+    	runAnimation();
     }
     
-    private void parseJsonListPromotion(JSONObject jRoot) throws JSONException {
+    private void runAnimation() {
+    	txtSGP.setText("0");
     	
-    	JSONArray jPromoArr = jRoot.getJSONArray("array_required");
-    	
-    	dataList = new ArrayList<PromotionStr>();
-    	for (int i = 0; i < jPromoArr.length(); i++) {
-    		JSONObject jPromo = jPromoArr.getJSONObject(i);
-    		dataList.add(new PromotionStr(jPromo.getInt("id"), jPromo.getInt("required"), jPromo.getString("content")));
-    	}
-    	
-    	mPromoListAdapter.setData(dataList, mTotalScore);
+    	TimerTask runScore = new RunScore();
+    	Timer timer = new Timer();
+    	timer.scheduleAtFixedRate(runScore, 700, 1000/FPS);
+    }	
+    
+    private void resetTextSGP() {
+    	txtSGP.setText("0");
     }
     
-    public class GetPromotionDetail extends AsyncTask<Void, Void, Boolean> {
+    public void setSGP(int score) {
+    	mTotalScore = score;
+    	((PromotionTypeOne)mShop.mPromotion).mSGP = mTotalScore;
+    	((PromotionTypeOne)GlobalVariable.mCurrentShop.mPromotion).mSGP = mTotalScore;
+    	
+    	txtSGP.setText(Integer.toString(mTotalScore));
+    	
+    	mPromoListAdapter.notifyDataSetChanged();
+    }
+    
+	///////////////////////////////////////////////////////////////////////////
+	// Network Asynctask
+	///////////////////////////////////////////////////////////////////////////
+    
+    private class GetPromotionDetail extends AsyncTask<Void, Void, Boolean> {
+    	
+    	private Exception mEx;
+    	private List<PromotionStr> dataList;
+    	
+		@Override
+		protected void onPreExecute() { }
 
 		@Override
 		protected Boolean doInBackground(Void... params) {
@@ -131,37 +162,55 @@ public class DetailPromo1Fragment extends DetailPromoFragment {
 				JSONObject jRoot = new JSONObject(json);
 				parseJsonListPromotion(jRoot);
 				
-			} catch (JSONException e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
+			} catch (Exception e) {
+				mEx = e;
 			}
 
 			return true;
 		}
 
 		@Override
-		protected void onPostExecute(Boolean k){
-			mPromoListAdapter.notifyDataSetChanged();
-		}
-
-		@Override
-		protected void onPreExecute(){
+		protected void onPostExecute(Boolean k) {
 			
+			if (mEx == null) {
+				mPromoListAdapter.clear();
+				mPromoListAdapter.addAll(dataList);
+			} else {
+				
+			}
 		}
+		
+		private void parseJsonListPromotion(JSONObject jRoot) throws JSONException {
+	    	
+	    	JSONArray jPromoArr = jRoot.getJSONArray("array_required");
+	    	
+	    	dataList = new ArrayList<PromotionStr>();
+	    	for (int i = 0; i < jPromoArr.length(); i++) {
+	    		JSONObject jPromo = jPromoArr.getJSONObject(i);
+	    		dataList.add(new PromotionStr(
+	    				jPromo.getInt("id"), 
+	    				jPromo.getInt("required"), 
+	    				jPromo.getString("content")));
+	    	}
+	    }
 	}
     
-    class RunScore extends TimerTask {
-    	int mCurrentScore = 0;
-    	TimerTask mthiz = this;
+	///////////////////////////////////////////////////////////////////////////
+	// Timer class for count up animation
+	///////////////////////////////////////////////////////////////////////////
+    
+    private class RunScore extends TimerTask {
+    	
+    	private int mCurrentScore = 0;
     	
     	public void run() {
     		
-    		mActivity.runOnUiThread(new Runnable() {
+    		getActivity().runOnUiThread(new Runnable() {
 				
 				@Override
 				public void run() {
-		    		if (isUpdatedScore == false || mCurrentScore > mTotalScore){
-		    			mthiz.cancel();
+		    		if (isUpdatedScore == false || mCurrentScore > mTotalScore) {
+		    			RunScore.this.cancel();
 		    			return;
 		    		}
 		    		txtSGP.setText(Integer.toString(mCurrentScore));
@@ -171,26 +220,59 @@ public class DetailPromo1Fragment extends DetailPromoFragment {
     	}
     }
     
-    void runAnimation(){
-    	txtSGP.setText("0");
-    	final int FPS = 24;
-    	TimerTask runScore = new RunScore();
-    	Timer timer = new Timer();
-    	timer.scheduleAtFixedRate(runScore, 700, 1000/FPS);
+	///////////////////////////////////////////////////////////////////////////
+	// Adapter
+	///////////////////////////////////////////////////////////////////////////
+    
+    public static class PromotionStr {
+
+		public PromotionStr(int c, int a, String b) {
+			required = a;
+			content = b;
+			id = c;
+		}
+
+		public int required;
+		public String content;
+		public int id;
+	}
+    
+    private class ShopPromotionListAdapter extends ArrayAdapter<PromotionStr> {    	    	
+
+    	public ShopPromotionListAdapter() {
+    		super(getActivity(), R.layout.shop_promotion_item, R.id.txtAwardName, new ArrayList<PromotionStr>());
+    	}
+
+    	@Override
+    	public View getView(int position, View convertView, ViewGroup parent) {
+    		convertView = super.getView(position, convertView, parent);
+    		
+    		// Xử trường hợp loại 2
+    		RelativeLayout head_bar = (RelativeLayout) convertView.findViewById(R.id.shop_bar_head_bg);
+    		LinearLayout tail_bar = (LinearLayout) convertView.findViewById(R.id.shop_bar_tail_bg);
+    		
+    		if (getItem(position).required <= mTotalScore) {		
+    			head_bar.setBackgroundResource(R.drawable.shop_head_bar_green);
+    			tail_bar.setBackgroundResource(R.drawable.shop_bar_highlight);
+    		} else {
+    			head_bar.setBackgroundResource(R.drawable.shop_bar_head);
+    			tail_bar.setBackgroundResource(R.drawable.shop_bar_tail_9);
+    		}
+    		
+    		TextView txtSGP = (TextView) convertView.findViewById(R.id.txtSGP);
+    		TextView txtAwardName = (TextView) convertView.findViewById(R.id.txtAwardName);
+
+    		txtSGP.setText("" + getItem(position).required);
+    		txtAwardName.setText(getItem(position).content);
+    		return convertView;
+    	}
     }
     
-    public void resetTextSGP(){
-    	txtSGP.setText("0");
-    }
+    ///////////////////////////////////////////////////////////////////////////
+    // Listener
+    ///////////////////////////////////////////////////////////////////////////
     
-    public void setSGP(int score){
-    	mTotalScore = score;
-    	((PromotionTypeOne)mShop.mPromotion).mSGP = mTotalScore;
-    	((PromotionTypeOne)GlobalVariable.mCurrentShop.mPromotion).mSGP = mTotalScore;
-    	
-    	txtSGP.setText(Integer.toString(mTotalScore));
-    	
-    	mPromoListAdapter.setData(dataList, mTotalScore);
-    	mPromoListAdapter.notifyDataSetChanged();
+    public static class Listener {
+    	public void onRewardClick(PromotionStr reward) { }
     }
 }

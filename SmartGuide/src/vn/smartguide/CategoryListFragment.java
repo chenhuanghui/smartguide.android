@@ -158,7 +158,7 @@ public class CategoryListFragment extends Fragment {
 					}
 					else
 						GlobalVariable.mFilterString = Integer.toString(position);
-
+					GlobalVariable.mSortByString = "0";
 					new FindShopList().execute();
 				}
 			});

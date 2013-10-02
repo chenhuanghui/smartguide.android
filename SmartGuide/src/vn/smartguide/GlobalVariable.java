@@ -273,7 +273,7 @@ public final class GlobalVariable {
 			public void onLocationChanged(Location location) {
 				if (!isFirstTimeGetGPS){
 					isFirstTimeGetGPS = true;
-					Toast.makeText(mcontext, "Ä�Ã£ láº¥y Ä‘Æ°á»£c tá»�a Ä‘á»™ GPS. Báº¡n cÃ³ thá»ƒ thá»±c hiá»‡n chá»©c nÄƒng scan code", Toast.LENGTH_LONG).show();
+					Toast.makeText(mcontext, "Đã lấy được tọa độ GPS. Bạn có thể thực hiện chức năng scan code", Toast.LENGTH_LONG).show();
 					mMainAcitivyListener.finishGetSGP();
 				}
 				
@@ -288,7 +288,7 @@ public final class GlobalVariable {
 
 			@Override
 			public void onProviderEnabled(String provider) {
-				Toast.makeText(mcontext, "Ä�ang láº¥y tá»�a Ä‘á»™ GPS", Toast.LENGTH_SHORT).show();
+				Toast.makeText(mcontext, "Đang lấy tọa độ GPS", Toast.LENGTH_SHORT).show();
 			}
 
 			@Override
@@ -300,5 +300,13 @@ public final class GlobalVariable {
 		// Register the listener with the Location Manager to receive location updates
 		locationManager.requestLocationUpdates(LocationManager.NETWORK_PROVIDER, 0, 0, locationListener);
 		locationManager.requestLocationUpdates(LocationManager.GPS_PROVIDER, 0, 0, locationListener);
+	}
+	
+	public static String right(String s, int n) {
+		return s.substring(s.length() - n);
+	}
+	
+	public static void showToast(String message, Context ct) {
+		Toast.makeText(ct, message, Toast.LENGTH_LONG).show();
 	}
 }

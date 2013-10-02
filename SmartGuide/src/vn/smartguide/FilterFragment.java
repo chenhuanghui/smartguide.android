@@ -32,8 +32,7 @@ import android.widget.TextView;
  */
 public class FilterFragment extends Fragment {
 	
-	private MainAcitivyListener mMainAcitivyListener = null;
-	
+	// Constants
 	private final int TEXT_CHECK_COLOR = 0xFFFFFFFF;
 	private final int TEXT_UNCHECK_COLOR = 0xFF9FA6AC;
 	private final int[] mTextViewIDArr = new int[] {
@@ -50,6 +49,8 @@ public class FilterFragment extends Fragment {
 			R.id.radioDistance,
 	};
 	
+	// GUI elements
+	
 	private final FilterItem[] mItemList = new FilterItem[] {
 			new FilterItem(R.drawable.icon12, R.drawable.icon12_gray, R.drawable.iconpin_food, "ĂN", "food"),
 			new FilterItem(R.drawable.icon13, R.drawable.icon13_gray, R.drawable.iconpin_drink, "UỐNG", "drink"),
@@ -60,22 +61,26 @@ public class FilterFragment extends Fragment {
 			new FilterItem(R.drawable.icon18, R.drawable.icon18_gray, R.drawable.iconpin_shopping, "MUA SẮM", "production"),
 			new FilterItem(R.drawable.icon19, R.drawable.icon19_gray, R.drawable.iconpin_education, "GIÁO DỤC", "education"),
 	};
-
-	private FilterAdapter mFilterAdapter;
-	public boolean mShowContent = false;
-
-	private ImageButton mDoneBtn = null;
 	
+	private ImageButton mDoneBtn = null;
+	private FilterAdapter mFilterAdapter;
 	private RadioButton mRadioGetAward = null;
 	private RadioButton mRadioMostPoint = null;
 	private RadioButton mRadioMostLike = null;
 	private RadioButton mRadioMostView = null;
 	private RadioButton mRadioDistance = null;
 	
+	// Data
+	private boolean mShowContent = false;
+	private Listener mListener = new Listener();
+	
+	///////////////////////////////////////////////////////////////////////////
+	// Override methods
+	///////////////////////////////////////////////////////////////////////////
+	
 	@Override
 	public void onAttach(Activity activity) {
 		super.onAttach(activity);
-		mMainAcitivyListener = (MainAcitivyListener) activity;
 	}
 	
 	@Override
@@ -99,13 +104,13 @@ public class FilterFragment extends Fragment {
 			
 			@Override
 			public void onClick(View v) {
-				((ShopListFragment)(mMainAcitivyListener).getShopListFragment()).setForeground();
-				mMainAcitivyListener.goToPage(1);
+//				((ShopListFragment)(mMainAcitivyListener).getShopListFragment()).setForeground();
+//				mMainAcitivyListener.goToPage(1);
 				
 				toggle();
 				
 				GlobalVariable.mFilterString = "";
-				GlobalVariable.mSortByString = "";
+				GlobalVariable.mSortByString = "0";
 				
 				if (mRadioMostPoint.isChecked())
 					GlobalVariable.mSortByString = "3";
@@ -123,12 +128,13 @@ public class FilterFragment extends Fragment {
 				if (adapter.mItemList.get(0).status == true)
 					GlobalVariable.mFilterString = "1";
 				
-				for(int i = 1; i < adapter.mItemList.size(); i++){
+				for (int i = 1; i < adapter.mItemList.size(); i++) {
 					if (adapter.mItemList.get(i).status == true)
 						GlobalVariable.mFilterString += ", " + Integer.toString(i + 1);
 				}
 					
-				new FindShopList().execute();
+//				new FindShopList().execute();
+				mListener.onDone();
 			}
 		});
 		
@@ -174,6 +180,16 @@ public class FilterFragment extends Fragment {
 		View layout = getView().findViewById(R.id.layoutContentFrame2);
 		layout.setVisibility(View.GONE);
 	}
+	
+	///////////////////////////////////////////////////////////////////////////
+	// Public methods
+	///////////////////////////////////////////////////////////////////////////
+	
+	public void setListener(Listener listener) {
+		if (listener == null)
+			listener = new Listener();
+		mListener = listener;
+	}
 
 	public void toggle() {
 		mShowContent = !mShowContent;
@@ -208,6 +224,10 @@ public class FilterFragment extends Fragment {
 			this.status = true;
 		}
 	}
+	
+	///////////////////////////////////////////////////////////////////////////
+	// Adapter
+	///////////////////////////////////////////////////////////////////////////
 
 	public class FilterAdapter extends BaseAdapter {
 
@@ -296,31 +316,39 @@ public class FilterFragment extends Fragment {
 		}
 	}
 	
-	public class FindShopList extends AsyncTask<Void, Void, Boolean> {
-		String json ="";
-		@Override
-		protected Boolean doInBackground(Void... params) {
-			List<NameValuePair> pairs = new ArrayList<NameValuePair>();
-			pairs.add(new BasicNameValuePair("group_list", GlobalVariable.mFilterString));
-			pairs.add(new BasicNameValuePair("city_id", GlobalVariable.mCityID));
-			pairs.add(new BasicNameValuePair("user_id", GlobalVariable.userID));
-			pairs.add(new BasicNameValuePair("user_lat", Float.toString(GlobalVariable.mLat)));
-			pairs.add(new BasicNameValuePair("user_lng", Float.toString(GlobalVariable.mLng)));
-			pairs.add(new BasicNameValuePair("page", "0"));
-			pairs.add(new BasicNameValuePair("sort_by", GlobalVariable.mSortByString));
-
-			json = NetworkManger.post(APILinkMaker.ShopListInCategory(), pairs);
-			
-			return true;
-		}
-
-		@Override
-		protected void onPostExecute(Boolean k){
-			((ShopListFragment)(mMainAcitivyListener).getShopListFragment()).mHaveAnimation = true;
-			(mMainAcitivyListener).getShopListFragment().update(json);
-		}
-
-		@Override
-		protected void onPreExecute(){}
+	///////////////////////////////////////////////////////////////////////////
+	// Listener
+	///////////////////////////////////////////////////////////////////////////
+	
+	public static class Listener {
+		public void onDone() {}
 	}
+	
+//	public class FindShopList extends AsyncTask<Void, Void, Boolean> {
+//		String json ="";
+//		@Override
+//		protected Boolean doInBackground(Void... params) {
+//			List<NameValuePair> pairs = new ArrayList<NameValuePair>();
+//			pairs.add(new BasicNameValuePair("group_list", GlobalVariable.mFilterString));
+//			pairs.add(new BasicNameValuePair("city_id", GlobalVariable.mCityID));
+//			pairs.add(new BasicNameValuePair("user_id", GlobalVariable.userID));
+//			pairs.add(new BasicNameValuePair("user_lat", Float.toString(GlobalVariable.mLat)));
+//			pairs.add(new BasicNameValuePair("user_lng", Float.toString(GlobalVariable.mLng)));
+//			pairs.add(new BasicNameValuePair("page", "0"));
+//			pairs.add(new BasicNameValuePair("sort_by", GlobalVariable.mSortByString));
+//
+//			json = NetworkManger.post(APILinkMaker.ShopListInCategory(), pairs);
+//			
+//			return true;
+//		}
+//
+//		@Override
+//		protected void onPostExecute(Boolean k){
+////			((ShopListFragment)(mMainAcitivyListener).getShopListFragment()).mHaveAnimation = true;
+//			(mMainAcitivyListener).getShopListFragment().update(json);
+//		}
+//
+//		@Override
+//		protected void onPreExecute(){}
+//	}
 }

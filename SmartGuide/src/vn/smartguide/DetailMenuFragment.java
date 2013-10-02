@@ -1,5 +1,10 @@
 package vn.smartguide;
 
+import java.util.ArrayList;
+import java.util.List;
+
+import com.facebook.widget.PickerFragment;
+
 import android.animation.Animator;
 import android.animation.Animator.AnimatorListener;
 import android.animation.AnimatorSet;
@@ -32,11 +37,11 @@ public class DetailMenuFragment extends Fragment {
 	public static final int BUTTON_SHOW_MAP 	= 4;
 	
 	private static final int[] mXindexArr = new int[] {
-		R.id.btnInfo,
+		R.id.btnShopInfo,
 		R.id.btnShopMenu,
 		R.id.btnShopPhoto,
 		R.id.btnShopComment,
-		R.id.btnShowMap,
+		R.id.btnShopMap,
 	};
     
     private static final int[] ICON_BUTTON = new int[] {
@@ -56,24 +61,36 @@ public class DetailMenuFragment extends Fragment {
     };
 	
 	// GUI element
-	private Button btnPromotion;
-	private Button btnPromotionDock;
-	private Button btnShopInfo;
-	private Button btnShopInfoDock;
+	private Button btnPromotion;	// Left
+	private Button btnShop;
+	private Button btnPromotionOverlay;
 	private ImageView imgDivider;
 	private ImageView imgPicker;
-	private ImageView imgPickerBg;
-	private RelativeLayout layout5button;
 	
+	private ImageView imgPickerBg; 	// Right
+	private ImageButton btnShopInfo;
+	private ImageButton btnShopMenu;
+	private ImageButton btnShopPhoto;
+	private ImageButton btnShopComment;
+	private ImageButton btnShopMap;
+
 	// GUI size
-	private boolean mFirstTimeClick = true;
 	private int 	mRootWidth;
-	private int 	mBtnShopInfoWidth;
+	
+	private int 	mBtnShopWidth;
 	private int 	mBtnPromotionWidth;
+	private int 	mDividerWidth;
 	private int		mPickerWidth;
+	
 	private int		mPickerBgWidth;
+	private int		mBtnShopInfoWidth;
+	private int		mBtnShopMenuWidth;
+	private int		mBtnShopPhotoWidth;
+	private int		mBtnShopCommentWidth;
+	private int		mBtnShopMapWidth;
 	
 	// Data
+	private boolean 	mFirstTimeClick = true;
 	private Listener 	mListener 		= new Listener();
     public  boolean 	mShowInfoBar 	= false;
     private int			mButtonIndex	= BUTTON_INFO;
@@ -99,16 +116,20 @@ public class DetailMenuFragment extends Fragment {
         
         // Get GUI elements
         btnPromotion 		= (Button) getView().findViewById(R.id.btnPromotion);
-        btnPromotionDock 	= (Button) getView().findViewById(R.id.btnPromotionDock);
-        btnShopInfo 		= (Button) getView().findViewById(R.id.btnShopInfo);
-        btnShopInfoDock 	= (Button) getView().findViewById(R.id.btnShopInfoDock);
+        btnPromotionOverlay	= (Button) getView().findViewById(R.id.btnPromotionOverlay);
+        btnShop		 		= (Button) getView().findViewById(R.id.btnShop);
         imgDivider 			= (ImageView) getView().findViewById(R.id.imgDivider);
         imgPicker 			= (ImageView) getView().findViewById(R.id.imgPick);
+        
         imgPickerBg			= (ImageView) getView().findViewById(R.id.imgPickerBg);
-        layout5button 		= (RelativeLayout) getView().findViewById(R.id.layout5Button);
+        btnShopInfo			= (ImageButton) getView().findViewById(R.id.btnShopInfo);
+        btnShopMenu			= (ImageButton) getView().findViewById(R.id.btnShopMenu);
+        btnShopPhoto		= (ImageButton) getView().findViewById(R.id.btnShopPhoto);
+        btnShopComment		= (ImageButton) getView().findViewById(R.id.btnShopComment);
+        btnShopMap			= (ImageButton) getView().findViewById(R.id.btnShopMap);
         
         // Set GUI event
-        btnPromotion.setOnClickListener(new OnClickListener() {
+        btnPromotionOverlay.setOnClickListener(new OnClickListener() {
 			
 			@Override
 			public void onClick(View arg0) {
@@ -117,7 +138,7 @@ public class DetailMenuFragment extends Fragment {
 			}
 		});
         
-        btnShopInfo.setOnClickListener(new OnClickListener() {
+        btnShop.setOnClickListener(new OnClickListener() {
 			
 			@Override
 			public void onClick(View arg0) {
@@ -145,11 +166,16 @@ public class DetailMenuFragment extends Fragment {
 			@Override
 			public void onLayoutChange(View v, int left, int top, int right, int bottom,
 					int oldLeft, int oldTop, int oldRight, int oldBottom) {
+
+				mRootWidth = right - left; 
+				getGuiElementSize();
 				
-				imgPicker.setTranslationX((btnPromotion.getWidth() - imgPicker.getWidth()) / 2);
-				btnShopInfo.setWidth(btnShopInfoDock.getWidth());
-				View dummy = getView().findViewById(R.id.imgPickerDummy);
-				imgPickerBg.setTranslationX(((right - left - btnPromotionDock.getWidth()) / 5 - dummy.getWidth()) / 2);
+				btnPromotion.setTranslationX((mRootWidth - mBtnShopWidth - mDividerWidth - mBtnPromotionWidth) / 2);
+				imgDivider.setTranslationX(mRootWidth - mBtnShopWidth - mDividerWidth);
+				btnShop.setTranslationX(mRootWidth - mBtnShopWidth);
+				imgPicker.setTranslationX((mRootWidth - mBtnShopWidth - mDividerWidth - mPickerWidth) / 2);
+				
+				btnPromotionOverlay.setWidth(mRootWidth - mBtnShopWidth - mDividerWidth);
 				
 				getView().removeOnLayoutChangeListener(this);
 			}
@@ -173,20 +199,21 @@ public class DetailMenuFragment extends Fragment {
     		return;
     	
     	mButtonIndex = buttonIndex;
+    	int width5Button 	= mRootWidth - mBtnPromotionWidth - mDividerWidth;
+    	float posPicker		= mBtnPromotionWidth + mDividerWidth + (width5Button / 5 - mPickerWidth) / 2 + width5Button * mButtonIndex / 5;
+		float posPickerBg	= mPickerBgWidth - width5Button + (width5Button / 5 - mPickerBgWidth) / 2 + width5Button * mButtonIndex / 5;
     	
     	updateButtonHighLight(buttonIndex);
     	if (animate) {
-    		ObjectAnimator pickerAnimator = null;
-    		ObjectAnimator pickerBgAnimator = null;
-        	pickerAnimator = ObjectAnimator.ofFloat(imgPicker, "translationX", calculatePickerPos());
-			pickerBgAnimator = ObjectAnimator.ofFloat(imgPickerBg, "translationX", calculatePickerBgPos());
+    		ObjectAnimator pickerAnimator = ObjectAnimator.ofFloat(imgPicker, "translationX", posPicker);
+    		ObjectAnimator pickerBgAnimator = ObjectAnimator.ofFloat(imgPickerBg, "translationX", posPickerBg);
 			AnimatorSet animatorSet2 = new AnimatorSet();
 			animatorSet2.playTogether(pickerAnimator, pickerBgAnimator);
 			animatorSet2.setInterpolator(new AccelerateDecelerateInterpolator());
 			animatorSet2.start();
     	} else {
-    		imgPicker.setTranslationX(calculatePickerPos());
-    		imgPickerBg.setTranslationX(calculatePickerBgPos());
+    		imgPicker.setTranslationX(posPicker);
+    		imgPickerBg.setTranslationX(posPickerBg);
     	}
     	
     	if (invokeListener)
@@ -204,107 +231,140 @@ public class DetailMenuFragment extends Fragment {
     	if (animate) {
     	
     		// Do animation
-    		ObjectAnimator animator = null;
-    		ObjectAnimator alphaAnimator = null;
-    		ObjectAnimator alphaAnimator5 = null;
-    		ObjectAnimator pickerAnimator = null;
     		animatorSet = new AnimatorSet();
+    		float posPromotion 	= 0;
+    		float posShop		= 0;
+    		float posDivider	= 0;
+    		
+    		float posPicker		= 0;
+    		float posPickerBg	= 0;
+    		float posShopInfo	= 0;
+    		float posShopMenu	= 0;
+    		float posShopPhoto	= 0;
+    		float posShopComment= 0;
+    		float posShopMap	= 0;
+    		List<Animator> animatorList = new ArrayList<Animator>();
     		if (mShowInfoBar) {
     			
-    			// Show info bar
-    			animator = ObjectAnimator.ofInt(btnShopInfo, "width", 
-    					mBtnShopInfoWidth, mRootWidth - mBtnPromotionWidth);
+    			// Calculate position
+    			int width5Button = mRootWidth - mBtnPromotionWidth - mDividerWidth;
+
+    			posPromotion 	= 0;
+    			posDivider		= mBtnPromotionWidth;
+    			posShop			= mBtnPromotionWidth + mPickerWidth + (width5Button - mBtnShopWidth) / 2;
     			
-    			// Fade out btnShopInfoDock
-    			alphaAnimator = ObjectAnimator.ofFloat(btnShopInfoDock, "alpha", 1.0f, 0.0f);
+    			posShopInfo		= mBtnShopInfoWidth - width5Button + (width5Button / 5 - mBtnShopInfoWidth) / 2;
+    			posShopMenu		= mBtnShopMenuWidth - width5Button + (width5Button / 5 - mBtnShopMenuWidth) / 2 + width5Button / 5;
+    			posShopPhoto	= mBtnShopPhotoWidth - width5Button + (width5Button / 5 - mBtnShopPhotoWidth) / 2 + width5Button * 2 / 5;
+    			posShopComment	= mBtnShopCommentWidth - width5Button + (width5Button / 5 - mBtnShopCommentWidth) / 2 + width5Button * 3 / 5;
+    			posShopMap		= mBtnShopMapWidth - width5Button + (width5Button / 5 - mBtnShopMapWidth) / 2 + width5Button * 4 / 5;
     			
-    			// Fade int 5 buttons
-    			alphaAnimator5 = ObjectAnimator.ofFloat(layout5button, "alpha", 0.0f, 1.0f);
+    			posPicker		= mBtnPromotionWidth + mDividerWidth + (width5Button / 5 - mPickerWidth) / 2 + width5Button * mButtonIndex / 5;
+    			posPickerBg		= mPickerBgWidth - width5Button + (width5Button / 5 - mPickerBgWidth) / 2 + width5Button * mButtonIndex / 5;
     			
-    			// toggle divider
-    			imgDivider.setImageResource(R.drawable.detail_menu_divider_right);
-    			
-    			// Translate picker
-    			pickerAnimator = ObjectAnimator.ofFloat(imgPicker, "translationX", calculatePickerPos());
-    			
-    			// Set visibility listener
+    			// Set visibility
+        		btnShopInfo.setVisibility(View.VISIBLE);
+        		btnShopMenu.setVisibility(View.VISIBLE);
+        		btnShopPhoto.setVisibility(View.VISIBLE);
+        		btnShopComment.setVisibility(View.VISIBLE);
+        		btnShopMap.setVisibility(View.VISIBLE);
+        		imgPickerBg.setVisibility(View.VISIBLE);
+        		btnPromotionOverlay.setWidth(mBtnPromotionWidth);
+        		
     			animatorSet.addListener(new AnimatorListener() {
-    				
-    				public void onAnimationRepeat(Animator arg0) { }
-    				
-    				@Override
-    				public void onAnimationStart(Animator arg0) {
-    					layout5button.setVisibility(View.VISIBLE);
-    				}
-    				
-    				public void onAnimationEnd(Animator arg0) {	
-    					btnShopInfoDock.setVisibility(View.INVISIBLE);
-    					btnShopInfo.setVisibility(View.INVISIBLE);
-    					animatorSet = null;
-    				}
-    				
-    				public void onAnimationCancel(Animator arg0) { 
-    					btnShopInfoDock.setVisibility(View.INVISIBLE);
-    					btnShopInfo.setVisibility(View.INVISIBLE);
-    					animatorSet = null;
-    				}
-    			});
+					
+					public void onAnimationStart(Animator animation) { }
+					public void onAnimationRepeat(Animator animation) { }
+					
+					public void onAnimationEnd(Animator animation) {
+						btnShop.setVisibility(View.INVISIBLE);
+					}
+					
+					public void onAnimationCancel(Animator animation) {
+						onAnimationEnd(animation);
+					}
+				});
+    			
     		} else {
+
+    			// Calculate position
+    			posPromotion 	= (mRootWidth - mBtnShopWidth - mDividerWidth - mBtnPromotionWidth) / 2;
+    			posDivider		= mRootWidth - mBtnShopWidth - mDividerWidth;
+    			posShop			= mRootWidth - mBtnShopWidth;
     			
-    			// Hide info bar
-    			animator = ObjectAnimator.ofInt(btnShopInfo, "width", 
-    					mRootWidth - mBtnPromotionWidth, mBtnShopInfoWidth);
+    			posShopInfo		= 0;
+    			posShopMenu		= 0;
+    			posShopPhoto	= 0;
+    			posShopComment	= 0;
+    			posShopMap		= 0;
     			
-    			// Fade out btnShopInfoDock
-    			alphaAnimator = ObjectAnimator.ofFloat(btnShopInfoDock, "alpha", 0.0f, 1.0f);
+    			posPicker		= (mRootWidth - mBtnShopWidth - mDividerWidth - mPickerWidth) / 2;
+    			posPickerBg		= 0;
     			
-    			// Fade int 5 buttons
-    			alphaAnimator5 = ObjectAnimator.ofFloat(layout5button, "alpha", 1.0f, 0.0f);
+    			// Set visibility
+    			btnShop.setVisibility(View.VISIBLE);
     			
-    			// toggle divider
-    			imgDivider.setImageResource(R.drawable.detail_menu_divider_left);
-    			
-    			// Translate picker
-    			pickerAnimator = ObjectAnimator.ofFloat(imgPicker, "translationX", calculatePickerPos());
-    			
-    			// Set visibility listener
     			animatorSet.addListener(new AnimatorListener() {
-    				
-    				public void onAnimationStart(Animator arg0) { 
-    					btnShopInfoDock.setVisibility(View.VISIBLE);
-    					btnShopInfo.setVisibility(View.VISIBLE);
-    				}
-    				
-    				public void onAnimationRepeat(Animator arg0) { }
-    				
-    				public void onAnimationEnd(Animator arg0) {	
-    					layout5button.setVisibility(View.INVISIBLE);
-    					animatorSet = null;
-    				}
-    				
-    				public void onAnimationCancel(Animator arg0) {
-    					layout5button.setVisibility(View.INVISIBLE);
-    					animatorSet = null;
-    				}
-    			});
+					
+					public void onAnimationStart(Animator animation) { }
+					public void onAnimationRepeat(Animator animation) { }
+					
+					public void onAnimationEnd(Animator animation) {
+						btnShopInfo.setVisibility(View.INVISIBLE);
+		        		btnShopMenu.setVisibility(View.INVISIBLE);
+		        		btnShopPhoto.setVisibility(View.INVISIBLE);
+		        		btnShopComment.setVisibility(View.INVISIBLE);
+		        		btnShopMap.setVisibility(View.INVISIBLE);
+		        		imgPickerBg.setVisibility(View.INVISIBLE);
+		        		btnPromotionOverlay.setWidth(mRootWidth - mBtnShopWidth - mDividerWidth);
+					}
+					
+					public void onAnimationCancel(Animator animation) {
+						onAnimationEnd(animation);
+					}
+				});
     		}
     		
+    		// Set divider image
+    		imgDivider.setImageResource(mShowInfoBar ? R.drawable.detail_menu_divider_right : R.drawable.detail_menu_divider_left);
+    		
     		// Set up animator set
-    		animatorSet.playTogether(animator, alphaAnimator, alphaAnimator5, pickerAnimator);
+    		animatorList.add(ObjectAnimator.ofFloat(btnPromotion, "translationX", posPromotion));
+    		animatorList.add(ObjectAnimator.ofFloat(imgDivider, "translationX", posDivider));
+    		animatorList.add(ObjectAnimator.ofFloat(btnShop, "translationX", posShop));
+    		animatorList.add(ObjectAnimator.ofFloat(btnShopInfo, "translationX", posShopInfo));
+    		animatorList.add(ObjectAnimator.ofFloat(btnShopMenu, "translationX", posShopMenu));
+    		animatorList.add(ObjectAnimator.ofFloat(btnShopPhoto, "translationX", posShopPhoto));
+    		animatorList.add(ObjectAnimator.ofFloat(btnShopComment, "translationX", posShopComment));
+    		animatorList.add(ObjectAnimator.ofFloat(btnShopMap, "translationX", posShopMap));
+    		animatorList.add(ObjectAnimator.ofFloat(imgPicker, "translationX", posPicker));
+    		animatorList.add(ObjectAnimator.ofFloat(imgPickerBg, "translationX", posPickerBg));
+    		
+    		float alphaStart = mShowInfoBar ? 0.0f : 1.0f;
+    		float alphaEnd = mShowInfoBar ? 1.0f : 0.0f;
+    		animatorList.add(ObjectAnimator.ofFloat(btnShop, "alpha", alphaEnd, alphaStart));
+			animatorList.add(ObjectAnimator.ofFloat(btnShopInfo, "alpha", alphaStart, alphaEnd));
+			animatorList.add(ObjectAnimator.ofFloat(btnShopMenu, "alpha", alphaStart, alphaEnd));
+			animatorList.add(ObjectAnimator.ofFloat(btnShopPhoto, "alpha", alphaStart, alphaEnd));
+			animatorList.add(ObjectAnimator.ofFloat(btnShopComment, "alpha", alphaStart, alphaEnd));
+			animatorList.add(ObjectAnimator.ofFloat(btnShopMap, "alpha", alphaStart, alphaEnd));
+			animatorList.add(ObjectAnimator.ofFloat(imgPickerBg, "alpha", alphaStart, alphaEnd));
+    		
+    		animatorSet.playTogether(animatorList);
     		animatorSet.setInterpolator(new AccelerateDecelerateInterpolator());
     		animatorSet.start();    		
     	} else {
     		
     		// Change GUI instantly
-    		if (mShowInfoBar) {
-    			btnShopInfo.setWidth(mRootWidth - mBtnPromotionWidth);
-    			btnShopInfoDock.setVisibility(View.INVISIBLE);
-    			layout5button.setVisibility(View.VISIBLE);
-    		} else {
-    			btnShopInfo.setWidth(mBtnShopInfoWidth);
-    			btnShopInfoDock.setVisibility(View.VISIBLE);
-    			layout5button.setVisibility(View.INVISIBLE);
-    		}
+//    		if (mShowInfoBar) {
+//    			btnShopInfo.setWidth(mRootWidth - mBtnPromotionWidth);
+//    			btnShopInfoDock.setVisibility(View.INVISIBLE);
+//    			layout5button.setVisibility(View.VISIBLE);
+//    		} else {
+//    			btnShopInfo.setWidth(mBtnShopInfoWidth);
+//    			btnShopInfoDock.setVisibility(View.VISIBLE);
+//    			layout5button.setVisibility(View.INVISIBLE);
+//    		}
     	}
     	
     	if (invokeListener)
@@ -323,45 +383,19 @@ public class DetailMenuFragment extends Fragment {
     	if (!mFirstTimeClick)
     		return;
     	
-    	mFirstTimeClick = false;
-    	
-    	mBtnPromotionWidth 	= btnPromotionDock.getWidth();
-    	mBtnShopInfoWidth 	= btnShopInfoDock.getWidth();
-    	mRootWidth 			= getView().findViewById(R.id.layoutDetailMenu).getWidth();
-    	mPickerWidth 		= imgPicker.getWidth();
-    	mPickerBgWidth 		= imgPickerBg.getWidth();
+    	mBtnPromotionWidth 	= btnPromotion.getWidth();
+		mBtnShopWidth 		= btnShop.getWidth();
+		mDividerWidth 		= imgDivider.getWidth();
+		mPickerWidth 		= imgPicker.getWidth();
+		
+		mPickerBgWidth		= imgPickerBg.getWidth();
+		mBtnShopInfoWidth 	= btnShopInfo.getWidth();
+		mBtnShopMenuWidth	= btnShopMenu.getWidth();
+		mBtnShopPhotoWidth 	= btnShopPhoto.getWidth();
+		mBtnShopCommentWidth= btnShopComment.getWidth();
+		mBtnShopMapWidth 	= btnShopMap.getWidth();
     }
-    
-    private int calculatePickerPos() {
-    	
-    	int result = 0;
-    	
-    	if (!mShowInfoBar) {
-    		result = (mRootWidth - mBtnPromotionWidth - mPickerWidth) / 2;
-    	} else {
-    		int w = mRootWidth - mBtnPromotionWidth;
-    		int r = w;
-    		r -= r * (mButtonIndex + 1) / 5;
-    		r += (w / 5 - mPickerWidth) / 2 + mPickerWidth;
-    		r = mRootWidth - r;
-    		result = r;
-    	}
-    	
-    	return result;
-    }
-    
-    private int calculatePickerBgPos() {
-    	
-    	int result = 0;
-    	
-		int w = mRootWidth - mBtnPromotionWidth;
-		int r = w * mButtonIndex / 5;
-		r += (w / 5 - mPickerBgWidth) / 2;
-		result = r;
-    	
-    	return result;
-    }
-    
+
     private void updateButtonHighLight(int index) {
     	
     	for (int i = 0; i < mXindexArr.length; i++) {
@@ -384,418 +418,3 @@ public class DetailMenuFragment extends Fragment {
     	public void onButtonClick(int buttonIndex) {}
     }
 }
-
-//package vn.smartguide;
-//
-//import java.util.ArrayList;
-//import java.util.List;
-//
-//import org.apache.http.NameValuePair;
-//import org.apache.http.message.BasicNameValuePair;
-//
-//import android.animation.Animator;
-//import android.animation.Animator.AnimatorListener;
-//import android.animation.ObjectAnimator;
-//import android.animation.TimeInterpolator;
-//import android.app.Activity;
-//import android.content.res.Resources;
-//import android.graphics.drawable.Drawable;
-//import android.os.AsyncTask;
-//import android.os.Bundle;
-//import android.support.v4.app.Fragment;
-//import android.view.LayoutInflater;
-//import android.view.View;
-//import android.view.View.OnClickListener;
-//import android.view.ViewGroup;
-//import android.view.animation.AccelerateDecelerateInterpolator;
-//import android.widget.Button;
-//import android.widget.FrameLayout;
-//import android.widget.ImageButton;
-//import android.widget.LinearLayout;
-//import android.widget.RelativeLayout;
-//
-///**
-// * Created by cycrixlaptop on 7/29/13.
-// */
-//public class DetailMenuFragment extends Fragment {
-//
-//    private  MainAcitivyListener mMainAcitivyListener;
-//    private boolean mShowInfoBar = false;
-//    private Button mLikeButton = null;
-//    private Button mDisLikeButton = null;
-//    
-//    private final int[] mXindexArr = new int[] {
-//    		R.id.btnInfo,
-//    		R.id.btnShopMenu,
-//    		R.id.btnCamera,
-//    		R.id.btnShopPhoto,
-//    		R.id.btnShopComment,
-//    		R.id.btnShowMap,
-//    };
-//    
-//    private final int[] mYindexArr = new int[] {
-//    		R.id.layoutHalfUpperMenu,
-//    		R.id.layoutInfoShopChild
-//    };
-//    
-//    int mXindex = 0;
-//    int mYindex = 0;
-//
-//    private Drawable icon_like;
-//    private Drawable icon_dislike;
-//    private Drawable icon_like_hover;
-//    private Drawable icon_dislike_hover;
-//    
-//    int mNumLike = 0;
-//    int mNumDislike = 0;
-//    int mLikeStatus = 0;
-//    
-//    @Override
-//    public View onCreateView(LayoutInflater inflater, ViewGroup container,
-//                             Bundle savedInstanceState) {
-//
-//        return inflater.inflate(R.layout.detail_menu, container, false);
-//    }
-//
-//    @Override
-//    public void onActivityCreated(Bundle savedInstanceState) {
-//
-//        super.onActivityCreated(savedInstanceState);
-//        
-//        Resources mResources = getActivity().getResources();
-//        icon_like = mResources.getDrawable(R.drawable.icon_like);
-//        icon_dislike = mResources.getDrawable(R.drawable.icon_dislike);
-//        icon_like_hover = mResources.getDrawable(R.drawable.icon_like_hover);
-//        icon_dislike_hover = mResources.getDrawable(R.drawable.icon_dislike_hover);
-//        
-//        View.OnClickListener switchEvent = new View.OnClickListener() {
-//            @Override
-//            public void onClick(View view) {
-//                toggleShopInfo();
-//            }
-//        };
-//        
-//        ((ImageButton) getView().findViewById(R.id.btnShop3)).setOnClickListener(switchEvent);
-//        ((Button) getView().findViewById(R.id.btnShop1)).setOnClickListener(switchEvent);
-//        ((Button) getView().findViewById(R.id.btnShop2)).setOnClickListener(switchEvent);
-//        
-//        OnClickListener clickEvent = new OnClickListener() {
-//			@Override
-//			public void onClick(View v) {
-//				
-//				if (mYindex == 0)
-//					return;
-//				
-//				// Find id
-//				int id = -1;
-//				int index = 0;
-//				for (int i = 0; i < mXindexArr.length; i++) 
-//					if (mXindexArr[i] == v.getId()) {
-//						id = mXindexArr[i];
-//						index = i;
-//						break;
-//					}
-//				if (id == -1)
-//					return;
-//				
-//				mXindex = index;
-//				mYindex = 1;
-//				animateCursor();
-//				
-//				mMainAcitivyListener.getDetailFragment().onInfoButtonClick(index);
-//			}
-//		};
-//		
-//		for (int i = 0; i < mXindexArr.length; i++)
-//			((ImageButton) getView().findViewById(mXindexArr[i])).setOnClickListener(clickEvent);
-//		 mLikeButton = (Button) getView().findViewById(R.id.btnLike);
-//		 mLikeButton.setOnClickListener(new View.OnClickListener() {
-//			
-//			@Override
-//			public void onClick(View arg0) {
-//				// TODO Auto-generated method stub
-//				if (GlobalVariable.mCurrentShop.mLikeStatus == 1){
-//					updateLikeStatus(mNumLike - 1, mNumDislike, 0);
-//					new ActionUnlike().execute();
-//					return;
-//				}
-//				
-//				mActionOfLike = 1;
-//				switch(mLikeStatus){
-//				case 0:
-//					updateLikeStatus(mNumLike + 1, mNumDislike, 1);
-//					break;
-//				case 2:
-//					updateLikeStatus(mNumLike + 1, mNumDislike - 1, 1);
-//					break;
-//				}
-//				
-//				new ActionLike().execute();
-//			}
-//		});
-//		 
-//		mDisLikeButton = (Button) getView().findViewById(R.id.btnDislike);
-//		mDisLikeButton.setOnClickListener(new OnClickListener() {
-//			
-//			@Override
-//			public void onClick(View v) {
-//				// TODO Auto-generated method stub
-//				if (GlobalVariable.mCurrentShop.mLikeStatus == 2){
-//					updateLikeStatus(mNumLike, mNumDislike - 1, 0);
-//					new ActionUnlike().execute();
-//					return;
-//				}
-//				
-//				mActionOfLike = 2;
-//				switch(mLikeStatus){
-//				case 0:
-//					updateLikeStatus(mNumLike, mNumDislike + 1, 2);
-//					break;
-//				case 1:
-//					updateLikeStatus(mNumLike - 1, mNumDislike + 1, 2);
-//					break;
-//				}
-//				new ActionLike().execute();
-//			}
-//		});
-//    }
-//
-//    public void turnToShopInfo() {
-//    	mXindex = 0;
-//		mYindex = 1;
-//		animateCursor();
-//		mMainAcitivyListener.getDetailFragment().onInfoButtonClick(0);
-//    }
-//    
-//    void updateLikeStatus(int like, int disl, int likestatus){
-//    	GlobalVariable.mCurrentShop.mNumOfLike = like;
-//    	GlobalVariable.mCurrentShop.mNumOfDislike = disl;
-//    	GlobalVariable.mCurrentShop.mLikeStatus = likestatus;
-//    	updateLikeDis(like, disl, likestatus);
-//    }
-//    
-//    int mActionOfLike = 0;
-//    
-//    @Override
-//    public void onResume() {
-//        super.onResume();
-//    }
-//
-//    @Override
-//    public void onAttach(Activity activity) {
-//        super.onAttach(activity);
-//        mMainAcitivyListener = (MainAcitivyListener) activity;
-//    }
-//
-//    private boolean mFirstTime = true;
-//    public void attach2DetailView() {
-//        try {
-//            ShopDetailFragment detailFragment = mMainAcitivyListener.getDetailFragment();
-//            RelativeLayout layoutRoot = (RelativeLayout) getView().findViewById(R.id.layoutRootDetailMenu);
-//            LinearLayout layoutUpper = (LinearLayout) getView().findViewById(R.id.layoutHalfUpperMenu);
-//            FrameLayout avaHolder = null;
-//
-//            avaHolder = (FrameLayout) detailFragment.getView().findViewById(R.id.avaHolder);
-//
-//            View cover = detailFragment.getView().findViewById(R.id.imgCover);
-//
-//            // Set position for menu
-//            float x = cover.getWidth() - layoutRoot.getWidth() - 10;
-//            float y = avaHolder.getY() + avaHolder.getHeight() - layoutUpper.getHeight() - 4;
-//
-//            layoutRoot.setTranslationX(x);
-//            layoutRoot.setTranslationY(y);
-//            
-//            // Set position for cursor
-//            View imgCursor = getView().findViewById(R.id.imgCursor);
-//            calculatePos(mXindex, mYindex);
-//            
-//            imgCursor.setTranslationX(mOutX);
-//            imgCursor.setTranslationY(mOutY);
-//            
-//            if (mFirstTime) {
-//	            Button btnShop1 = (Button) getView().findViewById(R.id.btnShop1);
-//	            Button btnShop2 = (Button) getView().findViewById(R.id.btnShop2);
-//	            btnShop2.setWidth(btnShop1.getWidth());
-//	            mFirstTime = false;
-//            }
-//            
-//        } catch (Exception e) {
-//            //e.printStackTrace();
-//            return;
-//        }
-//    }
-//
-//    public void toggleShopInfo() {
-//
-//        LinearLayout layoutUpper = (LinearLayout) getView().findViewById(R.id.layoutHalfUpperMenu);
-//        LinearLayout layoutInfoShop = (LinearLayout) getView().findViewById(R.id.layoutInfoShop);
-//        mShowInfoBar = !mShowInfoBar;
-//
-//        ObjectAnimator animator = null;
-//        int height = layoutUpper.getHeight();
-//        if (mShowInfoBar) {
-//        	
-//            animator = ObjectAnimator.ofFloat(layoutInfoShop, "translationY", 0, height);
-//            mYindex = 1;
-//            animator.addListener(new AnimatorListener() {
-//				public void onAnimationStart(Animator animation) {}
-//				public void onAnimationRepeat(Animator animation) {}
-//				public void onAnimationEnd(Animator animation) {
-//					ImageButton btnShop = (ImageButton) getView().findViewById(R.id.btnShop3);
-//					btnShop.setImageResource(R.drawable.icon_shop);
-//				}
-//				public void onAnimationCancel(Animator animation) {
-//					onAnimationEnd(animation);
-//				}
-//			});
-//            mMainAcitivyListener.getDetailFragment().onInfoButtonClick(mXindex);
-//        } else {
-//        	mMainAcitivyListener.getDetailFragment().onInfoButtonClick(-1);
-//            animator = ObjectAnimator.ofFloat(layoutInfoShop, "translationY", height, 0);
-//            mYindex = 0;
-//            animator.addListener(new AnimatorListener() {
-//				public void onAnimationStart(Animator animation) {}
-//				public void onAnimationRepeat(Animator animation) {}
-//				public void onAnimationEnd(Animator animation) {
-//					ImageButton btnShop = (ImageButton) getView().findViewById(R.id.btnShop3);
-//					btnShop.setImageResource(R.drawable.icon_info);
-//				}
-//				public void onAnimationCancel(Animator animation) {
-//					onAnimationEnd(animation);
-//				}
-//			});
-//        }
-//
-//        animator.setInterpolator(new AccelerateDecelerateInterpolator());
-//        animateCursor();
-//        animator.start();
-//        animateSwitch();
-//    }
-//    
-//    public void updateLikeDis(int like, int dislike, int likestatus){
-//    	
-//    	mNumLike = like;
-//    	mNumDislike = dislike;
-//    	mLikeStatus = likestatus;
-//    	
-//    	switch(likestatus){
-//    	case 0:
-//    		mLikeButton.setCompoundDrawablesWithIntrinsicBounds(null, null, icon_like, null);
-//    		mDisLikeButton.setCompoundDrawablesWithIntrinsicBounds(null, null, icon_dislike, null);
-//    		break;
-//    	case 1:
-//    		mLikeButton.setCompoundDrawablesWithIntrinsicBounds(null, null, icon_like_hover, null);
-//    		mDisLikeButton.setCompoundDrawablesWithIntrinsicBounds(null, null, icon_dislike, null);
-//    		break;
-//    	case 2:
-//    		mLikeButton.setCompoundDrawablesWithIntrinsicBounds(null, null, icon_like, null);
-//    		mDisLikeButton.setCompoundDrawablesWithIntrinsicBounds(null, null, icon_dislike_hover, null);
-//    		break;
-//    	}
-//    	
-//    	mLikeButton.setText(Integer.toString(like) + " ");
-//    	mDisLikeButton.setText(Integer.toString(dislike) + " ");
-//    }
-//    
-//    private int mOutX, mOutY;
-//    private void calculatePos(int xindex, int yindex) {
-//    	
-//    	mOutY = 0;
-//    	for (int i = 0; i <= yindex; i++) {
-//    		View layoutUpper = getView().findViewById(mYindexArr[yindex]);
-//    		mOutY += layoutUpper.getHeight() + i * 2;
-//    	}
-//    	
-//    	View imgCursor = getView().findViewById(R.id.imgCursor);
-//    	if (yindex == 0) {
-//    		View layoutShopSwitch = getView().findViewById(R.id.layoutShopSwitch);
-//    		mOutX = (int) (layoutShopSwitch.getX() + (layoutShopSwitch.getWidth() - imgCursor.getWidth()) / 2);
-//    	} else {
-//    		View btn = getView().findViewById(mXindexArr[xindex]);
-//	    	mOutX = (int) (btn.getX() + (btn.getWidth() - imgCursor.getWidth()) / 2);
-//    	}
-//    }
-//    
-//    private void animateCursor() {
-//    	
-//    	// Calculate pos
-//		calculatePos(mXindex, mYindex);
-//		
-//		// Start animation
-//		View imgCursor = getView().findViewById(R.id.imgCursor);
-//		ObjectAnimator animatorX = ObjectAnimator.ofFloat(imgCursor, "translationX", mOutX);
-//		ObjectAnimator animatorY = ObjectAnimator.ofFloat(imgCursor, "translationY", mOutY);
-//		TimeInterpolator acce = new AccelerateDecelerateInterpolator();
-//		animatorX.setInterpolator(acce);
-//		animatorY.setInterpolator(acce);
-//		animatorX.start();
-//		animatorY.start();
-//    }
-//    
-//    private void animateSwitch() {
-//    	View layoutshopswView1 = getView().findViewById(R.id.layoutShopSwitch1);
-//    	View layoutshopswView2 = getView().findViewById(R.id.layoutShopSwitch2);
-//    	View btnShop = getView().findViewById(R.id.btnShop3);
-//    	
-//    	float length = layoutshopswView1.getWidth() - btnShop.getWidth();
-//    	
-//    	ObjectAnimator animator1 = null;
-//    	ObjectAnimator animator2 = null;
-//    	if (mShowInfoBar) {
-//    		animator1 = ObjectAnimator.ofFloat(layoutshopswView1, "translationX", 0, -length);
-//    		animator2 = ObjectAnimator.ofFloat(layoutshopswView2, "translationX", 
-//    				layoutshopswView1.getWidth(), btnShop.getWidth());
-//    	} else {
-//    		animator1 = ObjectAnimator.ofFloat(layoutshopswView1, "translationX", -length, 0);
-//    		animator2 = ObjectAnimator.ofFloat(layoutshopswView2, "translationX", 
-//    				btnShop.getWidth(), layoutshopswView1.getWidth());	
-//    	}
-//    	TimeInterpolator acce = new AccelerateDecelerateInterpolator();
-//    	animator1.setInterpolator(acce);
-//    	animator2.setInterpolator(acce);
-//    	animator1.start();
-//    	animator2.start();
-//    }
-//    
-//    public class ActionLike extends AsyncTask<Void, Void, Boolean> {
-//    	String mJson = "";
-//		@Override
-//		protected Boolean doInBackground(Void... params) {
-//			List<NameValuePair> pairs = new ArrayList<NameValuePair>();
-//			pairs.add(new BasicNameValuePair("shop_id", Integer.toString(GlobalVariable.mCurrentShop.mID)));
-//			pairs.add(new BasicNameValuePair("user_id", GlobalVariable.userID));
-//			pairs.add(new BasicNameValuePair("type", Integer.toString(mActionOfLike)));
-//			mJson = NetworkManger.post(APILinkMaker.mPushLikeAction(), pairs);
-//			if (mJson == "")
-//				return false;
-//			return true;
-//		}
-//
-//		@Override
-//		protected void onPostExecute(Boolean k){}
-//
-//		@Override
-//		protected void onPreExecute(){}
-//	}
-//    
-//    public class ActionUnlike extends AsyncTask<Void, Void, Boolean> {
-//    	String mJson = "";
-//		@Override
-//		protected Boolean doInBackground(Void... params) {
-//			List<NameValuePair> pairs = new ArrayList<NameValuePair>();
-//			pairs.add(new BasicNameValuePair("shop_id", Integer.toString(GlobalVariable.mCurrentShop.mID)));
-//			pairs.add(new BasicNameValuePair("user_id", GlobalVariable.userID));
-//			mJson = NetworkManger.post(APILinkMaker.mPushUnlikeAction(), pairs);
-//			if (mJson == "")
-//				return false;
-//			return true;
-//		}
-//
-//		@Override
-//		protected void onPostExecute(Boolean k){}
-//
-//		@Override
-//		protected void onPreExecute(){}
-//	}
-//}

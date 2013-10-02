@@ -3,173 +3,121 @@
     android:layout_width="match_parent"
     android:layout_height="wrap_content" >
 
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="2dp"
+        android:layout_below="@+id/layoutDetailMenu"
+        android:background="#9B402B"
+        android:orientation="vertical" >
+    </LinearLayout>
+
+    <ImageView
+        android:id="@+id/imgPick"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/layoutDetailMenu"
+        android:src="@drawable/pick" />
+
     <RelativeLayout
         android:id="@+id/layoutDetailMenu"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content" >
+        android:layout_height="29dp"
+        android:background="#C95436" >
 
-        <RelativeLayout
-            android:layout_width="100dp"
-            android:layout_height="29dp"
-            android:layout_alignParentLeft="true"
-            android:layout_toLeftOf="@+id/relativeLayout1"
-            android:background="#CA5436" >
-
-            <Button
-                android:id="@+id/btnPromotionDock"
-                android:layout_width="wrap_content"
-                android:layout_height="match_parent"
-                android:layout_centerHorizontal="true"
-                android:background="#00000000"
-                android:drawableLeft="@drawable/icon_info"
-                android:paddingLeft="8dp"
-                android:paddingRight="8dp"
-                android:text="  KHUYẾN MÃI"
-                android:textColor="#FFFFFF"
-                android:textSize="9sp"
-                android:textStyle="bold" />
-
-            <Button
-                android:id="@+id/btnPromotion"
-                android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:background="#00000000"
-                android:paddingLeft="8dp"
-                android:paddingRight="8dp"
-                android:textColor="#FFFFFF"
-                android:textSize="9sp"
-                android:textStyle="bold" />
-
-            <ImageView
-                android:id="@+id/imgDivider"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_alignParentRight="true"
-                android:layout_centerVertical="true"
-                android:src="@drawable/detail_menu_divider_left" />
-
-        </RelativeLayout>
-
-        <RelativeLayout
-            android:id="@+id/relativeLayout1"
+        <Button
+            android:id="@+id/btnPromotion"
             android:layout_width="wrap_content"
-            android:layout_height="29dp"
-            android:layout_alignParentRight="true"
-            android:background="#CA5436" >
-
-            <ImageView
-                android:id="@+id/imgPickerDummy"
-                android:layout_width="wrap_content"
-                android:layout_height="match_parent"
-                android:scaleType="centerInside"
-                android:src="@drawable/button_hover"
-                android:visibility="invisible" />
-
-            <Button
-                android:id="@+id/btnShopInfoDock"
-                android:layout_width="wrap_content"
-                android:layout_height="match_parent"
-                android:layout_centerHorizontal="true"
-                android:background="#00000000"
-                android:drawableLeft="@drawable/icon_shop"
-                android:paddingLeft="8dp"
-                android:paddingRight="8dp"
-                android:text="  CỬA HÀNG"
-                android:textColor="#FFFFFF"
-                android:textSize="9sp"
-                android:textStyle="bold" />
-
-            <Button
-                android:id="@+id/btnShopInfo"
-                android:layout_width="wrap_content"
-                android:layout_height="match_parent"
-                android:layout_centerHorizontal="true"
-                android:background="#00000000"
-                android:paddingLeft="8dp"
-                android:paddingRight="8dp"
-                android:textColor="#FFFFFF"
-                android:textSize="9sp"
-                android:textStyle="bold" />
-
-            <RelativeLayout
-                android:id="@+id/layout5Button"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_alignLeft="@+id/btnShopInfo"
-                android:layout_alignRight="@+id/btnShopInfo"
-                android:visibility="invisible" >
-
-                <ImageView
-                    android:id="@+id/imgPickerBg"
-                    android:layout_width="wrap_content"
-                    android:layout_height="match_parent"
-                    android:scaleType="centerInside"
-                    android:src="@drawable/button_hover" />
-
-                <LinearLayout
-                    android:layout_width="match_parent"
-                    android:layout_height="match_parent"
-                    android:gravity="center_vertical" >
-
-                    <ImageButton
-                        android:id="@+id/btnInfo"
-                        android:layout_width="0dp"
-                        android:layout_height="match_parent"
-                        android:layout_weight="1"
-                        android:background="#00000000"
-                        android:src="@drawable/icon_shopinfo_hi" />
-
-                    <ImageButton
-                        android:id="@+id/btnShopMenu"
-                        android:layout_width="0dp"
-                        android:layout_height="match_parent"
-                        android:layout_weight="1"
-                        android:background="#00000000"
-                        android:src="@drawable/icon_shopmenu" />
-
-                    <ImageButton
-                        android:id="@+id/btnShopPhoto"
-                        android:layout_width="0dp"
-                        android:layout_height="match_parent"
-                        android:layout_weight="1"
-                        android:background="#00000000"
-                        android:src="@drawable/icon_shopphoto" />
-
-                    <ImageButton
-                        android:id="@+id/btnShopComment"
-                        android:layout_width="0dp"
-                        android:layout_height="match_parent"
-                        android:layout_weight="1"
-                        android:background="#00000000"
-                        android:src="@drawable/icon_shopcomment" />
-
-                    <ImageButton
-                        android:id="@+id/btnShowMap"
-                        android:layout_width="0dp"
-                        android:layout_height="match_parent"
-                        android:layout_weight="1"
-                        android:background="#00000000"
-                        android:src="@drawable/icon_shopmap" />
-                </LinearLayout>
-
-            </RelativeLayout>
-
-        </RelativeLayout>
-
-        <LinearLayout
-            android:layout_width="match_parent"
-            android:layout_height="2dp"
-            android:layout_below="@+id/relativeLayout1"
-            android:background="#9B402B"
-            android:orientation="vertical" >
-        </LinearLayout>
+            android:layout_height="match_parent"
+            android:layout_centerVertical="true"
+            android:background="#00000000"
+            android:drawableLeft="@drawable/icon_info"
+            android:paddingLeft="8dp"
+            android:paddingRight="8dp"
+            android:text="  KHUYẾN MÃI"
+            android:textColor="#FFFFFF"
+            android:textSize="9sp"
+            android:textStyle="bold" />
 
         <ImageView
-            android:id="@+id/imgPick"
+            android:id="@+id/imgDivider"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_below="@+id/relativeLayout1"
-            android:src="@drawable/pick" />
+            android:layout_centerVertical="true"
+            android:src="@drawable/detail_menu_divider_left" />
+
+        <Button
+            android:id="@+id/btnShop"
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent"
+            android:layout_alignParentTop="true"
+            android:background="#00000000"
+            android:drawableLeft="@drawable/icon_shop"
+            android:paddingLeft="8dp"
+            android:paddingRight="8dp"
+            android:text="  CỬA HÀNG"
+            android:textColor="#FFFFFF"
+            android:textSize="9sp"
+            android:textStyle="bold" />
+
+        <ImageView
+            android:id="@+id/imgPickerBg"
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent"
+            android:layout_alignParentRight="true"
+            android:scaleType="centerInside"
+            android:src="@drawable/button_hover"
+            android:visibility="invisible" />
+
+        <ImageButton
+            android:id="@+id/btnShopInfo"
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent"
+            android:layout_alignParentRight="true"
+            android:background="#00000000"
+            android:src="@drawable/icon_shopinfo_hi"
+            android:visibility="invisible" />
+
+        <ImageButton
+            android:id="@+id/btnShopMenu"
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent"
+            android:layout_alignParentRight="true"
+            android:background="#00000000"
+            android:src="@drawable/icon_shopmenu"
+            android:visibility="invisible" />
+
+        <ImageButton
+            android:id="@+id/btnShopPhoto"
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent"
+            android:layout_alignParentRight="true"
+            android:background="#00000000"
+            android:src="@drawable/icon_shopphoto"
+            android:visibility="invisible" />
+
+        <ImageButton
+            android:id="@+id/btnShopComment"
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent"
+            android:layout_alignParentRight="true"
+            android:background="#00000000"
+            android:src="@drawable/icon_shopcomment"
+            android:visibility="invisible" />
+
+        <ImageButton
+            android:id="@+id/btnShopMap"
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent"
+            android:layout_alignParentRight="true"
+            android:background="#00000000"
+            android:src="@drawable/icon_shopmap"
+            android:visibility="invisible" />
+
+        <Button
+            android:id="@+id/btnPromotionOverlay"
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent"
+            android:background="@drawable/dummy" />
 
     </RelativeLayout>
 

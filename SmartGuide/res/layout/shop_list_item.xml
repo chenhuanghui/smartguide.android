@@ -106,7 +106,7 @@
                 android:layout_gravity="center_horizontal"
                 android:layout_margin="10dp"
                 android:scaleType="fitXY"
-                android:background="@drawable/ava_loading" />
+                android:src="@drawable/ava_loading" />
 
             <LinearLayout
                 android:id="@+id/shop_cover_layout_tran"
@@ -130,7 +130,6 @@
             <RelativeLayout
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="15dp"
                 android:layout_marginLeft="5dp"
                 android:layout_marginRight="5dp"
                 android:layout_gravity="center_horizontal" >
@@ -146,7 +145,7 @@
                     android:shadowColor="@color/text_shadow"
                     android:shadowDx="1"
                     android:shadowDy="1"
-                    android:layout_marginLeft="3dp"
+
                     android:shadowRadius="2"
                     android:maxLines="2"
                     android:text="SHOP NAME"
@@ -158,14 +157,13 @@
                     android:id="@+id/shop_type_icon"
                     android:layout_width="20dp"
                     android:layout_height="20dp"
-                    android:layout_alignParentLeft="true"
-                    android:layout_centerVertical="true" />
+                    android:layout_alignParentLeft="true"/>
             </RelativeLayout>
 
             <TextView
                 android:id="@+id/shop_content_real"
                 android:layout_width="wrap_content"
-                android:layout_height="37dp"
+                android:layout_height="wrap_content"
                 android:ellipsize="end"
                 android:gravity="left"
                 android:singleLine="true"

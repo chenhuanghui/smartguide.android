@@ -8,35 +8,47 @@ import android.widget.Button;
 
 public class DetailPromo2Fragment extends DetailPromoFragment {
 	
-	private MainAcitivyListener mMainAcitivyListener;
+	// Data
+	private Listener mListener = new Listener();
+	
+	///////////////////////////////////////////////////////////////////////////
+	// Override methods
+	///////////////////////////////////////////////////////////////////////////
 	
 	@Override
-	public View onCreateView(LayoutInflater inflater, ViewGroup container,
-			Bundle savedInstanceState) {
-		
-		super.onCreateView(inflater, container, savedInstanceState);
-        View root = inflater.inflate(R.layout.promotion_type_2, container, false);
-        
-        return root;
+	public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
+        return inflater.inflate(R.layout.promotion_type_2, container, false);
 	}
-
-	@Override
-	public void onViewCreated(View view, Bundle savedInstanceState) {
-
-		super.onViewCreated(view, savedInstanceState);
-		 mMainAcitivyListener = (MainAcitivyListener) getActivity();
+	
+	///////////////////////////////////////////////////////////////////////////
+	// Public methods
+	///////////////////////////////////////////////////////////////////////////
+	
+	public void setListener(Listener listener) {
+		if (listener == null)
+			listener = new Listener();
+		mListener = listener;
 	}
 	
 	public void setData(Shop s) {
-		final PromotionTypeTwo promotion = (PromotionTypeTwo)s.mPromotion;
+		final Shop mShop = s;
 		Button rewardBtn = (Button)getView().findViewById(R.id.imageButton1);
-		rewardBtn.setText(Integer.toString(promotion.mMoney / 1000) + ",000 vnđ");
+		rewardBtn.setText(Integer.toString(((PromotionTypeTwo) s.mPromotion).mMoney / 1000) + ",000 vnđ");
 		rewardBtn.setOnClickListener(new View.OnClickListener() {
 			@Override
 			public void onClick(View v) {
-				mMainAcitivyListener.getAwardTypeTwo(promotion.mID);
+				PromotionTypeTwo promotion = (PromotionTypeTwo) mShop.mPromotion;
+//				mMainAcitivyListener.getAwardTypeTwo(promotion.mID);
+				mListener.onReward2Click(promotion);
 			}
 		});
 	}
 	
+	///////////////////////////////////////////////////////////////////////////
+	// Listener
+	///////////////////////////////////////////////////////////////////////////
+	
+	public static class Listener {
+		public void onReward2Click(PromotionTypeTwo promotion) { }
+	}
 }

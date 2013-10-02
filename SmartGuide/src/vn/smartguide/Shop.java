@@ -53,91 +53,95 @@ public class Shop {
 		
 	}
 	
-	public static List<Shop> getListForUse(JSONArray shopArry){
-		List<Shop> listShop = new ArrayList<Shop>();
+	public static List<Shop> getListForUse(JSONArray shopArray) {
 		try{
-			for(int i = 0; i < shopArry.length();i++){
-				JSONObject object = (JSONObject)shopArry.get(i);
-
-				Shop mShop = new Shop();
-
-				mShop.mID = object.getInt("id");
-				mShop.mName = object.getString("name");
-				mShop.mLat = (float)object.getDouble("shop_lat");
-				mShop.mLng = (float)object.getDouble("shop_lng");
-				mShop.mDistance = (float)object.getDouble("distance");
-				mShop.mNumOfLike = object.getInt("num_of_like");
-				mShop.mNumOfVisit = object.getInt("num_of_visit");
-				mShop.mNumGetReward = object.getInt("num_get_reward");
-				mShop.mNumGetPromotion = object.getInt("num_get_promotion");
-				mShop.mGroupShop = object.getInt("group_shop");
-				mShop.mLogo = object.getString("logo");
-				mShop.mContent = object.getString("description");
-				mShop.mPromotionStatus = object.getInt("promotion_status") == 1;
-				
-				try{
-					mShop.mTel = object.getString("tel");
-				}catch(Exception ex){	
-					mShop.mTel = "";
-				}
-				
-				try{
-					mShop.mWeb = object.getString("website");
-				}catch(Exception ex){	
-					mShop.mWeb = "";
-				}
-				
-				mShop.mAddress = object.getString("address");
-				mShop.mLikeStatus = object.getInt("like_status");
-				mShop.mNumOfDislike = object.getInt("dislike");
-				
-				try{
-					mShop.mCover = object.getString("cover");
-				}catch(Exception ex){
-					mShop.mCover = "null";
-				}
-				
-				try{
-					mShop.mUpdateAt = object.getString("updated_at");
-				}catch(Exception ex){
-					
-				}
-				if (mShop.mPromotionStatus == true){
-					JSONObject promotion = object.getJSONObject("promotion_detail");
-					int type = promotion.getInt("promotion_type");
-
-					switch (type){
-					case -1:
-						int sp = promotion.getInt("sp");
-						mShop.mPromotion = new PromotionTypeZero(sp);	
-						break;
-					case 1:
-						int cost = promotion.getInt("cost");
-						int sgp = promotion.getInt("sgp");
-						int min_score = promotion.getInt("min_score");
-						sp = promotion.getInt("sp");
-						String duration = promotion.getString("duration");
-						List<Requirement> requirements = new ArrayList<Requirement>();
-						JSONArray jrequires = promotion.getJSONArray("array_required");
-						for(int j = 0; j < jrequires.length(); j++){
-							JSONObject jo = jrequires.getJSONObject(j);
-							requirements.add(new Requirement(jo.getInt("id"), jo.getInt("required"), jo.getString("content")));
-						}
-						
-						mShop.mPromotion = new PromotionTypeOne(cost, sgp, sp, min_score, duration, requirements);
-						
-						break;
-					case 2:
-						int money = promotion.getInt("money");
-						int id = promotion.getInt("id");
-						mShop.mPromotion = new PromotionTypeTwo(money, id);
-						break;
-					}
-				}
-				listShop.add(mShop);
-			}
+			return getListForUseThrow(shopArray);
 		} catch (Exception ex) {
+			return new ArrayList<Shop>();
+		}
+	}
+	
+	public static List<Shop> getListForUseThrow(JSONArray shopArry) throws JSONException {
+		List<Shop> listShop = new ArrayList<Shop>();
+		for(int i = 0; i < shopArry.length();i++){
+			JSONObject object = (JSONObject)shopArry.get(i);
 
+			Shop mShop = new Shop();
+
+			mShop.mID = object.getInt("id");
+			mShop.mName = object.getString("name");
+			mShop.mLat = (float)object.getDouble("shop_lat");
+			mShop.mLng = (float)object.getDouble("shop_lng");
+			mShop.mDistance = (float)object.getDouble("distance");
+			mShop.mNumOfLike = object.getInt("num_of_like");
+			mShop.mNumOfVisit = object.getInt("num_of_visit");
+			mShop.mNumGetReward = object.getInt("num_get_reward");
+			mShop.mNumGetPromotion = object.getInt("num_get_promotion");
+			mShop.mGroupShop = object.getInt("group_shop");
+			mShop.mLogo = object.getString("logo");
+			mShop.mContent = object.getString("description");
+			mShop.mPromotionStatus = object.getInt("promotion_status") == 1;
+
+			try{
+				mShop.mTel = object.getString("tel");
+			}catch(Exception ex){	
+				mShop.mTel = "";
+			}
+
+			try{
+				mShop.mWeb = object.getString("website");
+			}catch(Exception ex){	
+				mShop.mWeb = "";
+			}
+
+			mShop.mAddress = object.getString("address");
+			mShop.mLikeStatus = object.getInt("like_status");
+			mShop.mNumOfDislike = object.getInt("dislike");
+
+			try{
+				mShop.mCover = object.getString("cover");
+			}catch(Exception ex){
+				mShop.mCover = "null";
+			}
+
+			try{
+				mShop.mUpdateAt = object.getString("updated_at");
+			}catch(Exception ex){
+
+			}
+			if (mShop.mPromotionStatus == true){
+				JSONObject promotion = object.getJSONObject("promotion_detail");
+				int type = promotion.getInt("promotion_type");
+
+				switch (type){
+				case -1:
+					int sp = promotion.getInt("sp");
+					mShop.mPromotion = new PromotionTypeZero(sp);	
+					break;
+				case 1:
+					int cost = promotion.getInt("cost");
+					int sgp = promotion.getInt("sgp");
+					int min_score = promotion.getInt("min_score");
+					sp = promotion.getInt("sp");
+					String duration = promotion.getString("duration");
+					List<Requirement> requirements = new ArrayList<Requirement>();
+					JSONArray jrequires = promotion.getJSONArray("array_required");
+					for(int j = 0; j < jrequires.length(); j++){
+						JSONObject jo = jrequires.getJSONObject(j);
+						requirements.add(new Requirement(jo.getInt("id"), jo.getInt("required"), jo.getString("content")));
+					}
+
+					mShop.mPromotion = new PromotionTypeOne(cost, sgp, sp, min_score, duration, requirements);
+
+					break;
+				case 2:
+					int money = promotion.getInt("money");
+					int id = promotion.getInt("id");
+					mShop.mPromotion = new PromotionTypeTwo(money, id);
+					break;
+				}
+			}
+			listShop.add(mShop);
 		}
 		return listShop;
 	}

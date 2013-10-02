@@ -7,10 +7,13 @@ import android.animation.Animator.AnimatorListener;
 import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
+import android.graphics.Bitmap;
+import android.graphics.Point;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.os.Handler;
 import android.support.v4.app.Fragment;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -18,6 +21,9 @@ import android.view.animation.AccelerateDecelerateInterpolator;
 import android.view.animation.LinearInterpolator;
 import android.widget.AbsListView;
 import android.widget.AbsListView.OnScrollListener;
+import android.widget.AdapterView;
+import android.widget.AdapterView.OnItemClickListener;
+import android.widget.ArrayAdapter;
 import android.widget.BaseAdapter;
 import android.widget.GridView;
 import android.widget.ImageView;
@@ -29,8 +35,14 @@ import org.apache.http.NameValuePair;
 import org.apache.http.message.BasicNameValuePair;
 import org.json.JSONArray;
 import org.json.JSONException;
+import org.json.JSONObject;
+
+import com.nostra13.universalimageloader.core.assist.FailReason;
+import com.nostra13.universalimageloader.core.assist.ImageLoadingListener;
 
 import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.HashSet;
 import java.util.List;
 
 /**
@@ -38,12 +50,14 @@ import java.util.List;
  */
 public class ShopListFragment extends Fragment {
 
-	private MainAcitivyListener mMainAcitivyListener;
+	private static final int[] ICON_ID = new int[] { R.drawable.iconpin_food, R.drawable.iconpin_drink,
+		R.drawable.iconpin_healness, R.drawable.iconpin_entertaiment, R.drawable.iconpin_fashion,
+		R.drawable.iconpin_travel, R.drawable.iconpin_shopping, R.drawable.iconpin_education};
+	
+	// GUI elements
 	private GridView gridView;
 	public List<Shop> mShopList;
-	private ShopListAdapter mAdapter;
-
-	String mJson = "";
+	private ShopListAdapter mAdapter;	
 
 	private ImageView mLoadingCircle;
 	private ImageView mLoadingMiddle;
@@ -55,46 +69,34 @@ public class ShopListFragment extends Fragment {
 	private ObjectAnimator mFadeOutMiddle;
 	private ObjectAnimator mFadeInCircle;
 	private ObjectAnimator mFadeInMiddle;
+	
+	private AnimatorSet	mAniSetStart;
+	private AnimatorSet mAniSetFinish;
 
-	public boolean mHaveAnimation 	= false;
-	public boolean isMore 			= false;
+	// Data
+//	private String mJson = "";
+//	public boolean mHaveAnimation 	= false;
+	private Listener mListener 	= new Listener();
+	private boolean isMore 		= false;
+	private boolean isSearch 	= false;
 
 	private String mSearchString = "";
 	private int indexPage = 0;
 
-	public void updateSGP(int id, int sgp){
-		if (mShopList == null || mShopList.size() == 0)
-			return;
-
-		for(int i = 0; i < mShopList.size(); i++){
-			if (mShopList.get(i).mID == id){
-				View view = mAdapter.mViewList.get(i);
-				LinearLayout mShopScoreNowMin = (LinearLayout)view.findViewById(R.id.shop_score_now_min);
-				TextView mShopScoreNowTV = (TextView) mShopScoreNowMin.findViewById(R.id.shop_score_now);
-				mShopScoreNowTV.setText(Integer.toString(sgp));
-				((PromotionTypeOne)mShopList.get(i).mPromotion).mSGP = sgp;
-				return;
-			}
-		}
-	}
-
+	///////////////////////////////////////////////////////////////////////////
+	// Override methods
+	///////////////////////////////////////////////////////////////////////////
+	
 	@Override
-	public void onAttach(Activity activity) {
-		super.onAttach(activity);
-		mMainAcitivyListener = (MainAcitivyListener) activity;
-	}
-
-	@Override
-	public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState){
-		super.onCreateView(inflater, container, savedInstanceState);
-		View root = inflater.inflate(R.layout.shop_list, container, false);
-		return root;
+	public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
+		return inflater.inflate(R.layout.shop_list, container, false);
 	}
 
 	@Override
 	public void onViewCreated(View view, Bundle savedInstanceState) {
 		super.onViewCreated(view, savedInstanceState);
 
+		// Get GUI elements
 		gridView = (GridView) getView().findViewById(R.id.grid_view_shop_list);
 
 		mLoadingCircle = (ImageView) getView().findViewById(R.id.loadingCircleS);
@@ -102,6 +104,7 @@ public class ShopListFragment extends Fragment {
 		mLoadingBackground = (ImageView) getView().findViewById(R.id.loadingBackgroundS);
 		mLoadingOptical = (RelativeLayout) getView().findViewById(R.id.foregroundLoading);
 
+		// Set up animation
 		mRotateAnimation = ObjectAnimator.ofFloat(mLoadingCircle, "rotation", 0, 360).setDuration(1100);
 		mRotateAnimation.setInterpolator(new LinearInterpolator());
 		mRotateAnimation.setRepeatCount(ObjectAnimator.INFINITE);
@@ -114,24 +117,7 @@ public class ShopListFragment extends Fragment {
 		mFadeInMiddle = ObjectAnimator.ofFloat(mLoadingMiddle, "alpha", 1.0f, 1.0f);
 		mFadeInMiddle.setDuration(200);
 		mFadeInMiddle.setInterpolator(new LinearInterpolator());
-
-		mShopList = new ArrayList<Shop>();
-		mAdapter = new ShopListAdapter(getActivity().getBaseContext(), getActivity());
-		gridView.setAdapter(mAdapter);
-		gridView.setOnScrollListener(new OnScrollListener() {
-			@Override
-			public void onScrollStateChanged(AbsListView view, int scrollState) {}
-
-			@Override
-			public void onScroll(AbsListView view, int firstVisibleItem,
-					int visibleItemCount, int totalItemCount) {
-				if (((firstVisibleItem >= indexPage * GlobalVariable.itemPerPage + GlobalVariable.needLoadMore) ||  visibleItemCount >= GlobalVariable.needLoadMore) && isMore == true){
-					isMore = false;
-					new FetchMoreShopListTask().execute();
-				}
-			}
-		});
-
+		
 		mFadeOutCircle = ObjectAnimator.ofFloat(mLoadingCircle, "alpha", 1.0f, 0.0f);
 		mFadeOutCircle.setDuration(1000);
 		mFadeOutCircle.setInterpolator(new AccelerateDecelerateInterpolator());
@@ -139,29 +125,94 @@ public class ShopListFragment extends Fragment {
 		mFadeOutMiddle = ObjectAnimator.ofFloat(mLoadingMiddle, "alpha", 1.0f, 0.0f);
 		mFadeOutMiddle.setDuration(1000);
 		mFadeOutMiddle.setInterpolator(new AccelerateDecelerateInterpolator());
-		mFadeOutCircle.addListener(new AnimatorListener() {
-			@Override
-			public void onAnimationStart(Animator animation) {}
-
-			@Override
-			public void onAnimationRepeat(Animator animation) {}
-
-			@Override
-			public void onAnimationEnd(Animator animation) {
-				mRotateAnimation.cancel();
-				mHaveAnimation = false;
-				updateShopList();
+//		mFadeOutCircle.addListener(new AnimatorListener() {
+//			@Override
+//			public void onAnimationStart(Animator animation) {}
+//
+//			@Override
+//			public void onAnimationRepeat(Animator animation) {}
+//
+//			@Override
+//			public void onAnimationEnd(Animator animation) {
+//				mRotateAnimation.cancel();
+//				mHaveAnimation = false;
+//				updateShopList();
+//			}
+//
+//			@Override
+//			public void onAnimationCancel(Animator animation) {}
+//		});
+		
+		mAniSetStart = new AnimatorSet();
+		mAniSetStart.playTogether(mFadeInMiddle, mFadeInCircle, mRotateAnimation);
+		mAniSetStart.addListener(new AnimatorListener() {
+			public void onAnimationStart(Animator animation) { 
+				mLoadingOptical.setVisibility(View.VISIBLE);
 			}
-
-			@Override
-			public void onAnimationCancel(Animator animation) {}
+			public void onAnimationRepeat(Animator animation) { }
+			public void onAnimationEnd(Animator animation) { }
+			public void onAnimationCancel(Animator animation) { }
+		});
+		
+		mAniSetFinish = new AnimatorSet();
+		mAniSetFinish.playTogether(mFadeOutCircle, mFadeOutMiddle);
+		mAniSetFinish.addListener(new AnimatorListener() {
+			public void onAnimationStart(Animator animation) { }
+			public void onAnimationRepeat(Animator animation) { }
+			public void onAnimationEnd(Animator animation) { 
+				mLoadingOptical.setVisibility(View.INVISIBLE);
+			}
+			public void onAnimationCancel(Animator animation) { 
+				onAnimationEnd(animation);
+			}
 		});
 
+		// Set up list view
+		mShopList = new ArrayList<Shop>();
+		mAdapter = new ShopListAdapter();
+		gridView.setAdapter(mAdapter);
+		gridView.setOnItemClickListener(mAdapter);
+		gridView.setOnScrollListener(new OnScrollListener() {
+			@Override
+			public void onScrollStateChanged(AbsListView view, int scrollState) {}
+
+			@Override
+			public void onScroll(AbsListView view, int firstVisibleItem, 
+					int visibleItemCount, int totalItemCount) {
+				if (((firstVisibleItem >= indexPage * GlobalVariable.itemPerPage + GlobalVariable.needLoadMore) ||
+						visibleItemCount >= GlobalVariable.needLoadMore) && isMore == true) {
+					
+					isMore = false;
+					new FetchMoreShopListTask().execute();
+				}
+			}
+		});
+	}
+	
+	///////////////////////////////////////////////////////////////////////////
+	// Public methods
+	///////////////////////////////////////////////////////////////////////////
+	
+	public void setListener(Listener listener) {
+		if (listener == null)
+			listener = new Listener();
+		mListener = listener;
+	}
+	
+	public void updateSGP(int id, int sgp) {
+		if (mShopList == null || mShopList.size() == 0)
+			return;
+
+		for(int i = 0; i < mShopList.size(); i++) {
+			if (mShopList.get(i).mID == id) {
+				((PromotionTypeOne)mShopList.get(i).mPromotion).mSGP = sgp;
+				mAdapter.notifyDataSetChanged();
+				return;
+			}
+		}
 	}
 
-	private boolean isSearch = false;
-
-	public void search(String search){
+	public void search(String search) {
 		indexPage = 0;
 		isSearch = true;
 
@@ -170,122 +221,316 @@ public class ShopListFragment extends Fragment {
 		new SearchShopListTask(search).execute();
 	}
 
-	public void update(String json){
+	public void update(String json) {
 		indexPage = 0;
 		isSearch = false;
-		mJson = json;
-		new UpdateTask().execute();
+		isMore = true;
+		
+		try {
+			if (json.length() == 0)
+				return;
+			mAdapter.clear();
+			mAdapter.addAll(Shop.getListForUse(new JSONArray(json)));
+		} catch (JSONException e) {
+			mShopList = null;
+		}
 	}
-
-	@Override
-	public void onActivityResult(int requestCode, int resultCode, Intent data) {
-
-	}
-
 
 	public void setForeground(){
 		mLoadingOptical.setVisibility(View.VISIBLE);
 	}
+	
+	///////////////////////////////////////////////////////////////////////////
+	// Adapter
+	///////////////////////////////////////////////////////////////////////////
+	
+	private class ShopListAdapter extends ArrayAdapter<Shop> implements OnItemClickListener
+	{
+		private HashSet<Integer> mHighLightItem = new HashSet<Integer>();
 
-	public class UpdateTask extends AsyncTask<Void, Void, Boolean> {
+		public ShopListAdapter() {
+			super(getActivity(), R.layout.shop_list_item, R.id.shop_name_real, mShopList);
+			
+			if (mShopList.size() == 0)
+				isMore = false;
+			else if (mShopList.size() % 10 == 0)
+				isMore = true;
 
+			indexPage = 0;
+		}
+		
 		@Override
-		protected Boolean doInBackground(Void... params) {
-			try {
-				if (mJson == "")
-					return false;
-				mShopList = Shop.getListForUse(new JSONArray(mJson));
-			} catch (JSONException e) {
-				mShopList = null;
-				return false;
-			}
-
-			return true;
+		public void clear() {
+			mHighLightItem.clear();
+			super.clear();
 		}
 
 		@Override
-		protected void onPostExecute(Boolean k){
-			if (k == true){
-				getActivity().runOnUiThread(new Runnable() {
-					@Override
-					public void run() {
-						if (mHaveAnimation){
-							List<ObjectAnimator> arrayListObjectAnimators = new ArrayList<ObjectAnimator>();
-							arrayListObjectAnimators.add(mFadeOutCircle);
-							arrayListObjectAnimators.add(mFadeOutMiddle);
+		public View getView(int position, View convertView, ViewGroup parent) {			
+			View MyView = super.getView(position, convertView, parent);
 
-							ObjectAnimator[] objectAnimators = arrayListObjectAnimators.toArray(new ObjectAnimator[arrayListObjectAnimators.size()]);
-							AnimatorSet animSetXY = new AnimatorSet();
-							animSetXY.playTogether(objectAnimators);
-							animSetXY.addListener(new AnimatorListener() {
+			Shop mShop = mShopList.get(position);
 
-								@Override
-								public void onAnimationStart(Animator animation) {}
+			// Get GUI elements
 
-								@Override
-								public void onAnimationRepeat(Animator animation) {}
+			// Distance text
+			TextView mDistantTV = (TextView) MyView.findViewById(R.id.shop_distance);
 
-								@Override
-								public void onAnimationEnd(Animator animation) {
-									// TODO Auto-generated method stub
-									mLoadingOptical.setVisibility(View.INVISIBLE);
-									mLoadingBackground.setVisibility(View.INVISIBLE);
-								}
+			// Score layout
+			LinearLayout mShopScoreNowMin = (LinearLayout) MyView.findViewById(R.id.shop_score_now_min);
+			TextView mShopScoreNowTV = (TextView) mShopScoreNowMin.findViewById(R.id.shop_score_now);
+			TextView mShopScoreMinTV = (TextView) mShopScoreNowMin.findViewById(R.id.shop_score_min);
 
-								@Override
-								public void onAnimationCancel(Animator animation) {
-									// TODO Auto-generated method stub
+			// Promotion type layout
+			LinearLayout mShopTypeScore = (LinearLayout) MyView.findViewById(R.id.shop_type_score);
+			ImageView imgShopType = (ImageView) mShopTypeScore.findViewById(R.id.shop_type_image);
+			TextView txtShopScore = (TextView) mShopTypeScore.findViewById(R.id.shop_score);
 
-								}
-							});
-							animSetXY.start();
-						}else{
-							updateShopList();
-						}
-					}
-				});
+			// Shop logo
+			final ImageView mShopCover = (ImageView) MyView.findViewById(R.id.shop_cover);
+			LinearLayout shop_cover_layout_tran = (LinearLayout) MyView.findViewById(R.id.shop_cover_layout_tran);
+
+			// Shop content
+			LinearLayout mShopNameContent = (LinearLayout)MyView.findViewById(R.id.shop_name_content);
+			TextView mShopName = (TextView) mShopNameContent.findViewById(R.id.shop_name_real);
+			TextView mShopContent = (TextView) mShopNameContent.findViewById(R.id.shop_content_real);
+			ImageView mShopTypeIcon = (ImageView) MyView.findViewById(R.id.shop_type_icon);
+
+			// Set promotion visibility
+			int promoVisibility = mShop.mPromotionStatus ? View.VISIBLE : View.INVISIBLE;
+			imgShopType.setVisibility(promoVisibility);
+			txtShopScore.setVisibility(promoVisibility);
+
+			// Set highlight
+			if (mHighLightItem.contains(position)) {
+				mDistantTV.setBackgroundResource(R.drawable.shop_distance_red);
+				mShopScoreNowMin.setBackgroundResource(R.drawable.shop_score_red);
+				mShopTypeScore.setBackgroundResource(R.drawable.shop_type_red);
+				shop_cover_layout_tran.setBackgroundResource(R.drawable.shop_avatar_red_tran);
+				mShopNameContent.setBackgroundResource(R.drawable.shop_content_red);
+			} else {
+				mDistantTV.setBackgroundResource(R.drawable.shop_distance_green);
+				mShopScoreNowMin.setBackgroundResource(R.drawable.shop_score_green);
+				mShopTypeScore.setBackgroundResource(R.drawable.shop_type_green);
+				shop_cover_layout_tran.setBackgroundResource(R.drawable.shop_avatar_green_tran);
+				mShopNameContent.setBackgroundResource(R.drawable.shop_content_green);
 			}
+			
+			// Set distance
+			if (mShop.mDistance == - 1)
+				mDistantTV.setText("... KM");
+			else
+				mDistantTV.setText(Float.toString(mShop.mDistance) + " KM");			
+
+			// Set promotion type
+			if (mShop.mPromotionStatus) {					
+				switch(mShop.mPromotion.getType()) {
+				case 1:
+					PromotionTypeOne promotionTypeOne = (PromotionTypeOne) mShop.mPromotion;
+					mShopScoreNowTV.setText(Integer.toString(promotionTypeOne.mSGP));
+					mShopScoreMinTV.setText("/" + promotionTypeOne.mMinScore);
+					
+					imgShopType.setBackgroundResource(R.drawable.point);
+					txtShopScore.setText("điểm");
+					break;
+
+				case 2:
+					PromotionTypeTwo promotionTypeTwo = (PromotionTypeTwo) mShop.mPromotion;
+					mShopScoreNowTV.setText(Integer.toString(promotionTypeTwo.mMoney / 1000) + " K");
+					mShopScoreMinTV.setText("");
+					
+					imgShopType.setBackgroundResource(R.drawable.money);
+					txtShopScore.setText("vnd");
+					break;
+				}
+			}
+			
+			// Set logo
+			final int index = position; 
+			GlobalVariable.cyImageLoader.loadImage(mShop.mLogo, new CyImageLoader.Listener() {
+//			GlobalVariable.cyImageLoader.loadImage(
+//					CyImageLoader.DUMMY_PATH[position % CyImageLoader.DUMMY_PATH.length],
+//					new CyImageLoader.Listener() {
+						
+				@Override
+				public void startLoad(int from) {
+					switch (from) {
+						case CyImageLoader.FROM_DISK:
+						case CyImageLoader.FROM_NETWORK:
+							mShopCover.setImageResource(R.drawable.ava_loading);
+							break;
+					}
+				}
+				
+				@Override
+				public void loadFinish(int from, Bitmap image) {
+					switch (from) {
+					case CyImageLoader.FROM_MEMORY:
+						mShopCover.setImageBitmap(image);
+						break;
+						
+					case CyImageLoader.FROM_DISK:
+					case CyImageLoader.FROM_NETWORK:
+//						if (gridView.getFirstVisiblePosition() >= index &&
+//							index <= gridView.getLastVisiblePosition()) {
+//							mShopCover.setImageBitmap(image);
+							notifyDataSetChanged();
+//						}
+						break;
+					}
+				}
+				
+			}, new Point(128, 128), getActivity());
+			
+//			GlobalVariable.imageLoader.displayImage(mShop.mLogo, mShopCover);
+
+			// Set content
+			mShopName.setText(mShop.mName);
+			mShopContent.setText(mShop.mAddress);
+			mShopTypeIcon.setBackgroundResource(ICON_ID[mShop.mGroupShop-1]);
+
+//			RelativeLayout touch_layout = (RelativeLayout)MyView.findViewById(R.id.root_layout_item_list);
+//			touch_layout.setOnClickListener(new View.OnClickListener() {
+//
+//				@Override
+//				public void onClick(View v) {
+//					mDistantTV.setBackgroundResource(R.drawable.shop_distance_red);
+//					mShopScoreNowMin.setBackgroundResource(R.drawable.shop_score_red);
+//					mShopTypeScore.setBackgroundResource(R.drawable.shop_type_red);
+//					shop_cover_layout_tran.setBackgroundResource(R.drawable.shop_avatar_red_tran);
+//					mShopNameContent.setBackgroundResource(R.drawable.shop_content_red);
+//
+//					Shop s = mShopList.get(index);
+//					GlobalVariable.mCurrentShop = s;
+//					mMainAcitivyListener.getDetailFragment().setData(GlobalVariable.mCurrentShop );
+//
+//					new Handler().postDelayed(new Runnable() {
+//						@Override
+//						public void run() {
+//							mMainAcitivyListener.goNextPage();
+//						}
+//					}, 500);
+//				}
+//			});
+
+			return MyView;
 		}
 
 		@Override
-		protected void onPreExecute(){
-			if (mHaveAnimation){
-				getActivity().runOnUiThread(new Runnable() {
-					@Override
-					public void run() {
-						mLoadingCircle.setVisibility(View.VISIBLE);
-						mLoadingMiddle.setVisibility(View.VISIBLE);
-						mLoadingBackground.setVisibility(View.VISIBLE);
-
-						List<ObjectAnimator> arrayListObjectAnimators = new ArrayList<ObjectAnimator>();
-
-						arrayListObjectAnimators.add(mFadeInMiddle);
-						arrayListObjectAnimators.add(mFadeInCircle);
-						arrayListObjectAnimators.add(mRotateAnimation);
-
-						ObjectAnimator[] objectAnimators = arrayListObjectAnimators.toArray(new ObjectAnimator[arrayListObjectAnimators.size()]);
-						AnimatorSet animSetXY = new AnimatorSet();
-						animSetXY.playTogether(objectAnimators);
-						animSetXY.start();
-					}
-				});
-			}
+		public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+			mHighLightItem.add(position);
+			Shop s = mShopList.get(position);
+			GlobalVariable.mCurrentShop = s;
+			notifyDataSetChanged();
+			mListener.onShopClick(s);
 		}
 	}
+	
+	///////////////////////////////////////////////////////////////////////////
+	// Network async task
+	///////////////////////////////////////////////////////////////////////////
 
-	public void updateShopList(){
-		if (mShopList != null){
-			mAdapter = new ShopListAdapter(getActivity().getBaseContext(), getActivity());
-			gridView.setAdapter(mAdapter);
+//	private class UpdateTask extends AsyncTask<String, Void, Boolean> {
+//		
+//		@Override
+//		protected void onPreExecute() {
+//			if (mHaveAnimation){
+//				getActivity().runOnUiThread(new Runnable() {
+//					@Override
+//					public void run() {
+//						mLoadingCircle.setVisibility(View.VISIBLE);
+//						mLoadingMiddle.setVisibility(View.VISIBLE);
+//						mLoadingBackground.setVisibility(View.VISIBLE);
+//
+//						List<ObjectAnimator> arrayListObjectAnimators = new ArrayList<ObjectAnimator>();
+//
+//						arrayListObjectAnimators.add(mFadeInMiddle);
+//						arrayListObjectAnimators.add(mFadeInCircle);
+//						arrayListObjectAnimators.add(mRotateAnimation);
+//
+//						ObjectAnimator[] objectAnimators = arrayListObjectAnimators.toArray(new ObjectAnimator[arrayListObjectAnimators.size()]);
+//						AnimatorSet animSetXY = new AnimatorSet();
+//						animSetXY.playTogether(objectAnimators);
+//						animSetXY.start();
+//					}
+//				});
+//			}
+//		}
+//		
+//		@Override
+//		protected Boolean doInBackground(String... params) {
+//			String mJson = params[0];
+//			try {
+//				if (mJson.length() == 0)
+//					return false;
+//				mShopList = Shop.getListForUse(new JSONArray(mJson));
+//			} catch (JSONException e) {
+//				mShopList = null;
+//				return false;
+//			}
+//
+//			return true;
+//		}
+//
+//		@Override
+//		protected void onPostExecute(Boolean k) {
+//			if (k == true){
+//				getActivity().runOnUiThread(new Runnable() {
+//					@Override
+//					public void run() {
+//						if (mHaveAnimation){
+//							List<ObjectAnimator> arrayListObjectAnimators = new ArrayList<ObjectAnimator>();
+//							arrayListObjectAnimators.add(mFadeOutCircle);
+//							arrayListObjectAnimators.add(mFadeOutMiddle);
+//
+//							ObjectAnimator[] objectAnimators = arrayListObjectAnimators.toArray(new ObjectAnimator[arrayListObjectAnimators.size()]);
+//							AnimatorSet animSetXY = new AnimatorSet();
+//							animSetXY.playTogether(objectAnimators);
+//							animSetXY.addListener(new AnimatorListener() {
+//
+//								@Override
+//								public void onAnimationStart(Animator animation) {}
+//
+//								@Override
+//								public void onAnimationRepeat(Animator animation) {}
+//
+//								@Override
+//								public void onAnimationEnd(Animator animation) {
+//									// TODO Auto-generated method stub
+//									mLoadingOptical.setVisibility(View.INVISIBLE);
+//									mLoadingBackground.setVisibility(View.INVISIBLE);
+//								}
+//
+//								@Override
+//								public void onAnimationCancel(Animator animation) {
+//									// TODO Auto-generated method stub
+//
+//								}
+//							});
+//							animSetXY.start();
+//						}else{
+//							updateShopList();
+//						}
+//					}
+//				});
+//			}
+//		}
+//	}
+
+	public void updateShopList() {
+//		if (mShopList != null) {
+//			mAdapter = new ShopListAdapter(getActivity().getBaseContext(), getActivity());
+//			gridView.setAdapter(mAdapter);
 			mAdapter.notifyDataSetChanged();
-		}
+//		}
 	}
 
-	public class FetchMoreShopListTask extends AsyncTask<Void, Void, Boolean> {
-		private String json = null;
+	private class FetchMoreShopListTask extends AsyncTask<Void, Void, List<Shop>> {
+		
+		private Exception mEx;
 
 		@Override
-		protected Boolean doInBackground(Void... params) {
+		protected List<Shop> doInBackground(Void... params) {
 			List<NameValuePair> pairs = new ArrayList<NameValuePair>();
 			pairs.add(new BasicNameValuePair("group_list", GlobalVariable.mFilterString));
 			pairs.add(new BasicNameValuePair("city_id", GlobalVariable.mCityID));
@@ -297,263 +542,57 @@ public class ShopListFragment extends Fragment {
 			pairs.add(new BasicNameValuePair("shop_name", mSearchString));
 
 			try {
+				String json = null;
 				if (isSearch)
 					json = NetworkManger.post(APILinkMaker.mSearch(), pairs);
 				else
 					json = NetworkManger.post(APILinkMaker.ShopListInCategory(), pairs);
+				return Shop.getListForUse(new JSONArray(json));
 			} catch (Exception e) {
-				return false;
+				mEx = e;
+				return null;
 			}
-
-			return true;
 		}
 
 		@Override
-		protected void onPostExecute(Boolean k){
+		protected void onPostExecute(List<Shop> shopList) {
 
-			if (k == true){
-				try {
-					List<Shop> shopList = Shop.getListForUse(new JSONArray(json));
-					if (shopList.size() != 0){
+			if (mEx == null) {
+					if (shopList == null || shopList.size() == 0)
+						isMore = false;
+					else {
+						/////////////////////////////////
+						for (Shop s : shopList)
+							mAdapter.add(s);
 
-						if (shopList == null || shopList.size() == 0)
+						if (shopList.size() % GlobalVariable.itemPerPage == 0)
+							isMore = true;
+						else
 							isMore = false;
-						else{
-							for(int i = 0; i < shopList.size(); i++){
-								mShopList.add(shopList.get(i));
-								mAdapter.mViewList.add(null);
-							}
 
-							if (shopList.size() % GlobalVariable.itemPerPage == 0)
-								isMore = true;
-							else
-								isMore = false;
-
-							mAdapter.notifyDataSetChanged();
-						}
-
-						GlobalVariable.imageLoader.resume();	
+						mAdapter.notifyDataSetChanged();
 					}
-				} catch (JSONException e) {
-				}
+
+					GlobalVariable.imageLoader.resume();	
+
+			} else {
+				
 			}
-		}
-
-		@Override
-		protected void onPreExecute(){
-		}
-	}
-
-	public class ShopListAdapter extends BaseAdapter
-	{
-		Context MyContext;
-		Activity mActivity;
-		List<View> mViewList;
-
-		public ShopListAdapter(Context _MyContext, Activity activity)
-		{
-			MyContext = _MyContext;
-			mActivity = activity;
-			mViewList = new ArrayList<View>(mShopList.size());
-			for(int i = 0; i < mShopList.size(); i++){
-				mViewList.add(null);
-			}
-
-			if (mShopList.size() == 0)
-				isMore = false;
-			else if (mShopList.size() % 10 == 0)
-				isMore = true;
-
-			indexPage = 0;
-		}
-
-		@Override
-		public int getCount()
-		{
-			return mShopList.size();
-		}
-
-		@Override
-		public View getView(int position, View convertView, ViewGroup parent)
-		{
-			View MyView = null;
-			try{
-				final int index = position;
-
-				if (mViewList.get(position) != null)
-					return mViewList.get(position);
-
-				MyView = convertView;
-
-				final Shop mShop = mShopList.get(position);
-				LayoutInflater li = mActivity.getLayoutInflater();
-				if (mShop.mPromotionStatus == true){
-					switch(mShop.mPromotion.getType()){
-					case 1:
-						MyView = li.inflate(R.layout.shop_list_item, null);
-						break;
-					case 2:
-						MyView = li.inflate(R.layout.shop_list_item_type_2, null);
-						break;
-					}
-				}else{
-					MyView = li.inflate(R.layout.shop_list_item, null);
-					MyView.findViewById(R.id.shop_type_image).setVisibility(View.INVISIBLE);
-					MyView.findViewById(R.id.shop_score).setVisibility(View.INVISIBLE);
-
-				}
-
-
-				final TextView mDistantTV = (TextView)MyView.findViewById(R.id.shop_distance);
-				if (mShop.mDistance == - 1)
-					mDistantTV.setText("... KM");
-				else
-					mDistantTV.setText(Float.toString(mShop.mDistance) + " KM");
-				//
-				final LinearLayout mShopScoreNowMin = (LinearLayout)MyView.findViewById(R.id.shop_score_now_min);
-				TextView mShopScoreNowTV = (TextView) mShopScoreNowMin.findViewById(R.id.shop_score_now);
-				TextView mShopScoreMinTV = (TextView) mShopScoreNowMin.findViewById(R.id.shop_score_min);
-
-				try{
-					if (mShop.mPromotionStatus == true){
-						switch(mShop.mPromotion.getType()){
-						case 0:
-							break;
-						case 1:
-							PromotionTypeOne promotionTypeOne = (PromotionTypeOne)mShop.mPromotion;
-							mShopScoreNowTV.setText(Integer.toString(promotionTypeOne.mSGP));
-							mShopScoreMinTV.setText("/" + promotionTypeOne.mMinScore);
-							break;
-						case 2:
-							PromotionTypeTwo promotionTypeTwo = (PromotionTypeTwo)mShop.mPromotion;
-							mShopScoreMinTV.setText(Integer.toString(promotionTypeTwo.mMoney / 1000) + " K");
-							break;
-						}
-					}}catch(Exception ex){
-						ex.getMessage();
-					}
-
-				final LinearLayout mShopTypeScore = (LinearLayout)MyView.findViewById(R.id.shop_type_score);
-				final ImageView mShopCover = (ImageView)MyView.findViewById(R.id.shop_cover);
-				GlobalVariable.imageLoader.displayImage(mShop.mLogo, mShopCover);
-				//				new Handler().postDelayed(new Runnable() {
-				//					
-				//					@Override
-				//					public void run() {
-				//						new HttpConnection(new Handler() {
-				//			        		@Override
-				//			        		public void handleMessage(Message message) {
-				//			        			
-				//			        			switch (message.what) {
-				//			        			case HttpConnection.DID_START: {
-				//			        				break;
-				//			        			}
-				//			        			case HttpConnection.DID_SUCCEED: {
-				//			        				Bitmap response = (Bitmap) message.obj;
-				//			        				mShopCover.setBackgroundDrawable((new BitmapDrawable(getActivity().getResources(), response)));
-				//			        				break;
-				//			        			}
-				//			        			case HttpConnection.DID_ERROR: {
-				//			        				Exception e = (Exception) message.obj;
-				//			        				e.printStackTrace();
-				//			        				break;
-				//			        			}
-				//			        			}
-				//			        		}
-				//			        		
-				//			        	}).bitmap(mShop.mLogo);
-				//					}
-				//				}, 2000);
-
-
-				final LinearLayout mShopNameContent = (LinearLayout)MyView.findViewById(R.id.shop_name_content);
-				TextView mShopName = (TextView) mShopNameContent.findViewById(R.id.shop_name_real);
-				mShopName.setText(mShop.mName);
-
-				TextView mShopContent = (TextView) mShopNameContent.findViewById(R.id.shop_content_real);
-				mShopContent.setText(mShop.mAddress);
-				final LinearLayout shop_cover_layout_tran = (LinearLayout)MyView.findViewById(R.id.shop_cover_layout_tran);
-
-
-				RelativeLayout touch_layout = (RelativeLayout)MyView.findViewById(R.id.root_layout_item_list);
-				touch_layout.setOnClickListener(new View.OnClickListener() {
-
-					@Override
-					public void onClick(View v) {
-						mDistantTV.setBackgroundResource(R.drawable.shop_distance_red);
-						mShopScoreNowMin.setBackgroundResource(R.drawable.shop_score_red);
-						mShopTypeScore.setBackgroundResource(R.drawable.shop_type_red);
-						shop_cover_layout_tran.setBackgroundResource(R.drawable.shop_avatar_red_tran);
-						mShopNameContent.setBackgroundResource(R.drawable.shop_content_red);
-
-						Shop s = mShopList.get(index);
-						GlobalVariable.mCurrentShop = s;
-						mMainAcitivyListener.getDetailFragment().setData(GlobalVariable.mCurrentShop );
-
-						new Handler().postDelayed(new Runnable() {
-							@Override
-							public void run() {
-								mMainAcitivyListener.goNextPage();
-							}
-						}, 500);
-					}
-				});
-
-				setImageType((ImageView)MyView.findViewById(R.id.shop_type_icon), mShop.mGroupShop);
-				mViewList.set(position, MyView);
-			}catch(Exception ex){
-				ex.getMessage();
-			}
-			return MyView;
-		}
-
-		@Override
-		public Object getItem(int arg0) {
-			return null;
-		}
-
-		@Override
-		public long getItemId(int arg0) {
-			return 0;
-		}
-	}
-
-	public void setImageType(ImageView image, int type){
-		switch(type){
-		case 1:
-			image.setBackgroundResource(R.drawable.iconpin_food);
-			break;
-		case 2:
-			image.setBackgroundResource(R.drawable.iconpin_drink);
-			break;
-		case 3:
-			image.setBackgroundResource(R.drawable.iconpin_healness);
-			break;
-		case 4:
-			image.setBackgroundResource(R.drawable.iconpin_entertaiment);
-			break;
-		case 5:
-			image.setBackgroundResource(R.drawable.iconpin_fashion);
-			break;
-		case 6:
-			image.setBackgroundResource(R.drawable.iconpin_travel);
-			break;
-		case 7:
-			image.setBackgroundResource(R.drawable.iconpin_shopping);
-			break;
-		case 8:
-			image.setBackgroundResource(R.drawable.iconpin_education);
-			break;
-
 		}
 	}
 
 	public class SearchShopListTask extends AsyncTask<Void, Void, Boolean> {
 		private String json = null;
 		private String mName;
+		private Exception mEx;
 
 		public SearchShopListTask(String name) {
 			mName = name;
+		}
+		
+		@Override
+		protected void onPreExecute() {
+			mAniSetStart.start();
 		}
 
 		@Override
@@ -566,81 +605,104 @@ public class ShopListFragment extends Fragment {
 			pairs.add(new BasicNameValuePair("page", Integer.toString(indexPage)));
 			try {
 				json = NetworkManger.post(APILinkMaker.mSearch(), pairs);
-				mShopList = Shop.getListForUse(new JSONArray(json));
+				mShopList.clear();
+				mShopList.addAll(Shop.getListForUse(new JSONArray(json)));
 			} catch (Exception e) {
-				return false;
+				mEx = e;
 			}
 
 			return true;
 		}
 
 		@Override
-		protected void onPostExecute(Boolean k){
+		protected void onPostExecute(Boolean k) {
 
-			if (k){
-				List<ObjectAnimator> arrayListObjectAnimators = new ArrayList<ObjectAnimator>();
-				arrayListObjectAnimators.add(mFadeOutCircle);
-				arrayListObjectAnimators.add(mFadeOutMiddle);
-
-				ObjectAnimator[] objectAnimators = arrayListObjectAnimators.toArray(new ObjectAnimator[arrayListObjectAnimators.size()]);
-				AnimatorSet animSetXY = new AnimatorSet();
-				animSetXY.playTogether(objectAnimators);
-				animSetXY.addListener(new AnimatorListener() {
-
-					@Override
-					public void onAnimationStart(Animator animation) {}
-
-					@Override
-					public void onAnimationRepeat(Animator animation) {}
-
-					@Override
+			if (mEx == null) {
+				mAniSetFinish.addListener(new AnimatorListener() {
+					
+					public void onAnimationStart(Animator animation) { }
+					public void onAnimationRepeat(Animator animation) { }
 					public void onAnimationEnd(Animator animation) {
-						mLoadingOptical.setVisibility(View.INVISIBLE);
-						mLoadingBackground.setVisibility(View.INVISIBLE);
-
-						if (mShopList != null){
-							mAdapter = new ShopListAdapter(getActivity().getBaseContext(), getActivity());
-							gridView.setAdapter(mAdapter);
+						mAniSetFinish.removeListener(this);
+						if (mShopList != null) {
+//							mAdapter = new ShopListAdapter(getActivity().getBaseContext(), getActivity());
+//							gridView.setAdapter(mAdapter);
 							mAdapter.notifyDataSetChanged();
-							((MainActivity) mMainAcitivyListener).updateMapAsync();
-							((MainActivity) mMainAcitivyListener).jumpToBound();
+							((MainActivity) getActivity()).updateMapAsync();
+							((MainActivity) getActivity()).jumpToBound();
 						}
 					}
-
-					@Override
-					public void onAnimationCancel(Animator animation) {}
+					public void onAnimationCancel(Animator animation) { 
+						onAnimationEnd(animation);
+					}
 				});
-
-				animSetXY.start();
+				mAniSetFinish.start();
+			} else {
+				GlobalVariable.showToast("Tìm kiếm thất bại", getActivity());
+				mAniSetFinish.start();
 			}
+		}
+	}
+		
+	public class FindShopList extends AsyncTask<Void, Void, Boolean> {
+		
+		private String json ="";
+		private Exception mEx;
+		
+		@Override
+		protected void onPreExecute() {
+			mAniSetStart.start();
+		}
+		
+		@Override
+		protected Boolean doInBackground(Void... params) {
+			List<NameValuePair> pairs = new ArrayList<NameValuePair>();
+			pairs.add(new BasicNameValuePair("group_list", GlobalVariable.mFilterString));
+			pairs.add(new BasicNameValuePair("city_id", GlobalVariable.mCityID));
+			pairs.add(new BasicNameValuePair("user_id", GlobalVariable.userID));
+			pairs.add(new BasicNameValuePair("user_lat", Float.toString(GlobalVariable.mLat)));
+			pairs.add(new BasicNameValuePair("user_lng", Float.toString(GlobalVariable.mLng)));
+			pairs.add(new BasicNameValuePair("page", "0"));
+			pairs.add(new BasicNameValuePair("sort_by", GlobalVariable.mSortByString));
+
+			json = NetworkManger.post(APILinkMaker.ShopListInCategory(), pairs);
+			
+			return true;
 		}
 
 		@Override
-		protected void onPreExecute(){
-			mLoadingCircle.setVisibility(View.VISIBLE);
-			mLoadingMiddle.setVisibility(View.VISIBLE);
-			mLoadingOptical.setVisibility(View.VISIBLE);
-			mLoadingBackground.setVisibility(View.VISIBLE);
-
-			List<ObjectAnimator> arrayListObjectAnimators = new ArrayList<ObjectAnimator>();
-
-			arrayListObjectAnimators.add(mFadeInMiddle);
-			arrayListObjectAnimators.add(mFadeInCircle);
-			arrayListObjectAnimators.add(mRotateAnimation);
-
-			ObjectAnimator[] objectAnimators = arrayListObjectAnimators.toArray(new ObjectAnimator[arrayListObjectAnimators.size()]);
-			AnimatorSet animSetXY = new AnimatorSet();
-			animSetXY.playTogether(objectAnimators);
-			animSetXY.start();
+		protected void onPostExecute(Boolean k) {
+//			((ShopListFragment)(mMainAcitivyListener).getShopListFragment()).mHaveAnimation = true;
+//			(mMainAcitivyListener).getShopListFragment().update(json);
+			mAniSetFinish.start();
 		}
 	}
 
-	public void releaseMemory(){
-		try{
-			mShopList = new ArrayList<Shop>();
-			updateShopList();
-		}catch(Exception ex){
-			
-		}
+	public void releaseMemory() {
+//		try{
+//			mShopList = new ArrayList<Shop>();
+//			updateShopList();
+//		}catch(Exception ex){
+//			
+//		}
 	}
+	
+	///////////////////////////////////////////////////////////////////////////
+	// Listener
+	///////////////////////////////////////////////////////////////////////////
+	
+	public static class Listener {
+		public void onShopClick(Shop s) {} 
+	}
+	
+	///////////////////////////////////////////////////////////////////////////
+	// Listener
+	///////////////////////////////////////////////////////////////////////////
+	
+	private static final boolean isDebug = true;
+	private static final String TAG = "CycrixDebug";
+	private static final String HEADER = "ShopListFragment";
+	private static void debugLog(String message) {
+		if (isDebug) Log.d(TAG, HEADER + " " + message);
+	}	
 }
