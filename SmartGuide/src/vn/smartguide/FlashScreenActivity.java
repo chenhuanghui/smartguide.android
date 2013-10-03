@@ -97,22 +97,22 @@ public class FlashScreenActivity extends Activity {
 
 		@Override
 		protected Boolean doInBackground(Void... params) {
-			String fullURL = APILinkMaker.mCheckEmergence() + "?access_token=" + GlobalVariable.tokenID + "&versioin=android4.0_1.3";
-			HttpGet httpGet = new HttpGet(APILinkMaker.mCheckEmergence() + "?access_token=" + GlobalVariable.tokenID + "&versioin=android4.0_1.3");
-
-
-			try{
-				DefaultHttpClient httpClient = new DefaultHttpClient(NetworkManger.ccm, NetworkManger.params);
-				HttpResponse httpResponse = httpClient.execute(httpGet);
-				HttpEntity httpEntity = httpResponse.getEntity();
-				key = new JSONObject(EntityUtils.toString(httpEntity));
-				action_type = key.getInt("notification_type");
-			}catch(Exception ex){
-				return false;
-			}
-
-			if (action_type != 0)
-				return false;
+//			String fullURL = APILinkMaker.mCheckEmergence() + "?access_token=" + GlobalVariable.tokenID + "&versioin=android4.0_1.3";
+//			HttpGet httpGet = new HttpGet(APILinkMaker.mCheckEmergence() + "?access_token=" + GlobalVariable.tokenID + "&versioin=android4.0_1.3");
+//
+//
+//			try{
+//				DefaultHttpClient httpClient = new DefaultHttpClient(NetworkManger.ccm, NetworkManger.params);
+//				HttpResponse httpResponse = httpClient.execute(httpGet);
+//				HttpEntity httpEntity = httpResponse.getEntity();
+//				key = new JSONObject(EntityUtils.toString(httpEntity));
+//				action_type = key.getInt("notification_type");
+//			}catch(Exception ex){
+//				return false;
+//			}
+//
+//			if (action_type != 0)
+//				return false;
 
 			GlobalVariable.getActivateCodeFromDB();
 			GlobalVariable.getTokenFromDB();

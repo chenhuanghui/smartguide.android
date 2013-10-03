@@ -134,7 +134,7 @@ public class DetailMenuFragment extends Fragment {
 			@Override
 			public void onClick(View arg0) {
 
-				toggleShopInfo(true, true);
+				toggleShopInfo(false, true);
 			}
 		});
         
@@ -143,7 +143,7 @@ public class DetailMenuFragment extends Fragment {
 			@Override
 			public void onClick(View arg0) {
 
-				toggleShopInfo(true, true);
+				toggleShopInfo(false, true);
 			}
 		});
         
@@ -155,7 +155,7 @@ public class DetailMenuFragment extends Fragment {
 				@Override
 				public void onClick(View arg0) {
 					
-					switchToButton(index, true, true);
+					switchToButton(index, false, true);
 				}
 			});
         }
@@ -228,49 +228,73 @@ public class DetailMenuFragment extends Fragment {
     	if (animatorSet != null)
     		animatorSet.cancel();
     	
+    	float posPromotion 	= 0;
+		float posShop		= 0;
+		float posDivider	= 0;
+		
+		float posPicker		= 0;
+		float posPickerBg	= 0;
+		float posShopInfo	= 0;
+		float posShopMenu	= 0;
+		float posShopPhoto	= 0;
+		float posShopComment= 0;
+		float posShopMap	= 0;
+		
+		if (mShowInfoBar) {
+			
+			// Calculate position
+			int width5Button = mRootWidth - mBtnPromotionWidth - mDividerWidth;
+
+			posPromotion 	= 0;
+			posDivider		= mBtnPromotionWidth;
+			posShop			= mBtnPromotionWidth + mPickerWidth + (width5Button - mBtnShopWidth) / 2;
+			
+			posShopInfo		= mBtnShopInfoWidth - width5Button + (width5Button / 5 - mBtnShopInfoWidth) / 2;
+			posShopMenu		= mBtnShopMenuWidth - width5Button + (width5Button / 5 - mBtnShopMenuWidth) / 2 + width5Button / 5;
+			posShopPhoto	= mBtnShopPhotoWidth - width5Button + (width5Button / 5 - mBtnShopPhotoWidth) / 2 + width5Button * 2 / 5;
+			posShopComment	= mBtnShopCommentWidth - width5Button + (width5Button / 5 - mBtnShopCommentWidth) / 2 + width5Button * 3 / 5;
+			posShopMap		= mBtnShopMapWidth - width5Button + (width5Button / 5 - mBtnShopMapWidth) / 2 + width5Button * 4 / 5;
+			
+			posPicker		= mBtnPromotionWidth + mDividerWidth + (width5Button / 5 - mPickerWidth) / 2 + width5Button * mButtonIndex / 5;
+			posPickerBg		= mPickerBgWidth - width5Button + (width5Button / 5 - mPickerBgWidth) / 2 + width5Button * mButtonIndex / 5;
+			
+			// Set visibility
+    		btnShopInfo.setVisibility(View.VISIBLE);
+    		btnShopMenu.setVisibility(View.VISIBLE);
+    		btnShopPhoto.setVisibility(View.VISIBLE);
+    		btnShopComment.setVisibility(View.VISIBLE);
+    		btnShopMap.setVisibility(View.VISIBLE);
+    		imgPickerBg.setVisibility(View.VISIBLE);
+    		btnPromotionOverlay.setWidth(mBtnPromotionWidth);
+		} else {
+			
+			// Calculate position
+			posPromotion 	= (mRootWidth - mBtnShopWidth - mDividerWidth - mBtnPromotionWidth) / 2;
+			posDivider		= mRootWidth - mBtnShopWidth - mDividerWidth;
+			posShop			= mRootWidth - mBtnShopWidth;
+			
+			posShopInfo		= 0;
+			posShopMenu		= 0;
+			posShopPhoto	= 0;
+			posShopComment	= 0;
+			posShopMap		= 0;
+			
+			posPicker		= (mRootWidth - mBtnShopWidth - mDividerWidth - mPickerWidth) / 2;
+			posPickerBg		= 0;
+			
+			// Set visibility
+			btnShop.setVisibility(View.VISIBLE);
+		}
+    	
     	if (animate) {
     	
     		// Do animation
     		animatorSet = new AnimatorSet();
-    		float posPromotion 	= 0;
-    		float posShop		= 0;
-    		float posDivider	= 0;
     		
-    		float posPicker		= 0;
-    		float posPickerBg	= 0;
-    		float posShopInfo	= 0;
-    		float posShopMenu	= 0;
-    		float posShopPhoto	= 0;
-    		float posShopComment= 0;
-    		float posShopMap	= 0;
     		List<Animator> animatorList = new ArrayList<Animator>();
     		if (mShowInfoBar) {
     			
-    			// Calculate position
-    			int width5Button = mRootWidth - mBtnPromotionWidth - mDividerWidth;
-
-    			posPromotion 	= 0;
-    			posDivider		= mBtnPromotionWidth;
-    			posShop			= mBtnPromotionWidth + mPickerWidth + (width5Button - mBtnShopWidth) / 2;
-    			
-    			posShopInfo		= mBtnShopInfoWidth - width5Button + (width5Button / 5 - mBtnShopInfoWidth) / 2;
-    			posShopMenu		= mBtnShopMenuWidth - width5Button + (width5Button / 5 - mBtnShopMenuWidth) / 2 + width5Button / 5;
-    			posShopPhoto	= mBtnShopPhotoWidth - width5Button + (width5Button / 5 - mBtnShopPhotoWidth) / 2 + width5Button * 2 / 5;
-    			posShopComment	= mBtnShopCommentWidth - width5Button + (width5Button / 5 - mBtnShopCommentWidth) / 2 + width5Button * 3 / 5;
-    			posShopMap		= mBtnShopMapWidth - width5Button + (width5Button / 5 - mBtnShopMapWidth) / 2 + width5Button * 4 / 5;
-    			
-    			posPicker		= mBtnPromotionWidth + mDividerWidth + (width5Button / 5 - mPickerWidth) / 2 + width5Button * mButtonIndex / 5;
-    			posPickerBg		= mPickerBgWidth - width5Button + (width5Button / 5 - mPickerBgWidth) / 2 + width5Button * mButtonIndex / 5;
-    			
-    			// Set visibility
-        		btnShopInfo.setVisibility(View.VISIBLE);
-        		btnShopMenu.setVisibility(View.VISIBLE);
-        		btnShopPhoto.setVisibility(View.VISIBLE);
-        		btnShopComment.setVisibility(View.VISIBLE);
-        		btnShopMap.setVisibility(View.VISIBLE);
-        		imgPickerBg.setVisibility(View.VISIBLE);
-        		btnPromotionOverlay.setWidth(mBtnPromotionWidth);
-        		
+    			// Show Info bar
     			animatorSet.addListener(new AnimatorListener() {
 					
 					public void onAnimationStart(Animator animation) { }
@@ -283,27 +307,10 @@ public class DetailMenuFragment extends Fragment {
 					public void onAnimationCancel(Animator animation) {
 						onAnimationEnd(animation);
 					}
-				});
-    			
+				});    			
     		} else {
-
-    			// Calculate position
-    			posPromotion 	= (mRootWidth - mBtnShopWidth - mDividerWidth - mBtnPromotionWidth) / 2;
-    			posDivider		= mRootWidth - mBtnShopWidth - mDividerWidth;
-    			posShop			= mRootWidth - mBtnShopWidth;
     			
-    			posShopInfo		= 0;
-    			posShopMenu		= 0;
-    			posShopPhoto	= 0;
-    			posShopComment	= 0;
-    			posShopMap		= 0;
-    			
-    			posPicker		= (mRootWidth - mBtnShopWidth - mDividerWidth - mPickerWidth) / 2;
-    			posPickerBg		= 0;
-    			
-    			// Set visibility
-    			btnShop.setVisibility(View.VISIBLE);
-    			
+    			// Show shop bar
     			animatorSet.addListener(new AnimatorListener() {
 					
 					public void onAnimationStart(Animator animation) { }
@@ -354,17 +361,33 @@ public class DetailMenuFragment extends Fragment {
     		animatorSet.setInterpolator(new AccelerateDecelerateInterpolator());
     		animatorSet.start();    		
     	} else {
-    		
+
     		// Change GUI instantly
-//    		if (mShowInfoBar) {
-//    			btnShopInfo.setWidth(mRootWidth - mBtnPromotionWidth);
-//    			btnShopInfoDock.setVisibility(View.INVISIBLE);
-//    			layout5button.setVisibility(View.VISIBLE);
-//    		} else {
-//    			btnShopInfo.setWidth(mBtnShopInfoWidth);
-//    			btnShopInfoDock.setVisibility(View.VISIBLE);
-//    			layout5button.setVisibility(View.INVISIBLE);
-//    		}
+    		btnPromotion.setTranslationX(posPromotion);
+    		imgDivider.setTranslationX(posDivider);
+    		btnShop.setTranslationX(posShop);
+    		btnShopInfo.setTranslationX(posShopInfo);
+    		btnShopMenu.setTranslationX(posShopMenu);
+    		btnShopPhoto.setTranslationX(posShopPhoto);
+    		btnShopComment.setTranslationX(posShopComment);
+    		btnShopMap.setTranslationX(posShopMap);
+    		imgPicker.setTranslationX(posPicker);
+    		imgPickerBg.setTranslationX(posPickerBg);
+    		
+    		// Set divider image
+    		imgDivider.setImageResource(mShowInfoBar ? R.drawable.detail_menu_divider_right : R.drawable.detail_menu_divider_left);
+    		
+    		if (mShowInfoBar) {
+        		btnShop.setVisibility(View.INVISIBLE);
+    		} else {
+    			btnShopInfo.setVisibility(View.INVISIBLE);
+        		btnShopMenu.setVisibility(View.INVISIBLE);
+        		btnShopPhoto.setVisibility(View.INVISIBLE);
+        		btnShopComment.setVisibility(View.INVISIBLE);
+        		btnShopMap.setVisibility(View.INVISIBLE);
+        		imgPickerBg.setVisibility(View.INVISIBLE);
+        		btnPromotionOverlay.setWidth(mRootWidth - mBtnShopWidth - mDividerWidth);
+    		}
     	}
     	
     	if (invokeListener)

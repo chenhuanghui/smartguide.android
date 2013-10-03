@@ -29,8 +29,11 @@ public class ShopDetailActivity extends FragmentActivity {
 		
 		// Clear static fields to avoid leak me
 		sShop = null;
+		
+		((ShopDetailFragment) getSupportFragmentManager().findFragmentById(R.id.fragShopDetail))
+		.setData(mShop);
 	}
-
+	
 	///////////////////////////////////////////////////////////////////////////
 	// Public methods
 	///////////////////////////////////////////////////////////////////////////

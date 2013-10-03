@@ -582,7 +582,8 @@ public class ShopListFragment extends Fragment {
 	}
 
 	public class SearchShopListTask extends AsyncTask<Void, Void, Boolean> {
-		private String json = null;
+		
+		private List<Shop> mShopList;
 		private String mName;
 		private Exception mEx;
 
@@ -604,9 +605,8 @@ public class ShopListFragment extends Fragment {
 			pairs.add(new BasicNameValuePair("user_lng", Float.toString(GlobalVariable.mLng)));
 			pairs.add(new BasicNameValuePair("page", Integer.toString(indexPage)));
 			try {
-				json = NetworkManger.post(APILinkMaker.mSearch(), pairs);
-				mShopList.clear();
-				mShopList.addAll(Shop.getListForUse(new JSONArray(json)));
+				String json = NetworkManger.post(APILinkMaker.mSearch(), pairs);
+				mShopList = Shop.getListForUseThrow(new JSONArray(json));
 			} catch (Exception e) {
 				mEx = e;
 			}
@@ -627,7 +627,8 @@ public class ShopListFragment extends Fragment {
 						if (mShopList != null) {
 //							mAdapter = new ShopListAdapter(getActivity().getBaseContext(), getActivity());
 //							gridView.setAdapter(mAdapter);
-							mAdapter.notifyDataSetChanged();
+							mAdapter.clear();
+							mAdapter.addAll(mShopList);
 							((MainActivity) getActivity()).updateMapAsync();
 							((MainActivity) getActivity()).jumpToBound();
 						}

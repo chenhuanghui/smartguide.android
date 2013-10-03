@@ -99,11 +99,18 @@ public class DetailShopPhotoFragment extends Fragment {
 
 	public void setData(Shop s) {
 
-		mShop = s;
-		mShopAdapter.setData(s.mShopImageList);
-		mUserAdapter.setData(s.mUserImageList);
-		mShopAdapter.notifyDataSetChanged();
-		mUserAdapter.notifyDataSetChanged();
+		if (s != null) {
+			mShop = s;
+			mShopAdapter.setData(s.mShopImageList);
+			mUserAdapter.setData(s.mUserImageList);
+			mShopAdapter.notifyDataSetChanged();
+			mUserAdapter.notifyDataSetChanged();
+		} else {
+			mShopAdapter.setData(null);
+			mUserAdapter.setData(null);
+			mShopAdapter.notifyDataSetChanged();
+			mUserAdapter.notifyDataSetChanged();
+		}
 	}
 	
 	public void releaseMemory(){
@@ -121,12 +128,17 @@ public class DetailShopPhotoFragment extends Fragment {
 
 		public void setData(List<ImageStr> imageList) {
 
-			mItemList.clear();
-			mItemList.addAll(imageList);
-			for (ImageStr item : mItemList) {
-				item.loadFail = false;
+			if (imageList != null) {
+				mItemList.clear();
+				mItemList.addAll(imageList);
+				for (ImageStr item : mItemList) {
+					item.loadFail = false;
+				}
+				notifyDataSetChanged();
+			} else {
+				mItemList.clear();
+				notifyDataSetChanged();
 			}
-			notifyDataSetChanged();
 		}
 
 //		public void loadMore(boolean isUser) {

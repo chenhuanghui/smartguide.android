@@ -95,17 +95,26 @@ public class DetailCommentFragment extends Fragment {
 	}
 
 	public void setData(Shop s) {
-		mShop = s;
-
-		mPage = 1;
-		mPageEnd = false;
-		mLoading = false; 
-		mAdapter.mItemList.clear();
-		mAdapter.mItemList.addAll(s.mCommentList);
-		mAdapter.notifyDataSetChanged();
-		mLst.setSelectionFromTop(mAdapter.getCount() - 1, 0);
-		if (GlobalVariable.avatarFace != "" || GlobalVariable.avatarFace.compareTo("null") != 0)
-			GlobalVariable.imageLoader.displayImage(GlobalVariable.avatarFace, mAvatar);
+		
+		if (s != null) {
+			mShop = s;
+	
+			mPage = 1;
+			mPageEnd = false;
+			mLoading = false; 
+			mAdapter.mItemList.clear();
+			mAdapter.mItemList.addAll(s.mCommentList);
+			mAdapter.notifyDataSetChanged();
+			mLst.setSelectionFromTop(mAdapter.getCount() - 1, 0);
+			if (GlobalVariable.avatarFace != "" || GlobalVariable.avatarFace.compareTo("null") != 0)
+				GlobalVariable.imageLoader.displayImage(GlobalVariable.avatarFace, mAvatar);
+		} else {
+			mPage = 1;
+			mPageEnd = false;
+			mLoading = false; 
+			mAdapter.mItemList.clear();
+			mAdapter.notifyDataSetChanged();
+		}
 	}
 
 	public void releaseMemory(){

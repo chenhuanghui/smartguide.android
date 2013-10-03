@@ -57,7 +57,7 @@ public class DetailShowMapFragment extends Fragment {
 		super.onActivityCreated(savedInstanceState);
 	}
 
-	public void releaseMemory(){
+	public void releaseMemory() {
 		try{
 		((ImageButton) getView().findViewById(R.id.imgDetailMap)).setImageBitmap(null);
 		}catch(Exception ex){
@@ -67,38 +67,43 @@ public class DetailShowMapFragment extends Fragment {
 	
 	public void setData(Shop s) {
 
-		mShop = s;
-
-		// Construct URL
-
-		View mapLayout = getView().findViewById(R.id.layoutDetailMap);
-		mapLayout.addOnLayoutChangeListener(new OnLayoutChangeListener() {
-
-			@Override
-			public void onLayoutChange(View v, int left, int top, int right,
-					int bottom, int oldLeft, int oldTop, int oldRight, int oldBottom) {
-
-				int w = (right - left) / 1;
-				int h = (bottom - top) / 1;
-
-				String url = "http://maps.googleapis.com/maps/api/staticmap" +
-						"?zoom=14&size=%dx%d&markers=%f,%f&sensor=false&scale=1&visual_refresh=true";
-				url = String.format(url, w, h, mShop.mLat, mShop.mLng);
-
-				new HttpConnection(new Handler() {
-					@Override
-					public void handleMessage(Message msg) {
-
-						switch (msg.what) {
-						case HttpConnection.DID_SUCCEED:
-							ImageButton img = (ImageButton) getView().findViewById(R.id.imgDetailMap);
-							img.setImageBitmap((Bitmap) msg.obj);
-							break;
+		if (s != null) {
+			mShop = s;
+	
+			// Construct URL
+	
+			View mapLayout = getView().findViewById(R.id.layoutDetailMap);
+			mapLayout.addOnLayoutChangeListener(new OnLayoutChangeListener() {
+	
+				@Override
+				public void onLayoutChange(View v, int left, int top, int right,
+						int bottom, int oldLeft, int oldTop, int oldRight, int oldBottom) {
+	
+					int w = (right - left) / 1;
+					int h = (bottom - top) / 1;
+	
+					String url = "http://maps.googleapis.com/maps/api/staticmap" +
+							"?zoom=14&size=%dx%d&markers=%f,%f&sensor=false&scale=1&visual_refresh=true";
+					url = String.format(url, w, h, mShop.mLat, mShop.mLng);
+	
+					new HttpConnection(new Handler() {
+						@Override
+						public void handleMessage(Message msg) {
+	
+							switch (msg.what) {
+							case HttpConnection.DID_SUCCEED:
+								ImageButton img = (ImageButton) getView().findViewById(R.id.imgDetailMap);
+								img.setImageBitmap((Bitmap) msg.obj);
+								break;
+							}
 						}
-					}
-				}).bitmap(url);
-			}
-		});
+					}).bitmap(url);
+				}
+			});
+		} else {
+			ImageButton img = (ImageButton) getView().findViewById(R.id.imgDetailMap);
+			img.setImageBitmap(null);
+		}
 	}
 
 	@Override

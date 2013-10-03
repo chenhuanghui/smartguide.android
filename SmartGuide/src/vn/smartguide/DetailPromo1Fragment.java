@@ -11,8 +11,12 @@ import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import android.graphics.Typeface;
 import android.os.AsyncTask;
 import android.os.Bundle;
+import android.text.SpannableString;
+import android.text.style.ForegroundColorSpan;
+import android.text.style.StyleSpan;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -34,6 +38,7 @@ public class DetailPromo1Fragment extends DetailPromoFragment {
 	private TextView txtSGP;
 	private TextView txtPromoDuration;
 	private TextView txtSP;
+	private TextView txtPperSGP;
 	
 	// Data
 	private Shop mShop;
@@ -57,7 +62,8 @@ public class DetailPromo1Fragment extends DetailPromoFragment {
 
         super.onActivityCreated(savedInstanceState);
         
-        mCostPerSGP = (TextView)getView().findViewById(R.id.textView1);
+        mCostPerSGP = (TextView)getView().findViewById(R.id.txtKperSGP);
+        txtPperSGP = (TextView)getView().findViewById(R.id.txtPperSGP);
         txtPromoDuration = (TextView) getView().findViewById(R.id.txtPromoDuration);
     	txtSGP = (TextView) getView().findViewById(R.id.txtSGP);
     	txtSP = (TextView) getView().findViewById(R.id.txtSP);
@@ -91,6 +97,7 @@ public class DetailPromo1Fragment extends DetailPromoFragment {
     	mShop = s;   
     	
     	txtPromoDuration.setText(s.mPromotion.mDuration);
+    	mPromoListAdapter.clear();
     	
     	if (s.mPromotionStatus == false) {
     		txtSP.setText("");
@@ -106,9 +113,24 @@ public class DetailPromo1Fragment extends DetailPromoFragment {
     		mTotalScore = promo.mSGP;
     		//mTotalScore = 50;
     		isUpdatedScore = true;
-    		txtSP.setText("" + promo.mSP);
+    		
     		txtSGP.setText("" + promo.mSGP);
-    		mCostPerSGP.setText(Integer.toString(promo.mCost / 1000) + "K VNĐ/1 SGP");
+    		
+    		SpannableString spanString = new SpannableString("" + promo.mSP + " SP tích lũy");
+    		spanString.setSpan(new StyleSpan(Typeface.BOLD), 0, ("" + promo.mSP).length(), 0);
+    		txtSP.setText(spanString);
+    		
+    		spanString = new SpannableString("" + promo.mPperSGP + " P cho 1 SGP");
+    		spanString.setSpan(new StyleSpan(Typeface.BOLD), 0, ("" + promo.mPperSGP).length(), 0);
+    		txtPperSGP.setText(spanString);
+    		
+    		spanString = new SpannableString("Với mỗi " + promo.mCost/1000 + "k trên hóa đơn bạn sẽ được 1 lược quét thẻ");
+    		spanString.setSpan(new ForegroundColorSpan(0xFFC95436),
+    				"Với mỗi ".length(), ("Với mỗi " + promo.mCost/1000 + "k").length(), 0);
+    		spanString.setSpan(new StyleSpan(Typeface.BOLD),
+    				"Với mỗi ".length(), ("Với mỗi " + promo.mCost/1000 + "k").length(), 0);
+    		mCostPerSGP.setText(spanString);
+    		
     		new GetPromotionDetail().execute();
     	}
     	

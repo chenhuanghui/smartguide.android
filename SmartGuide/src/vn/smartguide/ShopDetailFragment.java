@@ -202,6 +202,10 @@ public class ShopDetailFragment extends Fragment {
     	
     	mPromoFragment.setData(s);
     	((DetailShopInfoFragment) mDetailFragmentList.get(0)).setData(s);
+    	((DetailShopMenuFragment) mDetailFragmentList.get(1)).setData(null);
+    	((DetailShopPhotoFragment) mDetailFragmentList.get(2)).setData(null);
+    	((DetailCommentFragment) mDetailFragmentList.get(3)).setData(null);
+    	((DetailShowMapFragment) mDetailFragmentList.get(4)).setData(null);
     	
 //    	if (s.mPromotionStatus == true && s.mPromotion.getType() == 1)
 //    		mPromo1Fragment.runAnimation();

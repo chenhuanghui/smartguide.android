@@ -2,6 +2,7 @@ package vn.smartguide;
 
 import java.text.NumberFormat;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Locale;
@@ -42,15 +43,20 @@ public class DetailShopMenuFragment extends Fragment {
     
     public void setData(Shop s) {
     	
-    	mShop = s;
-    	
-    	// Get item list
-    	mAdapter.setData(mShop);
-    	mAdapter.notifyDataSetChanged();
-    	
-    	// Expand all group
-        for (int i = 0; i < mAdapter.getGroupCount(); i++)
-        	mLst.expandGroup(i);
+    	if (s != null) {
+	    	mShop = s;
+	    	
+	    	// Get item list
+	    	mAdapter.setData(mShop);
+	    	mAdapter.notifyDataSetChanged();
+	    	
+	    	// Expand all group
+	        for (int i = 0; i < mAdapter.getGroupCount(); i++)
+	        	mLst.expandGroup(i);
+    	} else {
+    		mAdapter.setData(s);
+    		mAdapter.notifyDataSetChanged();
+    	}
     }
     
 //    public class ShopMenuListAdapter extends BaseAdapter
@@ -108,8 +114,13 @@ public class DetailShopMenuFragment extends Fragment {
         
         public void setData(Shop s) {
         	
-        	groupMenuList = s.mGroupItemList;
-        	menuCollections = s.mItemCollections;
+        	if (s != null) {
+	        	groupMenuList = s.mGroupItemList;
+	        	menuCollections = s.mItemCollections;
+        	} else {
+        		groupMenuList = new ArrayList<String>();
+        		menuCollections = new HashMap<String, List<Item>>();
+        	}
         }
 
         public Object getChild(int groupPosition, int childPosition) {
