@@ -114,7 +114,7 @@
                     android:layout_height="wrap_content"
                     android:layout_marginLeft="4dp"
                     android:background="@drawable/button_skip"
-                    android:visibility="gone" />
+                    android:visibility="invisible" />
             </LinearLayout>
         </RelativeLayout>
     </LinearLayout>

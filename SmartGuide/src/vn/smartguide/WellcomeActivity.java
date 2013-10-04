@@ -74,6 +74,7 @@ public class WellcomeActivity extends FragmentActivity{
 	private ObjectAnimator mSendButtonSlideUp;
 	private ObjectAnimator mFacebookBtnFadeIn;
 	private ObjectAnimator mStatusTextFlash;
+	private ObjectAnimator mSkipBtnFadeIn;
 	
 	private LoginButton authButton = null;
 
@@ -121,8 +122,8 @@ public class WellcomeActivity extends FragmentActivity{
 		// Set up animation		
 		mFacebookBtnFadeIn = ObjectAnimator.ofFloat(mLogin, "alpha", 0.0f, 1.0f);
 		mFacebookBtnFadeIn.setInterpolator(new AccelerateDecelerateInterpolator());
-		//		mSkipBtnFadeIn = ObjectAnimator.ofFloat(mSkip, "alpha", 0.0f, 1.0f);
-		//		mSkipBtnFadeIn.setInterpolator(new AccelerateDecelerateInterpolator());
+		mSkipBtnFadeIn = ObjectAnimator.ofFloat(mSkip, "alpha", 0.0f, 1.0f);
+		mSkipBtnFadeIn.setInterpolator(new AccelerateDecelerateInterpolator());
 
 		mStatusTextFlash = ObjectAnimator.ofFloat(mStatusText, "alpha", 0.3f, 1.0f);
 		mStatusTextFlash.setInterpolator(new LinearInterpolator());
@@ -215,7 +216,7 @@ public class WellcomeActivity extends FragmentActivity{
 				mResendCode.setVisibility(View.INVISIBLE);
 				m84TV.setVisibility(View.INVISIBLE);
 				isConfirm = true;
-				mStatusText.setText("ChÃ¡Â»ï¿½ vÃƒÂ  nhÃ¡ÂºÂ­p mÃƒÂ£ xÃƒÂ¡c nhÃ¡ÂºÂ­n...");
+				mStatusText.setText("Chờ và nhập mã xác nhận...");
 				mNumberField.setText("");
 				
 				new GetActivateCode().execute();
@@ -421,10 +422,10 @@ public class WellcomeActivity extends FragmentActivity{
 							mSendButton.setVisibility(View.INVISIBLE);
 
 							mLogin.setVisibility(View.VISIBLE);
-//							mSkip.setVisibility(View.VISIBLE);
+							mSkip.setVisibility(View.VISIBLE);
 //
-//							ObjectAnimator[] objectAnimators = new ObjectAnimator[] {mFacebookBtnFadeIn, mSkipBtnFadeIn};
-							ObjectAnimator[] objectAnimators = new ObjectAnimator[] {mFacebookBtnFadeIn};
+							ObjectAnimator[] objectAnimators = new ObjectAnimator[] {mFacebookBtnFadeIn, mSkipBtnFadeIn};
+//							ObjectAnimator[] objectAnimators = new ObjectAnimator[] {mFacebookBtnFadeIn};
 							AnimatorSet animSetXY = new AnimatorSet();
 							animSetXY.playTogether(objectAnimators);
 							animSetXY.setDuration(1200);//1sec
@@ -461,7 +462,7 @@ public class WellcomeActivity extends FragmentActivity{
 
 		AlertDialog.Builder builder = new AlertDialog.Builder(this);
 
-		builder.setMessage(phoneNumber +"\nMã kích hoạt SmartGuide sẽ được gửi đến số điện thoại trên" +
+		builder.setMessage("(+84)" + phoneNumber.substring(2) +"\nMã kích hoạt SmartGuide sẽ được gửi đến số điện thoại trên" +
 				" qua tin nhắn. Chọn Đồng ý để tiếp tục hoặc hủy để thay đổi số điện thoại");
 		builder.setCancelable(true);
 

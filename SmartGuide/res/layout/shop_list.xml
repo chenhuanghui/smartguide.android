@@ -24,7 +24,8 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_gravity="center"
-                android:background="@drawable/arrow_up" >
+                android:background="@drawable/arrow_up"
+                android:layout_marginBottom="5dp" >
             </ImageButton>
         </LinearLayout>
 
