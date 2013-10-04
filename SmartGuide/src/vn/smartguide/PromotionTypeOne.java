@@ -7,7 +7,7 @@ import java.util.List;
  */
 public class PromotionTypeOne extends Promotion {
 	public int mCost; // min
-	public int mPperSGP = 10;
+	public int mPperSGP;
 	public int mSGP;
 	public int mSP;
 	public int mMinScore;

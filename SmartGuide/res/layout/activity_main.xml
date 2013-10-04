@@ -314,16 +314,6 @@
                         android:layout_margin="5dp" >
                     </FrameLayout>
 
-                    <ImageView
-                        android:id="@+id/scanCover"
-                        android:layout_width="fill_parent"
-                        android:layout_height="fill_parent"
-                        android:layout_centerHorizontal="true"
-                        android:layout_centerVertical="true"
-                        android:layout_margin="5dp"
-                        android:background="@drawable/pattern_background" >
-                    </ImageView>
-
                     <LinearLayout
                         android:id="@+id/mirror"
                         android:layout_width="match_parent"

@@ -125,23 +125,6 @@ public class ShopListFragment extends Fragment {
 		mFadeOutMiddle = ObjectAnimator.ofFloat(mLoadingMiddle, "alpha", 1.0f, 0.0f);
 		mFadeOutMiddle.setDuration(1000);
 		mFadeOutMiddle.setInterpolator(new AccelerateDecelerateInterpolator());
-//		mFadeOutCircle.addListener(new AnimatorListener() {
-//			@Override
-//			public void onAnimationStart(Animator animation) {}
-//
-//			@Override
-//			public void onAnimationRepeat(Animator animation) {}
-//
-//			@Override
-//			public void onAnimationEnd(Animator animation) {
-//				mRotateAnimation.cancel();
-//				mHaveAnimation = false;
-//				updateShopList();
-//			}
-//
-//			@Override
-//			public void onAnimationCancel(Animator animation) {}
-//		});
 		
 		mAniSetStart = new AnimatorSet();
 		mAniSetStart.playTogether(mFadeInMiddle, mFadeInCircle, mRotateAnimation);
@@ -199,6 +182,24 @@ public class ShopListFragment extends Fragment {
 		mListener = listener;
 	}
 	
+	public String getTitle() {
+		String title = null;
+		if (isSearch) {
+			title = mSearchString;
+		} else {
+			int lengthOfFilterString = GlobalVariable.mFilterString.length();
+			if (lengthOfFilterString >= 2)
+				title = "NHIỀU DANH MỤC";
+			else {
+				int shopType = Integer.valueOf(GlobalVariable.mFilterString);
+				String[] cateName = new String[] {"", "ẨM THỰC", "CAFE & BAR", "LÀM ĐẸP", "GIẢI TRÍ", 
+						"THỜI TRANG", "DU LỊCH", "SẢN PHẨM", "GIÁO DỤC"};
+				title = cateName[shopType];
+			}
+		}
+		return title;
+	}
+	
 	public void updateSGP(int id, int sgp) {
 		if (mShopList == null || mShopList.size() == 0)
 			return;
@@ -220,21 +221,33 @@ public class ShopListFragment extends Fragment {
 		mSearchString = search;
 		new SearchShopListTask(search).execute();
 	}
-
-	public void update(String json) {
+	
+	public void filter() {
 		indexPage = 0;
 		isSearch = false;
 		isMore = true;
 		
+		new FindShopList().execute();
+	}
+
+	public void update(String json) {
 		try {
-			if (json.length() == 0)
-				return;
-			mAdapter.clear();
-			mAdapter.addAll(Shop.getListForUse(new JSONArray(json)));
-		} catch (JSONException e) {
-			mShopList = null;
+			update_throw(json);
+		} catch (Exception e) {
+			GlobalVariable.showToast("Không lấy được danh sách cửa hàng", getActivity());
 		}
 	}
+	
+	public void update_throw(String json) throws Exception {
+		indexPage = 0;
+		isSearch = false;
+		isMore = true;
+		
+		if (json.length() == 0)
+			return;
+		mAdapter.clear();
+		mAdapter.addAll(Shop.getListForUseThrow(new JSONArray(json)));
+	} 
 
 	public void setForeground(){
 		mLoadingOptical.setVisibility(View.VISIBLE);
@@ -389,30 +402,6 @@ public class ShopListFragment extends Fragment {
 			mShopContent.setText(mShop.mAddress);
 			mShopTypeIcon.setBackgroundResource(ICON_ID[mShop.mGroupShop-1]);
 
-//			RelativeLayout touch_layout = (RelativeLayout)MyView.findViewById(R.id.root_layout_item_list);
-//			touch_layout.setOnClickListener(new View.OnClickListener() {
-//
-//				@Override
-//				public void onClick(View v) {
-//					mDistantTV.setBackgroundResource(R.drawable.shop_distance_red);
-//					mShopScoreNowMin.setBackgroundResource(R.drawable.shop_score_red);
-//					mShopTypeScore.setBackgroundResource(R.drawable.shop_type_red);
-//					shop_cover_layout_tran.setBackgroundResource(R.drawable.shop_avatar_red_tran);
-//					mShopNameContent.setBackgroundResource(R.drawable.shop_content_red);
-//
-//					Shop s = mShopList.get(index);
-//					GlobalVariable.mCurrentShop = s;
-//					mMainAcitivyListener.getDetailFragment().setData(GlobalVariable.mCurrentShop );
-//
-//					new Handler().postDelayed(new Runnable() {
-//						@Override
-//						public void run() {
-//							mMainAcitivyListener.goNextPage();
-//						}
-//					}, 500);
-//				}
-//			});
-
 			return MyView;
 		}
 
@@ -430,99 +419,8 @@ public class ShopListFragment extends Fragment {
 	// Network async task
 	///////////////////////////////////////////////////////////////////////////
 
-//	private class UpdateTask extends AsyncTask<String, Void, Boolean> {
-//		
-//		@Override
-//		protected void onPreExecute() {
-//			if (mHaveAnimation){
-//				getActivity().runOnUiThread(new Runnable() {
-//					@Override
-//					public void run() {
-//						mLoadingCircle.setVisibility(View.VISIBLE);
-//						mLoadingMiddle.setVisibility(View.VISIBLE);
-//						mLoadingBackground.setVisibility(View.VISIBLE);
-//
-//						List<ObjectAnimator> arrayListObjectAnimators = new ArrayList<ObjectAnimator>();
-//
-//						arrayListObjectAnimators.add(mFadeInMiddle);
-//						arrayListObjectAnimators.add(mFadeInCircle);
-//						arrayListObjectAnimators.add(mRotateAnimation);
-//
-//						ObjectAnimator[] objectAnimators = arrayListObjectAnimators.toArray(new ObjectAnimator[arrayListObjectAnimators.size()]);
-//						AnimatorSet animSetXY = new AnimatorSet();
-//						animSetXY.playTogether(objectAnimators);
-//						animSetXY.start();
-//					}
-//				});
-//			}
-//		}
-//		
-//		@Override
-//		protected Boolean doInBackground(String... params) {
-//			String mJson = params[0];
-//			try {
-//				if (mJson.length() == 0)
-//					return false;
-//				mShopList = Shop.getListForUse(new JSONArray(mJson));
-//			} catch (JSONException e) {
-//				mShopList = null;
-//				return false;
-//			}
-//
-//			return true;
-//		}
-//
-//		@Override
-//		protected void onPostExecute(Boolean k) {
-//			if (k == true){
-//				getActivity().runOnUiThread(new Runnable() {
-//					@Override
-//					public void run() {
-//						if (mHaveAnimation){
-//							List<ObjectAnimator> arrayListObjectAnimators = new ArrayList<ObjectAnimator>();
-//							arrayListObjectAnimators.add(mFadeOutCircle);
-//							arrayListObjectAnimators.add(mFadeOutMiddle);
-//
-//							ObjectAnimator[] objectAnimators = arrayListObjectAnimators.toArray(new ObjectAnimator[arrayListObjectAnimators.size()]);
-//							AnimatorSet animSetXY = new AnimatorSet();
-//							animSetXY.playTogether(objectAnimators);
-//							animSetXY.addListener(new AnimatorListener() {
-//
-//								@Override
-//								public void onAnimationStart(Animator animation) {}
-//
-//								@Override
-//								public void onAnimationRepeat(Animator animation) {}
-//
-//								@Override
-//								public void onAnimationEnd(Animator animation) {
-//									// TODO Auto-generated method stub
-//									mLoadingOptical.setVisibility(View.INVISIBLE);
-//									mLoadingBackground.setVisibility(View.INVISIBLE);
-//								}
-//
-//								@Override
-//								public void onAnimationCancel(Animator animation) {
-//									// TODO Auto-generated method stub
-//
-//								}
-//							});
-//							animSetXY.start();
-//						}else{
-//							updateShopList();
-//						}
-//					}
-//				});
-//			}
-//		}
-//	}
-
 	public void updateShopList() {
-//		if (mShopList != null) {
-//			mAdapter = new ShopListAdapter(getActivity().getBaseContext(), getActivity());
-//			gridView.setAdapter(mAdapter);
 			mAdapter.notifyDataSetChanged();
-//		}
 	}
 
 	private class FetchMoreShopListTask extends AsyncTask<Void, Void, List<Shop>> {
@@ -645,10 +543,10 @@ public class ShopListFragment extends Fragment {
 		}
 	}
 		
-	public class FindShopList extends AsyncTask<Void, Void, Boolean> {
+	private class FindShopList extends AsyncTask<Void, Void, Boolean> {
 		
-		private String json ="";
 		private Exception mEx;
+		private String json;
 		
 		@Override
 		protected void onPreExecute() {
@@ -657,24 +555,36 @@ public class ShopListFragment extends Fragment {
 		
 		@Override
 		protected Boolean doInBackground(Void... params) {
-			List<NameValuePair> pairs = new ArrayList<NameValuePair>();
-			pairs.add(new BasicNameValuePair("group_list", GlobalVariable.mFilterString));
-			pairs.add(new BasicNameValuePair("city_id", GlobalVariable.mCityID));
-			pairs.add(new BasicNameValuePair("user_id", GlobalVariable.userID));
-			pairs.add(new BasicNameValuePair("user_lat", Float.toString(GlobalVariable.mLat)));
-			pairs.add(new BasicNameValuePair("user_lng", Float.toString(GlobalVariable.mLng)));
-			pairs.add(new BasicNameValuePair("page", "0"));
-			pairs.add(new BasicNameValuePair("sort_by", GlobalVariable.mSortByString));
-
-			json = NetworkManger.post(APILinkMaker.ShopListInCategory(), pairs);
 			
+			try {
+				List<NameValuePair> pairs = new ArrayList<NameValuePair>();
+				pairs.add(new BasicNameValuePair("group_list", GlobalVariable.mFilterString));
+				pairs.add(new BasicNameValuePair("city_id", GlobalVariable.mCityID));
+				pairs.add(new BasicNameValuePair("user_id", GlobalVariable.userID));
+				pairs.add(new BasicNameValuePair("user_lat", Float.toString(GlobalVariable.mLat)));
+				pairs.add(new BasicNameValuePair("user_lng", Float.toString(GlobalVariable.mLng)));
+				pairs.add(new BasicNameValuePair("page", "0"));
+				pairs.add(new BasicNameValuePair("sort_by", GlobalVariable.mSortByString));
+	
+				json = NetworkManger.post(APILinkMaker.ShopListInCategory(), pairs);
+			} catch (Exception e) {
+				mEx = e;
+			}
 			return true;
 		}
 
 		@Override
 		protected void onPostExecute(Boolean k) {
-//			((ShopListFragment)(mMainAcitivyListener).getShopListFragment()).mHaveAnimation = true;
-//			(mMainAcitivyListener).getShopListFragment().update(json);
+			
+			try {
+				if (mEx != null)
+					throw mEx;
+				
+				update_throw(json);
+			} catch (Exception e) {
+				GlobalVariable.showToast("Không lấy được danh sách cửa hàng", getActivity());
+			}
+			
 			mAniSetFinish.start();
 		}
 	}
@@ -697,7 +607,7 @@ public class ShopListFragment extends Fragment {
 	}
 	
 	///////////////////////////////////////////////////////////////////////////
-	// Listener
+	// Debug stuff
 	///////////////////////////////////////////////////////////////////////////
 	
 	private static final boolean isDebug = true;

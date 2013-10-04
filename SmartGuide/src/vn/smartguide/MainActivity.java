@@ -64,6 +64,7 @@ import com.facebook.Response;
 import com.facebook.Session;
 import com.facebook.SessionState;
 import com.facebook.UiLifecycleHelper;
+import com.facebook.FacebookRequestError.Category;
 import com.facebook.model.GraphUser;
 import com.facebook.widget.LoginButton;
 
@@ -115,6 +116,8 @@ import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Locale;
+
+import javax.crypto.Mac;
 
 public class MainActivity extends FragmentActivity implements MainAcitivyListener, OnTouchListener  {
 	private final int WelcomeRequestCode 		= 44444;
@@ -182,9 +185,9 @@ public class MainActivity extends FragmentActivity implements MainAcitivyListene
 	// Toogle camera and content
 	private boolean mShowContent 				= true;
 	private boolean mShowCamera 				= false;
-	private boolean mShowUser 					= false;
-	private boolean mIsShowFilter				= false;
-	private boolean mShowMenu 					= false;
+//	private boolean mShowUser 					= false;
+//	private boolean mIsShowFilter				= false;
+//	private boolean mShowMenu 					= false;
 	private boolean mIsNeedToggleMap			= false;
 	private boolean mIsNeedToggleUser 			= false;
 
@@ -348,6 +351,10 @@ public class MainActivity extends FragmentActivity implements MainAcitivyListene
 
 		}
 		mViewPager.setCurrentItem(index, true);
+	}
+	
+	private void turnToPage(int index) {
+		mViewPager.setCurrentItem(index, false);
 	}
 
 	@Override
@@ -647,7 +654,7 @@ public class MainActivity extends FragmentActivity implements MainAcitivyListene
 
 	public void createDestroyMap() {
 
-		boolean isMapAlive = !mShowContent && !mShowCamera && !mShowUser && !mIsShowFilter;
+		boolean isMapAlive = !mShowContent && !mShowCamera && !mUserFragment.isShow() && !mFiterFragment.isShow();
 
 		if (isMapAlive != mIsMapAlive) {
 			mIsMapAlive = isMapAlive;
@@ -1124,18 +1131,6 @@ public class MainActivity extends FragmentActivity implements MainAcitivyListene
 		menu.setFadeDegree(0.35f);
 		menu.attachToActivity(this, SlidingMenu.SLIDING_CONTENT);
 		menu.setMenu(R.layout.side_menu_fragment);
-		menu.setOnOpenedListener(new OnOpenedListener() {
-			@Override
-			public void onOpened() {
-				mShowMenu = true;
-			}
-		});
-		menu.setOnClosedListener(new OnClosedListener() {
-			@Override
-			public void onClosed() {
-				mShowMenu = false;
-			}
-		});
 
 		// Create fragment list
 		mFragmentManager = getSupportFragmentManager();
@@ -1193,7 +1188,7 @@ public class MainActivity extends FragmentActivity implements MainAcitivyListene
 				if (GlobalVariable.json10FirstShop.length() != 0 && 
 						GlobalVariable.mSortByString.compareTo("0") == 0) {
 					getShopListFragment().update(GlobalVariable.json10FirstShop);
-					goNextPage();
+					goToShopList();
 					return true;
 				} else 
 					return false;
@@ -1212,7 +1207,7 @@ public class MainActivity extends FragmentActivity implements MainAcitivyListene
 			@Override
 			public void onFinishAnimation() {
 
-				goNextPage();
+				goToShopList();
 			}
 		});
 		
@@ -1223,7 +1218,7 @@ public class MainActivity extends FragmentActivity implements MainAcitivyListene
 //				ShopDetailActivity.newInstance(MainActivity.this, s);
 				GlobalVariable.mCurrentShop = s;
 				mShopDetailFragment.setData(s);
-				goNextPage();
+				goToShopDetail();
 			}
 		});
 		
@@ -1244,8 +1239,9 @@ public class MainActivity extends FragmentActivity implements MainAcitivyListene
 		mFiterFragment.setListener(new vn.smartguide.FilterFragment.Listener() {
 			@Override
 			public void onDone() {
-				mShopListFragment.setForeground();
-				goToPage(1);
+//				mShopListFragment.setForeground();
+				mShopListFragment.filter();
+				goToShopList();
 			}
 		});
 
@@ -1380,7 +1376,7 @@ public class MainActivity extends FragmentActivity implements MainAcitivyListene
 		((ImageButton) findViewById(R.id.btnToggleMenu)).setOnClickListener(new View.OnClickListener() {
 			@Override
 			public void onClick(View view) {
-				toggleSideMenu();
+				menu.toggle();
 			}
 		});
 
@@ -1410,7 +1406,10 @@ public class MainActivity extends FragmentActivity implements MainAcitivyListene
 		mUserButton.setOnClickListener(new View.OnClickListener() {
 			@Override
 			public void onClick(View view) {
-				toogleUser();
+				if (mUserFragment.isShow())
+					onBackPressed();
+				else
+					goToUserCollection();
 				createDestroyMap();
 			}
 		});
@@ -1420,17 +1419,10 @@ public class MainActivity extends FragmentActivity implements MainAcitivyListene
 		mFilterBtn.setOnClickListener(new View.OnClickListener() {
 			@Override
 			public void onClick(View view) {
-				mFiterFragment.toggle();
-				mIsShowFilter = !mIsShowFilter;
-				if (mIsShowFilter){
-					disableUserMap();
-					setNaviText("BỘ LỌC");
-				}
-				else{
-					enableUserMap();
-					setNaviText(mPreviousNavi);
-				}
-
+				if (mFiterFragment.isShow())
+					onBackPressed();
+				else
+					goToFilter();
 				createDestroyMap();
 			}
 		});
@@ -1441,7 +1433,7 @@ public class MainActivity extends FragmentActivity implements MainAcitivyListene
 			@Override
 			public void onClick(View v) {
 
-				OnSearchButtonClick();
+				toggleSearch();
 			}
 		});
 
@@ -1461,88 +1453,106 @@ public class MainActivity extends FragmentActivity implements MainAcitivyListene
 	}
 
 	private boolean mShowSearch = false;
-	void OnSearchButtonClick() {
+	private void toggleSearch() {
 
 		EditText edtSearch = (EditText) findViewById(R.id.edtSearch);
 		ImageButton btnSearch = (ImageButton) findViewById(R.id.btnSearch);
 		ImageButton btnToggleMenu = (ImageButton) findViewById(R.id.btnToggleMenu);
-		ImageButton btnToggleFilter = (ImageButton) findViewById(R.id.btnToggleMap);
+		ImageButton btnToggleMap = (ImageButton) findViewById(R.id.btnToggleMap);
 
 		// Set search onscreen keyboard event
 		edtSearch.setOnEditorActionListener(new OnEditorActionListener() {
 			@Override
 			public boolean onEditorAction(TextView v, int actionId, KeyEvent event) {
-				OnSearchButtonClick();
+				performSearch();
 				return true;
 			}
 		});
 
-		int width = (int) (btnToggleFilter.getX() - btnToggleMenu.getX() - btnToggleMenu.getWidth() + btnToggleFilter.getWidth());
-		ObjectAnimator animator = null;
-		ObjectAnimator animator2 = null;
+		int width = (int) (btnToggleMap.getX() - btnToggleMenu.getX() - btnToggleMenu.getWidth() + btnToggleMap.getWidth());
+//		ObjectAnimator animator = null;
+//		ObjectAnimator animator2 = null;
 		mShowSearch = !mShowSearch;
 
+//		if (mShowSearch) {
+//			// Show search box
+//			animator = ObjectAnimator.ofInt(edtSearch, "width", 0, width);
+//			animator.addListener(new AnimatorListener() {
+//				public int searchWidth;
+//				public AnimatorListener init(int w) {
+//					searchWidth = w;
+//					return this;
+//				}
+//				public void onAnimationRepeat(Animator animation) { }
+//				public void onAnimationStart(Animator animation) {
+//					showSearchBox();
+//				}
+//				public void onAnimationEnd(Animator animation) { }
+//				public void onAnimationCancel(Animator animation) { }
+//			}.init(btnSearch.getWidth()));
+//
+//			animator2 = ObjectAnimator.ofFloat(btnSearch, "translationX", 
+//					0, btnToggleMap.getX() - btnToggleMenu.getX() - btnToggleMenu.getWidth());
+//		} else {
+//			// Hide search box
+//			animator = ObjectAnimator.ofInt(edtSearch, "width", width, 0);
+//			animator.addListener(new AnimatorListener() {
+//				public int searchWidth;
+//				public AnimatorListener init(int w) {
+//					searchWidth = w;
+//					return this;
+//				}
+//				public void onAnimationRepeat(Animator animation) { }
+//				public void onAnimationStart(Animator animation) { }
+//				public void onAnimationEnd(Animator animation) {
+//					hideSearchBox();
+//				}
+//				public void onAnimationCancel(Animator animation) {
+//					hideSearchBox();
+//				}
+//			}.init(btnSearch.getWidth()));
+//
+//			animator2 = ObjectAnimator.ofFloat(btnSearch, "translationX", 
+//					btnToggleMap.getX() - btnToggleMenu.getX() - btnToggleMenu.getWidth(), 0);
+//			String search = edtSearch.getText().toString();
+//			edtSearch.setText("");
+//			performSearch(search);
+//		}
+		
 		if (mShowSearch) {
 			// Show search box
-			animator = ObjectAnimator.ofInt(edtSearch, "width", 0, width);
-			animator.addListener(new AnimatorListener() {
-				public int searchWidth;
-				public AnimatorListener init(int w) {
-					searchWidth = w;
-					return this;
-				}
-				public void onAnimationRepeat(Animator animation) { }
-				public void onAnimationStart(Animator animation) {
-					showSearchBox();
-				}
-				public void onAnimationEnd(Animator animation) { }
-				public void onAnimationCancel(Animator animation) { }
-			}.init(btnSearch.getWidth()));
-
-			animator2 = ObjectAnimator.ofFloat(btnSearch, "translationX", 
-					0, btnToggleFilter.getX() - btnToggleMenu.getX() - btnToggleMenu.getWidth());
+			showSearchBox();
+			edtSearch.setWidth(width);
+			btnSearch.setTranslationX(btnToggleMap.getX() - btnToggleMenu.getX() - btnToggleMenu.getWidth());
 		} else {
 			// Hide search box
-			animator = ObjectAnimator.ofInt(edtSearch, "width", width, 0);
-			animator.addListener(new AnimatorListener() {
-				public int searchWidth;
-				public AnimatorListener init(int w) {
-					searchWidth = w;
-					return this;
-				}
-				public void onAnimationRepeat(Animator animation) { }
-				public void onAnimationStart(Animator animation) { }
-				public void onAnimationEnd(Animator animation) {
-					hideSearchBox();
-				}
-				public void onAnimationCancel(Animator animation) {
-					hideSearchBox();
-				}
-			}.init(btnSearch.getWidth()));
-
-			animator2 = ObjectAnimator.ofFloat(btnSearch, "translationX", 
-					btnToggleFilter.getX() - btnToggleMenu.getX() - btnToggleMenu.getWidth(), 0);
-			String search = edtSearch.getText().toString();
-			edtSearch.setText("");
-			performSearch(search);
+			edtSearch.setWidth(0);
+			btnSearch.setTranslationX(0);
+			hideSearchBox();
 		}
 
-		TimeInterpolator acce = new AccelerateDecelerateInterpolator();
-		animator.setInterpolator(acce);
-		animator2.setInterpolator(acce);
-		animator.start();
-		animator2.start();
+//		TimeInterpolator acce = new AccelerateDecelerateInterpolator();
+//		animator.setInterpolator(acce);
+//		animator2.setInterpolator(acce);
+//		animator.start();
+//		animator2.start();
 	}
 
-	private void performSearch(String name) {
+	private void performSearch() {
+		EditText edtSearch = (EditText) findViewById(R.id.edtSearch);
+		String search = edtSearch.getText().toString();
+		edtSearch.setText("");
 		goToPage(1);
-		setNaviText(name);
-		getShopListFragment().search(name);
+		setNaviText(search);
+		getShopListFragment().search(search);
+		if (mShowSearch)
+			toggleSearch();
 	}
 
 	public void hideSearchBox() {
 
 		EditText edtSearch = (EditText) findViewById(R.id.edtSearch);
+		edtSearch.setText("");
 		edtSearch.setVisibility(View.INVISIBLE);
 		InputMethodManager imm = (InputMethodManager)getSystemService(Context.INPUT_METHOD_SERVICE);
 		imm.hideSoftInputFromWindow(edtSearch.getWindowToken(), 0);
@@ -1572,7 +1582,7 @@ public class MainActivity extends FragmentActivity implements MainAcitivyListene
 
 				GlobalVariable.mCityID = GlobalVariable.mCityIDes.get(mChoiceLocation);
 				mLocationTV.setText(GlobalVariable.mCityNames.get(mChoiceLocation));
-				toggleSideMenu();
+				menu.toggle();
 				goToPage(0);
 				((CategoryListFragment)mFragmentList.get(0)).autoUpdate();
 
@@ -1751,41 +1761,35 @@ public class MainActivity extends FragmentActivity implements MainAcitivyListene
 		dlgAlert.create().show();
 	}
 
-	public void toggleSideMenu() {
-		mShowMenu = !mShowMenu;
-		menu.toggle();
-	}
-
-	public void toogleUser(){
-		mShowUser = !mShowUser;
-
-		if (mShowUser){
-			if (GlobalVariable.avatarFace.compareTo("null") != 0)
-				setNaviText(GlobalVariable.nameFace);
-			else
-				setNaviText("User");
-
-			mFilterBtn.setImageResource(R.drawable.menu_filter_lock);
-			mMapButton.setImageResource(R.drawable.menu_map_lock);
-			mFilterBtn.setClickable(false);
-			mMapButton.setClickable(false);
-		}
-		else{
-			setNaviText(mPreviousNavi);
-
-			mFilterBtn.setImageResource(R.drawable.menu_filter_lock);
-			mMapButton.setImageResource(R.drawable.menu_map_lock);
-
-			if (!GlobalVariable.mIsLaunching){
-				mFilterBtn.setClickable(true);
-				mMapButton.setClickable(true);
-				mFilterBtn.setImageResource(R.drawable.menu_filter);
-				mMapButton.setImageResource(R.drawable.map_btn);
-			}
-		}
-
-		mUserFragment.toggle();
-	}
+//	public void toogleUser(){
+//
+//		if (mShowUser){
+//			if (GlobalVariable.avatarFace.compareTo("null") != 0)
+//				setNaviText(GlobalVariable.nameFace);
+//			else
+//				setNaviText("User");
+//
+//			mFilterBtn.setImageResource(R.drawable.menu_filter_lock);
+//			mMapButton.setImageResource(R.drawable.menu_map_lock);
+//			mFilterBtn.setClickable(false);
+//			mMapButton.setClickable(false);
+//		}
+//		else{
+//			setNaviText(mPreviousNavi);
+//
+//			mFilterBtn.setImageResource(R.drawable.menu_filter_lock);
+//			mMapButton.setImageResource(R.drawable.menu_map_lock);
+//
+//			if (!GlobalVariable.mIsLaunching){
+//				mFilterBtn.setClickable(true);
+//				mMapButton.setClickable(true);
+//				mFilterBtn.setImageResource(R.drawable.menu_filter);
+//				mMapButton.setImageResource(R.drawable.map_btn);
+//			}
+//		}
+//
+//		mUserFragment.toggle();
+//	}
 
 	private void releaseCamera() {
 		if (mCamera != null) {
@@ -1856,54 +1860,269 @@ public class MainActivity extends FragmentActivity implements MainAcitivyListene
 			return this.fragments.size();
 		}
 	}
+	
+	///////////////////////////////////////////////////////////////////////////
+	// View flow
+	///////////////////////////////////////////////////////////////////////////
+	
+	private enum EnumView {
+		ShopCategory,
+		ShopList,
+		ShopDetail,
+		UserCollection,
+		Filter
+	}
+	
+	private EnumView mActiveView = EnumView.ShopCategory;
+//	private boolean mShopMap = false;
+	private String mTitleOnShopList = "";
+	private EnumView mPreFilter;
+	private EnumView mPreShopDetail;
+	private EnumView mPreUserCollection;
+	
+	private static final boolean[][] HEADER_BUTTON_STATE = new boolean[][] {
+		{true, true, true},
+		{true, true, true},
+		{false, true, false},
+		{false, true, false},
+		{true, false, false}};
+	
+	private void updateHeader() {
+		ImageButton btnFilter = (ImageButton) findViewById(R.id.btnToggleFilter);
+		ImageButton btnUser = (ImageButton) findViewById(R.id.btnUser);
+		ImageButton btnMap = (ImageButton) findViewById(R.id.btnToggleMap);
+		
+		boolean[] state = HEADER_BUTTON_STATE[mActiveView.ordinal()];
+		
+		// Set enable/disable
+		btnFilter.setImageResource(state[0] ? R.drawable.menu_filter : R.drawable.menu_filter_lock);
+		btnFilter.setEnabled(state[0]);
+		btnUser.setImageResource(state[1] ? R.drawable.menu_user : R.drawable.menu_user_lock);
+		btnUser.setEnabled(state[1]);
+		
+		if (mShowContent)
+			btnMap.setImageResource(state[2] ? R.drawable.menu_map : R.drawable.menu_map_lock);
+		else
+			btnMap.setImageResource(state[2] ? R.drawable.menu_list : R.drawable.menu_list_lock);
+
+		btnMap.setEnabled(state[2]);
+		
+		// Set Title		
+		switch (mActiveView) {
+		case ShopCategory:
+			mNaviText.setText("DANH MỤC");
+			break;
+		case ShopList:
+			mNaviText.setText(mShopListFragment.getTitle());
+			break;
+		case ShopDetail:
+			mNaviText.setText(GlobalVariable.mCurrentShop.mName);
+			break;
+		case UserCollection:
+			if (GlobalVariable.avatarFace.compareTo("null") != 0)
+				mNaviText.setText(GlobalVariable.nameFace);
+			else
+				mNaviText.setText("User");
+			break;
+		case Filter:
+			mNaviText.setText("BỘ LỌC");
+			break;
+		}
+	}
+	
+	private void goToFilter() {
+		if (mActiveView == EnumView.ShopCategory || mActiveView == EnumView.ShopList) {
+			mPreFilter = mActiveView;
+			mActiveView = EnumView.Filter;
+			updateHeader();
+			mFiterFragment.toggle();
+		}
+	}
+	
+	private void goToUserCollection() {
+		switch (mActiveView) {
+		case ShopCategory:
+		case ShopList:
+			mPreUserCollection = mActiveView;
+			mActiveView = EnumView.UserCollection;
+			updateHeader();
+			mUserFragment.toggle();
+			break;
+		case ShopDetail:
+			if (mPreShopDetail == EnumView.ShopList) {
+				mPreUserCollection = mActiveView;
+				mActiveView = EnumView.UserCollection;
+				updateHeader();
+				mUserFragment.toggle();
+			} else if (mPreShopDetail == EnumView.UserCollection) {
+				mActiveView = EnumView.UserCollection;
+				updateHeader();
+				turnToPage(mPreUserCollection.ordinal());
+				mUserFragment.toggle();
+			}
+			break;
+		}
+	}
+	
+	private void goToShopList() {
+		
+		if (!mShowContent)
+			toggleShowContent();
+		
+		switch (mActiveView) {
+		case ShopCategory:
+			turnToPage(1);
+			mActiveView = EnumView.ShopList;
+			break;
+		case Filter:
+			if (mPreFilter == EnumView.ShopCategory) {
+				mFiterFragment.toggle();
+				mActiveView = EnumView.ShopList;
+				turnToPage(1);
+			} else if (mPreFilter == EnumView.ShopList) {
+				mFiterFragment.toggle();
+				mActiveView = EnumView.ShopList;
+			}
+			break;
+		case ShopDetail:
+			mActiveView = EnumView.ShopList;
+			turnToPage(1);
+			break;
+		case UserCollection:
+			if (mPreUserCollection == EnumView.ShopList) {
+				mActiveView = EnumView.ShopList;
+				mUserFragment.toggle();
+			}
+			break;
+		}
+		
+		updateHeader();
+	}
+	
+	private void goToShopCategory() {
+		if (!mShowContent)
+			toggleShowContent();
+		
+		switch (mActiveView) {
+		case ShopList:
+			mActiveView = EnumView.ShopCategory;
+			turnToPage(0);
+			break;
+		case Filter:
+			if (mPreFilter == EnumView.ShopCategory) {
+				mActiveView = EnumView.ShopCategory;
+				mFiterFragment.toggle();
+			}
+			break;
+		case UserCollection:
+			if (mPreUserCollection == EnumView.ShopCategory) {
+				mActiveView = EnumView.ShopCategory;
+				mUserFragment.toggle();
+			}
+			break;
+		}
+		
+		updateHeader();
+	}
+	
+	private void goToShopDetail() {
+		if (!mShowContent)
+			toggleShowContent();
+		
+		switch (mActiveView) {
+		case ShopList:
+			mPreShopDetail = mActiveView;
+			mActiveView = EnumView.ShopDetail;
+			turnToPage(2);
+			break;
+		case UserCollection:
+			if (mPreUserCollection == EnumView.ShopDetail) {
+				mActiveView = EnumView.ShopDetail;
+				mUserFragment.toggle();
+			} else {
+				mPreShopDetail = mActiveView;
+				mActiveView = EnumView.ShopDetail;
+				mUserFragment.toggle();
+				turnToPage(2);
+			}
+			break;
+		}
+	}
 
 	@Override
-	public void onBackPressed() {	
-		if (mShowMenu){
-			toggleSideMenu();
+	public void onBackPressed() {
+		
+		if (menu.isMenuShowing()) {
+			menu.toggle();
 			return;
 		}
 
-		if (mShowCamera){
+		if (mShowCamera) {
 			toggleCamera();
 			return;
 		}
-
-		if (mShowUser){
-			toogleUser();
+		
+		if (mShowSearch) {
+			toggleSearch();
+			return;
+		}
+		
+		if (mActiveView == EnumView.Filter) {
+			if (mPreFilter == EnumView.ShopCategory)
+				goToShopCategory();
+			else if (mPreFilter == EnumView.ShopList)
+				goToShopList();
+			return;
+		}
+		
+		if (mActiveView == EnumView.UserCollection) {
+			switch (mPreUserCollection) {
+			case ShopCategory:
+				goToShopCategory();
+				break;
+			case ShopList:
+				goToShopList();
+				break;
+			case ShopDetail:
+				goToShopDetail();
+				break;
+			}
+			return;
+		}
+		
+		if (mActiveView == EnumView.ShopDetail) {
+			if (mPreShopDetail == EnumView.ShopList)
+				goToShopList();
+			else if (mPreShopDetail == EnumView.UserCollection)
+				goToUserCollection();
 			return;
 		}
 
-		if (mIsShowFilter){
-			mIsShowFilter = !mIsShowFilter;
-			mFiterFragment.toggle();
+		if (mActiveView == EnumView.ShopList) {
+			goToShopCategory();
 			return;
 		}
-
-		if(!mShowContent){
-			toggleShowContent();
-			return;
-		}
-
-		if(mIsNeedToggleUser){
-			mIsNeedToggleUser = !mIsNeedToggleUser;
-			if (!mShowUser){
-				toogleUser();
+		
+		if (mActiveView == EnumView.ShopCategory) {
+			if (doubleBackToExitPressedOnce) {
+				super.onBackPressed();
 				return;
 			}
-		}
 
-		if (mIsNeedToggleMap){
-			mIsNeedToggleMap = !mIsNeedToggleMap;
-			if (mShowContent){
-				toggleShowContent();
-				return;
-			}
-		}
+			doubleBackToExitPressedOnce = true;
+			Toast.makeText(this, "Nhấn back lần nữa để thoát chương trình", Toast.LENGTH_SHORT).show();
+			new Handler().postDelayed(new Runnable() {
 
-		goPreviousPage();
+				@Override
+				public void run() {
+					doubleBackToExitPressedOnce = false;   
+				}
+			}, 2000);
+		}
 		return;
 	}
+	
+	///////////////////////////////////////////////////////////////////////////
 
 	@Override
 	public void getAwardTypeOne(int award_id) {
@@ -1915,7 +2134,7 @@ public class MainActivity extends FragmentActivity implements MainAcitivyListene
 	@Override
 	public void userToDetail() {
 		mIsNeedToggleUser = true;
-		toogleUser();
+		mUserFragment.toggle();
 		setNaviText(GlobalVariable.mCurrentShop.mName);
 		mViewPager.setCurrentItem(2, false);
 	}

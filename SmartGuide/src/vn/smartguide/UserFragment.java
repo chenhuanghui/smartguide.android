@@ -52,15 +52,11 @@ public class UserFragment extends Fragment{
 	@Override
 	public View onCreateView(LayoutInflater inflater, ViewGroup container,
 			Bundle savedInstanceState) {
-		
-		View v = inflater.inflate(R.layout.user_fragment, container, false); 		
-
-		return v;
+		return inflater.inflate(R.layout.user_fragment, container, false); 		
 	}
 	
 	@Override
 	public void onViewCreated(View view, Bundle savedInstanceState) {
-		// TODO Auto-generated method stub
 		super.onViewCreated(view, savedInstanceState);
 		
 		((Button) (getView().findViewById(R.id.btnDoiDiemLayQua)))
@@ -156,17 +152,22 @@ public class UserFragment extends Fragment{
 	
 	public void toggle() {
 		mShowContent = !mShowContent;
-		ObjectAnimator animator = null;
-		int height = getActivity().findViewById(R.id.linearLayout).getHeight();
+//		ObjectAnimator animator = null;
+//		int height = getActivity().findViewById(R.id.linearLayout).getHeight();
 		View layout = getView().findViewById(R.id.userLayoutMain);
-		layout.setVisibility(View.VISIBLE);
-		if (mShowContent)
-			animator = ObjectAnimator.ofFloat(layout, "translationY", -height, 0);
-		else
-			animator = ObjectAnimator.ofFloat(layout, "translationY", 0, -height);
-
-		animator.setInterpolator(new AccelerateDecelerateInterpolator());
-		animator.start();
+//		layout.setVisibility(View.VISIBLE);
+		layout.setVisibility(mShowContent ? View.VISIBLE : View.INVISIBLE);
+//		if (mShowContent)
+//			animator = ObjectAnimator.ofFloat(layout, "translationY", -height, 0);
+//		else
+//			animator = ObjectAnimator.ofFloat(layout, "translationY", 0, -height);
+//
+//		animator.setInterpolator(new AccelerateDecelerateInterpolator());
+//		animator.start();
+	}
+	
+	public boolean isShow() {
+		return mShowContent;
 	}
 	
 	public void update(List<Shop> shop){
@@ -202,7 +203,7 @@ public class UserFragment extends Fragment{
 			mShops = shops;
 			mBitmaps = new ArrayList<Drawable>();
 			mSGPTexts = new ArrayList<TextView>();
-			for(int i = 0; i < shops.size(); i++){
+			for(int i = 0; i < shops.size(); i++) {
 				mBitmaps.add(null);
 				mSGPTexts.add(null);
 			}

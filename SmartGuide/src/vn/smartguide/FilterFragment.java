@@ -107,7 +107,7 @@ public class FilterFragment extends Fragment {
 //				((ShopListFragment)(mMainAcitivyListener).getShopListFragment()).setForeground();
 //				mMainAcitivyListener.goToPage(1);
 				
-				toggle();
+//				toggle();
 				
 				GlobalVariable.mFilterString = "";
 				GlobalVariable.mSortByString = "0";
@@ -125,12 +125,17 @@ public class FilterFragment extends Fragment {
 					GlobalVariable.mSortByString = "0";
 				
 				FilterAdapter adapter = (FilterAdapter)((GridView) getView().findViewById(R.id.gridCate)).getAdapter();
-				if (adapter.mItemList.get(0).status == true)
-					GlobalVariable.mFilterString = "1";
+				boolean firstItem = true;
+//				if (adapter.mItemList.get(0).status == true)
+//					GlobalVariable.mFilterString = "1";
 				
-				for (int i = 1; i < adapter.mItemList.size(); i++) {
-					if (adapter.mItemList.get(i).status == true)
-						GlobalVariable.mFilterString += ", " + Integer.toString(i + 1);
+				for (int i = 0; i < adapter.mItemList.size(); i++) {
+					if (adapter.mItemList.get(i).status == true) {
+						if (!firstItem)
+							GlobalVariable.mFilterString += ", ";
+						firstItem = false;
+						GlobalVariable.mFilterString += Integer.toString(i + 1);
+					}
 				}
 					
 //				new FindShopList().execute();
@@ -193,17 +198,22 @@ public class FilterFragment extends Fragment {
 
 	public void toggle() {
 		mShowContent = !mShowContent;
-		ObjectAnimator animator = null;
-		int height = getActivity().findViewById(R.id.linearLayout).getHeight();
+//		ObjectAnimator animator = null;
+//		int height = getActivity().findViewById(R.id.linearLayout).getHeight();
 		View layout = getView().findViewById(R.id.layoutContentFrame2);
-		layout.setVisibility(View.VISIBLE);
-		if (mShowContent)
-			animator = ObjectAnimator.ofFloat(layout, "translationY", -height, 0);
-		else
-			animator = ObjectAnimator.ofFloat(layout, "translationY", 0, -height);
-
-		animator.setInterpolator(new AccelerateDecelerateInterpolator());
-		animator.start();
+//		layout.setVisibility(View.VISIBLE);
+		layout.setVisibility(mShowContent ? View.VISIBLE : View.INVISIBLE);
+//		if (mShowContent)
+//			animator = ObjectAnimator.ofFloat(layout, "translationY", -height, 0);
+//		else
+//			animator = ObjectAnimator.ofFloat(layout, "translationY", 0, -height);
+//
+//		animator.setInterpolator(new AccelerateDecelerateInterpolator());
+//		animator.start();
+	}
+	
+	public boolean isShow() {
+		return mShowContent;
 	}
 
 	private class FilterItem {

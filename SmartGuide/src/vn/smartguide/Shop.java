@@ -122,17 +122,21 @@ public class Shop {
 					int cost = promotion.getInt("cost");
 					int sgp = promotion.getInt("sgp");
 					int min_score = promotion.getInt("min_score");
+					int pPerSGP = promotion.getInt("P");
 					sp = promotion.getInt("sp");
 					String duration = promotion.getString("duration");
 					List<Requirement> requirements = new ArrayList<Requirement>();
 					JSONArray jrequires = promotion.getJSONArray("array_required");
-					for(int j = 0; j < jrequires.length(); j++){
+					for(int j = 0; j < jrequires.length(); j++) {
 						JSONObject jo = jrequires.getJSONObject(j);
-						requirements.add(new Requirement(jo.getInt("id"), jo.getInt("required"), jo.getString("content")));
+						requirements.add(new Requirement(
+								jo.getInt("id"),
+								jo.getInt("required"),
+								jo.getString("content")));
 					}
 
 					mShop.mPromotion = new PromotionTypeOne(cost, sgp, sp, min_score, duration, requirements);
-
+					((PromotionTypeOne) mShop.mPromotion).mPperSGP = pPerSGP;
 					break;
 				case 2:
 					int money = promotion.getInt("money");
