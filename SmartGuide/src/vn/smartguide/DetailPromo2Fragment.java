@@ -33,7 +33,6 @@ public class DetailPromo2Fragment extends DetailPromoFragment {
 	public void setData(Shop s) {
 		final Shop mShop = s;
 		Button rewardBtn = (Button)getView().findViewById(R.id.imageButton1);
-		rewardBtn.setText(Integer.toString(((PromotionTypeTwo) s.mPromotion).mMoney / 1000) + ",000 vnđ");
 		rewardBtn.setOnClickListener(new View.OnClickListener() {
 			@Override
 			public void onClick(View v) {

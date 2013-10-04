@@ -2,7 +2,7 @@
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@drawable/bg"
+    android:background="#ffffff"
     android:orientation="vertical" >
 
     <RelativeLayout
@@ -82,38 +82,25 @@
 
                 <ImageView
                     android:id="@+id/imageView1"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
+                    android:layout_width="150dp"
+                    android:layout_height="130dp"
                     android:layout_gravity="left"
-                    android:layout_marginLeft="10dp"
-                    android:layout_marginTop="5dp"
-                    android:src="@drawable/gift" />
+                    android:background="@drawable/button_listgift" />
                 
             </RelativeLayout>
         </RelativeLayout>
 
-        <TextView
-            android:id="@+id/textView1"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_gravity="center_vertical|center_horizontal"
-            android:layout_marginTop="10dp"
-            android:text="Click để nhận được phần quà trị giá"
-            android:textColor="#272D39"
-            android:textSize="13dp"
-            android:textStyle="italic" />
-
         <Button
             android:id="@+id/imageButton1"
             android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginLeft="20dp"
-            android:layout_marginRight="20dp"
-            android:layout_marginTop="10dp"
+            android:layout_height="35dp"
+            android:layout_marginLeft="15dp"
+            android:layout_marginRight="15dp"
             android:background="@drawable/reward_bar_highlight"
-            android:text="300,000 vnđ"
+            android:text="CHẠM VÀO NHẬN NGAY QUÀ"
+            android:textSize="15dp"
             android:textColor="#ffffff"
-            android:textStyle="italic" />
+            android:textStyle="bold" />
     </LinearLayout>
 
     <RelativeLayout
@@ -134,7 +121,7 @@
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="Tích lũy"
+                    android:text="Mỗi lần quét thẻ bạn nhận được"
                     android:textColor="#000000"
                     android:textSize="13dp"
                     android:textStyle="italic" />
@@ -150,7 +137,7 @@
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="trên một lượt quét thẻ"
+                    android:text="tương ứng"
                     android:textColor="#000000"
                     android:textSize="13dp"
                     android:layout_marginLeft="3dp"
