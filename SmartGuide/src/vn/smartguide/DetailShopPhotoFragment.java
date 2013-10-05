@@ -192,7 +192,7 @@ public class DetailShopPhotoFragment extends Fragment {
 						}
 
 						@Override
-						public void loadFinish(int from, Bitmap image) {
+						public void loadFinish(int from, Bitmap image, String url) {
 							
 //							imageItem.bm = new WeakReference<Bitmap>(image);
 							

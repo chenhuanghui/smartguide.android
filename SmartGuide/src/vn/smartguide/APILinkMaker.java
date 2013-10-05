@@ -35,7 +35,9 @@ public final class APILinkMaker {
 	private static String mFaceAccessToken		=	"user/facebook/access_token";
 	private static String mRegistration 		= 	"user/createRegistrationCode";
 	private static String mEmergence			=   "notification";
-	
+	private static String mDefaultAvatar		=	"user/avatar/get";
+	private	static String mUserInfo				=	"user/sginfo/update";
+		
 	public static String ShopListInCategory(){
 		return mHostName + mApiDomain + mShopListInCategory;
 	}
@@ -145,10 +147,14 @@ public final class APILinkMaker {
 	}
 	
 	public static String mUpFaceAccessToken(){
-		return mHostName + mApiDomain + mFaceAccessToken;
+		return mHostName + mApiDomain + mDefaultAvatar;
 	}
 	
 	public static String mUpRegistration(){
+		return mHostName + mApiDomain + mRegistration;
+	}
+	
+	public static String mGetDefaultAvatar(){
 		return mHostName + mApiDomain + mRegistration;
 	}
 	
@@ -156,4 +162,7 @@ public final class APILinkMaker {
 		return mHostName + mEmergence;
 	}
 	
+	public static String mUpdateUserInfo(){
+		return mHostName + mApiDomain + mUserInfo;
+	}
 }

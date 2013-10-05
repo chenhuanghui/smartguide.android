@@ -137,26 +137,7 @@ public class FlashScreenActivity extends Activity {
 
 			GlobalVariable.getFacebookFromDB();
 
-			GlobalVariable.displayImageOptions = new DisplayImageOptions.Builder()
-			.bitmapConfig(Bitmap.Config.RGB_565)
-			.cacheOnDisc(true)
-			.cacheInMemory()
-			.imageScaleType(ImageScaleType.EXACTLY)
-			.displayer(new RoundedBitmapDisplayer(20))
-			.build();
-
-			ImageLoaderConfiguration config = new ImageLoaderConfiguration.Builder(getApplicationContext())
-			.threadPoolSize(6)
-			.threadPriority(Thread.NORM_PRIORITY-1)
-			.denyCacheImageMultipleSizesInMemory()
-			.discCacheSize(10*1024*1024)
-			.tasksProcessingOrder(QueueProcessingType.LIFO)
-			.build();
-
-
-			ImageLoader.getInstance().init(config);
-			GlobalVariable.imageLoader = ImageLoader.getInstance(); 
-
+			
 			List<NameValuePair> pairs = new ArrayList<NameValuePair>();
 			pairs.add(new BasicNameValuePair("city", GlobalVariable.mCityID));
 			pairs.add(new BasicNameValuePair("env", Integer.toString(GlobalVariable.mMode)));

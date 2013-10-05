@@ -1,38 +1,46 @@
 package vn.smartguide;
 
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Timer;
 import java.util.TimerTask;
 
-import org.json.JSONException;
+import org.apache.http.NameValuePair;
+import org.apache.http.message.BasicNameValuePair;
+import org.json.JSONArray;
 import org.json.JSONObject;
 
-import android.animation.Animator;
-import android.animation.Animator.AnimatorListener;
-import android.animation.AnimatorSet;
 import android.animation.ObjectAnimator;
 import android.app.Activity;
 import android.app.AlertDialog;
+import android.app.Dialog;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.graphics.Bitmap;
+import android.graphics.Point;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.v4.app.FragmentActivity;
 import android.telephony.PhoneNumberUtils;
 import android.view.Gravity;
+import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.View;
-import android.view.animation.AccelerateDecelerateInterpolator;
+import android.view.ViewGroup;
 import android.view.animation.Animation;
 import android.view.animation.LinearInterpolator;
 import android.view.inputmethod.InputMethodManager;
+import android.widget.AdapterView;
+import android.widget.BaseAdapter;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.GridView;
 import android.widget.ImageButton;
 import android.widget.ImageView;
+import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import com.facebook.FacebookException;
@@ -47,7 +55,7 @@ import com.facebook.widget.LoginButton.OnErrorListener;
 import com.google.analytics.tracking.android.EasyTracker;
 
 public class WellcomeActivity extends FragmentActivity{
-	
+
 	// Data
 	private boolean isConfirm = false;	
 	private String phoneNumber = "";
@@ -60,7 +68,6 @@ public class WellcomeActivity extends FragmentActivity{
 	private ImageView mSlogan;
 	private ImageView mSmartGuide;
 	private ImageButton mLogin;
-	private ImageButton mSkip;
 	private ImageButton mSendButton;
 	private EditText mNumberField;
 	private TextView mStatusText;
@@ -72,19 +79,33 @@ public class WellcomeActivity extends FragmentActivity{
 
 	private ObjectAnimator mNumberFieldSlideUp;
 	private ObjectAnimator mSendButtonSlideUp;
-	private ObjectAnimator mFacebookBtnFadeIn;
 	private ObjectAnimator mStatusTextFlash;
-	private ObjectAnimator mSkipBtnFadeIn;
-	
+
 	private LoginButton authButton = null;
+
+	private RelativeLayout signUpScreen;
+	private RelativeLayout faceOrACCScreen;
+	private RelativeLayout createACCScreen;
+	private ImageButton viaCreateACCBtn;
+	private RelativeLayout loadingFace;
 
 	// Others
 	private UiLifecycleHelper 	mUiHelper;
-
+	private ImageButton mChangeAvatarBtn;
+	private ImageView mAvatarView;
+	private Button mDoneCreatACCBtn;
+	private EditText mNameField;
+	private String avatarURL;
+	private String name;
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.activity_wellcome);
+		
+		
+		GlobalVariable.mAvatarList = Arrays.asList(CyImageLoader.DUMMY_PATH);
+
+		new GetDefaultAvatar().execute();
 
 		// Set up Facebook
 		Session.StatusCallback callback = new Session.StatusCallback() {
@@ -96,7 +117,7 @@ public class WellcomeActivity extends FragmentActivity{
 				}
 			}
 		};
-		
+
 		mUiHelper = new UiLifecycleHelper(this, callback);
 		mUiHelper.onCreate(savedInstanceState);
 
@@ -117,13 +138,6 @@ public class WellcomeActivity extends FragmentActivity{
 		mResendCode = (Button) findViewById(R.id.resendCodeBtn);
 
 		mLogin = (ImageButton)findViewById(R.id.viaFaceButton);
-		mSkip = (ImageButton)findViewById(R.id.skipFaceButton);
-
-		// Set up animation		
-		mFacebookBtnFadeIn = ObjectAnimator.ofFloat(mLogin, "alpha", 0.0f, 1.0f);
-		mFacebookBtnFadeIn.setInterpolator(new AccelerateDecelerateInterpolator());
-		mSkipBtnFadeIn = ObjectAnimator.ofFloat(mSkip, "alpha", 0.0f, 1.0f);
-		mSkipBtnFadeIn.setInterpolator(new AccelerateDecelerateInterpolator());
 
 		mStatusTextFlash = ObjectAnimator.ofFloat(mStatusText, "alpha", 0.3f, 1.0f);
 		mStatusTextFlash.setInterpolator(new LinearInterpolator());
@@ -143,7 +157,7 @@ public class WellcomeActivity extends FragmentActivity{
 							String subphone = phoneNumber.substring(1);
 							phoneNumber = subphone;
 						}
-						
+
 						confirmPhone();
 					} else {
 						mStatusText.setText("Số điện thoại không hợp lệ...");
@@ -152,7 +166,7 @@ public class WellcomeActivity extends FragmentActivity{
 				}else{
 					if (timer != null)
 						timer.cancel();
-					
+
 					mTailText.setVisibility(View.INVISIBLE);
 					mHeadText.setVisibility(View.INVISIBLE);
 					mTimeText.setVisibility(View.INVISIBLE);
@@ -161,13 +175,6 @@ public class WellcomeActivity extends FragmentActivity{
 					mNumberField.setText("");
 					new ConfirmActivateCode().execute();
 				}
-			}
-		});
-
-		mSkip.setOnClickListener(new View.OnClickListener() {
-			@Override
-			public void onClick(View v) {
-				exit();
 			}
 		});
 
@@ -201,29 +208,105 @@ public class WellcomeActivity extends FragmentActivity{
 
 			@Override
 			public void onClick(View v) {
+				mLogin.setClickable(false);
+				viaCreateACCBtn.setClickable(false);
+				loadingFace.setVisibility(View.VISIBLE);
 				authButton.performClick();
 			}
 		});
-		
+
 		mResendCode.setOnClickListener(new View.OnClickListener() {
 			@Override
 			public void onClick(View v) {
 				InputMethodManager imm = (InputMethodManager) getSystemService(Context.INPUT_METHOD_SERVICE);
 				imm.hideSoftInputFromWindow(mNumberField.getWindowToken(), 0);
-				
+
 				startCounting();
-				
+
 				mResendCode.setVisibility(View.INVISIBLE);
 				m84TV.setVisibility(View.INVISIBLE);
 				isConfirm = true;
 				mStatusText.setText("Chờ và nhập mã xác nhận...");
 				mNumberField.setText("");
-				
+
 				new GetActivateCode().execute();
 			}
 		});
+
+		signUpScreen = (RelativeLayout)findViewById(R.id.signupScreen);
+		faceOrACCScreen = (RelativeLayout)findViewById(R.id.faceOrAccountScreen);
+		createACCScreen = (RelativeLayout)findViewById(R.id.createAccountScreen);
+		viaCreateACCBtn = (ImageButton)findViewById(R.id.viaCreateACC);
+		viaCreateACCBtn.setOnClickListener(new View.OnClickListener() {
+
+			@Override
+			public void onClick(View v) {
+				faceOrACCScreen.setVisibility(View.GONE);
+				createACCScreen.setVisibility(View.VISIBLE);
+			}
+		});
+
+		loadingFace = (RelativeLayout)findViewById(R.id.loadingFace);
+		mChangeAvatarBtn = (ImageButton)findViewById(R.id.changeAvaBtn);
+		mChangeAvatarBtn.setOnClickListener(new View.OnClickListener() {
+			@Override
+			public void onClick(View v) {   
+				Context context = WellcomeActivity.this;
+				AlertDialog.Builder builder = new AlertDialog.Builder(context); 
+				
+				LayoutInflater inflater = (LayoutInflater) context.getSystemService(LAYOUT_INFLATER_SERVICE);   
+				View layout = inflater.inflate(R.layout.avatar_dialog, (ViewGroup) findViewById(R.id.layout_root));   
+				GridView gridview = (GridView) layout.findViewById(R.id.avatar_list);   
+				gridview.setAdapter(new ImageAdapter());   
+				gridview.setOnItemClickListener(new AdapterView.OnItemClickListener() {   
+					public void onItemClick(AdapterView<?> parent, View v, int position, long id) {   
+						dialog.dismiss();
+						avatarURL = GlobalVariable.mAvatarList.get(position);
+						GlobalVariable.cyImageLoader.showImage(GlobalVariable.mAvatarList.get(position), mAvatarView);					}   
+				});
+
+				    
+				builder.setView(layout);     
+				dialog = builder.create();
+				dialog.show(); 
+			}
+		});
+		
+		mAvatarView = (ImageView) findViewById(R.id.avatar);
+		mDoneCreatACCBtn = (Button)findViewById(R.id.doneCreateACCBtn);
+		mDoneCreatACCBtn.setOnClickListener(new View.OnClickListener() {
+			@Override
+			public void onClick(View arg0) {	
+				name = mNameField.getText().toString();
+				if (name.length() == 0){
+					AlertDialog.Builder builder = new AlertDialog.Builder(WellcomeActivity.this);
+
+					builder.setMessage("Bạn cần nhập tên");
+					builder.setCancelable(true);
+
+					builder.setNegativeButton("OK", new DialogInterface.OnClickListener() {
+						public void onClick(DialogInterface dialog, int which) {
+						}
+					});
+
+					AlertDialog dialog = builder.show();
+					TextView messageView = (TextView)dialog.findViewById(android.R.id.message);
+					messageView.setGravity(Gravity.CENTER);
+					return;
+				}
+				
+				InputMethodManager imm = (InputMethodManager) getSystemService(Context.INPUT_METHOD_SERVICE);
+				imm.hideSoftInputFromWindow(mNumberField.getWindowToken(), 0);
+				
+				new UpdateUserInfo().execute();
+			}
+		});
+		
+		mNameField = (EditText)findViewById(R.id.nameField);
 	}
 
+	Dialog dialog;
+	
 	@Override
 	public boolean onCreateOptionsMenu(Menu menu) {
 		return true;
@@ -306,6 +389,16 @@ public class WellcomeActivity extends FragmentActivity{
 						GlobalVariable.smartGuideDB.insertFacebook(token);
 						GlobalVariable.isNeedUpdateFacebook = true;
 
+						loadingFace.setVisibility(View.INVISIBLE);
+
+						HashMap<String, String> token2 = new HashMap<String, String>();
+						token2.put("activateID", confirmCode);
+						token2.put("userID", GlobalVariable.userID);
+						token2.put("phoneNumber", phoneNumber);
+						token2.put("avatar", "http://graph.facebook.com/" + GlobalVariable.id + "/picture?type=large");
+						token2.put("nameFace", GlobalVariable.name);
+						GlobalVariable.smartGuideDB.insertActivateCode(token2);
+
 						exit();
 					}
 				}
@@ -322,11 +415,11 @@ public class WellcomeActivity extends FragmentActivity{
 	}
 
 	public class GetActivateCode extends AsyncTask<Void, Void, Boolean> {
-		
+
 		private Exception mEx;
-		
+
 		protected void onPreExecute(){ }
-		
+
 		@Override
 		protected Boolean doInBackground(Void... params) {
 			try {
@@ -349,11 +442,78 @@ public class WellcomeActivity extends FragmentActivity{
 		}
 	}
 
+	public class ImageAdapter extends BaseAdapter {
+
+		public int getCount() {
+			return GlobalVariable.mAvatarList.size();
+		}
+
+		public Object getItem(int position) {
+			return null;
+		}
+
+		public long getItemId(int position) {
+			return 0;
+		}
+
+		// create a new ImageView for each item referenced by the Adapter
+		public View getView(int position, View convertView, ViewGroup parent) {
+			Context context = WellcomeActivity.this;
+			LayoutInflater inflater = ((Activity) context).getLayoutInflater();
+			if (convertView == null) {
+				convertView = inflater.inflate(R.layout.avatar_item, parent, false);
+			}
+			
+			final ImageView avatar = (ImageView)convertView.findViewById(R.id.avatar);
+			avatar.setTag(GlobalVariable.mAvatarList.get(position));
+
+			try{
+				GlobalVariable.cyImageLoader.loadImage(GlobalVariable.mAvatarList.get(position), new CyImageLoader.Listener() {
+					//					GlobalVariable.cyImageLoader.loadImage(
+					//							CyImageLoader.DUMMY_PATH[position % CyImageLoader.DUMMY_PATH.length],
+					//							new CyImageLoader.Listener() {
+
+					@Override
+					public void startLoad(int from) {
+						switch (from) {
+						case CyImageLoader.FROM_DISK:
+						case CyImageLoader.FROM_NETWORK:
+							avatar.setImageResource(R.drawable.ava_loading);
+							break;
+						}
+					}
+
+					@Override
+					public void loadFinish(int from, Bitmap image, String url) {
+						switch (from) {
+						case CyImageLoader.FROM_MEMORY:
+							avatar.setImageBitmap(image);
+							break;
+
+						case CyImageLoader.FROM_DISK:
+						case CyImageLoader.FROM_NETWORK:;
+//						notifyDataSetChanged();
+						if (((String) avatar.getTag()).equals(url))
+							avatar.setImageBitmap(image);
+						//								}
+						break;
+						}
+					}
+
+				}, new Point(128, 128), WellcomeActivity.this);
+			}catch(Exception ex){
+				ex.printStackTrace();
+			}
+
+			return convertView;
+		}
+	}
+
 	public class ConfirmActivateCode extends AsyncTask<Void, Void, Boolean> {    	
 
 		private JSONObject result;
 		private Exception mEx;
-		
+
 		@Override
 		protected Boolean doInBackground(Void... params) {
 			try {
@@ -372,67 +532,35 @@ public class WellcomeActivity extends FragmentActivity{
 					throw mEx;
 
 				boolean success = result.getBoolean("result");
-				String user_id = result.getString("user_id");
+				GlobalVariable.userID = result.getString("user_id");
 				boolean connect_fb = result.getBoolean("connect_fb");
 
 				if (success) {
-					// Insert into DB
-					HashMap<String, String> token = new HashMap<String, String>();
 
-					token.put("activateID", confirmCode);
-					token.put("userID", user_id);
-					token.put("phoneNumber", phoneNumber);
-					token.put("avatar", result.optString("avatar"));
-					token.put("nameFace", result.optString("name"));
-
+					GlobalVariable.footerURL = "&phone=" + phoneNumber + "&code=" + confirmCode;
+					GlobalVariable.getTokenFromDB();
+					
 					InputMethodManager imm = (InputMethodManager) getSystemService(Context.INPUT_METHOD_SERVICE);
 					imm.hideSoftInputFromWindow(mNumberField.getWindowToken(), 0);
 
-					GlobalVariable.smartGuideDB.insertActivateCode(token);
-				
 					if (connect_fb == true) {
+
+						HashMap<String, String> token2 = new HashMap<String, String>();
+
+						token2.put("activateID", confirmCode);
+						token2.put("userID", GlobalVariable.userID);
+						token2.put("phoneNumber", phoneNumber);
+						token2.put("avatar", result.optString("avatar"));
+						token2.put("nameFace", result.optString("name"));
+
+						GlobalVariable.smartGuideDB.insertActivateCode(token2);
+
 						exit();
 						return;
 					}
 
-					mNumberField.setText("");
-
-					mStatusText.setText("Đăng nhập facebook");
-
-					mNumberFieldSlideUp = ObjectAnimator.ofFloat(mNumberField, "alpha", 1.0f, 0.0f);
-					mNumberFieldSlideUp.setInterpolator(new AccelerateDecelerateInterpolator());				
-
-					mSendButtonSlideUp = ObjectAnimator.ofFloat(mSendButton, "alpha", 1.0f, 0.0f);
-					mSendButtonSlideUp.setInterpolator(new AccelerateDecelerateInterpolator());
-
-					ObjectAnimator[] objectAnimators = new ObjectAnimator[] {mNumberFieldSlideUp, mSendButtonSlideUp};
-					AnimatorSet animSetXY = new AnimatorSet();
-					animSetXY.playTogether(objectAnimators);
-					animSetXY.setDuration(1200);//1sec
-					animSetXY.addListener(new AnimatorListener() {
-
-						public void onAnimationStart(Animator arg0) { }
-						public void onAnimationRepeat(Animator arg0) { }
-						public void onAnimationCancel(Animator arg0) { }
-
-						@Override
-						public void onAnimationEnd(Animator arg0) {
-
-							mNumberField.setVisibility(View.INVISIBLE);
-							mSendButton.setVisibility(View.INVISIBLE);
-
-							mLogin.setVisibility(View.VISIBLE);
-							mSkip.setVisibility(View.VISIBLE);
-//
-							ObjectAnimator[] objectAnimators = new ObjectAnimator[] {mFacebookBtnFadeIn, mSkipBtnFadeIn};
-//							ObjectAnimator[] objectAnimators = new ObjectAnimator[] {mFacebookBtnFadeIn};
-							AnimatorSet animSetXY = new AnimatorSet();
-							animSetXY.playTogether(objectAnimators);
-							animSetXY.setDuration(1200);//1sec
-							animSetXY.start();
-						}
-					});
-					animSetXY.start();
+					signUpScreen.setVisibility(View.GONE);
+					faceOrACCScreen.setVisibility(View.VISIBLE);
 
 				} else {
 					mStatusText.setText("Mã xác nhận không hợp lệ");
@@ -470,12 +598,12 @@ public class WellcomeActivity extends FragmentActivity{
 			public void onClick(DialogInterface dialog, int which) {
 				InputMethodManager imm = (InputMethodManager) getSystemService(Context.INPUT_METHOD_SERVICE);
 				imm.hideSoftInputFromWindow(mNumberField.getWindowToken(), 0);
-				
+
 				startCounting();
-				
+
 				m84TV.setVisibility(View.INVISIBLE);
 				isConfirm = true;
-				mStatusText.setText("Chờ và nhập mã xác nhận");
+				mStatusText.setText("Chờ và nhập mã xác nhận...");
 				mNumberField.setText("");
 				new GetActivateCode().execute();
 			}
@@ -494,13 +622,13 @@ public class WellcomeActivity extends FragmentActivity{
 	}
 
 	public String formatPhone(String phone) {
-		
+
 		if (phone.charAt(0) == '+')
 			phone = phone.substring(1);
 
 		if (phone.charAt(0) != '0')
 			return "84" + phone;
-		
+
 		try {
 			String first3c = phone.substring(0, 2);
 			if (first3c.compareTo("84") == 0)
@@ -511,7 +639,7 @@ public class WellcomeActivity extends FragmentActivity{
 			return "";
 		}
 	}
-	
+
 	public boolean validatePhoneNumber(String phone) {
 		if (phone.length() != 11 && phone.length() != 12)
 			return false;
@@ -519,17 +647,17 @@ public class WellcomeActivity extends FragmentActivity{
 	}
 
 	Timer timer;
-	
+
 	public void startCounting(){
 		mTailText.setVisibility(View.VISIBLE);
 		mHeadText.setVisibility(View.VISIBLE);
 		mHeadText.setText("Bạn sẽ nhận được mã kích hoạt sau ");
 		mTimeText.setVisibility(View.VISIBLE);
-		
+
 		timer = new Timer();
 		timer.schedule(new TimerTask() {
 			int i = 30;
-			
+
 			@Override
 			public void run() {
 				runOnUiThread(new Runnable() {
@@ -545,13 +673,113 @@ public class WellcomeActivity extends FragmentActivity{
 							timer.cancel();
 							return;
 						}
-							
+
 						mTimeText.setText(Integer.toString(i--));
+
+					}
+				});
+
+			}
+		}, 0, 1000);
+	}
+
+	public class GetDefaultAvatar extends AsyncTask<Void, Void, Boolean> {
+		String JSResult = null;
+		@Override
+		protected Boolean doInBackground(Void... params) {
+			List<NameValuePair> pairs = new ArrayList<NameValuePair>();
+			JSResult = NetworkManger.post(APILinkMaker.mGetDefaultAvatar(), pairs);
+			if (JSResult == "")
+				return false; //for test
+			return false;
+		}
+
+		@Override
+		protected void onPostExecute(Boolean k){
+			if (k == true){
+				try{
+					JSONArray arrayImage = new JSONArray(JSResult);
+					GlobalVariable.mAvatarList = new ArrayList<String>();
+					for(int i = 0; i < arrayImage.length(); i++){
+						GlobalVariable.mAvatarList.add(arrayImage.getString(i));
+					}
+				}catch(Exception ex){
+
+				}
+			}
+		}
+
+		@Override
+		protected void onPreExecute(){
+		}
+	}
+	
+	public class UpdateUserInfo extends AsyncTask<Void, Void, Boolean> {
+		String JSResult = null;
+		@Override
+		protected Boolean doInBackground(Void... params) {
+			
+			List<NameValuePair> pairs = new ArrayList<NameValuePair>();
+			pairs.add(new BasicNameValuePair("name", GlobalVariable.userID));
+			if (avatarURL == "" || avatarURL.length() == 0)
+				avatarURL = GlobalVariable.mAvatarList.get(0);
+			
+			pairs.add(new BasicNameValuePair("avatar", avatarURL));
+			JSResult = NetworkManger.post(APILinkMaker.mUpdateUserInfo(), pairs);
+			if (JSResult == "")
+				return false; 
+			return true;
+		}
+
+		@Override
+		protected void onPostExecute(Boolean k){
+			if (k == true){
+				try{
+					JSONObject result = new JSONObject(JSResult);
+					int code = result.getInt("code");
+					if (code == 1){
+						HashMap<String, String> token2 = new HashMap<String, String>();
+
+						token2.put("activateID", confirmCode);
+						token2.put("userID", GlobalVariable.userID);
+						token2.put("phoneNumber", phoneNumber);
+						token2.put("avatar", avatarURL);
+						token2.put("nameFace", name);
+
+						GlobalVariable.smartGuideDB.insertActivateCode(token2);
+						
+						HashMap<String, String> token =  new  HashMap<String, String>();
+						token.put("userID", "-1");
+						token.put("avatar",avatarURL);
+						token.put("name",name);
+
+						GlobalVariable.smartGuideDB.insertFacebook(token);
+						
+						loadingFace.setVisibility(View.GONE);
+						exit();
+					}
+				}catch(Exception ex){
+
+				}
+			}else{
+				loadingFace.setVisibility(View.GONE);
+				
+				AlertDialog.Builder builder = new AlertDialog.Builder(WellcomeActivity.this);
+
+				builder.setMessage("Có lỗi xảy ra vui lòng thử lại");
+				builder.setCancelable(true);
+
+				builder.setNegativeButton("Đồng ý", new DialogInterface.OnClickListener() {
+					public void onClick(DialogInterface dialog, int which) {
 						
 					}
 				});
-				
 			}
-		}, 0, 1000);
+		}
+
+		@Override
+		protected void onPreExecute(){
+			
+		}
 	}
 }

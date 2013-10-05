@@ -105,7 +105,7 @@ public class CyImageLoader {
 			}
 			
 			@Override
-			public void loadFinish(int from, Bitmap image) {
+			public void loadFinish(int from, Bitmap image, String url) {
 				imgView.setImageBitmap(image);
 			}
 		}.init(imgView), new Point(imgView.getWidth(), imgView.getHeight()), imgView.getContext());
@@ -123,7 +123,7 @@ public class CyImageLoader {
 		// If hit mem cache, deliver bitmap to listener
 		if (bm != null) {
 			listener.startLoad(FROM_MEMORY);
-			listener.loadFinish(FROM_MEMORY, bm);
+			listener.loadFinish(FROM_MEMORY, bm, path);
 			return;
 		}
 		
@@ -434,7 +434,7 @@ public class CyImageLoader {
 					if (pos >= 0) {
 						// Everything allright :)
 //						debugLog("sample = " + sample);
-						l.loadFinish(FROM_NETWORK, bmArr[pos]);
+						l.loadFinish(FROM_NETWORK, bmArr[pos], mPath);
 					} else {
 						// Oh shit! Some requests come after decoding :(
 						debugLog("Sample not found, add new decode task, sample = " + sample);
@@ -515,7 +515,7 @@ public class CyImageLoader {
 				// Deliver to listener
 				debugLog("Completed, deliver decoding task listener, path=" + right(mPath));
 				for (Listener l : mListenerList) {
-					l.loadFinish(FROM_DISK, bm);
+					l.loadFinish(FROM_DISK, bm, mPath);
 				}
 			} else {
 				// Deliver to listener
@@ -534,7 +534,7 @@ public class CyImageLoader {
 		public Point mExpectedSize;
 		
 		public void startLoad(int from) { }
-		public void loadFinish(int from, Bitmap image) { }
+		public void loadFinish(int from, Bitmap image, String url) { }
 		public void loadFail(Exception e) { }
 	}
 	

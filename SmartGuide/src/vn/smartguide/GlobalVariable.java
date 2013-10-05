@@ -40,10 +40,6 @@ public final class GlobalVariable {
 	// Cycrix ImageLoader
 	public static CyImageLoader cyImageLoader;
 
-	// ImageLoader & DisplayImageOptions for asyn downloading image
-	public static ImageLoader imageLoader;
-	public static DisplayImageOptions displayImageOptions;
-
 	// Animation time for next page -> ViewPager
 	public static int timeTransfer 		= 1000;
 
@@ -129,6 +125,7 @@ public final class GlobalVariable {
 	private static boolean isFirstTimeGetGPS = false;
 	
 	public static String json10FirstShop = "";
+	public static List<String> mAvatarList;
 	
 	public static void createDatbase(Context applicationcontext){
 		smartGuideDB = new DatabaseManger(applicationcontext);

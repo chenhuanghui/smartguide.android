@@ -107,7 +107,7 @@ public class DetailCommentFragment extends Fragment {
 			mAdapter.notifyDataSetChanged();
 			mLst.setSelectionFromTop(mAdapter.getCount() - 1, 0);
 			if (GlobalVariable.avatarFace != "" || GlobalVariable.avatarFace.compareTo("null") != 0)
-				GlobalVariable.imageLoader.displayImage(GlobalVariable.avatarFace, mAvatar);
+				GlobalVariable.cyImageLoader.showImage(GlobalVariable.avatarFace, mAvatar);
 		} else {
 			mPage = 1;
 			mPageEnd = false;

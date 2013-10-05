@@ -272,7 +272,7 @@ public class PhotoActivity extends FragmentActivity{
 					}
 
 					@Override
-					public void loadFinish(int from, Bitmap image) {
+					public void loadFinish(int from, Bitmap image, String url) {
 
 						View rootView = frag.getView();
 

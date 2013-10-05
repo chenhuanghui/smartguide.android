@@ -13,6 +13,7 @@ import org.json.JSONObject;
 import android.annotation.SuppressLint;
 import android.app.ActionBar.LayoutParams;
 import android.graphics.Bitmap;
+import android.graphics.Point;
 import android.graphics.drawable.BitmapDrawable;
 import android.graphics.drawable.Drawable;
 import android.os.AsyncTask;
@@ -169,35 +170,33 @@ public class AdsFragment extends Fragment {
 						JSONObject image = imageArray.getJSONObject(i);
 						String url = image.getString("image_url");
 						
-						new HttpConnection(new Handler() {
-			        		@Override
-			        		public void handleMessage(Message message) {
-			        			switch (message.what) {
-			        			case HttpConnection.DID_START: {
-			        				break;
-			        			}
-			        			case HttpConnection.DID_SUCCEED: {
-			        				try{
-			        					Bitmap response = (Bitmap) message.obj;
-			        					images.add(new BitmapDrawable(getActivity().getResources(), response));
-			        					if (images.size() == 1){
-			        						stopAds();
-			        						startAds();
-			        					}
-			        				}catch(Exception ex){
-			        				}
-			        				break;
-			        			}
-			        			case HttpConnection.DID_ERROR: {
-			        				Exception e = (Exception) message.obj;
-			        				e.printStackTrace();
-			        				break;
-			        			}
-			        			}
-			        		}
-			        		
-			        	}).bitmap(url);
-						
+						GlobalVariable.cyImageLoader.loadImage(url, new CyImageLoader.Listener() {
+							@Override
+							public void startLoad(int from) {
+								switch (from) {
+								case CyImageLoader.FROM_DISK:
+								case CyImageLoader.FROM_NETWORK:
+								}
+							}
+
+							@Override
+							public void loadFinish(int from, Bitmap image, String url) {
+								switch (from) {
+								case CyImageLoader.FROM_MEMORY:
+									break;
+
+								case CyImageLoader.FROM_DISK:
+								case CyImageLoader.FROM_NETWORK:
+									images.add(new BitmapDrawable(getActivity().getResources(), image));
+		        					if (images.size() == 1){
+		        						stopAds();
+		        						startAds();
+		        					}
+		        					break;
+								}
+							}
+
+						}, new Point(0, 0), getActivity().getBaseContext());
 					}
 				} catch (JSONException e) {
 				}

@@ -286,7 +286,7 @@ public class MainActivity extends FragmentActivity implements MainAcitivyListene
 
 				if (GlobalVariable.avatarFace.compareTo("null") != 0){
 					name.setText(GlobalVariable.nameFace);
-					GlobalVariable.imageLoader.displayImage(GlobalVariable.avatarFace, avatar);
+					GlobalVariable.cyImageLoader.showImage(GlobalVariable.avatarFace, avatar);
 					mUserFragment.updateAvatar();
 				}
 				else
@@ -1245,8 +1245,6 @@ public class MainActivity extends FragmentActivity implements MainAcitivyListene
 			}
 		});
 
-		stopAds();
-
 		// Setting layout
 		mOpticalFrame = findViewById(R.id.opticalMainFrame);
 		mLocationBtn = (RelativeLayout)menu.getMenu().findViewById(R.id.location_layout);
@@ -1660,7 +1658,7 @@ public class MainActivity extends FragmentActivity implements MainAcitivyListene
 						TextView name = (TextView)menu.getMenu().findViewById(R.id.textView);
 						name.setMaxLines(1);
 						name.setText(GlobalVariable.nameFace);
-						GlobalVariable.imageLoader.displayImage(GlobalVariable.avatarFace, avatar);
+						GlobalVariable.cyImageLoader.showImage(GlobalVariable.avatarFace, avatar);
 						mUserFragment.updateAvatar();
 
 						new PushFacebookInfo().execute();
@@ -1722,7 +1720,7 @@ public class MainActivity extends FragmentActivity implements MainAcitivyListene
 
 		if (GlobalVariable.avatarFace.compareTo("null") != 0){
 			name.setText(GlobalVariable.nameFace);
-			GlobalVariable.imageLoader.displayImage(GlobalVariable.avatarFace, avatar);
+			GlobalVariable.cyImageLoader.showImage(GlobalVariable.avatarFace, avatar);
 			mUserFragment.updateAvatar();
 		}
 		else
@@ -2152,7 +2150,8 @@ public class MainActivity extends FragmentActivity implements MainAcitivyListene
 		ImageView view = (ImageView)findViewById(R.id.launchingLayout);
 		view.setVisibility(View.VISIBLE);
 
-		GlobalVariable.imageLoader.displayImage(GlobalVariable.mURL, view);
+		GlobalVariable.cyImageLoader.showImage(GlobalVariable.mURL, view);
+		
 		mFilterBtn.setClickable(false);
 		mMapButton.setClickable(false);
 		mLocationBtn.setClickable(false);
@@ -2810,7 +2809,7 @@ public class MainActivity extends FragmentActivity implements MainAcitivyListene
 
 		@Override
 		protected void onPostExecute(Boolean k){
-
+			startAds();
 		}
 
 		@Override

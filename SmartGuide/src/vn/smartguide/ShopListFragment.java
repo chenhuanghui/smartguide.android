@@ -376,7 +376,7 @@ public class ShopListFragment extends Fragment {
 				}
 				
 				@Override
-				public void loadFinish(int from, Bitmap image) {
+				public void loadFinish(int from, Bitmap image, String url) {
 					switch (from) {
 					case CyImageLoader.FROM_MEMORY:
 						mShopCover.setImageBitmap(image);
@@ -470,9 +470,6 @@ public class ShopListFragment extends Fragment {
 
 						mAdapter.notifyDataSetChanged();
 					}
-
-					GlobalVariable.imageLoader.resume();	
-
 			} else {
 				
 			}
