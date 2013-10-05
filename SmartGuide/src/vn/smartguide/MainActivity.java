@@ -264,7 +264,6 @@ public class MainActivity extends FragmentActivity implements MainAcitivyListene
 
 		init();
 
-		//		startActivity(new Intent(this, GCM.class));
 		if (GlobalVariable.getActivateCodeFromDB() == false){
 			startActivityForResult(new Intent(this, WellcomeActivity.class), WelcomeRequestCode);
 			isFirstTime = true;
@@ -354,7 +353,7 @@ public class MainActivity extends FragmentActivity implements MainAcitivyListene
 	}
 	
 	private void turnToPage(int index) {
-		mViewPager.setCurrentItem(index, false);
+		mViewPager.setCurrentItem(index, true);
 	}
 
 	@Override
@@ -430,8 +429,7 @@ public class MainActivity extends FragmentActivity implements MainAcitivyListene
 
 				@Override
 				public void run() {
-					doubleBackToExitPressedOnce = false;   
-
+					doubleBackToExitPressedOnce = false;
 				}
 			}, 2000);
 		}else
@@ -2809,7 +2807,7 @@ public class MainActivity extends FragmentActivity implements MainAcitivyListene
 
 		@Override
 		protected void onPostExecute(Boolean k){
-			startAds();
+			mAdsFragment.startDownImage();
 		}
 
 		@Override

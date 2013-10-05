@@ -32,11 +32,11 @@ import android.widget.ViewSwitcher.ViewFactory;
 
 public class AdsFragment extends Fragment {
 	List<Drawable> images = new ArrayList<Drawable>();
-	
+
 	ImageSwitcher mAdsSwitcher;
 	int index = 1;
 	ChangeImage mChangeImage;
-	
+
 	@Override
 	public View onCreateView(LayoutInflater inflater, ViewGroup container,
 			Bundle savedInstanceState) {
@@ -69,7 +69,7 @@ public class AdsFragment extends Fragment {
 			public void onClick(View v) {
 				if (images.size() == 0)
 					return;
-				
+
 				stopAds();
 
 				if (index == 0)
@@ -86,9 +86,9 @@ public class AdsFragment extends Fragment {
 			public void onClick(View v) {
 				if (images.size() == 0)
 					return;
-				
+
 				stopAds();
-				
+
 				index = (index + 1) % images.size();
 
 				mAdsSwitcher.setInAnimation(AnimationUtils.loadAnimation(getActivity(),
@@ -115,7 +115,7 @@ public class AdsFragment extends Fragment {
 		startAds();
 	}
 
-	
+
 	void stopAds(){
 		if (mChangeImage == null)
 			return;
@@ -128,31 +128,34 @@ public class AdsFragment extends Fragment {
 	}
 
 	class ChangeImage extends TimerTask {
-
 		@Override
 		public void run() {
 			getActivity().runOnUiThread(new Runnable() {
 				@Override
 				public void run() {
-					if (images.size() == 0)
+					try{
+						if (images.size() == 0)
+							return;
+
+						index = (index + 1) % images.size();
+						mAdsSwitcher.setImageDrawable(images.get(index));
+					}catch(Exception ex){
 						return;
-					
-					index = (index + 1) % images.size();
-					mAdsSwitcher.setImageDrawable(images.get(index));
+					}
 				}
 			});
 		}
 	};
-	
+
 	public void startDownImage(){
-//		new DownloadImage().execute();
+		new DownloadImage().execute();
 	}
-	
+
 	private class DownloadImage extends AsyncTask<Void, Void, Boolean> {
 
 		String mJson = "";
 		List<String> mURL = new ArrayList<String>();
-		
+
 		@Override
 		protected Boolean doInBackground(Void... params) {
 			List<NameValuePair> pairs = new ArrayList<NameValuePair>();
@@ -169,7 +172,7 @@ public class AdsFragment extends Fragment {
 					for(int i = 0; i < imageArray.length(); i++){
 						JSONObject image = imageArray.getJSONObject(i);
 						String url = image.getString("image_url");
-						
+
 						GlobalVariable.cyImageLoader.loadImage(url, new CyImageLoader.Listener() {
 							@Override
 							public void startLoad(int from) {
@@ -188,11 +191,11 @@ public class AdsFragment extends Fragment {
 								case CyImageLoader.FROM_DISK:
 								case CyImageLoader.FROM_NETWORK:
 									images.add(new BitmapDrawable(getActivity().getResources(), image));
-		        					if (images.size() == 1){
-		        						stopAds();
-		        						startAds();
-		        					}
-		        					break;
+									if (images.size() == 1){
+										stopAds();
+										startAds();
+									}
+									break;
 								}
 							}
 
