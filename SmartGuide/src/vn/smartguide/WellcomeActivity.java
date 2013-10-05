@@ -543,7 +543,7 @@ public class WellcomeActivity extends FragmentActivity{
 					InputMethodManager imm = (InputMethodManager) getSystemService(Context.INPUT_METHOD_SERVICE);
 					imm.hideSoftInputFromWindow(mNumberField.getWindowToken(), 0);
 
-					if (connect_fb == true) {
+					if (connect_fb == true || result.optString("avatar").length() != 0 && result.optString("name").length() != 0) {
 
 						HashMap<String, String> token2 = new HashMap<String, String>();
 
@@ -554,6 +554,14 @@ public class WellcomeActivity extends FragmentActivity{
 						token2.put("nameFace", result.optString("name"));
 
 						GlobalVariable.smartGuideDB.insertActivateCode(token2);
+						
+						
+						HashMap<String, String> token =  new  HashMap<String, String>();
+						token.put("userID", "-1");
+						token.put("avatar",result.optString("avatar"));
+						token.put("name",result.optString("name"));
+
+						GlobalVariable.smartGuideDB.insertFacebook(token);
 
 						exit();
 						return;
@@ -720,7 +728,7 @@ public class WellcomeActivity extends FragmentActivity{
 		protected Boolean doInBackground(Void... params) {
 			
 			List<NameValuePair> pairs = new ArrayList<NameValuePair>();
-			pairs.add(new BasicNameValuePair("name", GlobalVariable.userID));
+			pairs.add(new BasicNameValuePair("name", name));
 			if (avatarURL == "" || avatarURL.length() == 0)
 				avatarURL = GlobalVariable.mAvatarList.get(0);
 			
