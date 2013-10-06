@@ -99,7 +99,7 @@ public final class GlobalVariable {
 	public static String nameFace 		= "";
 	public static String faceAccessToken = "";
 	// Filter String
-	public static String mFilterString 	= "";
+	public static String mFilterString 	= "1,2,3,4,5,6,7,8";
 	public static String mSortByString 	= "0";
 	public static String mCityID 		= "1";
 	public static String mVersion 		= "0";

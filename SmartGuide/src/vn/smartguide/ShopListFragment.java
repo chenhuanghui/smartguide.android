@@ -249,7 +249,7 @@ public class ShopListFragment extends Fragment {
 		mAdapter.addAll(Shop.getListForUseThrow(new JSONArray(json)));
 	} 
 
-	public void setForeground(){
+	public void setForeground() {
 		mLoadingOptical.setVisibility(View.VISIBLE);
 	}
 	

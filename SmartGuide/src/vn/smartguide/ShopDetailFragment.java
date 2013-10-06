@@ -156,52 +156,62 @@ public class ShopDetailFragment extends Fragment {
 		mActiveFragment = f;
     }
     
-    public void setData(Shop s) {
+    public void setData(Shop s, boolean parseAll) {
+    	
     	mShop = s;
+    	DetailMenuFragment menu = (DetailMenuFragment) getFragmentManager().findFragmentById(R.id.detailMenuFragment);
     	
     	// Prepare data
-    	new GetShopDetail().execute();
+    	new GetShopDetail(parseAll).execute();
     	
     	// Set promotion fragment either 1 or 2
-    	if (s.mPromotionStatus) {
-    		if (s.mPromotion.getType() == 1) {
-    			mPromoFragment = mPromo1Fragment;
-    		} else if (s.mPromotion.getType() == 2) {
-    			mPromoFragment = mPromo2Fragment;
-    		}
+    	if (parseAll) {
+    		mPromoFragment = mPromo1Fragment;
     	} else {
-    		mPromoFragment = mNoPromoFragment;
+    		if (s.mPromotionStatus) {
+    			if (s.mPromotion.getType() == 1) {
+    				mPromoFragment = mPromo1Fragment;
+    			} else if (s.mPromotion.getType() == 2) {
+    				mPromoFragment = mPromo2Fragment;
+    			}
+    		} else {
+    			mPromoFragment = mNoPromoFragment;
+    		}
     	}
     	
     	if (mActiveFragment != mPromoFragment) {
-    		if (mActiveFragment != null)
-    			getFragmentManager().beginTransaction().hide(mActiveFragment).show(mPromoFragment).commit();
-    		else
-    			getFragmentManager().beginTransaction().show(mPromoFragment).commit();
-    	}
+			if (mActiveFragment != null)
+				getFragmentManager().beginTransaction().hide(mActiveFragment).show(mPromoFragment).commit();
+			else
+				getFragmentManager().beginTransaction().show(mPromoFragment).commit();
+		}
     	
-    	mActiveFragment = mPromoFragment;
+		mActiveFragment = mPromoFragment;
+
+		//    	menu.updateLikeDis(s.mNumOfLike, s.mNumOfDislike, s.mLikeStatus);
+
+		if (mPromoFragment == mNoPromoFragment) {
+			if (!menu.mShowInfoBar)
+				menu.toggleShopInfo(false, false);
+			menu.switchToButton(0, false, true);
+		} else if (menu.mShowInfoBar) {
+			menu.switchToButton(0, false, false);
+			menu.toggleShopInfo(false, true);
+		}
     	
     	// Set image
-    	GlobalVariable.cyImageLoader.showImage(mShop.mLogo, mLogoImageView);
+		if (!parseAll) {
+	    	GlobalVariable.cyImageLoader.showImage(mShop.mLogo, mLogoImageView);
+	    	
+	    	if (mShop.mCover.compareTo("null") != 0)
+	    		GlobalVariable.cyImageLoader.showImage(mShop.mCover, mCoverImageView);
+		} else {
+			mLogoImageView.setImageBitmap(null);
+			mCoverImageView.setImageBitmap(null);
+		}
     	
-    	if (mShop.mCover.compareTo("null") != 0)
-    		GlobalVariable.cyImageLoader.showImage(mShop.mCover, mCoverImageView);
-    	
-    	DetailMenuFragment menu = (DetailMenuFragment) getFragmentManager().findFragmentById(R.id.detailMenuFragment);
-//    	menu.updateLikeDis(s.mNumOfLike, s.mNumOfDislike, s.mLikeStatus);
-    	
-    	if (mPromoFragment == mNoPromoFragment) {
-    		if (!menu.mShowInfoBar)
-    			menu.toggleShopInfo(false, false);
-    		menu.switchToButton(0, false, true);
-    	} else if (menu.mShowInfoBar) {
-    		menu.switchToButton(0, false, false);
-    		menu.toggleShopInfo(false, true);
-    	}
-    	
-    	mPromoFragment.setData(s);
-    	((DetailShopInfoFragment) mDetailFragmentList.get(0)).setData(s);
+		mPromoFragment.setData(parseAll ? null : s);
+		((DetailShopInfoFragment) mDetailFragmentList.get(0)).setData(parseAll ? null : s);
     	((DetailShopMenuFragment) mDetailFragmentList.get(1)).setData(null);
     	((DetailShopPhotoFragment) mDetailFragmentList.get(2)).setData(null);
     	((DetailCommentFragment) mDetailFragmentList.get(3)).setData(null);
@@ -211,9 +221,14 @@ public class ShopDetailFragment extends Fragment {
 //    		mPromo1Fragment.runAnimation();
     }
     
-    public class GetShopDetail extends AsyncTask<Void, Void, Boolean> {
+    private class GetShopDetail extends AsyncTask<Void, Void, Boolean> {
     	
     	private Exception mEx;
+    	private boolean mParseAll;
+    	
+    	public GetShopDetail(boolean parseAll) {
+    		mParseAll = parseAll;
+    	}
 
 		@Override
 		protected Boolean doInBackground(Void... params) {
@@ -228,6 +243,8 @@ public class ShopDetailFragment extends Fragment {
 			
 				String json = NetworkManger.post(APILinkMaker.mGetShopUser(), pairs);
 				JSONObject jRoot = new JSONObject(json);
+				if (mParseAll)
+					Shop.getShop(jRoot, mShop);
 				parseJsonShopDetail(jRoot);				
 			} catch (Exception e) {
 				mEx = e;
@@ -239,6 +256,16 @@ public class ShopDetailFragment extends Fragment {
 		protected void onPostExecute(Boolean k) {
 			
 			if (mEx == null) {
+				if (mParseAll) {
+					mPromoFragment.setData(mShop);
+					((DetailShopInfoFragment) mDetailFragmentList.get(0)).setData(mShop);
+					GlobalVariable.cyImageLoader.showImage(mShop.mLogo, mLogoImageView);
+			    	
+			    	if (mShop.mCover.compareTo("null") != 0)
+			    		GlobalVariable.cyImageLoader.showImage(mShop.mCover, mCoverImageView);
+			    	
+			    	((MainActivity) getActivity()).updateHeader();
+				}
 				((DetailShopMenuFragment) mDetailFragmentList.get(1)).setData(mShop);
 		    	((DetailShopPhotoFragment) mDetailFragmentList.get(2)).setData(mShop);
 		    	((DetailCommentFragment) mDetailFragmentList.get(3)).setData(mShop);
@@ -260,16 +287,18 @@ public class ShopDetailFragment extends Fragment {
     	JSONArray jCateItemArr = jRoot.optJSONArray("shop_items");
     	if (jCateItemArr != null)
     		for (int i = 0; i < jCateItemArr.length(); i++) {
-    			JSONObject jCate = jCateItemArr.optJSONObject(i);
-    			String cateName = jCate.getString("cat_name");
-    			JSONArray jItemArr = jCate.getJSONArray("items");
-    			mShop.mGroupItemList.add(cateName);
-    			mShop.mItemCollections.put(cateName, new ArrayList<Item>());
-    			for (int j = 0; j < jItemArr.length(); j++) {
-    				JSONObject jItem = jItemArr.getJSONObject(j);
-    				Item item = new Item(jItem.getString("name"), jItem.getString("price"), null, null);
-    				mShop.mItemCollections.get(mShop.mGroupItemList.get(mShop.mGroupItemList.size() - 1)).add(item);
-    			}
+    			try {
+	    			JSONObject jCate = jCateItemArr.optJSONObject(i);
+	    			String cateName = jCate.getString("cat_name");
+	    			JSONArray jItemArr = jCate.getJSONArray("items");
+	    			mShop.mGroupItemList.add(cateName);
+	    			mShop.mItemCollections.put(cateName, new ArrayList<Item>());
+	    			for (int j = 0; j < jItemArr.length(); j++) {
+	    				JSONObject jItem = jItemArr.getJSONObject(j);
+	    				Item item = new Item(jItem.getString("name"), jItem.getString("price"), null, null);
+	    				mShop.mItemCollections.get(mShop.mGroupItemList.get(mShop.mGroupItemList.size() - 1)).add(item);
+	    			}
+    			} catch (Exception e) {}
     		}
     	
     	// Parse comment
@@ -277,10 +306,12 @@ public class ShopDetailFragment extends Fragment {
     	JSONArray jCommentArr = jRoot.optJSONArray("shop_comments");
     	if (jCommentArr != null)
 	    	for (int i = 0; i < jCommentArr.length(); i++) {
+	    		try {
 	    		JSONObject jComment = jCommentArr.getJSONObject(i);
 	    		
 	    		mShop.mCommentList.add(0, new Comment(jComment.getString("user"), jComment.getString("comment"),
 	    				jComment.getString("avatar"), jComment.getString("time")));
+	    		} catch (JSONException e) { }
 	    	}
     	
     	// Parse user image
@@ -288,10 +319,12 @@ public class ShopDetailFragment extends Fragment {
     	JSONArray jUserImageArr = jRoot.optJSONArray("user_gallery");
     	if (jUserImageArr != null)
 	    	for (int i = 0; i < jUserImageArr.length(); i++) {
-	    		JSONObject jUserImage = jUserImageArr.getJSONObject(i);
-	
-	    		mShop.mUserImageList.add(new ImageStr(
-	    				jUserImage.getString("image"), jUserImage.getString("description")));
+	    		try {
+		    		JSONObject jUserImage = jUserImageArr.getJSONObject(i);
+		
+		    		mShop.mUserImageList.add(new ImageStr(
+		    				jUserImage.getString("image"), jUserImage.getString("description")));
+	    		} catch (JSONException e) { }
 	    	}
     	
     	// Parse shop image
@@ -299,7 +332,9 @@ public class ShopDetailFragment extends Fragment {
     	JSONArray jShopImage = jRoot.optJSONArray("shop_gallery");
     	if (jShopImage != null)
 	    	for (int i = 0; i < jShopImage.length(); i++) {
-	    		mShop.mShopImageList.add(new ImageStr(jShopImage.getString(i), null));
+	    		try {
+	    			mShop.mShopImageList.add(new ImageStr(jShopImage.getString(i), null));
+	    		} catch (JSONException e) { }
 	    	}
     }
     

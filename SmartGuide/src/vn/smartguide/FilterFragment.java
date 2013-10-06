@@ -109,34 +109,39 @@ public class FilterFragment extends Fragment {
 				
 //				toggle();
 				
-				GlobalVariable.mFilterString = "";
-				GlobalVariable.mSortByString = "0";
+				String filterString = "";
+				String sortByString = "0";
 				
 				if (mRadioMostPoint.isChecked())
-					GlobalVariable.mSortByString = "3";
+					sortByString = "3";
 				
 				if (mRadioMostLike.isChecked())
-					GlobalVariable.mSortByString = "2";
+					sortByString = "2";
 				
 				if (mRadioMostView.isChecked())
-					GlobalVariable.mSortByString = "1";
+					sortByString = "1";
 				
 				if (mRadioDistance.isChecked())
-					GlobalVariable.mSortByString = "0";
+					sortByString = "0";
 				
 				FilterAdapter adapter = (FilterAdapter)((GridView) getView().findViewById(R.id.gridCate)).getAdapter();
 				boolean firstItem = true;
-//				if (adapter.mItemList.get(0).status == true)
-//					GlobalVariable.mFilterString = "1";
-				
 				for (int i = 0; i < adapter.mItemList.size(); i++) {
 					if (adapter.mItemList.get(i).status == true) {
 						if (!firstItem)
-							GlobalVariable.mFilterString += ", ";
+							filterString += ", ";
 						firstItem = false;
-						GlobalVariable.mFilterString += Integer.toString(i + 1);
+						filterString += Integer.toString(i + 1);
 					}
 				}
+				
+				if (filterString.length() == 0) {
+					GlobalVariable.showToast("Xin chọn ít nhật 1 danh mục", getActivity());
+					return;
+				}
+					
+				GlobalVariable.mFilterString = filterString;
+				GlobalVariable.mSortByString = sortByString;
 					
 //				new FindShopList().execute();
 				mListener.onDone();
