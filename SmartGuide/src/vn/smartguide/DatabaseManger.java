@@ -90,6 +90,7 @@ public class DatabaseManger extends SQLiteOpenHelper {
 	}
 
 	public void insertFacebook(HashMap<String, String> queryValues) {
+		deleteFacebook();
 		SQLiteDatabase database = this.getWritableDatabase();
 		ContentValues values = new ContentValues();
 		values.put("userID", queryValues.get("userID"));

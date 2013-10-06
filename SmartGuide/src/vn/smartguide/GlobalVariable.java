@@ -223,12 +223,8 @@ public final class GlobalVariable {
 		}
 
 		userIDFacebook = token.get("userID");
-		
-		if(avatarFace == "" || avatarFace.compareTo("null") == 0)
-			avatarFace = token.get("avatar");
-		
-		if (nameFace == "" || nameFace.compareTo("null") == 0)
-			nameFace = token.get("name");
+		avatarFace = token.get("avatar");
+		nameFace = token.get("name");
 		return true;
 	}
 
@@ -268,7 +264,6 @@ public final class GlobalVariable {
 			public void onLocationChanged(Location location) {
 				if (!isFirstTimeGetGPS){
 					isFirstTimeGetGPS = true;
-					Toast.makeText(mcontext, "Đã lấy được tọa độ GPS. Bạn có thể thực hiện chức năng scan code", Toast.LENGTH_LONG).show();
 					mMainAcitivyListener.finishGetSGP();
 				}
 				

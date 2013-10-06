@@ -101,9 +101,6 @@ public class WellcomeActivity extends FragmentActivity{
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.activity_wellcome);
-		
-		
-		GlobalVariable.mAvatarList = Arrays.asList(CyImageLoader.DUMMY_PATH);
 
 		new GetDefaultAvatar().execute();
 
@@ -257,7 +254,7 @@ public class WellcomeActivity extends FragmentActivity{
 				LayoutInflater inflater = (LayoutInflater) context.getSystemService(LAYOUT_INFLATER_SERVICE);   
 				View layout = inflater.inflate(R.layout.avatar_dialog, (ViewGroup) findViewById(R.id.layout_root));   
 				GridView gridview = (GridView) layout.findViewById(R.id.avatar_list);   
-				gridview.setAdapter(new ImageAdapter(getBaseContext()));   
+				gridview.setAdapter(new ImageAdapter(WellcomeActivity.this));   
 				gridview.setOnItemClickListener(new AdapterView.OnItemClickListener() {   
 					public void onItemClick(AdapterView<?> parent, View v, int position, long id) {   
 						dialog.dismiss();
@@ -665,7 +662,7 @@ public class WellcomeActivity extends FragmentActivity{
 			List<NameValuePair> pairs = new ArrayList<NameValuePair>();
 			pairs.add(new BasicNameValuePair("name", name));
 			if (avatarURL == "" || avatarURL.length() == 0)
-				avatarURL = GlobalVariable.mAvatarList.get(0);
+				avatarURL = GlobalVariable.avatarFace;
 			
 			pairs.add(new BasicNameValuePair("avatar", avatarURL));
 			JSResult = NetworkManger.post(APILinkMaker.mUpdateUserInfo(), pairs);
@@ -717,6 +714,10 @@ public class WellcomeActivity extends FragmentActivity{
 						
 					}
 				});
+				
+				AlertDialog dialog = builder.show();
+				TextView messageView = (TextView)dialog.findViewById(android.R.id.message);
+				messageView.setGravity(Gravity.CENTER);
 			}
 		}
 

@@ -130,20 +130,24 @@ public class AdsFragment extends Fragment {
 	class ChangeImage extends TimerTask {
 		@Override
 		public void run() {
-			getActivity().runOnUiThread(new Runnable() {
-				@Override
-				public void run() {
-					try{
-						if (images.size() == 0)
-							return;
+			try{
+				getActivity().runOnUiThread(new Runnable() {
+					@Override
+					public void run() {
+						try{
+							if (images.size() == 0)
+								return;
 
-						index = (index + 1) % images.size();
-						mAdsSwitcher.setImageDrawable(images.get(index));
-					}catch(Exception ex){
-						return;
+							index = (index + 1) % images.size();
+							mAdsSwitcher.setImageDrawable(images.get(index));
+						}catch(Exception ex){
+							return;
+						}
 					}
-				}
-			});
+				});
+			}catch(Exception ex){
+				
+			}
 		}
 	};
 
