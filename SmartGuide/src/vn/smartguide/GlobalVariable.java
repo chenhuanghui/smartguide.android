@@ -8,8 +8,6 @@ import android.os.Bundle;
 import android.widget.Toast;
 
 import com.loopj.android.http.AsyncHttpClient;
-import com.nostra13.universalimageloader.core.DisplayImageOptions;
-import com.nostra13.universalimageloader.core.ImageLoader;
 
 import org.apache.http.HttpEntity;
 import org.apache.http.HttpResponse;

@@ -165,7 +165,7 @@ public class UserFragment extends Fragment{
 	}
 	
 	public void updateAvatar(){
-		GlobalVariable.imageLoader.displayImage(GlobalVariable.avatarFace, mAvatar);
+		GlobalVariable.cyImageLoader.showImage(GlobalVariable.avatarFace, mAvatar);
 	}
 	
 	public void toggle() {
