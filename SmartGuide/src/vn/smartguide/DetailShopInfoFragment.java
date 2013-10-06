@@ -40,6 +40,9 @@ public class DetailShopInfoFragment extends Fragment {
     
     public void setData(final Shop s) {
     	
+    	if (s == null)
+    		return;
+    	
     	txtDescription.setText(s.mContent);
     	txtAddress.setText(s.mAddress);
     	txtPhone.setText(s.mTel);

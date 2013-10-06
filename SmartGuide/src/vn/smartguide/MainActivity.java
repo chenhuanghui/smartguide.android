@@ -250,7 +250,10 @@ public class MainActivity extends FragmentActivity implements MainAcitivyListene
 	//Exit para
 	private boolean doubleBackToExitPressedOnce = false;
 	private boolean isFirstTime = false;
+	
+	// Camera to detail
 	private boolean mIsNeedGotoDetail = false;
+	private int m2DetailShopId;
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
@@ -626,29 +629,30 @@ public class MainActivity extends FragmentActivity implements MainAcitivyListene
 			@Override
 			public void onInfoWindowClick(Marker marker) {
 				Shop s = getShopListFragment().mShopList.get(Integer.parseInt(marker.getSnippet()));
-				turnMapShop2Detail(s);
+				GlobalVariable.mCurrentShop = s;
+				goToShopDetail();
 			}
 		});
 	}
 
-	public void turnMapShop2Detail(Shop s) {
-		if (mShowContent)
-			return;
-
-		mShowContent = !mShowContent;
-		int height = findViewById(R.id.layoutContentHolder).getHeight();
-		View layout = findViewById(R.id.layoutContentFrame);
-		ObjectAnimator animator = ObjectAnimator.ofFloat(layout, "translationY", -height, 0);
-		animator.setInterpolator(new AccelerateDecelerateInterpolator());
-
-		GlobalVariable.mCurrentShop = s;
-		getDetailFragment().setData(s);
-		setNaviText(s.mName);
-		mViewPager.setCurrentItem(2, false);
-
-		animator.start();
-		mIsNeedToggleMap = true;
-	}
+//	private void turnMapShop2Detail(Shop s) {
+//		if (mShowContent)
+//			return;
+//
+//		mShowContent = !mShowContent;
+//		int height = findViewById(R.id.layoutContentHolder).getHeight();
+//		View layout = findViewById(R.id.layoutContentFrame);
+//		ObjectAnimator animator = ObjectAnimator.ofFloat(layout, "translationY", -height, 0);
+//		animator.setInterpolator(new AccelerateDecelerateInterpolator());
+//
+//		GlobalVariable.mCurrentShop = s;
+//		getDetailFragment().setData(s, false);
+//		setNaviText(s.mName);
+//		mViewPager.setCurrentItem(2, false);
+//
+//		animator.start();
+//		mIsNeedToggleMap = true;
+//	}
 
 	public void createDestroyMap() {
 
@@ -846,8 +850,10 @@ public class MainActivity extends FragmentActivity implements MainAcitivyListene
 	}
 
 	///////////////////////////////////////////////////////////////////////////
+	// Camera section
+	///////////////////////////////////////////////////////////////////////////
 
-	public void initToggleCamera(){
+	public void initToggleCamera() {
 		layoutTC = findViewById(R.id.relativeLayout2);
 		heightTC = layoutTC.getHeight();
 		btnQRTToogle = findViewById(R.id.btnQRToggle);
@@ -857,7 +863,7 @@ public class MainActivity extends FragmentActivity implements MainAcitivyListene
 	public void toggleCamera() {
 
 		if (!mShowCamera && (mScanningCode == 1 || mScanningCode == 2)){
-			LocationManager locationManager = locationManager = (LocationManager) getSystemService(LOCATION_SERVICE);
+			LocationManager locationManager = (LocationManager) getSystemService(LOCATION_SERVICE);
 			boolean isGPSOn = locationManager.isProviderEnabled(LocationManager.GPS_PROVIDER);
 			boolean isWifiOn = locationManager.isProviderEnabled(LocationManager.NETWORK_PROVIDER);
 
@@ -1022,24 +1028,25 @@ public class MainActivity extends FragmentActivity implements MainAcitivyListene
 			Result rs = null;
 			
 			try {
+//				rs = mQRCodeReader.decode(bitmap);
 				rs = mDataMatrixReader.decode(bitmap);
 			} catch (NotFoundException e) {
-				try {
-					rs = mQRCodeReader.decode(bitmap);
-				} catch (NotFoundException e1) {
+//				try {
+//					rs = mQRCodeReader.decode(bitmap);
+//				} catch (NotFoundException e1) {
+//					return;
+//				} catch (ChecksumException e1) {
+//					return;
+//				} catch (FormatException e1) {
 					return;
-				} catch (ChecksumException e1) {
-					return;
-				} catch (FormatException e1) {
-					return;
-				}
+//				}
 			} catch (ChecksumException e) {
 				return;
 			} catch (FormatException e) {
 				return;
 			}
 
-			Toast.makeText(MainActivity.this, rs.getText(), Toast.LENGTH_LONG).show();
+//			Toast.makeText(MainActivity.this, rs.getText(), Toast.LENGTH_LONG).show();
 			
 			mCamera.setPreviewCallback(null);
 			previewing = false;
@@ -1079,6 +1086,8 @@ public class MainActivity extends FragmentActivity implements MainAcitivyListene
 			autoFocusHandler.postDelayed(doAutoFocus, GlobalVariable.focusInterval);
 		}
 	};
+	
+	///////////////////////////////////////////////////////////////////////////
 
 	@Override
 	public void startAds() {
@@ -1215,7 +1224,7 @@ public class MainActivity extends FragmentActivity implements MainAcitivyListene
 			public void onShopClick(Shop s) {
 //				ShopDetailActivity.newInstance(MainActivity.this, s);
 				GlobalVariable.mCurrentShop = s;
-				mShopDetailFragment.setData(s);
+				mShopDetailFragment.setData(s, false);
 				goToShopDetail();
 			}
 		});
@@ -1242,6 +1251,15 @@ public class MainActivity extends FragmentActivity implements MainAcitivyListene
 				goToShopList();
 			}
 		});
+		
+		// Set up user fragment
+		mUserFragment.setListener(new vn.smartguide.UserFragment.Listener() {
+			@Override
+			public void onShopClick(Shop s) {
+				mShopDetailFragment.setData(GlobalVariable.mCurrentShop, false);
+				goToShopDetail();
+			}
+		});
 
 		// Setting layout
 		mOpticalFrame = findViewById(R.id.opticalMainFrame);
@@ -1249,7 +1267,7 @@ public class MainActivity extends FragmentActivity implements MainAcitivyListene
 		mLocationTV = (TextView) menu.getMenu().findViewById(R.id.textView7);
 		mNaviText = (TextView) findViewById(R.id.txtNavi);
 		mAvatarFaceBtn = (ImageButton)menu.getMenu().findViewById(R.id.imageView1);
-		//mTotalSGP = (TextView)menu.getMenu().findViewById(R.id.SGPScoreSetting);
+//		mTotalSGP = (TextView)menu.getMenu().findViewById(R.id.SGPScoreSetting);
 		mTutorialBtn = (RelativeLayout)menu.getMenu().findViewById(R.id.tutorialBtn);
 		mTutorialBtn.setOnClickListener(new OnClickListener() {
 			@Override
@@ -1356,10 +1374,25 @@ public class MainActivity extends FragmentActivity implements MainAcitivyListene
 				isCanScan = true;
 				mIsCanWipe = true;
 
-				//				if (mIsNeedGotoDetail){
-				//					new QCToDetail().execute();
-				//				}
-				//				else
+				if (mIsNeedGotoDetail) {
+					
+					Shop s = new Shop();
+					s.mID = m2DetailShopId;
+					GlobalVariable.mCurrentShop = s;
+					mShopDetailFragment.setData(s, true);
+					
+//					new QCToDetail().execute();
+					if (mUserFragment.isShow())
+						mUserFragment.toggle();
+					if (mFiterFragment.isShow())
+						mFiterFragment.toggle();
+					if (!mShowContent)
+						toggleShowContent();
+					mActiveView = EnumView.ShopDetail;
+					mPreShopDetail = EnumView.ShopList;
+					turnToPage(2);
+					updateHeader();
+				}
 				toggleCamera();
 			}
 		});
@@ -1448,6 +1481,10 @@ public class MainActivity extends FragmentActivity implements MainAcitivyListene
 		initToggleCamera();
 	}
 
+	///////////////////////////////////////////////////////////////////////////
+	// Search section
+	///////////////////////////////////////////////////////////////////////////
+	
 	private boolean mShowSearch = false;
 	private void toggleSearch() {
 
@@ -1538,9 +1575,10 @@ public class MainActivity extends FragmentActivity implements MainAcitivyListene
 		EditText edtSearch = (EditText) findViewById(R.id.edtSearch);
 		String search = edtSearch.getText().toString();
 		edtSearch.setText("");
-		goToPage(1);
-		setNaviText(search);
-		getShopListFragment().search(search);
+		mShopListFragment.search(search);
+//		goToPage(1);
+//		setNaviText(search);
+		goToShopList();
 		if (mShowSearch)
 			toggleSearch();
 	}
@@ -1563,6 +1601,8 @@ public class MainActivity extends FragmentActivity implements MainAcitivyListene
 		edtSearch.requestFocus();
 		imm.toggleSoftInput(0, 0);
 	}
+	
+	///////////////////////////////////////////////////////////////////////////
 
 	void updateLocation(){
 		final String items[] = GlobalVariable.mCityNames.toArray(new String[GlobalVariable.mCityNames.size()]);
@@ -1743,7 +1783,7 @@ public class MainActivity extends FragmentActivity implements MainAcitivyListene
 		mMapButton.setImageResource(R.drawable.map_btn);
 	}
 
-	void exitWithError(){
+	void exitWithError() {
 		AlertDialog.Builder dlgAlert  = new AlertDialog.Builder(this);                      
 		dlgAlert.setMessage("Bật kết nối mạng và thử lại");
 		dlgAlert.setTitle("Lỗi kết nối mạng");
@@ -1883,7 +1923,7 @@ public class MainActivity extends FragmentActivity implements MainAcitivyListene
 		{false, true, false},
 		{true, false, false}};
 	
-	private void updateHeader() {
+	public void updateHeader() {
 		ImageButton btnFilter = (ImageButton) findViewById(R.id.btnToggleFilter);
 		ImageButton btnUser = (ImageButton) findViewById(R.id.btnUser);
 		ImageButton btnMap = (ImageButton) findViewById(R.id.btnToggleMap);
@@ -2022,6 +2062,7 @@ public class MainActivity extends FragmentActivity implements MainAcitivyListene
 	}
 	
 	private void goToShopDetail() {
+		
 		if (!mShowContent)
 			toggleShowContent();
 		
@@ -2043,6 +2084,8 @@ public class MainActivity extends FragmentActivity implements MainAcitivyListene
 			}
 			break;
 		}
+		
+		updateHeader();
 	}
 
 	@Override
@@ -2257,25 +2300,33 @@ public class MainActivity extends FragmentActivity implements MainAcitivyListene
 	}
 
 	public class GetSGPPoint extends AsyncTask<Void, Void, Boolean> {
-		JSONObject JSResult = null;
-		int id = -1;
+		private Exception mEx;
+		private JSONObject JSResult = null;
+		private int id = -1;
+		
+		@Override
+		protected void onPreExecute() {
+			mCloseQRC.setVisibility(View.INVISIBLE);
+			mProgressBar.setVisibility(View.VISIBLE);
+		}
 
 		@Override
 		protected Boolean doInBackground(Void... params) {
-			isNeedUpdateSGP = false;
-			mIsNeedGotoDetail = false;
-
-			List<NameValuePair> pairs = new ArrayList<NameValuePair>();
-			pairs.add(new BasicNameValuePair("user_id", GlobalVariable.userID));
-			pairs.add(new BasicNameValuePair("code", mQRCode));
-			pairs.add(new BasicNameValuePair("user_lat", Float.toString(GlobalVariable.mLat)));
-			pairs.add(new BasicNameValuePair("user_lng", Float.toString(GlobalVariable.mLng)));
-
-			String json = NetworkManger.post(APILinkMaker.mGetSGP(), pairs);
 			try {
+				isNeedUpdateSGP = false;
+				mIsNeedGotoDetail = false;
+	
+				List<NameValuePair> pairs = new ArrayList<NameValuePair>();
+				pairs.add(new BasicNameValuePair("user_id", GlobalVariable.userID));
+				pairs.add(new BasicNameValuePair("code", mQRCode));
+				pairs.add(new BasicNameValuePair("user_lat", Float.toString(GlobalVariable.mLat)));
+				pairs.add(new BasicNameValuePair("user_lng", Float.toString(GlobalVariable.mLng)));
+	
+				String json = NetworkManger.post(APILinkMaker.mGetSGP(), pairs);
+			
 				JSResult = new JSONObject(json);
 			} catch (JSONException e) {
-				e.printStackTrace();
+				mEx = e;
 			}
 			return true;
 		}
@@ -2285,20 +2336,13 @@ public class MainActivity extends FragmentActivity implements MainAcitivyListene
 			int sgp = 0;
 			mProgressBar.setVisibility(View.INVISIBLE);
 			try {
+				if (mEx != null)
+					throw mEx;
+				
 				int status = JSResult.getInt("status");
-				switch(status) {
+				switch (status) {
 				case 0:
-					mShopNameText.setVisibility(View.INVISIBLE);
-					mSGPText.setVisibility(View.INVISIBLE);
-					mContentText.setVisibility(View.VISIBLE);
-					mContentText.setText(JSResult.getString("content"));
-					break;
 				case 1:
-					mShopNameText.setVisibility(View.INVISIBLE);
-					mSGPText.setVisibility(View.INVISIBLE);
-					mContentText.setVisibility(View.VISIBLE);
-					mContentText.setText(JSResult.getString("content"));
-					break;
 				case 2:
 					mShopNameText.setVisibility(View.INVISIBLE);
 					mSGPText.setVisibility(View.INVISIBLE);
@@ -2316,21 +2360,12 @@ public class MainActivity extends FragmentActivity implements MainAcitivyListene
 
 					int total_sgp = JSResult.getInt("total_sgp");
 
-					try {
-						String url = new JSONObject(mQRCode).getString("url");
-						id = Integer.valueOf(url.substring(url.lastIndexOf('/') + 1, url.length()));
-						if (GlobalVariable.mCurrentShop != null && id == GlobalVariable.mCurrentShop.mID){
-							isNeedUpdateSGP = true;
-						};
-					} catch (JSONException e) {
-					}
-
 					mShopListFragment.updateSGP(id, total_sgp);
 
 //					if (mShopDetailFragment.getPromoFragment() != null && isNeedUpdateSGP)
 					if (isNeedUpdateSGP)
 						mShopDetailFragment.setSGP(total_sgp);
-					else{
+					else {
 						if (GlobalVariable.mCurrentShop != null)
 							((PromotionTypeOne)GlobalVariable.mCurrentShop.mPromotion).mSGP = total_sgp;
 					}
@@ -2341,21 +2376,15 @@ public class MainActivity extends FragmentActivity implements MainAcitivyListene
 						new UpdateTotalSGP().execute();
 
 					mIsNeedGotoDetail = true;
+					m2DetailShopId = JSResult.optInt("shop_id", 100012);
 					break;
 				}
 			} catch(Exception ex) {
 				return;
-
 			}
 
 			mMirror.setVisibility(View.VISIBLE);
 			mMirrorFront.setVisibility(View.VISIBLE);
-		}
-
-		@Override
-		protected void onPreExecute(){
-			mCloseQRC.setVisibility(View.INVISIBLE);
-			mProgressBar.setVisibility(View.VISIBLE);
 		}
 	}
 
@@ -2660,7 +2689,7 @@ public class MainActivity extends FragmentActivity implements MainAcitivyListene
 				contact.put("phone", phoneNumber);
 				contacts.put(contact);
 
-			}catch(Exception ex){
+			} catch(Exception ex) {
 
 			}
 		}
@@ -2758,7 +2787,7 @@ public class MainActivity extends FragmentActivity implements MainAcitivyListene
 		mUserButton.setImageResource(R.drawable.user_btn);
 	}
 
-	public class QCToDetail extends AsyncTask<Void, Void, Boolean> {
+	private class QCToDetail extends AsyncTask<Void, Void, Boolean> {
 		@Override
 		protected Boolean doInBackground(Void... params) {
 
@@ -2911,4 +2940,3 @@ public class MainActivity extends FragmentActivity implements MainAcitivyListene
 		return registrationId;
 	}
 }
-

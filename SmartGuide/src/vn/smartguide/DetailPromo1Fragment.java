@@ -95,9 +95,20 @@ public class DetailPromo1Fragment extends DetailPromoFragment {
     public void setData(Shop s) {
     	
     	mShop = s;   
+    	    	
+    	mPromoListAdapter.clear();
+    	
+    	if (s == null) {
+    		txtPromoDuration.setText("");
+    		txtSP.setText("");
+    		txtSGP.setText("");
+    		txtPperSGP.setText("");
+    		mCostPerSGP.setText("");
+    		return;
+    		
+    	}
     	
     	txtPromoDuration.setText(s.mPromotion.mDuration);
-    	mPromoListAdapter.clear();
     	
     	if (s.mPromotionStatus == false) {
     		txtSP.setText("");

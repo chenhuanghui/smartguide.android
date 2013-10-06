@@ -31,7 +31,7 @@ public class ShopDetailActivity extends FragmentActivity {
 		sShop = null;
 		
 		((ShopDetailFragment) getSupportFragmentManager().findFragmentById(R.id.fragShopDetail))
-		.setData(mShop);
+		.setData(mShop, false);
 	}
 	
 	///////////////////////////////////////////////////////////////////////////
