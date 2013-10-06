@@ -29,59 +29,95 @@
                 android:textStyle="bold" />
         </LinearLayout>
 
-        <RelativeLayout
+        <LinearLayout
             android:layout_width="match_parent"
-            android:layout_height="150dp"
-            android:background="#282E3A" >
+            android:layout_height="wrap_content"
+            android:background="#282E3A" 
+            android:orientation="vertical">
 
-            <ImageView
-                android:id="@+id/userAvatarSetting"
-                android:layout_width="100dp"
-                android:layout_height="100dp"
-                android:layout_centerHorizontal="true"
-                android:layout_centerVertical="true"
-                android:background="@drawable/ava_default" >
-            </ImageView>
+            <RelativeLayout
+                android:layout_width="match_parent"
+                android:layout_height="155dp"
+                android:background="#282E3A" >
 
-            <TextView
-                android:id="@+id/textView"
-                style="bold"
-                android:layout_width="fill_parent"
-                android:layout_height="wrap_content"
-                android:layout_below="@+id/userAvatarSetting"
-                android:layout_centerHorizontal="true"
-                android:layout_marginLeft="5dp"
-                android:layout_marginRight="5dp"
-                android:ellipsize="end"
-                android:gravity="center_horizontal"
-                android:singleLine="true"
-                android:text="User Account"
-                android:textColor="#ffffff"
-                android:textSize="15dp"
-                android:textStyle="bold" />
+                <ImageView
+                    android:id="@+id/userAvatarSetting"
+                    android:layout_width="100dp"
+                    android:layout_height="100dp"
+                    android:layout_centerHorizontal="true"
+                    android:layout_centerVertical="true"
+                    android:background="@drawable/ava_default" >
+                </ImageView>
 
-            <ImageButton
-                android:id="@+id/imageView1"
-                android:layout_width="100dp"
-                android:layout_height="100dp"
-                android:layout_above="@+id/textView"
-                android:layout_centerHorizontal="true"
-                android:background="@drawable/user_ava_fore_ground"
-                android:clickable="true" />
+                <TextView
+                    android:id="@+id/textView"
+                    style="bold"
+                    android:layout_width="fill_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_below="@+id/userAvatarSetting"
+                    android:layout_centerHorizontal="true"
+                    android:layout_marginTop="2dp"
+                    android:layout_marginLeft="5dp"
+                    android:layout_marginRight="5dp"
+                    android:ellipsize="end"
+                    android:gravity="center_horizontal"
+                    android:singleLine="true"
+                    android:text="User Account"
+                    android:textColor="#ffffff"
+                    android:textSize="18dp"
+                    android:textStyle="bold" />
 
-<!--             <TextView
-                android:id="@+id/SGPScoreSetting"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_centerVertical="true"
-                android:layout_toRightOf="@+id/userAvatarSetting"
-                android:layout_marginLeft="10dp"
-                android:text=""
-                android:textStyle="bold"
-                android:textColor="#61667C"
-                android:textSize="12dp" /> -->
+                <ImageButton
+                    android:id="@+id/imageView1"
+                    android:layout_width="100dp"
+                    android:layout_height="100dp"
+                    android:layout_above="@+id/textView"
+                    android:layout_centerHorizontal="true"
+                    android:background="@drawable/user_ava_fore_ground"
+                    android:clickable="true" />
 
-        </RelativeLayout>
+                <ImageButton
+                    android:id="@+id/expandMenuBtn"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_alignParentTop="true"
+                    android:layout_alignParentRight="true"
+                    android:layout_marginTop="15dp"
+                    android:layout_marginRight="15dp"
+                    android:background="@drawable/button_menu_expand" />
+
+            </RelativeLayout>
+            <LinearLayout 
+                android:id="@+id/expandLayout"
+                android:layout_width="match_parent"
+            	android:layout_height="wrap_content"
+            	android:background="#282E3A" 
+            	android:orientation="vertical"
+            	android:visibility="gone">
+                <Button
+                    android:id="@+id/renameBtn"
+                    android:layout_width="wrap_content"
+                    android:layout_height="35dp"
+                    android:background="@drawable/button_doidiem"
+                    android:text="Thay đổi tên cá nhân"
+                    android:textSize="15dp"
+                    android:textStyle="bold"
+                    android:paddingLeft="20dp"
+                    android:paddingRight="20dp"
+                    android:textColor="#7B7B7D"
+                    android:layout_gravity="center_horizontal"
+                    android:layout_marginTop="30dp"/>
+                
+                <ImageButton
+                    android:id="@+id/updateInfoBtn"
+                    android:layout_width="90dp"
+                    android:layout_height="45dp"
+                    android:background="@drawable/button_update"
+                    android:layout_gravity="center_horizontal"
+                    android:layout_marginTop="40dp"
+                    android:layout_marginBottom="30dp"/>
+            </LinearLayout>
+        </LinearLayout>
 
         <LinearLayout
             android:layout_width="match_parent"
@@ -101,6 +137,7 @@
             android:layout_width="match_parent"
             android:layout_height="70dp"
             android:background="#282E3A" >
+
             <RelativeLayout
                 android:id="@+id/GPSButton"
                 android:layout_width="0dp"
@@ -227,9 +264,9 @@
         </RelativeLayout>
 
         <RelativeLayout
+            android:id="@+id/tutorialBtn"
             android:layout_width="match_parent"
-            android:layout_height="35dp"
-            android:id="@+id/tutorialBtn" >
+            android:layout_height="35dp" >
 
             <TextView
                 android:layout_width="match_parent"
@@ -277,9 +314,9 @@
         </RelativeLayout>
 
         <RelativeLayout
+            android:id="@+id/updateBtn"
             android:layout_width="match_parent"
-            android:layout_height="35dp"
-            android:id="@+id/updateBtn" >
+            android:layout_height="35dp" >
 
             <TextView
                 android:layout_width="match_parent"
@@ -302,9 +339,9 @@
         </RelativeLayout>
 
         <RelativeLayout
+            android:id="@+id/reviewSmartGuide"
             android:layout_width="match_parent"
-            android:layout_height="35dp"
-            android:id="@+id/reviewSmartGuide">
+            android:layout_height="35dp" >
 
             <TextView
                 android:layout_width="match_parent"

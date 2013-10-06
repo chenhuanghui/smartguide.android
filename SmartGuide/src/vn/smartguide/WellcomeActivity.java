@@ -257,7 +257,7 @@ public class WellcomeActivity extends FragmentActivity{
 				LayoutInflater inflater = (LayoutInflater) context.getSystemService(LAYOUT_INFLATER_SERVICE);   
 				View layout = inflater.inflate(R.layout.avatar_dialog, (ViewGroup) findViewById(R.id.layout_root));   
 				GridView gridview = (GridView) layout.findViewById(R.id.avatar_list);   
-				gridview.setAdapter(new ImageAdapter());   
+				gridview.setAdapter(new ImageAdapter(getBaseContext()));   
 				gridview.setOnItemClickListener(new AdapterView.OnItemClickListener() {   
 					public void onItemClick(AdapterView<?> parent, View v, int position, long id) {   
 						dialog.dismiss();
@@ -442,72 +442,7 @@ public class WellcomeActivity extends FragmentActivity{
 		}
 	}
 
-	public class ImageAdapter extends BaseAdapter {
-
-		public int getCount() {
-			return GlobalVariable.mAvatarList.size();
-		}
-
-		public Object getItem(int position) {
-			return null;
-		}
-
-		public long getItemId(int position) {
-			return 0;
-		}
-
-		// create a new ImageView for each item referenced by the Adapter
-		public View getView(int position, View convertView, ViewGroup parent) {
-			Context context = WellcomeActivity.this;
-			LayoutInflater inflater = ((Activity) context).getLayoutInflater();
-			if (convertView == null) {
-				convertView = inflater.inflate(R.layout.avatar_item, parent, false);
-			}
-			
-			final ImageView avatar = (ImageView)convertView.findViewById(R.id.avatar);
-			avatar.setTag(GlobalVariable.mAvatarList.get(position));
-
-			try{
-				GlobalVariable.cyImageLoader.loadImage(GlobalVariable.mAvatarList.get(position), new CyImageLoader.Listener() {
-					//					GlobalVariable.cyImageLoader.loadImage(
-					//							CyImageLoader.DUMMY_PATH[position % CyImageLoader.DUMMY_PATH.length],
-					//							new CyImageLoader.Listener() {
-
-					@Override
-					public void startLoad(int from) {
-						switch (from) {
-						case CyImageLoader.FROM_DISK:
-						case CyImageLoader.FROM_NETWORK:
-							avatar.setImageResource(R.drawable.ava_loading);
-							break;
-						}
-					}
-
-					@Override
-					public void loadFinish(int from, Bitmap image, String url) {
-						switch (from) {
-						case CyImageLoader.FROM_MEMORY:
-							avatar.setImageBitmap(image);
-							break;
-
-						case CyImageLoader.FROM_DISK:
-						case CyImageLoader.FROM_NETWORK:;
-//						notifyDataSetChanged();
-						if (((String) avatar.getTag()).equals(url))
-							avatar.setImageBitmap(image);
-						//								}
-						break;
-						}
-					}
-
-				}, new Point(128, 128), WellcomeActivity.this);
-			}catch(Exception ex){
-				ex.printStackTrace();
-			}
-
-			return convertView;
-		}
-	}
+	
 
 	public class ConfirmActivateCode extends AsyncTask<Void, Void, Boolean> {    	
 

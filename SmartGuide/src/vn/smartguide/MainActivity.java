@@ -7,6 +7,7 @@ import android.animation.ObjectAnimator;
 import android.animation.TimeInterpolator;
 import android.app.Activity;
 import android.app.AlertDialog;
+import android.app.Dialog;
 import android.content.ContentResolver;
 import android.content.Context;
 import android.content.DialogInterface;
@@ -42,14 +43,22 @@ import android.support.v4.app.FragmentTransaction;
 import android.support.v4.view.ViewPager;
 import android.view.Gravity;
 import android.view.KeyEvent;
+import android.view.LayoutInflater;
 import android.view.MotionEvent;
 import android.view.View;
+import android.view.ViewGroup;
 import android.view.View.OnClickListener;
 import android.view.View.OnTouchListener;
 import android.view.animation.AccelerateDecelerateInterpolator;
+import android.view.animation.Animation;
+import android.view.animation.LinearInterpolator;
+import android.view.animation.RotateAnimation;
 import android.view.inputmethod.InputMethodManager;
+import android.widget.AdapterView;
+import android.widget.Button;
 import android.widget.EditText;
 import android.widget.FrameLayout;
+import android.widget.GridView;
 import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
@@ -171,12 +180,20 @@ public class MainActivity extends FragmentActivity implements MainAcitivyListene
 
 	// Slide menu
 	SlidingMenu menu;
-	private RelativeLayout reviewBtn;
-	private RelativeLayout updateBtn;
-	private RelativeLayout gpsBtn;
-	private RelativeLayout mTutorialBtn;
-	private RelativeLayout mBtnIntro;
-
+	private RelativeLayout	reviewBtn;
+	private RelativeLayout	updateBtn;
+	private RelativeLayout	gpsBtn;
+	private RelativeLayout	mTutorialBtn;
+	private RelativeLayout	mBtnIntro;
+	private ImageButton		mExpandMenuBtn;
+	private boolean			mIsMenuExpand = false;
+	private ImageButton		mUpdateInforBtn;
+	private Button			mRenameBtn;
+	private LinearLayout	mExpandMenuLO;
+	private String			avatarURL;
+	private String			name;
+	private Dialog			dialog;
+	private boolean			mIsNeedChangeAvatar = false;
 	// Viewpager
 	private FragmentManager mFragmentManager;
 	private List<Fragment> mFragmentList;
@@ -1292,6 +1309,75 @@ public class MainActivity extends FragmentActivity implements MainAcitivyListene
 			}
 		});
 
+		final ImageView avatarFace = (ImageView)menu.getMenu().findViewById(R.id.userAvatarSetting);
+		final ImageButton avatar = (ImageButton)menu.getMenu().findViewById(R.id.imageView1);
+		avatar.setOnClickListener(new OnClickListener() {
+			@Override
+			public void onClick(View v) {
+				if (mIsMenuExpand == true){
+					Context context = MainActivity.this;
+					AlertDialog.Builder builder = new AlertDialog.Builder(context); 
+					
+					LayoutInflater inflater = (LayoutInflater) context.getSystemService(LAYOUT_INFLATER_SERVICE);   
+					View layout = inflater.inflate(R.layout.avatar_dialog, (ViewGroup) findViewById(R.id.layout_root));   
+					GridView gridview = (GridView) layout.findViewById(R.id.avatar_list);   
+					gridview.setAdapter(new ImageAdapter(getBaseContext()));   
+					gridview.setOnItemClickListener(new AdapterView.OnItemClickListener() {   
+						public void onItemClick(AdapterView<?> parent, View v, int position, long id) {   
+							dialog.dismiss();
+							avatarURL = GlobalVariable.mAvatarList.get(position);
+							GlobalVariable.cyImageLoader.showImage(GlobalVariable.mAvatarList.get(position), avatarFace);					}   
+					});
+
+					    
+					builder.setView(layout);     
+					dialog = builder.create();
+					dialog.show(); 
+				}
+			}
+		});
+		
+		mExpandMenuBtn = (ImageButton)menu.getMenu().findViewById(R.id.expandMenuBtn);
+		mExpandMenuBtn.setOnClickListener(new OnClickListener() {
+			@Override
+			public void onClick(View arg0) {
+				if (mIsMenuExpand == false){
+					RotateAnimation anim = new RotateAnimation(0f, 45f, Animation.RELATIVE_TO_SELF, 0.5f, Animation.RELATIVE_TO_SELF, 0.5f);
+					anim.setInterpolator(new LinearInterpolator());
+					anim.setDuration(200);
+					mExpandMenuBtn.startAnimation(anim);
+					mExpandMenuLO.setVisibility(View.VISIBLE);
+					
+					TextView name = (TextView)menu.getMenu().findViewById(R.id.textView);
+					name.setMaxLines(1);
+					name.setText("Thay đổi hình đại diện");
+					
+				}else{
+					RotateAnimation anim = new RotateAnimation(45f, 0f, Animation.RELATIVE_TO_SELF, 0.5f, Animation.RELATIVE_TO_SELF, 0.5f);
+					anim.setInterpolator(new LinearInterpolator());
+					anim.setDuration(200);
+					mExpandMenuBtn.startAnimation(anim);
+					mExpandMenuLO.setVisibility(View.GONE);
+					
+					TextView name = (TextView)menu.getMenu().findViewById(R.id.textView);
+					name.setMaxLines(1);
+
+					if (mIsNeedChangeAvatar == false){
+						name.setText(GlobalVariable.nameFace);
+						GlobalVariable.cyImageLoader.showImage(GlobalVariable.avatarFace, avatarFace);
+					}
+					else
+						name.setText("Anomynous User");
+				}
+				
+				mIsMenuExpand = !mIsMenuExpand;
+			}
+		});
+		
+			
+		mUpdateInforBtn = (ImageButton)menu.getMenu().findViewById(R.id.updateInfoBtn);
+		mRenameBtn = (Button)menu.getMenu().findViewById(R.id.renameBtn);
+		mExpandMenuLO = (LinearLayout)menu.getMenu().findViewById(R.id.expandLayout);;
 		reviewBtn = (RelativeLayout)menu.getMenu().findViewById(R.id.reviewSmartGuide);
 		reviewBtn.setOnClickListener(new View.OnClickListener() {	
 			@Override
