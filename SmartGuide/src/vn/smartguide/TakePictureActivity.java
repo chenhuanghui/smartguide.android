@@ -267,8 +267,10 @@ public class TakePictureActivity extends Activity {
 		mUiHelper.onActivityResult(requestCode, resultCode, data);
 		Session.getActiveSession().onActivityResult(this, requestCode, resultCode, data);
 		
-		if (resultCode != RESULT_OK)
+		if (resultCode != RESULT_OK){
+			finish();
 			return;
+		}
 
 		switch(requestCode){
 		case CAMERA_REQUEST_CODE:
@@ -308,8 +310,12 @@ public class TakePictureActivity extends Activity {
 			return true;
 		}
 
-		protected void onPostExecute(Boolean k) { }
-		protected void onPreExecute(){ }
+		protected void onPostExecute(Boolean k) {
+			mLoadingLO.setVisibility(View.GONE);
+		}
+		protected void onPreExecute(){
+			mLoadingLO.setVisibility(View.VISIBLE);
+		}
 	}
 	public static void deleteOldPhoto(){
 		if (oldFileUri == null)

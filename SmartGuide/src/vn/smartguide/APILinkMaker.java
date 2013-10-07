@@ -147,7 +147,7 @@ public final class APILinkMaker {
 	}
 	
 	public static String mUpFaceAccessToken(){
-		return mHostName + mApiDomain + mDefaultAvatar;
+		return mHostName + mApiDomain + mFaceAccessToken;
 	}
 	
 	public static String mUpRegistration(){
@@ -155,7 +155,7 @@ public final class APILinkMaker {
 	}
 	
 	public static String mGetDefaultAvatar(){
-		return mHostName + mApiDomain + mRegistration;
+		return mHostName + mDefaultAvatar;
 	}
 	
 	public static String mCheckEmergence(){

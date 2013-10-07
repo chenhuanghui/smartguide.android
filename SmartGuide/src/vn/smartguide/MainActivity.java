@@ -1119,7 +1119,6 @@ public class MainActivity extends FragmentActivity implements MainAcitivyListene
 	}
 
 	public void init(){
-		GlobalVariable.mAvatarList = Arrays.asList(CyImageLoader.DUMMY_PATH);
 
 		GlobalVariable.getLocation(this);
 

@@ -101,7 +101,6 @@ public class WellcomeActivity extends FragmentActivity{
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.activity_wellcome);
-
 		new GetDefaultAvatar().execute();
 
 		// Set up Facebook
@@ -627,11 +626,10 @@ public class WellcomeActivity extends FragmentActivity{
 		String JSResult = null;
 		@Override
 		protected Boolean doInBackground(Void... params) {
-			List<NameValuePair> pairs = new ArrayList<NameValuePair>();
-			JSResult = NetworkManger.post(APILinkMaker.mGetDefaultAvatar(), pairs);
+			JSResult = NetworkManger.get(APILinkMaker.mGetDefaultAvatar(), false);
 			if (JSResult == "")
 				return false; //for test
-			return false;
+			return true;
 		}
 
 		@Override

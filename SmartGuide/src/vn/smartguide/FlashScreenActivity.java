@@ -10,17 +10,22 @@ import org.apache.http.client.methods.HttpGet;
 import org.apache.http.impl.client.DefaultHttpClient;
 import org.apache.http.message.BasicNameValuePair;
 import org.apache.http.util.EntityUtils;
+import org.json.JSONArray;
 import org.json.JSONObject;
 
 
 import com.google.analytics.tracking.android.EasyTracker;
 import android.os.AsyncTask;
+import android.os.Build;
 import android.os.Bundle;
 import android.os.Handler;
 import android.app.Activity;
 import android.app.AlertDialog;
 import android.app.AlertDialog.Builder;
+import android.content.DialogInterface;
+import android.content.DialogInterface.OnClickListener;
 import android.content.Intent;
+import android.content.pm.PackageInfo;
 import android.graphics.Bitmap;
 import android.text.Html;
 import android.text.method.LinkMovementMethod;
@@ -90,22 +95,18 @@ public class FlashScreenActivity extends Activity {
 
 		@Override
 		protected Boolean doInBackground(Void... params) {
-//			String fullURL = APILinkMaker.mCheckEmergence() + "?access_token=" + GlobalVariable.tokenID + "&versioin=android4.0_1.3";
-//			HttpGet httpGet = new HttpGet(APILinkMaker.mCheckEmergence() + "?access_token=" + GlobalVariable.tokenID + "&versioin=android4.0_1.3");
-//
-//
-//			try{
-//				DefaultHttpClient httpClient = new DefaultHttpClient(NetworkManger.ccm, NetworkManger.params);
-//				HttpResponse httpResponse = httpClient.execute(httpGet);
-//				HttpEntity httpEntity = httpResponse.getEntity();
-//				key = new JSONObject(EntityUtils.toString(httpEntity));
-//				action_type = key.getInt("notification_type");
-//			}catch(Exception ex){
-//				return false;
-//			}
-//
-//			if (action_type != 0)
-//				return false;
+			try{
+				key = new JSONObject(NetworkManger.get(APILinkMaker.mCheckEmergence() + "?access_token=" + GlobalVariable.tokenID + "&versioin=android"+ 
+				Build.VERSION.RELEASE + "_" + getPackageManager().getPackageInfo(getPackageName(), 0).versionName, 
+						false));
+				action_type = key.getInt("notification_type");
+			}catch(Exception ex){
+				return false;
+			}
+
+
+			if (action_type != 0)
+				return false;
 
 			GlobalVariable.getActivateCodeFromDB();
 			GlobalVariable.getTokenFromDB();
@@ -130,7 +131,19 @@ public class FlashScreenActivity extends Activity {
 
 			GlobalVariable.getFacebookFromDB();
 
-			
+			if (GlobalVariable.mAvatarList == null || GlobalVariable.mAvatarList.size() == 0){
+				String JSResult = NetworkManger.get(APILinkMaker.mGetDefaultAvatar(), false);
+				try{
+					JSONArray arrayImage = new JSONArray(JSResult);
+					GlobalVariable.mAvatarList = new ArrayList<String>();
+					for(int i = 0; i < arrayImage.length(); i++){
+						GlobalVariable.mAvatarList.add(arrayImage.getString(i));
+					}
+				}catch(Exception ex){
+
+				}
+			}
+
 			List<NameValuePair> pairs = new ArrayList<NameValuePair>();
 			pairs.add(new BasicNameValuePair("city", GlobalVariable.mCityID));
 			pairs.add(new BasicNameValuePair("env", Integer.toString(GlobalVariable.mMode)));
@@ -199,7 +212,18 @@ public class FlashScreenActivity extends Activity {
 						String message = '"' + "<a href=\"" + link + "\">" + content + "Check this link out</a>";
 
 						AlertDialog d = new AlertDialog.Builder(FlashScreenActivity.this)
-						.setPositiveButton("OK", null)
+						.setPositiveButton("OK", new OnClickListener() {
+							@Override
+							public void onClick(DialogInterface dialog, int which) {
+								resultData = new Intent();
+								resultData.putExtra("Database", "OK");
+								resultData.putExtra("Connection", "False");
+								finish();
+								overridePendingTransition(android.R.anim.slide_in_left, android.R.anim.slide_out_right);
+								return;
+								
+							}
+						})
 						.setIcon(R.drawable.logo)
 						.setMessage(Html.fromHtml(message))
 						.create();
