@@ -34,6 +34,7 @@ import android.view.animation.AccelerateDecelerateInterpolator;
 import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.ProgressBar;
+import android.widget.TextView;
 /**
  * Created by ChauSang on 6/24/13.
  */
@@ -54,6 +55,7 @@ public class ShopDetailFragment extends Fragment {
     private Button mBtnLike;
     private Button mBtnDislike;
     private ProgressBar mPrgLike;
+    private TextView mTxtShopName;
     
     private Drawable mResLike, mResLikeHover, mResDislike, mResDislikeHover;
     
@@ -107,6 +109,7 @@ public class ShopDetailFragment extends Fragment {
         mBtnLike = (Button) getView().findViewById(R.id.btnLike);
         mBtnDislike = (Button) getView().findViewById(R.id.btnDislike);
         mPrgLike = (ProgressBar) getView().findViewById(R.id.prgLikeDis);
+        mTxtShopName = (TextView) getView().findViewById(R.id.txtShopName);
         
         Resources res = getResources();
         mResLike = getDrawableBitmap(res, R.drawable.icon_like);
@@ -248,6 +251,7 @@ public class ShopDetailFragment extends Fragment {
 			mCoverImageView.setImageBitmap(null);
 		}
     	
+		mTxtShopName.setText(parseAll ? "" : s.mName);
 		updateLikeStatus(parseAll ? null : s);
 		mPromoFragment.setData(parseAll ? null : s);
 		((DetailShopInfoFragment) mDetailFragmentList.get(0)).setData(parseAll ? null : s);
@@ -325,6 +329,7 @@ public class ShopDetailFragment extends Fragment {
 			
 			if (mEx == null) {
 				if (mParseAll) {
+					mTxtShopName.setText(mShop.mName);
 					updateLikeStatus(mShop);
 					mPromoFragment.setData(mShop);
 					((DetailShopInfoFragment) mDetailFragmentList.get(0)).setData(mShop);
