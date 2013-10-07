@@ -15,8 +15,10 @@ import android.animation.ObjectAnimator;
 import android.animation.TimeInterpolator;
 import android.app.Activity;
 import android.content.Intent;
+import android.content.res.Resources;
 import android.graphics.Bitmap;
 import android.graphics.Point;
+import android.graphics.Rect;
 import android.graphics.drawable.Drawable;
 import android.os.AsyncTask;
 import android.os.Bundle;
@@ -26,10 +28,12 @@ import android.support.v4.app.FragmentStatePagerAdapter;
 import android.support.v4.app.FragmentTransaction;
 import android.view.LayoutInflater;
 import android.view.View;
+import android.view.View.OnClickListener;
 import android.view.ViewGroup;
 import android.view.animation.AccelerateDecelerateInterpolator;
 import android.widget.Button;
 import android.widget.ImageView;
+import android.widget.ProgressBar;
 /**
  * Created by ChauSang on 6/24/13.
  */
@@ -49,6 +53,7 @@ public class ShopDetailFragment extends Fragment {
     private ImageView mCoverImageView;
     private Button mBtnLike;
     private Button mBtnDislike;
+    private ProgressBar mPrgLike;
     
     private Drawable mResLike, mResLikeHover, mResDislike, mResDislikeHover;
     
@@ -101,6 +106,30 @@ public class ShopDetailFragment extends Fragment {
         
         mBtnLike = (Button) getView().findViewById(R.id.btnLike);
         mBtnDislike = (Button) getView().findViewById(R.id.btnDislike);
+        mPrgLike = (ProgressBar) getView().findViewById(R.id.prgLikeDis);
+        
+        Resources res = getResources();
+        mResLike = getDrawableBitmap(res, R.drawable.icon_like);
+        mResLikeHover = getDrawableBitmap(res, R.drawable.icon_like_hover);
+        mResDislike = getDrawableBitmap(res, R.drawable.icon_dislike);
+        mResDislikeHover = getDrawableBitmap(res, R.drawable.icon_dislike_hover);
+        
+        // Set like/dislike event
+        mBtnLike.setOnClickListener(new OnClickListener() {
+			
+			@Override
+			public void onClick(View arg0) {
+				new LikeDisTask(true, mShop.mLikeStatus == 1).execute();
+			}
+		});
+        
+        mBtnDislike.setOnClickListener(new OnClickListener() {
+			
+			@Override
+			public void onClick(View v) {
+				new LikeDisTask(false, mShop.mLikeStatus == 2).execute();
+			}
+		});
         
         // Set up menu fragment
         DetailMenuFragment menu = (DetailMenuFragment) getFragmentManager().findFragmentById(R.id.detailMenuFragment);
@@ -219,6 +248,7 @@ public class ShopDetailFragment extends Fragment {
 			mCoverImageView.setImageBitmap(null);
 		}
     	
+		updateLikeStatus(parseAll ? null : s);
 		mPromoFragment.setData(parseAll ? null : s);
 		((DetailShopInfoFragment) mDetailFragmentList.get(0)).setData(parseAll ? null : s);
     	((DetailShopMenuFragment) mDetailFragmentList.get(1)).setData(null);
@@ -229,6 +259,35 @@ public class ShopDetailFragment extends Fragment {
 //    	if (s.mPromotionStatus == true && s.mPromotion.getType() == 1)
 //    		mPromo1Fragment.runAnimation();
     }
+    
+    ///////////////////////////////////////////////////////////////////////////
+    // Private methods
+    ///////////////////////////////////////////////////////////////////////////
+    
+    private void updateLikeStatus(Shop s) {
+    	
+    	if (s != null) {
+	    	mBtnLike.setText("" + s.mLike + "  ");
+	    	mBtnLike.setCompoundDrawables(null, null, s.mLikeStatus == 1 ? mResLikeHover : mResLike, null);
+	    	mBtnDislike.setText("" + s.mDislike + "  ");
+	    	mBtnDislike.setCompoundDrawables(null, null, s.mLikeStatus == 2 ? mResDislikeHover : mResDislike, null);
+    	} else {
+    		mBtnLike.setText("0  ");
+	    	mBtnLike.setCompoundDrawables(null, null, mResLike, null);
+	    	mBtnDislike.setText("0  ");
+	    	mBtnDislike.setCompoundDrawables(null, null, mResDislike, null);
+    	}
+    }
+    
+    private Drawable getDrawableBitmap(Resources res, int resId) {
+    	Drawable drawable = res.getDrawable(resId);
+    	drawable.setBounds(0, 0, drawable.getIntrinsicWidth(), drawable.getIntrinsicHeight());
+    	return drawable; 
+    }
+    
+    ///////////////////////////////////////////////////////////////////////////
+    // Async task
+    ///////////////////////////////////////////////////////////////////////////
     
     private class GetShopDetail extends AsyncTask<Void, Void, Boolean> {
     	
@@ -266,6 +325,7 @@ public class ShopDetailFragment extends Fragment {
 			
 			if (mEx == null) {
 				if (mParseAll) {
+					updateLikeStatus(mShop);
 					mPromoFragment.setData(mShop);
 					((DetailShopInfoFragment) mDetailFragmentList.get(0)).setData(mShop);
 					GlobalVariable.cyImageLoader.showImage(mShop.mLogo, mLogoImageView);
@@ -286,8 +346,58 @@ public class ShopDetailFragment extends Fragment {
 			}
 		}
 		
-		protected void onPreExecute(){ }
+		protected void onPreExecute() { }
 	}
+    
+    private class LikeDisTask extends CyAsyncTask {
+    	
+    	private boolean mIsLike;
+    	private boolean mIsUndo;
+    	private Exception mEx;
+    	
+    	public LikeDisTask(boolean like, boolean undo) {
+    		mIsLike = like;
+    		mIsUndo = undo;
+    		setVisibleView(mPrgLike);
+    		setDisableView(mBtnLike, mBtnDislike);
+    	}
+    	
+		@Override
+		protected Object doInBackground(Void... params) {
+			try {
+				List<NameValuePair> pairs = new ArrayList<NameValuePair>();
+				pairs.add(new BasicNameValuePair("shop_id", Integer.toString(GlobalVariable.mCurrentShop.mID)));
+				pairs.add(new BasicNameValuePair("user_id", GlobalVariable.userID));
+				pairs.add(new BasicNameValuePair("type", mIsLike ? "1" : "2"));
+				String mJson = NetworkManger.post(
+						mIsUndo ? APILinkMaker.mPushUnlikeAction() : APILinkMaker.mPushLikeAction(), pairs);
+				JSONObject jObject = new JSONObject(mJson);
+				return jObject;
+			} catch (Exception e) {
+				mEx = e;
+			}
+			return null;
+		}
+    	
+		@Override
+		protected void onPostExecute(Object result) {
+			super.onPostExecute(result);
+			
+			try {
+				if (mEx != null)
+					throw mEx;
+				
+				JSONObject jObject = (JSONObject) result;
+				mShop.mLike = jObject.getInt("like");
+				mShop.mDislike = jObject.getInt("dislike");
+				mShop.mLikeStatus = jObject.getInt("like_status");
+				updateLikeStatus(mShop);
+				
+			} catch (Exception e) {
+				GlobalVariable.showToast("Không thể thực hiện", getActivity());
+			}
+		}
+    }
     
     public void parseJsonShopDetail(JSONObject jRoot) throws JSONException {
     	// Parse Item

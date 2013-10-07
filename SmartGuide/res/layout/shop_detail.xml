@@ -66,24 +66,30 @@
                 android:layout_height="wrap_content"
                 android:layout_below="@+id/avaHolder"
                 android:layout_centerHorizontal="true"
-                android:layout_marginTop="8dp" >
+                android:layout_marginTop="4dp" >
 
                 <Button
                     android:id="@+id/btnLike"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:layout_marginRight="8dp"
                     android:background="#00000000"
                     android:drawableRight="@drawable/icon_like"
                     android:text="1  "
                     android:textColor="#FFFFFF"
                     android:textStyle="bold" />
 
+                <ProgressBar
+                    android:id="@+id/prgLikeDis"
+                    style="?android:attr/progressBarStyleSmall"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center_vertical"
+                    android:visibility="invisible" />
+
                 <Button
                     android:id="@+id/btnDislike"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:layout_marginLeft="8dp"
                     android:background="#00000000"
                     android:drawableRight="@drawable/icon_dislike"
                     android:text="1  "
