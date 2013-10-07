@@ -51,6 +51,7 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageButton;
 import android.widget.ImageView;
+import android.widget.RelativeLayout;
 import android.widget.Toast;
 
 public class TakePictureActivity extends Activity {
@@ -64,7 +65,9 @@ public class TakePictureActivity extends Activity {
 	private EditText mDescription;
 	private Button mFaceBtn;
 	LoginButton authButton = null;
-
+	private boolean mShareFace = false;
+	private RelativeLayout mLoadingLO = null;
+	
 	@SuppressLint("SimpleDateFormat")
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
@@ -92,7 +95,14 @@ public class TakePictureActivity extends Activity {
 		mFaceBtn.setOnClickListener(new View.OnClickListener() {
 			@Override
 			public void onClick(View v) {
-				getPermission();
+				mShareFace = ! mShareFace;
+				if (mShareFace){
+					mFaceBtn.setBackgroundResource(R.drawable.facebook_tick);
+					getPermission();
+				}
+				else{
+					mFaceBtn.setBackgroundResource(R.drawable.facebook_nonetick);
+				}
 			}
 		});
 
@@ -101,7 +111,7 @@ public class TakePictureActivity extends Activity {
 			@Override
 			public void onClick(View arg0) {
 				//getPermission();
-				uploadImage();
+				new uploadImage().execute();
 			}
 		});
 
@@ -133,6 +143,7 @@ public class TakePictureActivity extends Activity {
 		cameraIntent.putExtra(MediaStore.EXTRA_OUTPUT, outputFileUri);
 		startActivityForResult(cameraIntent, CAMERA_REQUEST_CODE);
 
+		mLoadingLO = (RelativeLayout)findViewById(R.id.loadingFace);
 	}
 
 	public void getPermission(){
@@ -234,7 +245,7 @@ public class TakePictureActivity extends Activity {
 
 		try {
 			FileOutputStream out = new FileOutputStream(file);
-			Bitmap.createScaledBitmap(bitmap, newWidth, newHeight, true).compress(Bitmap.CompressFormat.JPEG, 90, out);
+			Bitmap.createScaledBitmap(RotateBitmap(bitmap, 90), newWidth, newHeight, true).compress(Bitmap.CompressFormat.JPEG, 90, out);
 			out.flush();
 			out.close();
 			outputFileUri = Uri.fromFile(file);
@@ -308,29 +319,51 @@ public class TakePictureActivity extends Activity {
 		file.delete();
 	}
 
-	public void uploadImage(){
-		String URL = APILinkMaker.mUploadImage() + "?access_token=" + GlobalVariable.tokenID + GlobalVariable.footerURL;
-		HttpPost post = new HttpPost(URL);
+	public class uploadImage extends AsyncTask<Void, Void, Boolean> {
+		@Override
+		protected Boolean doInBackground(Void... params) {
+			String URL = APILinkMaker.mUploadImage() + "?access_token=" + GlobalVariable.tokenID + GlobalVariable.footerURL;
+			HttpPost post = new HttpPost(URL);
 
-		FileBody bin = new FileBody(new File(outputFileUri.getPath()), "image/jpeg");
-		try{
-			MultipartEntity reqEntity = new MultipartEntity();
-			reqEntity.addPart("shop_id", new StringBody(Integer.toString(GlobalVariable.mCurrentShop.mID)));
-			reqEntity.addPart("user_id", new StringBody(GlobalVariable.userID));
-			reqEntity.addPart("description", new StringBody(mDescription.getText().toString()));
-			reqEntity.addPart("photo", bin);
-			post.setEntity(reqEntity);
+			FileBody bin = new FileBody(new File(outputFileUri.getPath()), "image/jpeg");
+			try{
+				MultipartEntity reqEntity = new MultipartEntity();
+				reqEntity.addPart("shop_id", new StringBody(Integer.toString(GlobalVariable.mCurrentShop.mID)));
+				reqEntity.addPart("user_id", new StringBody(GlobalVariable.userID));
+				reqEntity.addPart("description", new StringBody(mDescription.getText().toString()));
+				reqEntity.addPart("photo", bin);
+				
+				if (mShareFace)
+					reqEntity.addPart("share", new StringBody("1"));
+				
+				post.setEntity(reqEntity);
 
-			HttpResponse response = NetworkManger.httpclient.execute(post);
-			HttpEntity resEntity = response.getEntity();
-			String output = EntityUtils.toString(resEntity);
-		}catch(Exception ex){
+				HttpResponse response = NetworkManger.httpclient.execute(post);
+				HttpEntity resEntity = response.getEntity();
+				String output = EntityUtils.toString(resEntity);
+				
+			}catch(Exception ex){
+				return false;
+			}
+			return true;
+		}
+
+		protected void onPostExecute(Boolean k) {
+			mLoadingLO.setVisibility(View.GONE);
+			finish();
+		}
+		protected void onPreExecute(){ 
+			mLoadingLO.setVisibility(View.VISIBLE);
 		}
 	}
 
 	@Override
 	public void finish() {
+		try{
 		deleteOldPhoto();
+		}catch(Exception ex){
+			
+		}
 		super.finish();
 	}
 

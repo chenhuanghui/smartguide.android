@@ -1349,7 +1349,6 @@ public class MainActivity extends FragmentActivity implements MainAcitivyListene
 					builder.setView(layout);     
 					dialog = builder.create();
 					dialog.show(); 
-
 				}
 			}
 		});
@@ -1360,6 +1359,9 @@ public class MainActivity extends FragmentActivity implements MainAcitivyListene
 			@Override
 			public void onClick(View arg0) {
 				if (mIsMenuExpand == false){
+					InputMethodManager imm = (InputMethodManager) getSystemService(Context.INPUT_METHOD_SERVICE);
+					imm.hideSoftInputFromWindow(mRenameBtn.getWindowToken(), 0);
+					
 					RotateAnimation anim = new RotateAnimation(0f, 45f, Animation.RELATIVE_TO_SELF, 0.5f, Animation.RELATIVE_TO_SELF, 0.5f);
 					anim.setInterpolator(new LinearInterpolator());
 					anim.setRepeatMode(Animation.ABSOLUTE);
@@ -1370,9 +1372,6 @@ public class MainActivity extends FragmentActivity implements MainAcitivyListene
 					TextView name = (TextView)menu.getMenu().findViewById(R.id.textView);
 					name.setMaxLines(1);
 					name.setText("Thay đổi hình đại diện");
-					
-					
-
 				}else{
 					RotateAnimation anim = new RotateAnimation(45f, 0f, Animation.RELATIVE_TO_SELF, 0.5f, Animation.RELATIVE_TO_SELF, 0.5f);
 					anim.setInterpolator(new LinearInterpolator());
@@ -1403,6 +1402,9 @@ public class MainActivity extends FragmentActivity implements MainAcitivyListene
 		mUpdateInforBtn.setOnClickListener(new OnClickListener() {
 			@Override
 			public void onClick(View v) {
+				InputMethodManager imm = (InputMethodManager) getSystemService(Context.INPUT_METHOD_SERVICE);
+				imm.hideSoftInputFromWindow(mRenameBtn.getWindowToken(), 0);
+				
 				name = mRenameBtn.getText().toString();
 				if (name.compareTo(GlobalVariable.nameFace) == 0 && avatarURL.compareTo(GlobalVariable.avatarFace) == 0){
 					mExpandMenuLO.setVisibility(View.GONE);

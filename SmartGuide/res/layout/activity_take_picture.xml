@@ -42,9 +42,9 @@
 
                 <Button
                     android:id="@+id/btnFacebook"
-                    android:layout_width="93dp"
-                    android:layout_height="34dp"
-                    android:background="@drawable/facebook_tick" />
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:background="@drawable/facebook_nonetick" />
 
                 <Button
                     android:id="@+id/btnSend"
@@ -89,4 +89,21 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:visibility="invisible" />
+	<RelativeLayout
+        android:id="@+id/loadingFace"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:background="#C0000000"
+        android:visibility="gone" >
+        <ProgressBar
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_centerHorizontal="true"
+            android:layout_centerVertical="true"
+            android:visibility="visible" />
+        <ImageButton 
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:background="#00000000"/>
+    </RelativeLayout>
 </RelativeLayout>

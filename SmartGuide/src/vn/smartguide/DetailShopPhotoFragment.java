@@ -102,7 +102,7 @@ public class DetailShopPhotoFragment extends Fragment {
 
 			@Override
 			public void onClick(View arg0) {
-				takePhoto();
+				getActivity().startActivity(new Intent(getActivity(), TakePictureActivity.class));
 			}
 		});
 	}
@@ -119,39 +119,27 @@ public class DetailShopPhotoFragment extends Fragment {
 			
 			if (requestCode == CAPTURE_IMAGE_ACTIVITY_REQUEST_CODE) {
 				if (resultCode == Activity.RESULT_OK) {
-					// Load image from file
-					String imagePath = fileUri.getPath();
+//					// Load image from file
+//					String imagePath = fileUri.getPath();
+//					
+//					// calculate optimize scales
+//					int scale = 1;
+//					Options opt = new Options();
+//					opt.inJustDecodeBounds = true;
+//					Bitmap bitmap = BitmapFactory.decodeFile(imagePath, opt);
+//					
+//					while (opt.outWidth * opt.outHeight > PHOTO_SIZE_LIMIT) {
+//						scale = scale << 1;
+//						opt.outWidth = opt.outWidth >> 1;
+//						opt.outHeight = opt.outHeight >> 1;
+//					}
+//					
+//					// Decode photo with scale
+//					opt = new Options();
+//					opt.inSampleSize = scale;
+//					bitmap = BitmapFactory.decodeFile(imagePath, opt);
 					
-					// calculate optimize scales
-					int scale = 1;
-					Options opt = new Options();
-					opt.inJustDecodeBounds = true;
-					Bitmap bitmap = BitmapFactory.decodeFile(imagePath, opt);
 					
-					while (opt.outWidth * opt.outHeight > PHOTO_SIZE_LIMIT) {
-						scale = scale << 1;
-						opt.outWidth = opt.outWidth >> 1;
-						opt.outHeight = opt.outHeight >> 1;
-					}
-					
-					// Decode photo with scale
-					opt = new Options();
-					opt.inSampleSize = scale;
-					bitmap = BitmapFactory.decodeFile(imagePath, opt);
-					
-					// Start post photo activity
-					
-					///////////////////////////////////////////////////////////
-					///////////////////////////////////////////////////////////
-					///////////////////////////////////////////////////////////
-					///////////////////////////////////////////////////////////
-					///////////////////////////////////////////////////////////
-					// Thằng Sang code vào đây
-					///////////////////////////////////////////////////////////
-					///////////////////////////////////////////////////////////
-					///////////////////////////////////////////////////////////
-					///////////////////////////////////////////////////////////
-					///////////////////////////////////////////////////////////
 				}
 			} else
 				super.onActivityResult(requestCode, resultCode, data);
