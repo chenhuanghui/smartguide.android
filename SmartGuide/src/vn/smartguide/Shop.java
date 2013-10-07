@@ -31,6 +31,7 @@ public class Shop {
 	public int mNumGetReward;
 	public int mGroupShop;
 	public int mLikeStatus;
+	public int mLike;
 	public int mDislike;
 	
 	public String mContent;
@@ -92,7 +93,8 @@ public class Shop {
 		
 		mShop.mAddress = object.getString("address");
 		mShop.mLikeStatus = object.getInt("like_status");
-		mShop.mNumOfDislike = object.getInt("dislike");
+		mShop.mLike = object.getInt("like");
+		mShop.mDislike = object.getInt("dislike");
 
 		mShop.mCover = object.optString("cover", "null");
 

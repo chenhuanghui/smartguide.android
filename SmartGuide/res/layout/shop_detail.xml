@@ -27,6 +27,14 @@
                 android:scaleType="fitXY"
                 android:visibility="visible" />
 
+            <ImageView
+                android:id="@+id/imageView1"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_alignParentBottom="true"
+                android:scaleType="fitXY"
+                android:src="@drawable/blur_cover320" />
+
             <FrameLayout
                 android:id="@+id/avaHolder"
                 android:layout_width="75dp"
@@ -52,6 +60,38 @@
                     android:background="@drawable/round_corner_ava" >
                 </LinearLayout>
             </FrameLayout>
+
+            <LinearLayout
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_below="@+id/avaHolder"
+                android:layout_centerHorizontal="true"
+                android:layout_marginTop="8dp" >
+
+                <Button
+                    android:id="@+id/btnLike"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginRight="8dp"
+                    android:background="#00000000"
+                    android:drawableRight="@drawable/icon_like"
+                    android:text="1  "
+                    android:textColor="#FFFFFF"
+                    android:textStyle="bold" />
+
+                <Button
+                    android:id="@+id/btnDislike"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginLeft="8dp"
+                    android:background="#00000000"
+                    android:drawableRight="@drawable/icon_dislike"
+                    android:text="1  "
+                    android:textColor="#FFFFFF"
+                    android:textStyle="bold" />
+
+            </LinearLayout>
+
         </RelativeLayout>
 
         <RelativeLayout
@@ -118,6 +158,8 @@
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
+        android:layout_alignParentRight="true"
+        android:layout_alignParentTop="true"
         android:background="@drawable/rounded_detail"
         android:orientation="vertical" >
     </LinearLayout>

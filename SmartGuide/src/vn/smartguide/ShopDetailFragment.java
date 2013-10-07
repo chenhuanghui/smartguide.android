@@ -17,6 +17,7 @@ import android.app.Activity;
 import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.Point;
+import android.graphics.drawable.Drawable;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
@@ -27,6 +28,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.animation.AccelerateDecelerateInterpolator;
+import android.widget.Button;
 import android.widget.ImageView;
 /**
  * Created by ChauSang on 6/24/13.
@@ -45,6 +47,10 @@ public class ShopDetailFragment extends Fragment {
     
     private ImageView mLogoImageView;
     private ImageView mCoverImageView;
+    private Button mBtnLike;
+    private Button mBtnDislike;
+    
+    private Drawable mResLike, mResLikeHover, mResDislike, mResDislikeHover;
     
     // Data
     private Listener mListener = new Listener();
@@ -92,6 +98,9 @@ public class ShopDetailFragment extends Fragment {
         // Get GUI elements
         mLogoImageView = (ImageView) getView().findViewById(R.id.imgLogo);
         mCoverImageView = (ImageView) getView().findViewById(R.id.imgCover);
+        
+        mBtnLike = (Button) getView().findViewById(R.id.btnLike);
+        mBtnDislike = (Button) getView().findViewById(R.id.btnDislike);
         
         // Set up menu fragment
         DetailMenuFragment menu = (DetailMenuFragment) getFragmentManager().findFragmentById(R.id.detailMenuFragment);
@@ -342,7 +351,7 @@ public class ShopDetailFragment extends Fragment {
     	try {
 	    	mLogoImageView.setImageBitmap(null);
 	    	mCoverImageView.setImageBitmap(null);
-	    	((DetailShopPhotoFragment) mDetailFragmentList.get(2)).releaseMemory();
+//	    	((DetailShopPhotoFragment) mDetailFragmentList.get(2)).releaseMemory();
 	    	((DetailCommentFragment) mDetailFragmentList.get(3)).releaseMemory();
 	    	((DetailShowMapFragment) mDetailFragmentList.get(4)).releaseMemory();
     	} catch (Exception ex) {

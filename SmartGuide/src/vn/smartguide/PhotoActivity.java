@@ -16,7 +16,6 @@ import android.graphics.Bitmap;
 import android.graphics.Point;
 import android.os.AsyncTask;
 import android.os.Bundle;
-import android.provider.ContactsContract.CommonDataKinds.Photo;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentActivity;
 import android.support.v4.app.FragmentManager;
@@ -97,7 +96,7 @@ public class PhotoActivity extends FragmentActivity{
 		
 		public void loadMore() {
 			
-			if (!mIsUser && mIsLoadingMore || mEnd)
+			if (!mIsUser || mIsLoadingMore || mEnd)
 				return;
 			
 			mIsLoadingMore = true;
@@ -115,15 +114,9 @@ public class PhotoActivity extends FragmentActivity{
 			if (getCount() - position <= 5)
 				loadMore();
 			
-			try {
-				PhotoFullFragment f = fragArr.get(position);
-				f.mImageItem = mItemList.get(position);
-				return f;
-			} catch (Exception e) {
-				e.printStackTrace();
-			}
-			
-			return null;
+			PhotoFullFragment f = fragArr.get(position);
+			f.mImageItem = mItemList.get(position);
+			return f;
 		}
 
 		@Override
@@ -142,11 +135,14 @@ public class PhotoActivity extends FragmentActivity{
 
 			private int mPage;
 			private JSONArray jImgArr;
+			private Exception mEx;
 
 			public GetImage(int page) {
 				
 				mPage = page;
 			}
+			
+			protected void onPreExecute() { }
 
 			@Override
 			protected Boolean doInBackground(Void... params) {
@@ -155,18 +151,17 @@ public class PhotoActivity extends FragmentActivity{
 					List<NameValuePair> pairs = new ArrayList<NameValuePair>();
 					pairs.add(new BasicNameValuePair("shop_id", Integer.toString(mShopID)));
 					pairs.add(new BasicNameValuePair("page", Integer.toString(mPage)));
-
+	
 					String json = null;
 					if (mIsUser)
 						json = NetworkManger.post(APILinkMaker.mGetUserImage(), pairs);
 					else
 						json = NetworkManger.post(APILinkMaker.mGetShopImage(), pairs);
-//					String json = NetworkManger.post(APILinkMaker.mGetUserImage(), pairs);
-					
+					//					String json = NetworkManger.post(APILinkMaker.mGetUserImage(), pairs);
+	
 					jImgArr = new JSONArray(json);
-
-				} catch (JSONException e) {
-					e.printStackTrace();
+				} catch (Exception e) {
+					mEx = e;
 				}
 
 				return true;
@@ -175,28 +170,28 @@ public class PhotoActivity extends FragmentActivity{
 			protected void onPostExecute(Boolean k) {
 				
 				try {
+					if (mEx == null)
+						throw mEx;
+					
 					int beforeSize = mItemList.size();
 					DetailShopPhotoFragment.parseJsonImage(jImgArr, mItemList);
 					if (beforeSize == mItemList.size())
 						mEnd = true;
 					else {
 						mPageLoaded++;
-						cycrixDebug("Loaded " + mItemList.size() + " item, " + mPageLoaded + " pages");
+//						cycrixDebug("Loaded " + mItemList.size() + " item, " + mPageLoaded + " pages");
 						for (int i = beforeSize; i < mItemList.size(); i++) {
 							fragArr.add(new PhotoFullFragment(mItemList.get(i)));
 							cycrixDebug(mItemList.get(i).url);
 						}
 					}
-				} catch (JSONException e) {
-				
+				} catch (Exception e) {
 					e.printStackTrace();
 				}
 
 				notifyDataSetChanged();
 				mIsLoadingMore = false;
 			}
-			
-			protected void onPreExecute() { }
 		}
 	}
 

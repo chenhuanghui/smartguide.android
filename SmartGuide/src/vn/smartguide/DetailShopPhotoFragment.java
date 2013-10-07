@@ -299,6 +299,7 @@ public class DetailShopPhotoFragment extends Fragment {
 
 			// Load image
 			final ImageStr imageItem = mItemList.get(position);
+			img.setTag(imageItem.url);
 			
 			if (imageItem.loadFail) {
 				img.setImageResource(R.drawable.ava_loading);
