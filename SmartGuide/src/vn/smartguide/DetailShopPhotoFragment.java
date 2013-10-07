@@ -1,22 +1,27 @@
 package vn.smartguide;
 
-import java.lang.ref.WeakReference;
+import java.io.File;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 
-import org.apache.http.NameValuePair;
-import org.apache.http.message.BasicNameValuePair;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
 import vn.smartguide.CyImageLoader.Listener;
 import android.annotation.SuppressLint;
+import android.app.Activity;
 import android.content.Intent;
 import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
+import android.graphics.BitmapFactory.Options;
 import android.graphics.Point;
-import android.os.AsyncTask;
+import android.net.Uri;
 import android.os.Bundle;
+import android.os.Environment;
+import android.provider.MediaStore;
 import android.support.v4.app.Fragment;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -30,20 +35,31 @@ import android.widget.ImageView;
 @SuppressLint("ValidFragment")
 public class DetailShopPhotoFragment extends Fragment {
 
-	public static DetailShopPhotoFragment thiz;
-	public Shop mShop;
+//	public static DetailShopPhotoFragment thiz;
+	private static final int MEDIA_TYPE_IMAGE = 1;
+	private static final int CAPTURE_IMAGE_ACTIVITY_REQUEST_CODE = 4;
+	private static final int PHOTO_SIZE_LIMIT = 4 * 1024 * 1024;
+	
+	// Data
+	private Shop mShop;
+	private Uri fileUri;
 
+	// GUI elements
 	public PhotoListAdapter		mUserAdapter;
 	public HorizontalListView	mUserList;
 
 	public PhotoListAdapter		mShopAdapter;
 	public HorizontalListView	mShopList;
+	 
+	///////////////////////////////////////////////////////////////////////////
+	// Override methods
+	///////////////////////////////////////////////////////////////////////////
 
 	@Override
 	public View onCreateView(LayoutInflater inflater, ViewGroup container,
 			Bundle savedInstanceState) {
 
-		thiz = this;
+//		thiz = this;
 		return inflater.inflate(R.layout.detail_shopphoto, container, false);
 	}
 
@@ -80,22 +96,70 @@ public class DetailShopPhotoFragment extends Fragment {
 				showDialog(true);
 			}
 		});
+		
+		((Button) getView().findViewById(R.id.btnTakePhoto))
+		.setOnClickListener(new OnClickListener() {
+
+			@Override
+			public void onClick(View arg0) {
+				takePhoto();
+			}
+		});
 	}
 	
 	@Override
 	public void onDestroy() {
 		
 		super.onDestroy();
-		thiz = null;
+//		thiz = null;
 	}
+	
+	@Override
+		public void onActivityResult(int requestCode, int resultCode, Intent data) {
+			
+			if (requestCode == CAPTURE_IMAGE_ACTIVITY_REQUEST_CODE) {
+				if (resultCode == Activity.RESULT_OK) {
+					// Load image from file
+					String imagePath = fileUri.getPath();
+					
+					// calculate optimize scales
+					int scale = 1;
+					Options opt = new Options();
+					opt.inJustDecodeBounds = true;
+					Bitmap bitmap = BitmapFactory.decodeFile(imagePath, opt);
+					
+					while (opt.outWidth * opt.outHeight > PHOTO_SIZE_LIMIT) {
+						scale = scale << 1;
+						opt.outWidth = opt.outWidth >> 1;
+						opt.outHeight = opt.outHeight >> 1;
+					}
+					
+					// Decode photo with scale
+					opt = new Options();
+					opt.inSampleSize = scale;
+					bitmap = BitmapFactory.decodeFile(imagePath, opt);
+					
+					// Start post photo activity
+					
+					///////////////////////////////////////////////////////////
+					///////////////////////////////////////////////////////////
+					///////////////////////////////////////////////////////////
+					///////////////////////////////////////////////////////////
+					///////////////////////////////////////////////////////////
+					// Thằng Sang code vào đây
+					///////////////////////////////////////////////////////////
+					///////////////////////////////////////////////////////////
+					///////////////////////////////////////////////////////////
+					///////////////////////////////////////////////////////////
+					///////////////////////////////////////////////////////////
+				}
+			} else
+				super.onActivityResult(requestCode, resultCode, data);
+		}
 
-	private void showDialog(boolean isUser) {
-		
-		if (isUser)
-			PhotoActivity.newInstance(getActivity(), mShop.mUserImageList, isUser, mShop.mID);
-		else
-			PhotoActivity.newInstance(getActivity(), mShop.mShopImageList, isUser, mShop.mID);
-	}
+	///////////////////////////////////////////////////////////////////////////
+	// Public methods
+	///////////////////////////////////////////////////////////////////////////
 
 	public void setData(Shop s) {
 
@@ -112,11 +176,74 @@ public class DetailShopPhotoFragment extends Fragment {
 			mUserAdapter.notifyDataSetChanged();
 		}
 	}
+//	
+//	public void releaseMemory() {
+//		mShopAdapter.setData(new ArrayList<ImageStr>());
+//		mUserAdapter.setData(new ArrayList<ImageStr>());
+//	}
 	
-	public void releaseMemory(){
-		mShopAdapter.setData(new ArrayList<ImageStr>());
-		mUserAdapter.setData(new ArrayList<ImageStr>());
+	///////////////////////////////////////////////////////////////////////////
+	// Private methods
+	///////////////////////////////////////////////////////////////////////////
+	
+	private void takePhoto() {
+    	
+    	Intent intent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
+
+        fileUri = getOutputMediaFileUri(MEDIA_TYPE_IMAGE); // create a file to save the image
+        intent.putExtra(MediaStore.EXTRA_OUTPUT, fileUri); // set the image file name
+
+        // start the image capture Intent
+        startActivityForResult(intent, CAPTURE_IMAGE_ACTIVITY_REQUEST_CODE);
+    }
+	
+	/** Create a file Uri for saving an image or video */
+    private static Uri getOutputMediaFileUri(int type){
+          return Uri.fromFile(getOutputMediaFile(type));
+    }
+    
+    /** Create a File for saving an image or video */
+    private static File getOutputMediaFile(int type){
+        // To be safe, you should check that the SDCard is mounted
+        // using Environment.getExternalStorageState() before doing this.
+
+        File mediaStorageDir = new File(Environment.getExternalStoragePublicDirectory(
+                  Environment.DIRECTORY_PICTURES), "MyCameraApp");
+        // This location works best if you want the created images to be shared
+        // between applications and persist after your app has been uninstalled.
+
+        // Create the storage directory if it does not exist
+        if (! mediaStorageDir.exists()){
+            if (! mediaStorageDir.mkdirs()){
+                Log.d("MyCameraApp", "failed to create directory");
+                return null;
+            }
+        }
+
+        // Create a media file name
+        String timeStamp = new SimpleDateFormat("yyyyMMdd_HHmmss").format(new Date());
+        File mediaFile;
+        if (type == MEDIA_TYPE_IMAGE){
+            mediaFile = new File(mediaStorageDir.getPath() + File.separator +
+            "IMG_"+ timeStamp + ".jpg");
+        } else {
+            return null;
+        }
+
+        return mediaFile;
+    }
+	
+	private void showDialog(boolean isUser) {
+		
+		if (isUser)
+			PhotoActivity.newInstance(getActivity(), mShop.mUserImageList, isUser, mShop.mID);
+		else
+			PhotoActivity.newInstance(getActivity(), mShop.mShopImageList, isUser, mShop.mID);
 	}
+	
+	///////////////////////////////////////////////////////////////////////////
+	// Adapter
+	///////////////////////////////////////////////////////////////////////////
 	
 	public class PhotoListAdapter extends BaseAdapter {
 
@@ -168,56 +295,39 @@ public class DetailShopPhotoFragment extends Fragment {
 			convertView.setTag(position);
 
 			// Get imageView
-			ImageView img = (ImageView) convertView.findViewById(R.id.image);
+			final ImageView img = (ImageView) convertView.findViewById(R.id.image);
 
 			// Load image
-			ImageStr imageItem = mItemList.get(position);
+			final ImageStr imageItem = mItemList.get(position);
 			
 			if (imageItem.loadFail) {
 				img.setImageResource(R.drawable.ava_loading);
 			} else {
-//				Bitmap bm = imageItem.bm.get();
-//				if (bm != null) {
-//					img.setImageBitmap(bm);
-//				} else {
-					GlobalVariable.cyImageLoader.loadImage(imageItem.url, new Listener() {
+				GlobalVariable.cyImageLoader.loadImage(imageItem.url, new Listener() {
 
-						private ImageStr imageItem;
-						private ImageView img;
-
-						public Listener init (ImageStr imageItem, ImageView img) {
-							this.imageItem = imageItem;
-							this.img = img;
-							return this;
-						}
-
-						@Override
-						public void loadFinish(int from, Bitmap image, String url) {
-							
-//							imageItem.bm = new WeakReference<Bitmap>(image);
-							
-							switch (from) {
-							case CyImageLoader.FROM_NETWORK:
-								Log.d("CycrixDebug", "" + image.getWidth() + "x" + image.getHeight());
-								notifyDataSetChanged();
-								break;
-								
-							case CyImageLoader.FROM_DISK:
-							case CyImageLoader.FROM_MEMORY:
+					@Override
+					public void loadFinish(int from, Bitmap image, String url) {
+						switch (from) {
+						case CyImageLoader.FROM_NETWORK:
+						case CyImageLoader.FROM_DISK:
+							if (((String) img.getTag()).equals(url))
 								img.setImageBitmap(image);
-								break;
-							}
+							break;
+
+						case CyImageLoader.FROM_MEMORY:
+							img.setImageBitmap(image);
+							break;
 						}
-						
-						@Override
-						public void loadFail(Exception e) {
-							
-							imageItem.loadFail = true;
-							notifyDataSetChanged();
-						}
-					}.init(imageItem, img), new Point(128, 128), getActivity());
-				}
-//			}
+					}
+
+					@Override
+					public void loadFail(Exception e) {
+
+						imageItem.loadFail = true;
+						notifyDataSetChanged();
+					}
+				}, new Point(144, 144), getActivity());
+			}
 			
 			return convertView;
 		}
@@ -231,6 +341,7 @@ public class DetailShopPhotoFragment extends Fragment {
 		public long getItemId(int pos) {
 			return pos;
 		}
+	}
 
 //		private class GetImage extends AsyncTask<Void, Void, Boolean> {
 //
@@ -281,7 +392,6 @@ public class DetailShopPhotoFragment extends Fragment {
 //			
 //			protected void onPreExecute() { }
 //		}
-	}
 	
 	public static List<ImageStr> parseJsonImage(JSONArray jImgArr, List<ImageStr> imageList) throws JSONException {
     	
@@ -297,5 +407,4 @@ public class DetailShopPhotoFragment extends Fragment {
     	
     	return imageList;
     }
-    
 }

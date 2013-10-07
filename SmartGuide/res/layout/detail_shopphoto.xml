@@ -29,14 +29,13 @@
             
             <RelativeLayout
                 android:layout_width="match_parent"
-                android:layout_height="64dp"
-                android:layout_below="@+id/textView3"
-                android:padding="8dp" >
+                android:layout_height="72dp"
+                android:layout_below="@+id/textView3">
 
                 <vn.smartguide.HorizontalListView
                     android:id="@+id/pagerShopPhoto1"
                     android:layout_width="match_parent"
-                    android:layout_height="48dp" >
+                    android:layout_height="match_parent" >
                 </vn.smartguide.HorizontalListView>
 
                 <Button
@@ -64,11 +63,19 @@
                 android:textSize="11dp"
                 android:textStyle="bold" />
 
+            <Button
+                android:id="@+id/btnTakePhoto"
+                android:layout_width="72dp"
+                android:layout_height="72dp"
+                android:layout_below="@+id/TextView06"
+                android:background="@drawable/picture_add_frame" />
+
             <RelativeLayout
                 android:layout_width="match_parent"
-                android:layout_height="64dp"
+                android:layout_height="72dp"
                 android:layout_below="@+id/TextView06"
-                android:padding="8dp" >
+                android:layout_marginLeft="8dp"
+                android:layout_toRightOf="@+id/btnTakePhoto">
 
                 <vn.smartguide.HorizontalListView
                     android:id="@+id/pagerShopPhoto2"

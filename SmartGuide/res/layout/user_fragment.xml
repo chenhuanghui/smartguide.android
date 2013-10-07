@@ -10,22 +10,21 @@
         android:background="#282E3A"
         android:gravity="center_vertical|center_horizontal"
         android:orientation="vertical"
-        android:paddingBottom="26dp"
         android:paddingTop="0dp" >
 
         <RelativeLayout
             android:layout_width="match_parent"
-            android:layout_height="wrap_content" >
+            android:layout_height="match_parent" >
 
             <LinearLayout
                 android:id="@+id/layout"
-                android:layout_width="1px"
+                android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_alignParentBottom="true"
                 android:layout_alignParentTop="true"
-                android:layout_alignRight="@+id/linearLayout1"
-                android:layout_marginRight="60dp"
-                android:background="#4C525E"
+                android:layout_toRightOf="@+id/linearLayout1"
+                android:layout_marginLeft="-60dp"
+                android:background="@drawable/user_blur_mid"
                 android:orientation="vertical" >
             </LinearLayout>
 
@@ -104,9 +103,10 @@
 
             <RelativeLayout
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content"
+                android:layout_height="match_parent"
                 android:layout_alignLeft="@+id/linearLayout1"
-                android:layout_below="@+id/linearLayout1" >
+                android:layout_below="@+id/linearLayout1"
+                android:paddingBottom="26dp" >
 
                 <ImageButton
                     android:id="@+id/imageButton1"

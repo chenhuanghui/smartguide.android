@@ -64,21 +64,6 @@ public class UserFragment extends Fragment{
 	}
 	
 	@Override
-	public void onViewCreated(View view, Bundle savedInstanceState) {
-		super.onViewCreated(view, savedInstanceState);
-		
-		((Button) (getView().findViewById(R.id.btnDoiDiemLayQua)))
-		.setOnClickListener(new OnClickListener() {
-
-			@Override
-			public void onClick(View v) {
-				
-				((ViewSwitcher) getView().findViewById(R.id.switcherUser)).showNext();
-			}
-		});
-	}
-	
-	@Override
 	public void onActivityCreated(Bundle savedInstanceState) {
 		// TODO Auto-generated method stub
 		super.onActivityCreated(savedInstanceState);
@@ -123,6 +108,22 @@ public class UserFragment extends Fragment{
 				GlobalVariable.mCurrentShop = mAdapter.mShops.get(arg2);
 				mListener.onShopClick(GlobalVariable.mCurrentShop);
 				
+			}
+		});
+		
+		((Button) (getView().findViewById(R.id.btnDoiDiemLayQua)))
+		.setOnClickListener(new OnClickListener() {
+
+			@Override
+			public void onClick(View v) {
+				
+				ViewSwitcher switcher = (ViewSwitcher) getView().findViewById(R.id.switcherUser);
+				switcher.showNext();
+				Button btnDoiDiem = (Button) getView().findViewById(R.id.btnDoiDiemLayQua);
+				if (switcher.getDisplayedChild() == 0)
+					btnDoiDiem.setText("Đổi điểm lấy quà");
+				else 
+					btnDoiDiem.setText("Cửa hàng");
 			}
 		});
 	}
