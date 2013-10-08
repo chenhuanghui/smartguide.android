@@ -245,7 +245,7 @@ public class TakePictureActivity extends Activity {
 
 		try {
 			FileOutputStream out = new FileOutputStream(file);
-			Bitmap.createScaledBitmap(RotateBitmap(bitmap, 90), newWidth, newHeight, true).compress(Bitmap.CompressFormat.JPEG, 90, out);
+			Bitmap.createScaledBitmap(bitmap, newWidth, newHeight, true).compress(Bitmap.CompressFormat.JPEG, 90, out);
 			out.flush();
 			out.close();
 			outputFileUri = Uri.fromFile(file);
