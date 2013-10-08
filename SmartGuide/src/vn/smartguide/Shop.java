@@ -130,9 +130,9 @@ public class Shop {
 				((PromotionTypeOne) mShop.mPromotion).mPperSGP = pPerSGP;
 				break;
 			case 2:
-				int money = promotion.getInt("money");
-				int id = promotion.getInt("id");
-				mShop.mPromotion = new PromotionTypeTwo(money, id);
+				PromotionTypeTwo pro2 = new PromotionTypeTwo();
+				pro2.parse(promotion);
+				mShop.mPromotion = pro2;
 				break;
 			}
 		}

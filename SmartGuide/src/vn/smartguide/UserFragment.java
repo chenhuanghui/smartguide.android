@@ -325,11 +325,11 @@ public class UserFragment extends Fragment{
 					spTitle.setVisibility(View.INVISIBLE);
 					spTextView.setVisibility(View.INVISIBLE);
 					sgpTextView.setLayoutParams(new TableLayout.LayoutParams(LayoutParams.WRAP_CONTENT, LayoutParams.WRAP_CONTENT, 1f));
-					sgpTextView.setText(Integer.toString(promotion_2.mMoney) + "  VNĐ");
+					sgpTextView.setText(promotion_2.mMoney);
 					
 					sgpTitle.setVisibility(View.INVISIBLE);
 					break;
-				}	
+				}
 			}
 			
 			timeTextView.setText(sp.mUpdateAt);

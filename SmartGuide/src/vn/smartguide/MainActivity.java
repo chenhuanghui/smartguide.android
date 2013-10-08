@@ -590,7 +590,7 @@ public class MainActivity extends FragmentActivity implements MainAcitivyListene
 
 					case 2: {
 						PromotionTypeTwo promo = (PromotionTypeTwo) s.mPromotion;
-						txtPoint.setText(promo.mMoney / 1000 + " K");
+						txtPoint.setText(promo.mMoney);
 						txtMinPoint.setText("");
 						txtPointName.setText("VND");
 					}
@@ -1042,8 +1042,8 @@ public class MainActivity extends FragmentActivity implements MainAcitivyListene
 			Result rs = null;
 
 			try {
-				//				rs = mQRCodeReader.decode(bitmap);
-				rs = mDataMatrixReader.decode(bitmap);
+				rs = mQRCodeReader.decode(bitmap);
+//				rs = mDataMatrixReader.decode(bitmap);
 			} catch (NotFoundException e) {
 				//				try {
 				//					rs = mQRCodeReader.decode(bitmap);
@@ -1253,7 +1253,7 @@ public class MainActivity extends FragmentActivity implements MainAcitivyListene
 
 			@Override
 			public void onReward2Click(PromotionTypeTwo promotion) {
-				getAwardTypeTwo(promotion.mID);
+				getAwardTypeTwo(0);
 			}
 		});
 
@@ -2948,6 +2948,7 @@ public class MainActivity extends FragmentActivity implements MainAcitivyListene
 			pairs.add(new BasicNameValuePair("user_lng", Float.toString(GlobalVariable.mLng)));
 			pairs.add(new BasicNameValuePair("page", "0"));
 			pairs.add(new BasicNameValuePair("sort_by", "0"));
+			pairs.add(new BasicNameValuePair("version", "1"));
 
 			GlobalVariable.json10FirstShop = NetworkManger.post(APILinkMaker.ShopListInCategory(), pairs);
 			return true;

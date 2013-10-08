@@ -81,7 +81,6 @@ public class TakePictureActivity extends Activity {
 					uploadAccessToken();
 				} else if (state.isClosed()) {
 				}
-
 			}
 		};
 

@@ -344,7 +344,7 @@ public class ShopListFragment extends Fragment {
 
 				case 2:
 					PromotionTypeTwo promotionTypeTwo = (PromotionTypeTwo) mShop.mPromotion;
-					mShopScoreNowTV.setText(Integer.toString(promotionTypeTwo.mMoney / 1000) + " K");
+					mShopScoreNowTV.setText(promotionTypeTwo.mMoney);
 					mShopScoreMinTV.setText("");
 					
 					imgShopType.setBackgroundResource(R.drawable.money);
@@ -433,6 +433,7 @@ public class ShopListFragment extends Fragment {
 			pairs.add(new BasicNameValuePair("page", Integer.toString(++indexPage)));
 			pairs.add(new BasicNameValuePair("sort_by", GlobalVariable.mSortByString));
 			pairs.add(new BasicNameValuePair("shop_name", mSearchString));
+			pairs.add(new BasicNameValuePair("version", "1"));
 
 			try {
 				String json = null;
@@ -557,6 +558,7 @@ public class ShopListFragment extends Fragment {
 				pairs.add(new BasicNameValuePair("user_lng", Float.toString(GlobalVariable.mLng)));
 				pairs.add(new BasicNameValuePair("page", "0"));
 				pairs.add(new BasicNameValuePair("sort_by", GlobalVariable.mSortByString));
+				pairs.add(new BasicNameValuePair("version", "1"));
 	
 				json = NetworkManger.post(APILinkMaker.ShopListInCategory(), pairs);
 			} catch (Exception e) {

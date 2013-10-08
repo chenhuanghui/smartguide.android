@@ -122,7 +122,8 @@ public class ShopDetailFragment extends Fragment {
 			
 			@Override
 			public void onClick(View arg0) {
-				new LikeDisTask(true, mShop.mLikeStatus == 1).execute();
+				if (mShop.mLikeStatus != 1)
+					new LikeDisTask(true).execute();
 			}
 		});
         
@@ -130,7 +131,8 @@ public class ShopDetailFragment extends Fragment {
 			
 			@Override
 			public void onClick(View v) {
-				new LikeDisTask(false, mShop.mLikeStatus == 2).execute();
+				if (mShop.mLikeStatus != 2)
+					new LikeDisTask(false).execute();
 			}
 		});
         
@@ -312,6 +314,7 @@ public class ShopDetailFragment extends Fragment {
 
 				pairs.add(new BasicNameValuePair("user_lat", Float.toString(GlobalVariable.mLat)));
 				pairs.add(new BasicNameValuePair("user_lng", Float.toString(GlobalVariable.mLng)));
+				pairs.add(new BasicNameValuePair("version", "1"));
 			
 				String json = NetworkManger.post(APILinkMaker.mGetShopUser(), pairs);
 				JSONObject jRoot = new JSONObject(json);
@@ -357,12 +360,10 @@ public class ShopDetailFragment extends Fragment {
     private class LikeDisTask extends CyAsyncTask {
     	
     	private boolean mIsLike;
-    	private boolean mIsUndo;
     	private Exception mEx;
     	
-    	public LikeDisTask(boolean like, boolean undo) {
+    	public LikeDisTask(boolean like) {
     		mIsLike = like;
-    		mIsUndo = undo;
     		setVisibleView(mPrgLike);
     		setDisableView(mBtnLike, mBtnDislike);
     	}
@@ -374,8 +375,7 @@ public class ShopDetailFragment extends Fragment {
 				pairs.add(new BasicNameValuePair("shop_id", Integer.toString(GlobalVariable.mCurrentShop.mID)));
 				pairs.add(new BasicNameValuePair("user_id", GlobalVariable.userID));
 				pairs.add(new BasicNameValuePair("type", mIsLike ? "1" : "2"));
-				String mJson = NetworkManger.post(
-						mIsUndo ? APILinkMaker.mPushUnlikeAction() : APILinkMaker.mPushLikeAction(), pairs);
+				String mJson = NetworkManger.post(APILinkMaker.mPushLikeAction(), pairs);
 				JSONObject jObject = new JSONObject(mJson);
 				return jObject;
 			} catch (Exception e) {
@@ -405,6 +405,14 @@ public class ShopDetailFragment extends Fragment {
     }
     
     public void parseJsonShopDetail(JSONObject jRoot) throws JSONException {
+    	
+    	// Parse promotion 2
+    	if (jRoot.getInt("promotion_status") == 1) {
+    		JSONObject jPro = jRoot.getJSONObject("promotion_detail");
+    		if (jPro.getInt("promotion_type") == 2)
+    			mShop.mPromotion = new PromotionTypeTwo().parse(jPro);
+    	}
+    	
     	// Parse Item
     	mShop.mItemCollections.clear();
     	mShop.mGroupItemList.clear();

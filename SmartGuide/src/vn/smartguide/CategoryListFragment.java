@@ -194,6 +194,7 @@ public class CategoryListFragment extends Fragment {
 			pairs.add(new BasicNameValuePair("user_lng", Float.toString(GlobalVariable.mLng)));
 			pairs.add(new BasicNameValuePair("page", "0"));
 			pairs.add(new BasicNameValuePair("sort_by", GlobalVariable.mSortByString));
+			pairs.add(new BasicNameValuePair("version", "1"));
 
 			json = NetworkManger.post(APILinkMaker.ShopListInCategory(), pairs);
 //			(mMainAcitivyListener).getShopListFragment().update(json);	/////////

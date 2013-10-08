@@ -5,53 +5,46 @@
     android:background="#ffffff"
     android:orientation="vertical" >
 
-    <RelativeLayout
+    <LinearLayout
+        android:id="@+id/linearLayout2"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginTop="10dp" >
+        android:gravity="center_horizontal"
+        android:padding="4dp" >
 
-        <LinearLayout
-            android:id="@+id/linearLayout2"
+        <ImageView
+            android:id="@+id/imageView2"
+            android:layout_width="10dp"
+            android:layout_height="15dp"
+            android:layout_alignParentLeft="true"
+            android:layout_alignParentTop="true"
+            android:background="@drawable/icon_clock" />
+
+        <TextView
+            android:id="@+id/textView"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_centerHorizontal="true"
-            android:gravity="center_horizontal"
-            android:padding="4dp" >
+            android:layout_alignTop="@+id/imageView2"
+            android:layout_marginLeft="5dp"
+            android:layout_toRightOf="@+id/imageView2"
+            android:text="Thời gian khuyến mãi"
+            android:textColor="#7C7C7C"
+            android:textSize="9dp"
+            android:textStyle="italic" />
 
-            <ImageView
-                android:id="@+id/imageView2"
-                android:layout_width="10dp"
-                android:layout_height="15dp"
-                android:layout_alignParentLeft="true"
-                android:layout_alignParentTop="true"
-                android:background="@drawable/icon_clock" />
-
-            <TextView
-                android:id="@+id/textView"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_alignTop="@+id/imageView2"
-                android:layout_marginLeft="5dp"
-                android:layout_toRightOf="@+id/imageView2"
-                android:text="Thời gian khuyến mãi"
-                android:textColor="#7C7C7C"
-                android:textSize="9dp"
-                android:textStyle="italic" />
-
-            <TextView
-                android:id="@+id/txtPromoDuration"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_alignBaseline="@+id/textView"
-                android:layout_alignBottom="@+id/textView"
-                android:layout_alignParentRight="true"
-                android:layout_marginLeft="12dp"
-                android:text="1 - 30/08/2013"
-                android:textColor="#7C7C7C"
-                android:textSize="12dp"
-                android:textStyle="bold" />
-        </LinearLayout>
-    </RelativeLayout>
+        <TextView
+            android:id="@+id/txtPromoDuration"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignBaseline="@+id/textView"
+            android:layout_alignBottom="@+id/textView"
+            android:layout_alignParentRight="true"
+            android:layout_marginLeft="12dp"
+            android:text="1 - 30/08/2013"
+            android:textColor="#7C7C7C"
+            android:textSize="12dp"
+            android:textStyle="bold" />
+    </LinearLayout>
 	
     <ImageView
             android:id="@+id/imageView3"
@@ -66,29 +59,14 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_gravity="center_vertical|center_horizontal"
+        android:gravity="center_horizontal"
         android:orientation="vertical" >
 
-        <RelativeLayout
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginLeft="10dp"
-            android:layout_marginRight="10dp" >
-
-            <RelativeLayout
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_centerHorizontal="true"
-                android:layout_centerVertical="true" >
-
-                <ImageView
-                    android:id="@+id/imageView1"
-                    android:layout_width="150dp"
-                    android:layout_height="130dp"
-                    android:layout_gravity="left"
-                    android:background="@drawable/button_listgift" />
-                
-            </RelativeLayout>
-        </RelativeLayout>
+        <ImageButton
+            android:id="@+id/btnRewardList"
+            android:layout_width="150dp"
+            android:layout_height="130dp"
+            android:background="@drawable/button_listgift" />
 
         <Button
             android:id="@+id/imageButton1"
@@ -103,47 +81,35 @@
             android:textStyle="bold" />
     </LinearLayout>
 
-    <RelativeLayout
+    <LinearLayout
         android:layout_width="match_parent"
-        android:layout_height="wrap_content" >
+        android:layout_height="wrap_content"
+        android:gravity="center_horizontal"
+        android:orientation="horizontal" >
 
-        <RelativeLayout
+        <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_centerHorizontal="true"
-            android:layout_centerVertical="true" >
+            android:text="Mỗi lần quét thẻ bạn nhận được điểm"
+            android:textColor="#000000"
+            android:textSize="13dp" />
 
-            <LinearLayout
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:orientation="horizontal" >
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="3dp"
+            android:text="P"
+            android:textColor="#C95436"
+            android:textSize="14dp"
+            android:textStyle="bold" />
 
-                <TextView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:text="Mỗi lần quét thẻ bạn nhận được"
-                    android:textColor="#000000"
-                    android:textSize="13dp"
-                    android:textStyle="italic" />
-                <TextView
-                    android:id="@+id/textView1"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:text="25P"
-                    android:textColor="#C95436"
-                    android:textSize="14dp"
-                    android:textStyle="bold"
-                    android:layout_marginLeft="3dp" />
-                <TextView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:text="tương ứng"
-                    android:textColor="#000000"
-                    android:textSize="13dp"
-                    android:layout_marginLeft="3dp"
-                    android:textStyle="italic" />
-            </LinearLayout>
-        </RelativeLayout>
-    </RelativeLayout>
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="3dp"
+            android:text="tương ứng"
+            android:textColor="#000000"
+            android:textSize="13dp" />
+    </LinearLayout>
 
 </LinearLayout>
