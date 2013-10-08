@@ -1374,6 +1374,7 @@ public class MainActivity extends FragmentActivity implements MainAcitivyListene
 				}else{
 					RotateAnimation anim = new RotateAnimation(45f, 0f, Animation.RELATIVE_TO_SELF, 0.5f, Animation.RELATIVE_TO_SELF, 0.5f);
 					anim.setInterpolator(new LinearInterpolator());
+					anim.setRepeatMode(Animation.ABSOLUTE);
 					anim.setDuration(200);
 					mExpandMenuBtn.startAnimation(anim);
 					mExpandMenuLO.setVisibility(View.GONE);
