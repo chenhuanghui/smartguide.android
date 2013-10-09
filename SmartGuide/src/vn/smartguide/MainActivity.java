@@ -301,7 +301,7 @@ public class MainActivity extends FragmentActivity implements MainAcitivyListene
 
 		switch (requestCode){
 		case FlashScreenRequestCode:
-			if (GlobalVariable.mIsLaunching){
+			if (GlobalVariable.mIsLaunching) {
 				ImageView avatar = (ImageView)menu.getMenu().findViewById(R.id.userAvatarSetting);
 				TextView name = (TextView)menu.getMenu().findViewById(R.id.textView);
 				name.setMaxLines(1);
@@ -2990,7 +2990,7 @@ public class MainActivity extends FragmentActivity implements MainAcitivyListene
 		editor.commit();
 	}
 
-	private void sendRegistrationIdToBackend(){
+	private void sendRegistrationIdToBackend() {
 
 	}
 
@@ -3025,7 +3025,7 @@ public class MainActivity extends FragmentActivity implements MainAcitivyListene
 		}
 
 		@Override
-		protected void onPreExecute(){
+		protected void onPreExecute() {
 		}
 	}
 

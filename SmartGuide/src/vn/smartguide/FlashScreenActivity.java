@@ -99,6 +99,8 @@ public class FlashScreenActivity extends Activity {
 				key = new JSONObject(NetworkManger.get(APILinkMaker.mCheckEmergence() + "?access_token=" + GlobalVariable.tokenID + "&versioin=android"+ 
 				Build.VERSION.RELEASE + "_" + getPackageManager().getPackageInfo(getPackageName(), 0).versionName, 
 						false));
+//				key = new JSONObject(
+//						"{\"notify_list\":[{\"content\":\"xcscxczxczc\",\"notification_id\":1}],\"notification_type\":2}");
 				action_type = key.getInt("notification_type");
 			}catch(Exception ex){
 				return false;
@@ -139,7 +141,7 @@ public class FlashScreenActivity extends Activity {
 					for(int i = 0; i < arrayImage.length(); i++){
 						GlobalVariable.mAvatarList.add(arrayImage.getString(i));
 					}
-				}catch(Exception ex){
+				} catch (Exception ex) {
 
 				}
 			}
@@ -150,7 +152,7 @@ public class FlashScreenActivity extends Activity {
 
 			json = NetworkManger.post(APILinkMaker.mGroupByCity(), pairs);
 
-			if (json != ""){
+			if (json != "") {
 				resultData = new Intent();
 				resultData.putExtra("Database", "OK");
 				resultData.putExtra("Connection", "OK");
@@ -189,7 +191,7 @@ public class FlashScreenActivity extends Activity {
 		}
 
 		@Override
-		protected void onPostExecute(Boolean k){
+		protected void onPostExecute(Boolean k) {
 			if (k == true){
 
 				if (getParent() == null) 
@@ -203,9 +205,9 @@ public class FlashScreenActivity extends Activity {
 				}
 
 				isFinish = true;
-			}else{
+			} else {
 				try{
-					switch(action_type){
+					switch(action_type) {
 					case 1:
 						String link =  key.getString("link");
 						String content = key.getString("content");
@@ -218,6 +220,7 @@ public class FlashScreenActivity extends Activity {
 								resultData = new Intent();
 								resultData.putExtra("Database", "OK");
 								resultData.putExtra("Connection", "False");
+								setResult(RESULT_CANCELED, resultData);
 								finish();
 								overridePendingTransition(android.R.anim.slide_in_left, android.R.anim.slide_out_right);
 								return;
@@ -232,12 +235,47 @@ public class FlashScreenActivity extends Activity {
 						((TextView)d.findViewById(android.R.id.message)).setMovementMethod(LinkMovementMethod.getInstance());
 						break;
 					case 2:
+						JSONArray jNotifyArr = key.getJSONArray("notify_list");
+						StringBuilder builder = new StringBuilder();
+						for (int i = 0; i < jNotifyArr.length(); i++) {
+							builder.append(jNotifyArr.getJSONObject(i).getString("content")).append("\n");
+						}
+						
+						AlertDialog g = new AlertDialog.Builder(FlashScreenActivity.this)
+						.setPositiveButton("OK", new OnClickListener() {
+							@Override
+							public void onClick(DialogInterface dialog, int which) {
+								resultData = new Intent();
+								resultData.putExtra("Database", "OK");
+								resultData.putExtra("Connection", "False");
+								setResult(RESULT_CANCELED, resultData);
+								finish();
+								overridePendingTransition(android.R.anim.slide_in_left, android.R.anim.slide_out_right);
+								return;
+							}
+						})
+						.setIcon(R.drawable.logo)
+						.setMessage(builder.toString())
+						.create();
+						g.show();
 						break;
 					case 3:
 						AlertDialog f = new AlertDialog.Builder(FlashScreenActivity.this)
-						.setPositiveButton("OK", null)
+						.setPositiveButton("OK", new OnClickListener() {
+							@Override
+							public void onClick(DialogInterface dialog, int which) {
+								resultData = new Intent();
+								resultData.putExtra("Database", "OK");
+								resultData.putExtra("Connection", "False");
+								setResult(RESULT_CANCELED, resultData);
+								finish();
+								overridePendingTransition(android.R.anim.slide_in_left, android.R.anim.slide_out_right);
+								return;
+								
+							}
+						})
 						.setIcon(R.drawable.logo)
-						.setMessage(key.getString(key.getString("content")))
+						.setMessage(key.getString("content"))
 						.create();
 						f.show();
 						// Make the textview clickable. Must be called after show()   
