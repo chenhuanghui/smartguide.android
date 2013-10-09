@@ -118,7 +118,6 @@ import org.json.JSONObject;
 import vn.smartguide.CategoryListFragment.Listener;
 import vn.smartguide.DetailPromo1Fragment.PromotionStr;
 import vn.smartguide.UserFragment.GiftItem;
-import vn.smartguide.WellcomeActivity.GetActivateCode;
 
 import java.io.ByteArrayOutputStream;
 import java.util.ArrayList;

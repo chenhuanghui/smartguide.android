@@ -95,13 +95,12 @@ public class WellcomeActivity extends FragmentActivity{
 	private ImageView mAvatarView;
 	private Button mDoneCreatACCBtn;
 	private EditText mNameField;
-	private String avatarURL;
+	private String avatarURL = "";
 	private String name;
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.activity_wellcome);
-		new GetDefaultAvatar().execute();
 
 		// Set up Facebook
 		Session.StatusCallback callback = new Session.StatusCallback() {
@@ -273,11 +272,15 @@ public class WellcomeActivity extends FragmentActivity{
 		mDoneCreatACCBtn.setOnClickListener(new View.OnClickListener() {
 			@Override
 			public void onClick(View arg0) {	
-				name = mNameField.getText().toString();
-				if (name.length() == 0){
+				name = mNameField.getText().toString().trim();
+				if (name.length() == 0 || avatarURL.length() == 0) {
 					AlertDialog.Builder builder = new AlertDialog.Builder(WellcomeActivity.this);
 
-					builder.setMessage("Bạn cần nhập tên");
+					if (name.length() == 0)
+						builder.setMessage("Bạn cần nhập tên");
+					else 
+						builder.setMessage("Bạn cần chọn ảnh đại diện");
+						
 					builder.setCancelable(true);
 
 					builder.setNegativeButton("OK", new DialogInterface.OnClickListener() {
@@ -410,109 +413,6 @@ public class WellcomeActivity extends FragmentActivity{
 		request.executeAsync();
 	}
 
-	public class GetActivateCode extends AsyncTask<Void, Void, Boolean> {
-
-		private Exception mEx;
-
-		protected void onPreExecute(){ }
-
-		@Override
-		protected Boolean doInBackground(Void... params) {
-			try {
-				NetworkManger.get_throw(GlobalVariable.urlGetActivateCode + phoneNumber, false);
-			} catch (Exception e) {
-				mEx = e;
-			}
-			return true;
-		}
-
-		protected void onPostExecute(Boolean k) { 
-			if (mEx == null) {
-				isConfirm = true;
-				mStatusText.setText("Chờ và nhập mã xác nhận...");
-				mNumberField.setText("");
-			} else {
-				GlobalVariable.showToast("Không thể gởi mã xác nhận", WellcomeActivity.this);
-				mNumberField.setText("");
-			}
-		}
-	}
-
-	
-
-	public class ConfirmActivateCode extends AsyncTask<Void, Void, Boolean> {    	
-
-		private JSONObject result;
-		private Exception mEx;
-
-		@Override
-		protected Boolean doInBackground(Void... params) {
-			try {
-				// Check activate code
-				String mJson = NetworkManger.get_throw(GlobalVariable.urlChekcActivateCode + phoneNumber + "&code=" + confirmCode, false);
-				result = new JSONObject(mJson);
-			} catch (Exception e) {
-				mEx = e;
-			}
-			return true;
-		}
-
-		protected void onPostExecute(Boolean k) {
-			try {
-				if (mEx != null)
-					throw mEx;
-
-				boolean success = result.getBoolean("result");
-				GlobalVariable.userID = result.getString("user_id");
-				boolean connect_fb = result.getBoolean("connect_fb");
-
-				if (success) {
-
-					GlobalVariable.footerURL = "&phone=" + phoneNumber + "&code=" + confirmCode;
-					GlobalVariable.getTokenFromDB();
-					
-					InputMethodManager imm = (InputMethodManager) getSystemService(Context.INPUT_METHOD_SERVICE);
-					imm.hideSoftInputFromWindow(mNumberField.getWindowToken(), 0);
-
-					if (connect_fb == true || result.optString("avatar").length() != 0 && result.optString("name").length() != 0) {
-
-						HashMap<String, String> token2 = new HashMap<String, String>();
-
-						token2.put("activateID", confirmCode);
-						token2.put("userID", GlobalVariable.userID);
-						token2.put("phoneNumber", phoneNumber);
-						token2.put("avatar", result.optString("avatar"));
-						token2.put("nameFace", result.optString("name"));
-
-						GlobalVariable.smartGuideDB.insertActivateCode(token2);
-						
-						
-						HashMap<String, String> token =  new  HashMap<String, String>();
-						token.put("userID", "-1");
-						token.put("avatar",result.optString("avatar"));
-						token.put("name",result.optString("name"));
-
-						GlobalVariable.smartGuideDB.insertFacebook(token);
-
-						exit();
-						return;
-					}
-
-					signUpScreen.setVisibility(View.GONE);
-					faceOrACCScreen.setVisibility(View.VISIBLE);
-
-				} else {
-					mStatusText.setText("Mã xác nhận không hợp lệ");
-					mNumberField.setText("");
-				}
-
-			} catch (Exception e) {
-				GlobalVariable.showToast("Không xác thể nhận được", WellcomeActivity.this);
-				mNumberField.setText("");
-			}
-		}
-	}
-
 	@Override
 	public void onStart() {
 		super.onStart();
@@ -614,45 +514,161 @@ public class WellcomeActivity extends FragmentActivity{
 						}
 
 						mTimeText.setText(Integer.toString(i--));
-
 					}
 				});
 
 			}
 		}, 0, 1000);
 	}
+	
+	///////////////////////////////////////////////////////////////////////////
+	// Network AsyncTask
+	///////////////////////////////////////////////////////////////////////////
+	
+	private class GetActivateCode extends AsyncTask<Void, Void, Boolean> {
 
-	public class GetDefaultAvatar extends AsyncTask<Void, Void, Boolean> {
-		String JSResult = null;
+		private Exception mEx;
+
+		protected void onPreExecute(){ }
+
 		@Override
 		protected Boolean doInBackground(Void... params) {
-			JSResult = NetworkManger.get(APILinkMaker.mGetDefaultAvatar(), false);
+			try {
+				NetworkManger.get_throw(GlobalVariable.urlGetActivateCode + phoneNumber, false);
+			} catch (Exception e) {
+				mEx = e;
+			}
+			return true;
+		}
+
+		protected void onPostExecute(Boolean k) { 
+			if (mEx == null) {
+				isConfirm = true;
+				mStatusText.setText("Chờ và nhập mã xác nhận...");
+				mNumberField.setText("");
+			} else {
+				GlobalVariable.showToast("Không thể gởi mã xác nhận", WellcomeActivity.this);
+				mNumberField.setText("");
+			}
+		}
+	}
+	
+	private class ConfirmActivateCode extends AsyncTask<Void, Void, Boolean> {
+
+		private JSONObject result;
+		private Exception mEx;
+
+		@Override
+		protected Boolean doInBackground(Void... params) {
+			try {
+				// Check activate code
+				String mJson = NetworkManger.get_throw(GlobalVariable.urlChekcActivateCode + phoneNumber + "&code=" + confirmCode, false);
+				result = new JSONObject(mJson);
+			} catch (Exception e) {
+				mEx = e;
+			}
+			return true;
+		}
+
+		protected void onPostExecute(Boolean k) {
+			try {
+				if (mEx != null)
+					throw mEx;
+
+				boolean success = result.getBoolean("result");
+				GlobalVariable.userID = result.getString("user_id");
+				boolean connect_fb = result.getBoolean("connect_fb");
+				String name = "";
+				if (!result.isNull("name"))
+					name = result.optString("name");
+
+				if (success) {
+					GlobalVariable.footerURL = "&phone=" + phoneNumber + "&code=" + confirmCode;
+					GlobalVariable.getTokenFromDB();
+					
+					InputMethodManager imm = (InputMethodManager) getSystemService(Context.INPUT_METHOD_SERVICE);
+					imm.hideSoftInputFromWindow(mNumberField.getWindowToken(), 0);
+
+					if (connect_fb == true || (result.optString("avatar").length() != 0 && name.length() != 0)) {
+
+						HashMap<String, String> token2 = new HashMap<String, String>();
+
+						token2.put("activateID", confirmCode);
+						token2.put("userID", GlobalVariable.userID);
+						token2.put("phoneNumber", phoneNumber);
+						token2.put("avatar", result.optString("avatar"));
+						token2.put("nameFace", name);
+
+						GlobalVariable.smartGuideDB.insertActivateCode(token2);
+						
+						HashMap<String, String> token = new HashMap<String, String>();
+						token.put("userID", "-1");
+						token.put("avatar",result.optString("avatar"));
+						token.put("name",name);
+
+						GlobalVariable.smartGuideDB.insertFacebook(token);
+
+						exit();
+						return;
+					}
+
+					signUpScreen.setVisibility(View.GONE);
+					faceOrACCScreen.setVisibility(View.VISIBLE);
+					new GetDefaultAvatar().execute();
+				} else {
+					mStatusText.setText("Mã xác nhận không hợp lệ");
+					mNumberField.setText("");
+				}
+
+			} catch (Exception e) {
+				GlobalVariable.showToast("Không thể xác nhận được", WellcomeActivity.this);
+				mNumberField.setText("");
+			}
+		}
+	}
+	
+	private class GetDefaultAvatar extends AsyncTask<Void, Void, Boolean> {
+		String JSResult = null;
+		Exception mEx;
+		
+		@Override
+		protected void onPreExecute() {
+			mChangeAvatarBtn.setEnabled(false);
+		}
+		
+		@Override
+		protected Boolean doInBackground(Void... params) {
+			try {
+			List<NameValuePair> pairs = new ArrayList<NameValuePair>();
+//			pairs.add(new BasicNameValuePair("name", name));
+			JSResult = NetworkManger.post_throw(APILinkMaker.mGetDefaultAvatar(), pairs);
 			if (JSResult == "")
 				return false; //for test
+			} catch (Exception e) {
+				mEx = e;
+			}
 			return true;
 		}
 
 		@Override
-		protected void onPostExecute(Boolean k){
-			if (k == true){
+		protected void onPostExecute(Boolean k) {
 				try{
+					if (mEx != null)
+						throw mEx;
+					
 					JSONArray arrayImage = new JSONArray(JSResult);
 					GlobalVariable.mAvatarList = new ArrayList<String>();
 					for(int i = 0; i < arrayImage.length(); i++){
 						GlobalVariable.mAvatarList.add(arrayImage.getString(i));
 					}
+					mChangeAvatarBtn.setEnabled(true);
 				}catch(Exception ex){
 
 				}
-			}
-		}
-
-		@Override
-		protected void onPreExecute(){
 		}
 	}
 	
-	public class UpdateUserInfo extends AsyncTask<Void, Void, Boolean> {
+	private class UpdateUserInfo extends AsyncTask<Void, Void, Boolean> {
 		String JSResult = null;
 		@Override
 		protected Boolean doInBackground(Void... params) {
@@ -670,7 +686,7 @@ public class WellcomeActivity extends FragmentActivity{
 		}
 
 		@Override
-		protected void onPostExecute(Boolean k){
+		protected void onPostExecute(Boolean k) {
 			if (k == true){
 				try{
 					JSONObject result = new JSONObject(JSResult);
@@ -699,7 +715,7 @@ public class WellcomeActivity extends FragmentActivity{
 				}catch(Exception ex){
 
 				}
-			}else{
+			} else {
 				loadingFace.setVisibility(View.GONE);
 				
 				AlertDialog.Builder builder = new AlertDialog.Builder(WellcomeActivity.this);
@@ -720,7 +736,7 @@ public class WellcomeActivity extends FragmentActivity{
 		}
 
 		@Override
-		protected void onPreExecute(){
+		protected void onPreExecute() {
 			
 		}
 	}

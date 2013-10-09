@@ -1,7 +1,8 @@
 package vn.smartguide;
 
 public final class APILinkMaker {
-	public static String mHostName = "http://devapi.smartguide.vn/";
+	public static String mHostName = "http://dev2.smartguide.vn/";
+//	public static String mHostName = "http://devapi.smartguide.vn/";
 //	public static String mHostName = "https://api.smartguide.vn/";
 	private static String mApiDomain = "api/";
 	
@@ -155,7 +156,7 @@ public final class APILinkMaker {
 	}
 	
 	public static String mGetDefaultAvatar(){
-		return mHostName + mDefaultAvatar;
+		return mHostName + mApiDomain + mDefaultAvatar;
 	}
 	
 	public static String mCheckEmergence(){

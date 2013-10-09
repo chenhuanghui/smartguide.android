@@ -103,10 +103,10 @@ public final class NetworkManger {
 			if (error.getString("error_description").compareTo("The access token provided has expired.") == 0 &&
 					error.getString("error").compareTo("invalid_grant") == 0){
 				GlobalVariable.smartGuideDB.updateToken(GlobalVariable.getRefreshIDViaOAuth2());
-				return post(URL, pairs);
+				return post_throw(URL, pairs);
 			}
-		} catch (Exception ex) {
-			throw ex;
+		} catch (JSONException ex) {
+
 		}
 		return result;
 	}
