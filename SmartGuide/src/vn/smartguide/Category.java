@@ -38,7 +38,7 @@ public class Category {
 
 				@Override
 				public int compare(Category lhs, Category rhs) {
-					return rhs.mID - lhs.mID;
+					return lhs.mID - rhs.mID;
 				}
 			});
 		}catch(Exception ex){

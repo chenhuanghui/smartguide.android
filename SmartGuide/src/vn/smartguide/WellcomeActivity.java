@@ -1,5 +1,7 @@
 package vn.smartguide;
 
+import java.security.MessageDigest;
+import java.security.NoSuchAlgorithmException;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
@@ -19,12 +21,18 @@ import android.app.Dialog;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.content.pm.PackageInfo;
+import android.content.pm.PackageManager;
+import android.content.pm.Signature;
+import android.content.pm.PackageManager.NameNotFoundException;
 import android.graphics.Bitmap;
 import android.graphics.Point;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.v4.app.FragmentActivity;
 import android.telephony.PhoneNumberUtils;
+import android.util.Base64;
+import android.util.Log;
 import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.Menu;
@@ -101,10 +109,11 @@ public class WellcomeActivity extends FragmentActivity{
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.activity_wellcome);
-
+		
 		// Set up Facebook
 		Session.StatusCallback callback = new Session.StatusCallback() {
 			public void call(Session session, SessionState state, Exception exception) {
+					
 				if (state.isOpened()) {
 					mStatusText.setText("Vui lòng chờ cập nhật thông tin...");
 					makeMeRequest(session);
@@ -182,22 +191,22 @@ public class WellcomeActivity extends FragmentActivity{
 		});
 
 		authButton.setReadPermissions(Arrays.asList("basic_info","email"));
-		authButton.setSessionStatusCallback(new Session.StatusCallback() {
-			@Override
-			public void call(Session session, SessionState state, Exception exception) {
-
-				if (session.isOpened()) {
-					Request.executeMeRequestAsync(session,
-							new Request.GraphUserCallback() {
-						@Override
-						public void onCompleted(GraphUser user,Response response) {
-							if (user != null) { 
-							}
-						}
-					});
-				}
-			}
-		});
+//		authButton.setSessionStatusCallback(new Session.StatusCallback() {
+//			@Override
+//			public void call(Session session, SessionState state, Exception exception) {
+//
+//				if (session.isOpened()) {
+//					Request.executeMeRequestAsync(session,
+//							new Request.GraphUserCallback() {
+//						@Override
+//						public void onCompleted(GraphUser user,Response response) {
+//							if (user != null) { 
+//							}
+//						}
+//					});
+//				}
+//			}
+//		});
 
 		mLogin.setOnClickListener(new View.OnClickListener() {
 
@@ -533,8 +542,9 @@ public class WellcomeActivity extends FragmentActivity{
 
 		@Override
 		protected Boolean doInBackground(Void... params) {
+			
 			try {
-				NetworkManger.get_throw(GlobalVariable.urlGetActivateCode + phoneNumber, false);
+				String json = NetworkManger.get_throw(GlobalVariable.urlGetActivateCode + phoneNumber, false);
 			} catch (Exception e) {
 				mEx = e;
 			}
@@ -614,7 +624,7 @@ public class WellcomeActivity extends FragmentActivity{
 
 					signUpScreen.setVisibility(View.GONE);
 					faceOrACCScreen.setVisibility(View.VISIBLE);
-					new GetDefaultAvatar().execute();
+					new GetDefaultAvatar().setDisableView(mChangeAvatarBtn).execute();
 				} else {
 					mStatusText.setText("Mã xác nhận không hợp lệ");
 					mNumberField.setText("");
@@ -627,14 +637,9 @@ public class WellcomeActivity extends FragmentActivity{
 		}
 	}
 	
-	private class GetDefaultAvatar extends AsyncTask<Void, Void, Boolean> {
-		String JSResult = null;
-		Exception mEx;
-		
-		@Override
-		protected void onPreExecute() {
-			mChangeAvatarBtn.setEnabled(false);
-		}
+	public static class GetDefaultAvatar extends CyAsyncTask {
+		private String JSResult = null;
+		private Exception mEx;
 		
 		@Override
 		protected Boolean doInBackground(Void... params) {
@@ -651,20 +656,20 @@ public class WellcomeActivity extends FragmentActivity{
 		}
 
 		@Override
-		protected void onPostExecute(Boolean k) {
-				try{
-					if (mEx != null)
-						throw mEx;
-					
-					JSONArray arrayImage = new JSONArray(JSResult);
-					GlobalVariable.mAvatarList = new ArrayList<String>();
-					for(int i = 0; i < arrayImage.length(); i++){
-						GlobalVariable.mAvatarList.add(arrayImage.getString(i));
-					}
-					mChangeAvatarBtn.setEnabled(true);
-				}catch(Exception ex){
+		protected void onPostExecute(Object k) {
+			super.onPostExecute(k);
+			try{
+				if (mEx != null)
+					throw mEx;
 
+				JSONArray arrayImage = new JSONArray(JSResult);
+				GlobalVariable.mAvatarList = new ArrayList<String>();
+				for(int i = 0; i < arrayImage.length(); i++){
+					GlobalVariable.mAvatarList.add(arrayImage.getString(i));
 				}
+			}catch(Exception ex){
+
+			}
 		}
 	}
 	

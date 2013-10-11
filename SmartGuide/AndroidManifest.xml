@@ -1,12 +1,12 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     package="vn.smartguide"
-    android:versionCode="5"
-    android:versionName="1.4" >
+    android:versionCode="6"
+    android:versionName="1.5" >
 
     <uses-sdk
-        android:minSdkVersion="14"
-        android:targetSdkVersion="16" />
+        android:minSdkVersion="11"
+        android:targetSdkVersion="11" />
 
     <uses-permission android:name="android.permission.INTERNET" />
     <uses-permission android:name="android.permission.READ_PHONE_STATE" />
@@ -68,9 +68,20 @@
             android:theme="@android:style/Theme.Light.NoTitleBar" >
         </activity>
 
+        <!-- Release -->
+        
+        <meta-data
+            android:name="com.google.android.maps.v2.API_KEY"
+            android:value="AIzaSyDxy9hGnVykO2aHn22F9n1rl6QakhGX2N4" />
+        
+            
+        <!-- Debug -->
+        <!--    
         <meta-data
             android:name="com.google.android.maps.v2.API_KEY"
             android:value="AIzaSyC_m_vxRwyaD933JOzKhXXB1ioyzJZ2L6I" />
+            -->
+            
         <meta-data
             android:name="com.facebook.sdk.ApplicationId"
             android:value="@string/app_id" />
@@ -93,7 +104,7 @@
         <activity
             android:name="vn.smartguide.ReviewActivity"
             android:screenOrientation="portrait"
-            android:theme="@android:style/Theme.Light.NoTitleBar" >
+            android:theme="@android:style/Theme.Light.NoTitleBar">
         </activity>
         <activity
             android:name="vn.smartguide.TakePictureActivity"
@@ -120,12 +131,6 @@
         <activity
             android:name="vn.smartguide.TutorActivity"
             android:label="@string/title_activity_tutor"
-            android:screenOrientation="portrait"
-            android:theme="@android:style/Theme.Light.NoTitleBar" >
-        </activity>
-        <activity
-            android:name="vn.smartguide.ShopDetailActivity"
-            android:label="@string/title_activity_shop_detail"
             android:screenOrientation="portrait"
             android:theme="@android:style/Theme.Light.NoTitleBar" >
         </activity>

@@ -245,31 +245,6 @@
             </LinearLayout>
 
             <RelativeLayout
-                android:layout_width="match_parent"
-                android:layout_height="35dp"
-                android:background="#282E3A" >
-
-                <TextView
-                    android:layout_width="match_parent"
-                    android:layout_height="match_parent"
-                    android:background="@drawable/bottomborder"
-                    android:gravity="center|left"
-                    android:paddingLeft="50dp"
-                    android:text="Nhận thông báo"
-                    android:textColor="#ffffff"
-                    android:textStyle="bold" />
-
-                <ImageView
-                    android:layout_width="25dp"
-                    android:layout_height="25dp"
-                    android:layout_alignParentLeft="true"
-                    android:layout_centerVertical="true"
-                    android:layout_marginLeft="11dp"
-                    android:background="@drawable/icon_notice" >
-                </ImageView>
-            </RelativeLayout>
-
-            <RelativeLayout
                 android:id="@+id/tutorialBtn"
                 android:layout_width="match_parent"
                 android:layout_height="35dp" >

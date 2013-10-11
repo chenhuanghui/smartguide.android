@@ -16,6 +16,7 @@ import android.content.SharedPreferences;
 import android.content.pm.PackageInfo;
 import android.content.pm.PackageManager;
 import android.content.pm.PackageManager.NameNotFoundException;
+import android.content.pm.Signature;
 import android.database.Cursor;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
@@ -41,6 +42,8 @@ import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentPagerAdapter;
 import android.support.v4.app.FragmentTransaction;
 import android.support.v4.view.ViewPager;
+import android.util.Base64;
+import android.util.Log;
 import android.view.Gravity;
 import android.view.KeyEvent;
 import android.view.LayoutInflater;
@@ -120,6 +123,8 @@ import vn.smartguide.DetailPromo1Fragment.PromotionStr;
 import vn.smartguide.UserFragment.GiftItem;
 
 import java.io.ByteArrayOutputStream;
+import java.security.MessageDigest;
+import java.security.NoSuchAlgorithmException;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
@@ -174,7 +179,7 @@ public class MainActivity extends FragmentActivity implements MainAcitivyListene
 	private TextView mContentText;
 	private TextView mSGPText;
 	private ImageButton mCloseBtn;
-	private ImageView mScanCover;
+//	private ImageView mScanCover;
 	private Activity mActivity;
 	//private TextView mTotalSGP;
 
@@ -279,7 +284,6 @@ public class MainActivity extends FragmentActivity implements MainAcitivyListene
 		super.onCreate(savedInstanceState);
 
 		setContentView(R.layout.activity_main);
-
 
 		mUiHelper = new UiLifecycleHelper(this, callback);
 		mUiHelper.onCreate(savedInstanceState);
@@ -1221,14 +1225,17 @@ public class MainActivity extends FragmentActivity implements MainAcitivyListene
 			}
 
 			@Override
-			public void onFinishLoadShopList(String json, boolean success, Exception e) {
-				getShopListFragment().update(json);
+			public void onFinishLoadShopList(String json, Exception e) {
+				if (e == null)
+					getShopListFragment().update(json);
+				else
+					GlobalVariable.showToast("Hiện không có khuyến mãi thuộc danh mục này.", MainActivity.this);
 			}
 
 			@Override
-			public void onFinishAnimation() {
-
-				goToShopList();
+			public void onFinishAnimation(String json, Exception e) {
+				if (e == null)
+					goToShopList();
 			}
 		});
 
@@ -1586,7 +1593,7 @@ public class MainActivity extends FragmentActivity implements MainAcitivyListene
 
 		//
 		mProgressBar = (ProgressBar)findViewById(R.id.progressBar1);
-		mScanCover = (ImageView)findViewById(R.id.scanCover); 
+//		mScanCover = (ImageView)findViewById(R.id.scanCover); 
 		QRCodeTextView = (TextView)findViewById(R.id.textViewGetScore);
 		mCloseQRC = (ImageButton)findViewById(R.id.closeQRCode);
 		mCloseQRC.setOnClickListener(new OnClickListener() {

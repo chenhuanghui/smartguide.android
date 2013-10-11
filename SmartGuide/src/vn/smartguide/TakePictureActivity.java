@@ -3,6 +3,7 @@ package vn.smartguide;
 import java.io.File;
 import java.io.FileOutputStream;
 import java.lang.reflect.Array;
+import java.nio.charset.Charset;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -13,6 +14,7 @@ import org.apache.http.HttpEntity;
 import org.apache.http.HttpResponse;
 import org.apache.http.NameValuePair;
 import org.apache.http.client.methods.HttpPost;
+import org.apache.http.entity.mime.HttpMultipartMode;
 import org.apache.http.entity.mime.MultipartEntity;
 import org.apache.http.entity.mime.content.FileBody;
 import org.apache.http.entity.mime.content.StringBody;
@@ -233,7 +235,7 @@ public class TakePictureActivity extends Activity {
 		bmOpt.inPurgeable = true;
 
 		Bitmap bitmap = BitmapFactory.decodeFile(imgPath, bmOpt);
-		imageView.setImageBitmap(RotateBitmap(bitmap, 90));
+		imageView.setImageBitmap(RotateBitmap(bitmap));
 
 		int newWidth = 640;
 		int newHeight = 480;
@@ -254,10 +256,10 @@ public class TakePictureActivity extends Activity {
 		}
 	}
 
-	public static Bitmap RotateBitmap(Bitmap source, float angle)
+	private static Bitmap RotateBitmap(Bitmap source)
 	{
 		Matrix matrix = new Matrix();
-		matrix.postRotate(angle);
+		matrix.postRotate(90);
 		return Bitmap.createBitmap(source, 0, 0, source.getWidth(), source.getHeight(), matrix, true);
 	}
 
@@ -335,7 +337,7 @@ public class TakePictureActivity extends Activity {
 				MultipartEntity reqEntity = new MultipartEntity();
 				reqEntity.addPart("shop_id", new StringBody(Integer.toString(GlobalVariable.mCurrentShop.mID)));
 				reqEntity.addPart("user_id", new StringBody(GlobalVariable.userID));
-				reqEntity.addPart("description", new StringBody(mDescription.getText().toString()));
+				reqEntity.addPart("description", new StringBody(mDescription.getText().toString(), Charset.defaultCharset()));
 				reqEntity.addPart("photo", bin);
 				
 				if (mShareFace)

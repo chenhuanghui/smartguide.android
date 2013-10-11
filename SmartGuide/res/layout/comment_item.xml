@@ -37,7 +37,6 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_alignParentLeft="true"
-        android:layout_toLeftOf="@+id/textTime"
         android:text="John Smith"
         android:textColor="#000000"
         android:textSize="9dp"

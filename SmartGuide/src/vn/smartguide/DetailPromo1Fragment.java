@@ -23,6 +23,7 @@ import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.GridView;
+import android.widget.HorizontalScrollView;
 import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
@@ -145,7 +146,7 @@ public class DetailPromo1Fragment extends DetailPromoFragment {
     		new GetPromotionDetail().execute();
     	}
     	
-    	runAnimation();
+//    	runAnimation();
     }
     
     private void runAnimation() {
@@ -223,7 +224,8 @@ public class DetailPromo1Fragment extends DetailPromoFragment {
 	    		dataList.add(new PromotionStr(
 	    				jPromo.getInt("id"), 
 	    				jPromo.getInt("required"), 
-	    				jPromo.getString("content")));
+	    				jPromo.getString("content"),
+	    				jPromo.getString("numberVoucher")));
 	    	}
 	    }
 	}
@@ -259,18 +261,20 @@ public class DetailPromo1Fragment extends DetailPromoFragment {
     
     public static class PromotionStr {
 
-		public PromotionStr(int c, int a, String b) {
+		public PromotionStr(int c, int a, String b, String d) {
 			required = a;
 			content = b;
 			id = c;
+			voucherNumber = d;
 		}
 
 		public int required;
 		public String content;
 		public int id;
+		public String voucherNumber;
 	}
     
-    private class ShopPromotionListAdapter extends ArrayAdapter<PromotionStr> {    	    	
+    private class ShopPromotionListAdapter extends ArrayAdapter<PromotionStr> {
 
     	public ShopPromotionListAdapter() {
     		super(getActivity(), R.layout.shop_promotion_item, R.id.txtAwardName, new ArrayList<PromotionStr>());
@@ -281,22 +285,23 @@ public class DetailPromo1Fragment extends DetailPromoFragment {
     		convertView = super.getView(position, convertView, parent);
     		
     		// Xử trường hợp loại 2
-    		RelativeLayout head_bar = (RelativeLayout) convertView.findViewById(R.id.shop_bar_head_bg);
-    		LinearLayout tail_bar = (LinearLayout) convertView.findViewById(R.id.shop_bar_tail_bg);
+    		LinearLayout bar = (LinearLayout) convertView.findViewById(R.id.layoutShopBar);
+//    		HorizontalScrollView scrollView = (HorizontalScrollView) convertView.findViewById(R.id.scrollView);
+//    		scrollView.fling(1);
     		
-    		if (getItem(position).required <= mTotalScore) {		
-    			head_bar.setBackgroundResource(R.drawable.shop_head_bar_green);
-    			tail_bar.setBackgroundResource(R.drawable.shop_bar_highlight);
+    		if (getItem(position).required <= mTotalScore) {	
+    			bar.setBackgroundResource(R.drawable.shop_bar_highlight);
     		} else {
-    			head_bar.setBackgroundResource(R.drawable.shop_bar_head);
-    			tail_bar.setBackgroundResource(R.drawable.shop_bar_tail_9);
+    			bar.setBackgroundResource(R.drawable.shop_bar);
     		}
     		
     		TextView txtSGP = (TextView) convertView.findViewById(R.id.txtSGP);
     		TextView txtAwardName = (TextView) convertView.findViewById(R.id.txtAwardName);
+    		TextView txtType = (TextView) convertView.findViewById(R.id.txtType);
 
     		txtSGP.setText("" + getItem(position).required);
     		txtAwardName.setText(getItem(position).content);
+    		txtType.setText(getItem(position).voucherNumber);
     		return convertView;
     	}
     }

@@ -13,6 +13,8 @@ import org.apache.http.util.EntityUtils;
 import org.json.JSONArray;
 import org.json.JSONObject;
 
+import vn.smartguide.WellcomeActivity.GetDefaultAvatar;
+
 
 import com.google.analytics.tracking.android.EasyTracker;
 import android.os.AsyncTask;
@@ -48,8 +50,7 @@ public class FlashScreenActivity extends Activity {
 		resultData = new Intent();
 		resultData.putExtra("Database", "OK");
 		resultData.putExtra("Connection", "OK");
-
-
+		(new WellcomeActivity.GetDefaultAvatar()).execute();
 	}
 
 	@Override
@@ -113,6 +114,8 @@ public class FlashScreenActivity extends Activity {
 			GlobalVariable.getActivateCodeFromDB();
 			GlobalVariable.getTokenFromDB();
 			GlobalVariable.getVersionFromDB();
+			
+			(new WellcomeActivity.GetDefaultAvatar()).execute();
 
 			String json = "";
 
