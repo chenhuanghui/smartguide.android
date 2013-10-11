@@ -1,13 +1,10 @@
 package vn.smartguide;
 
-import java.util.ArrayList;
 import java.util.List;
 
 import vn.smartguide.PromotionTypeTwo.Voucher;
 import android.app.AlertDialog;
 import android.app.Dialog;
-import android.content.Context;
-import android.graphics.Canvas;
 import android.graphics.Typeface;
 import android.os.Bundle;
 import android.text.SpannableString;

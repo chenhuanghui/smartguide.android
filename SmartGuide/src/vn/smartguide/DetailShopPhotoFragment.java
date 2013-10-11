@@ -38,7 +38,6 @@ public class DetailShopPhotoFragment extends Fragment {
 //	public static DetailShopPhotoFragment thiz;
 	private static final int MEDIA_TYPE_IMAGE = 1;
 	private static final int CAPTURE_IMAGE_ACTIVITY_REQUEST_CODE = 4;
-	private static final int PHOTO_SIZE_LIMIT = 4 * 1024 * 1024;
 	
 	// Data
 	private Shop mShop;

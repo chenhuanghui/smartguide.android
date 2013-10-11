@@ -3,8 +3,6 @@ package vn.smartguide;
 import java.util.ArrayList;
 import java.util.List;
 
-import com.facebook.widget.PickerFragment;
-
 import android.animation.Animator;
 import android.animation.Animator.AnimatorListener;
 import android.animation.AnimatorSet;
@@ -20,8 +18,6 @@ import android.view.animation.AccelerateDecelerateInterpolator;
 import android.widget.Button;
 import android.widget.ImageButton;
 import android.widget.ImageView;
-import android.widget.LinearLayout;
-import android.widget.RelativeLayout;
 
 /**
  * Created by cycrixlaptop on 7/29/13.

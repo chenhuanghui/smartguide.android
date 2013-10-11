@@ -1,8 +1,6 @@
 package vn.smartguide;
 
 import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
 
 import android.os.AsyncTask;
 import android.view.View;

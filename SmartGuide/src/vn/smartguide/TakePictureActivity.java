@@ -2,7 +2,6 @@ package vn.smartguide;
 
 import java.io.File;
 import java.io.FileOutputStream;
-import java.lang.reflect.Array;
 import java.nio.charset.Charset;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
@@ -14,25 +13,16 @@ import org.apache.http.HttpEntity;
 import org.apache.http.HttpResponse;
 import org.apache.http.NameValuePair;
 import org.apache.http.client.methods.HttpPost;
-import org.apache.http.entity.mime.HttpMultipartMode;
 import org.apache.http.entity.mime.MultipartEntity;
 import org.apache.http.entity.mime.content.FileBody;
 import org.apache.http.entity.mime.content.StringBody;
 import org.apache.http.message.BasicNameValuePair;
 import org.apache.http.util.EntityUtils;
-import org.json.JSONException;
-import org.json.JSONObject;
 
 import com.facebook.FacebookException;
-import com.facebook.FacebookRequestError;
-import com.facebook.HttpMethod;
-import com.facebook.Request;
-import com.facebook.RequestAsyncTask;
-import com.facebook.Response;
 import com.facebook.Session;
 import com.facebook.SessionState;
 import com.facebook.UiLifecycleHelper;
-import com.facebook.model.GraphUser;
 import com.facebook.widget.LoginButton;
 import com.facebook.widget.LoginButton.OnErrorListener;
 import com.google.analytics.tracking.android.EasyTracker;
@@ -51,12 +41,12 @@ import android.graphics.Matrix;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
-import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.RelativeLayout;
 import android.widget.Toast;
 
 public class TakePictureActivity extends Activity {
+	
 	UiLifecycleHelper 	mUiHelper;
 	private Intent cameraIntent;
 	private Uri outputFileUri;
@@ -290,7 +280,6 @@ public class TakePictureActivity extends Activity {
 			// Check for publish permissions    
 			List<String> permissions = session.getPermissions();
 			if (permissions.contains("publish_stream")) {
-				Toast.makeText(this, session.getAccessToken(), Toast.LENGTH_LONG).show();
 				new UpFaceAT(session.getAccessToken()).execute();
 				return;
 			}
