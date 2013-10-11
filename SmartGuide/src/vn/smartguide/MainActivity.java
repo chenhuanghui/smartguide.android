@@ -288,6 +288,12 @@ public class MainActivity extends FragmentActivity implements MainAcitivyListene
 		mUiHelper = new UiLifecycleHelper(this, callback);
 		mUiHelper.onCreate(savedInstanceState);
 
+		//test connection
+		if (NetworkManger.isOnline(this) == false){
+			exitWithError();
+			return;
+		}
+		
 		init();
 
 		if (GlobalVariable.getActivateCodeFromDB() == false){
@@ -1369,8 +1375,10 @@ public class MainActivity extends FragmentActivity implements MainAcitivyListene
 					
 					RotateAnimation anim = new RotateAnimation(0f, 45f, Animation.RELATIVE_TO_SELF, 0.5f, Animation.RELATIVE_TO_SELF, 0.5f);
 					anim.setInterpolator(new LinearInterpolator());
-					anim.setRepeatMode(Animation.ABSOLUTE);
+					anim.setRepeatCount(0);
 					anim.setDuration(200);
+					anim.setFillEnabled(true);
+					anim.setFillAfter(true);
 					mExpandMenuBtn.startAnimation(anim);
 					mExpandMenuLO.setVisibility(View.VISIBLE);
 
@@ -1380,8 +1388,10 @@ public class MainActivity extends FragmentActivity implements MainAcitivyListene
 				}else{
 					RotateAnimation anim = new RotateAnimation(45f, 0f, Animation.RELATIVE_TO_SELF, 0.5f, Animation.RELATIVE_TO_SELF, 0.5f);
 					anim.setInterpolator(new LinearInterpolator());
-					anim.setRepeatMode(Animation.ABSOLUTE);
+					anim.setRepeatCount(0);
 					anim.setDuration(200);
+					anim.setFillEnabled(true);
+					anim.setFillAfter(true);
 					mExpandMenuBtn.startAnimation(anim);
 					mExpandMenuLO.setVisibility(View.GONE);
 

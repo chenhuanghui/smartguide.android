@@ -104,6 +104,7 @@ public class FlashScreenActivity extends Activity {
 //						"{\"notify_list\":[{\"content\":\"xcscxczxczc\",\"notification_id\":1}],\"notification_type\":2}");
 				action_type = key.getInt("notification_type");
 			}catch(Exception ex){
+				action_type = -1;
 				return false;
 			}
 
@@ -211,6 +212,22 @@ public class FlashScreenActivity extends Activity {
 			} else {
 				try{
 					switch(action_type) {
+					case -1:
+						
+						resultData = new Intent();
+						resultData.putExtra("Database", "OK");
+						resultData.putExtra("Connection", "False");
+						
+						if (getParent() == null) 
+							setResult(Activity.RESULT_OK, resultData);
+						else
+							getParent().setResult(Activity.RESULT_OK, resultData);
+
+						if (isFinish == true){
+							finish();
+							overridePendingTransition(android.R.anim.slide_in_left, android.R.anim.slide_out_right);
+						}
+						break;
 					case 1:
 						String link =  key.getString("link");
 						String content = key.getString("content");
