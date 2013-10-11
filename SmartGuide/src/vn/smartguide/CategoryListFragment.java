@@ -176,7 +176,8 @@ public class CategoryListFragment extends Fragment {
 	
 	public class FindShopList extends AsyncTask<Void, Void, Boolean> {
 		
-		private String json; 
+		private String json;
+		private Exception mEx;
 
 		@Override
 		protected void onPreExecute() {
@@ -186,31 +187,36 @@ public class CategoryListFragment extends Fragment {
 
 		@Override
 		protected Boolean doInBackground(Void... params) {
-			List<NameValuePair> pairs = new ArrayList<NameValuePair>();
-			pairs.add(new BasicNameValuePair("group_list", GlobalVariable.mFilterString));
-			pairs.add(new BasicNameValuePair("city_id", GlobalVariable.mCityID));
-			pairs.add(new BasicNameValuePair("user_id", GlobalVariable.userID));
-			pairs.add(new BasicNameValuePair("user_lat", Float.toString(GlobalVariable.mLat)));
-			pairs.add(new BasicNameValuePair("user_lng", Float.toString(GlobalVariable.mLng)));
-			pairs.add(new BasicNameValuePair("page", "0"));
-			pairs.add(new BasicNameValuePair("sort_by", GlobalVariable.mSortByString));
-			pairs.add(new BasicNameValuePair("version", "1"));
-
-			json = NetworkManger.post(APILinkMaker.ShopListInCategory(), pairs);
+			try {
+				List<NameValuePair> pairs = new ArrayList<NameValuePair>();
+				pairs.add(new BasicNameValuePair("group_list", GlobalVariable.mFilterString));
+				pairs.add(new BasicNameValuePair("city_id", GlobalVariable.mCityID));
+				pairs.add(new BasicNameValuePair("user_id", GlobalVariable.userID));
+				pairs.add(new BasicNameValuePair("user_lat", Float.toString(GlobalVariable.mLat)));
+				pairs.add(new BasicNameValuePair("user_lng", Float.toString(GlobalVariable.mLng)));
+				pairs.add(new BasicNameValuePair("page", "0"));
+				pairs.add(new BasicNameValuePair("sort_by", GlobalVariable.mSortByString));
+				pairs.add(new BasicNameValuePair("version", "1"));
+	
+				json = NetworkManger.post(APILinkMaker.ShopListInCategory(), pairs);
+				JSONArray j = new JSONArray(json);
+			} catch (Exception e) {
+				mEx = e;
+			}
 //			(mMainAcitivyListener).getShopListFragment().update(json);	/////////
 			return true;
 		}
 
 		@Override
 		protected void onPostExecute(Boolean k) {
-			mListener.onFinishLoadShopList(json, true, null);
+			mListener.onFinishLoadShopList(json, mEx);
 			mEndLoadAniSet.addListener(new AnimatorListener() {
 				
 				public void onAnimationStart(Animator animation) {}
 				public void onAnimationRepeat(Animator animation) {}			
 				public void onAnimationEnd(Animator animation) {
 					mEndLoadAniSet.removeListener(this);
-					mListener.onFinishAnimation();
+					mListener.onFinishAnimation(json, mEx);
 				}
 				
 				public void onAnimationCancel(Animator animation) {
@@ -431,7 +437,7 @@ public class CategoryListFragment extends Fragment {
 		public void onFinishFirstTimeUpdate() {}
 		public boolean onCategoryClick(int position) { return false; }
 		public void onStartLoadShopList() {}
-		public void onFinishLoadShopList(String json, boolean success, Exception e) {}
-		public void onFinishAnimation() {}
+		public void onFinishLoadShopList(String json, Exception e) {}
+		public void onFinishAnimation(String json, Exception e) {}
 	}
 }

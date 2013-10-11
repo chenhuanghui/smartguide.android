@@ -257,7 +257,6 @@
                     android:layout_marginTop="15dp"
                     android:background="@drawable/button_done"
                     android:text="DONE"
-                    android:textAlignment="center"
                     android:textColor="#2D405E"
                     android:textSize="15dp"
                     android:textStyle="bold"

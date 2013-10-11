@@ -44,12 +44,16 @@ public final class GlobalVariable {
 
 	// Secret key and Client key to get token
 	public static String serverOAuth 	= APILinkMaker.mHostName + "oauth/v2/token";
-	// Dev
-	public static String clientID 		= "1_orazuv2dl3k8ossssg8804o4kwksw8kwcskkk404w40gwcwws";
-	public static String serectID 		= "4xvgf3r9dxs8k8g8o8k0gss0s0wc8so4g4wg40c8s44kgcwsks";
+	
+	// Dev2
+//	public static String clientID 		= "1_407qlmrvr5esg8s8wkocw8wgog84kkk40o8k00oososgcs8sc4";
+//	public static String serectID 		= "1jcvy0kw4tk0o4wcgcos8s84kssw08c0w8w04c0k08gwc48cks";
+//	// Dev
+//	public static String clientID 		= "1_orazuv2dl3k8ossssg8804o4kwksw8kwcskkk404w40gwcwws";
+//	public static String serectID 		= "4xvgf3r9dxs8k8g8o8k0gss0s0wc8so4g4wg40c8s44kgcwsks";
 	// Pro 
-//	public static String clientID 		= "1_53obx9yqlcco80w8wkoowgccw44o0w0ook0okogwosg84wscg8";
-//	public static String serectID 		= "t3p0k1rvstcgwcsggo8ossgcwo8cckso88sscgcsks8w0wsk8";
+	public static String clientID 		= "1_53obx9yqlcco80w8wkoowgccw44o0w0ook0okogwosg84wscg8";
+	public static String serectID 		= "t3p0k1rvstcgwcsggo8ossgcwo8cckso88sscgcsks8w0wsk8";
 	
 	public static String grantType 		= "?grant_type=http://dev.smartguide.com/app_dev.php/grants/bingo";
 

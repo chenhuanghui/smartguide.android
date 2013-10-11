@@ -64,23 +64,23 @@ public class ReviewActivity extends Activity {
 		mReviewBtn = (Button)findViewById(R.id.button1);
 		mActivity = this;
 
-		mReviewText.setOnFocusChangeListener(new OnFocusChangeListener() {
-			@Override
-			public void onFocusChange(View v, boolean hasFocus) {
-				mReviewBtn.post(new Runnable() {
-					@Override
-					public void run() {
-						InputMethodManager imm = (InputMethodManager) getSystemService(Context.INPUT_METHOD_SERVICE);
-						imm.showSoftInput(mReviewText, InputMethodManager.SHOW_IMPLICIT);
-					}
-				});
-			}
-		});
+//		mReviewText.setOnFocusChangeListener(new OnFocusChangeListener() {
+//			@Override
+//			public void onFocusChange(View v, boolean hasFocus) {
+//				mReviewBtn.post(new Runnable() {
+//					@Override
+//					public void run() {
+//						InputMethodManager imm = (InputMethodManager) getSystemService(Context.INPUT_METHOD_SERVICE);
+//						imm.showSoftInput(mReviewText, InputMethodManager.SHOW_IMPLICIT);
+//					}
+//				});
+//			}
+//		});
 
 		mReviewBtn.setOnClickListener(new View.OnClickListener() {
 			@Override
-			public void onClick(View v) {		
-				if (mFirstTimeClick){
+			public void onClick(View v) {
+				if (mFirstTimeClick) {
 
 					if(GlobalVariable.nameFace == "" || GlobalVariable.nameFace.compareTo("null") == 0)
 						mName.setText("Anomynous User");
@@ -88,7 +88,10 @@ public class ReviewActivity extends Activity {
 						mName.setText(GlobalVariable.nameFace);
 
 					stopReview();
+					mReviewText.setVisibility(View.VISIBLE);
 					mTextSwitcher.setVisibility(View.INVISIBLE);
+					InputMethodManager imm = (InputMethodManager) getSystemService(Context.INPUT_METHOD_SERVICE);
+					imm.showSoftInput(mReviewText, InputMethodManager.SHOW_IMPLICIT);
 					mReviewText.setCursorVisible(true);
 					mReviewText.requestFocus();
 					mFirstTimeClick = false;
@@ -100,16 +103,12 @@ public class ReviewActivity extends Activity {
 
 				final String review = mReviewText.getText().toString();
 
-				if (review == "" || review.length() == 0){
+				if (review.length() == 0){
 					builder.setTitle("Thông báo");
 					builder.setMessage("Vui lòng nhập nhận xét của bạn");
 					builder.setCancelable(true);
 
-					builder.setPositiveButton("OK", new DialogInterface.OnClickListener() {
-						public void onClick(DialogInterface dialog, int which) {
-
-						}
-					});
+					builder.setPositiveButton("OK", null);
 
 				}else{
 					builder.setMessage("Cám ơn bạn vì lời nhận xét. Nhấn OK để trở lại chương trình");

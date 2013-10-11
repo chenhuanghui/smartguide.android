@@ -249,7 +249,9 @@ public class PhotoActivity extends FragmentActivity{
 			TextView txtDsc = (TextView) v.findViewById(R.id.txtDesc);
 
 			Point size = new Point();
-			getWindowManager().getDefaultDisplay().getSize(size);
+//			getWindowManager().getDefaultDisplay().getSize(size);
+			size.x = getWindowManager().getDefaultDisplay().getWidth();
+			size.y = getWindowManager().getDefaultDisplay().getHeight();
 			
 //			Bitmap bm = mImageItem.bm.get();
 			

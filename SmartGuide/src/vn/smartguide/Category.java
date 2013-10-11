@@ -1,6 +1,10 @@
 package vn.smartguide;
 
+import java.lang.reflect.Array;
 import java.util.ArrayList;
+import java.util.Collection;
+import java.util.Collections;
+import java.util.Comparator;
 import java.util.List;
 
 import org.json.JSONArray;
@@ -30,6 +34,13 @@ public class Category {
 				Category mCategory = new Category(id, name, count);
 				listCategories.add(mCategory);
 			}
+			Collections.sort(listCategories, new Comparator<Category>() {
+
+				@Override
+				public int compare(Category lhs, Category rhs) {
+					return lhs.mID - rhs.mID;
+				}
+			});
 		}catch(Exception ex){
 		}
 		

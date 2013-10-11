@@ -273,7 +273,8 @@ public class CyImageLoader {
 		
 		@Override
 		protected int sizeOf(String key, Bitmap value) {
-			return value.getByteCount();
+//			return value.getByteCount();
+			return value.getRowBytes() * value.getHeight() * 4;
 		}
 		
 		public Bitmap checkMemCache(String path, Point expectedSize) {
