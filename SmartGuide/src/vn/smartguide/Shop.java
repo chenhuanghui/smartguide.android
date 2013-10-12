@@ -139,8 +139,4 @@ public class Shop {
 		
 		return mShop;
 	}
-
-	public static List<Shop> getListShopWithFullInfor(String jsonString) throws JSONException {
-		return null;
-	}
 }

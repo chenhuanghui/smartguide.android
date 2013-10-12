@@ -1,18 +1,14 @@
 package vn.smartguide;
 
-import vn.smartguide.IntroActivity.IntroPagerAdapter;
-import vn.smartguide.IntroActivity.IntroPagerFragment;
 import vn.smartguide.PhotoActivity.PhotoFullFragment;
 import android.os.Bundle;
 import android.annotation.SuppressLint;
-import android.app.Activity;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentActivity;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentStatePagerAdapter;
 import android.support.v4.view.ViewPager;
 import android.view.LayoutInflater;
-import android.view.Menu;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;

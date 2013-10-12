@@ -43,7 +43,6 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.RelativeLayout;
-import android.widget.Toast;
 
 public class TakePictureActivity extends Activity {
 	
@@ -336,7 +335,7 @@ public class TakePictureActivity extends Activity {
 
 				HttpResponse response = NetworkManger.httpclient.execute(post);
 				HttpEntity resEntity = response.getEntity();
-				String output = EntityUtils.toString(resEntity);
+				EntityUtils.toString(resEntity);
 				
 			}catch(Exception ex){
 				return false;

@@ -208,7 +208,6 @@ public class PhotoActivity extends FragmentActivity{
 		public void onCreate(Bundle savedInstanceState) {
 			
 			super.onCreate(savedInstanceState);
-			View v = getView();
 		}
 
 		@Override

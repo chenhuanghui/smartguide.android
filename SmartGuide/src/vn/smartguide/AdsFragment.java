@@ -29,11 +29,11 @@ import android.widget.ImageView;
 import android.widget.ViewSwitcher.ViewFactory;
 
 public class AdsFragment extends Fragment {
-	List<Drawable> images = new ArrayList<Drawable>();
-
-	ImageSwitcher mAdsSwitcher;
-	int index = 1;
-	ChangeImage mChangeImage;
+	
+	private List<Drawable> images = new ArrayList<Drawable>();
+	private ImageSwitcher mAdsSwitcher;
+	private int index = 1;
+	private ChangeImage mChangeImage;
 
 	@Override
 	public View onCreateView(LayoutInflater inflater, ViewGroup container,

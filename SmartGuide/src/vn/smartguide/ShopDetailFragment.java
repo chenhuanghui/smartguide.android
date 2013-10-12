@@ -9,28 +9,18 @@ import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
-import vn.smartguide.DetailMenuFragment.Listener;
 import vn.smartguide.DetailPromo1Fragment.PromotionStr;
-import android.animation.ObjectAnimator;
-import android.animation.TimeInterpolator;
-import android.app.Activity;
-import android.content.Intent;
 import android.content.res.Resources;
-import android.graphics.Bitmap;
-import android.graphics.Point;
-import android.graphics.Rect;
 import android.graphics.drawable.Drawable;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
-import android.support.v4.app.FragmentStatePagerAdapter;
 import android.support.v4.app.FragmentTransaction;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.view.ViewGroup;
-import android.view.animation.AccelerateDecelerateInterpolator;
 import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.ProgressBar;
@@ -39,8 +29,6 @@ import android.widget.TextView;
  * Created by ChauSang on 6/24/13.
  */
 public class ShopDetailFragment extends Fragment {
-	
-	private final int NUM_PAGES = 2;
 	
 	// GUI elements
     private List<Fragment> mDetailFragmentList;
