@@ -147,13 +147,23 @@ public class CategoryListFragment extends Fragment {
 			gridView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
 				public void onItemClick(AdapterView<?> parent, View v, int position, long id) {
 					if (position == 0){
-						GlobalVariable.mFilterString = "1,2,3,4,5,6,7,8";
+						if (getTotalShop() == 0){
+							GlobalVariable.showToast("Hiện không có khuyến mãi thuộc danh mục này.", getActivity());
+							return;
+						}
 						
+						GlobalVariable.mFilterString = "1,2,3,4,5,6,7,8";
 						if (mListener.onCategoryClick(position))
 							return;
 					}
-					else
+					else{
+						if (GlobalVariable.mCateogries.get(position - 1).mNum == 0){
+							GlobalVariable.showToast("Hiện không có khuyến mãi thuộc danh mục này.", getActivity());
+							return;
+						}
 						GlobalVariable.mFilterString = Integer.toString(position);
+						
+					}
 					GlobalVariable.mSortByString = "0";
 					new FindShopList().execute();
 				}
@@ -341,6 +351,14 @@ public class CategoryListFragment extends Fragment {
 	// Adapter
 	///////////////////////////////////////////////////////////////////////////
 
+
+	public int getTotalShop() {
+		int sum = 0;			
+		for (Category cate : GlobalVariable.mCateogries)
+			sum += cate.mNum;
+		return sum;
+	}
+	
 	public class ImageAdapter extends BaseAdapter
 	{
 		private LayoutInflater li;
@@ -357,13 +375,6 @@ public class CategoryListFragment extends Fragment {
 		@Override
 		public int getCount() {
 			return 9;
-		}
-
-		public int getTotalShop() {
-			int sum = 0;			
-			for (Category cate : GlobalVariable.mCateogries)
-				sum += cate.mNum;
-			return sum;
 		}
 
 		@Override
@@ -395,10 +406,10 @@ public class CategoryListFragment extends Fragment {
 					numShop = getTotalShop();
 				
 				if (numShop == 0) {
-					pic.setVisibility(View.INVISIBLE);
-					num.setVisibility(View.INVISIBLE);
+					num.setText("0");
 				} else if (numShop > 99)
 					num.setText("99+");
+				
 				else num.setText(Integer.toString(numShop));
 				
 			} else {
