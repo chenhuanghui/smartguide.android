@@ -9,13 +9,13 @@
     <RelativeLayout
         android:id="@+id/root"
         android:layout_width="match_parent"
-        android:layout_height="75dp"
+        android:layout_height="69dp"
         android:background="#282e3a" >
 
         <TextView
             android:id="@+id/shop_distance"
             android:layout_width="wrap_content"
-            android:layout_height="25dp"
+            android:layout_height="23dp"
             android:layout_gravity="center_horizontal|top"
             android:background="@drawable/shop_distance_green"
             android:gravity="center"
@@ -31,7 +31,7 @@
         <LinearLayout
             android:id="@+id/shop_score_now_min"
             android:layout_width="wrap_content"
-            android:layout_height="25dp"
+            android:layout_height="23dp"
             android:layout_alignParentLeft="true"
             android:layout_below="@+id/shop_distance"
             android:layout_gravity="center_horizontal|top"
@@ -47,14 +47,14 @@
                 android:gravity="center_vertical|center_horizontal"
                 android:text=""
                 android:textColor="#ffffff"
-                android:textSize="14dp"
+                android:textSize="13dp"
                 android:textStyle="bold" />
         </LinearLayout>
 
         <LinearLayout
             android:id="@+id/shop_type_score"
             android:layout_width="wrap_content"
-            android:layout_height="25dp"
+            android:layout_height="23dp"
             android:layout_alignParentLeft="true"
             android:layout_below="@+id/shop_score_now_min"
             android:background="@drawable/shop_type_green"
@@ -70,7 +70,7 @@
             <TextView
                 android:id="@+id/shop_score"
                 android:layout_width="wrap_content"
-                android:layout_height="25dp"
+                android:layout_height="23dp"
                 android:layout_below="@+id/shop_score_now_min"
                 android:layout_marginLeft="5dp"
                 android:gravity="center"
@@ -83,7 +83,7 @@
         <RelativeLayout
             android:id="@+id/shop_cover_layout"
             android:layout_width="75dp"
-            android:layout_height="75dp"
+            android:layout_height="69dp"
             android:layout_alignBottom="@+id/shop_type_score"
             android:layout_alignParentTop="true"
             android:layout_toRightOf="@+id/shop_distance" >
@@ -109,7 +109,7 @@
         <LinearLayout
             android:id="@+id/shop_name_content"
             android:layout_width="match_parent"
-            android:layout_height="75dp"
+            android:layout_height="69dp"
             android:layout_alignBottom="@+id/shop_type_score"
             android:layout_alignParentTop="true"
             android:layout_toRightOf="@+id/shop_cover_layout"
