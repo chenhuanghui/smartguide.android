@@ -32,10 +32,10 @@
             android:layout_height="23dp"
             android:layout_alignParentLeft="true"
             android:layout_below="@+id/shop_distance"
-            android:layout_gravity="center_horizontal|top"
             android:layout_toLeftOf="@+id/shop_cover_layout"
             android:background="@drawable/shop_score_green"
             android:gravity="center"
+            android:layout_centerHorizontal="true"
             android:orientation="horizontal" >
 
             <TextView

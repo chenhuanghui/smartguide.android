@@ -261,14 +261,14 @@ public class ShopDetailFragment extends Fragment {
     private void updateLikeStatus(Shop s) {
     	
     	if (s != null) {
-	    	mBtnLike.setText("" + s.mLike + "  ");
+	    	mBtnLike.setText("" + s.mLike + " ");
 	    	mBtnLike.setCompoundDrawables(null, null, s.mLikeStatus == 1 ? mResLikeHover : mResLike, null);
-	    	mBtnDislike.setText("" + s.mDislike + "  ");
+	    	mBtnDislike.setText("" + s.mDislike + " ");
 	    	mBtnDislike.setCompoundDrawables(null, null, s.mLikeStatus == 2 ? mResDislikeHover : mResDislike, null);
     	} else {
-    		mBtnLike.setText("0  ");
+    		mBtnLike.setText("0 ");
 	    	mBtnLike.setCompoundDrawables(null, null, mResLike, null);
-	    	mBtnDislike.setText("0  ");
+	    	mBtnDislike.setText("0 ");
 	    	mBtnDislike.setCompoundDrawables(null, null, mResDislike, null);
     	}
     }

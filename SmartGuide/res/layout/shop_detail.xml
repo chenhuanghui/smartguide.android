@@ -89,7 +89,8 @@
                     android:layout_height="wrap_content"
                     android:background="#00000000"
                     android:drawableRight="@drawable/icon_like"
-                    android:text="1  "
+                    android:text="1 "
+                    android:textSize="13dp"
                     android:textColor="#FFFFFF"
                     android:textStyle="bold" />
 
@@ -107,7 +108,8 @@
                     android:layout_height="wrap_content"
                     android:background="#00000000"
                     android:drawableRight="@drawable/icon_dislike"
-                    android:text="1  "
+                    android:text="1 "
+                    android:textSize="13dp"
                     android:textColor="#FFFFFF"
                     android:textStyle="bold" />
 
