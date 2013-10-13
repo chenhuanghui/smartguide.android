@@ -83,7 +83,7 @@ public class DetailCommentFragment extends Fragment {
 
 		mAdapter = new CommentListAdapter();
 		mLst.setAdapter(mAdapter);
-		mAvatar = (ImageView)getView().findViewById(R.id.imageView2);
+		mAvatar = (ImageView)getView().findViewById(R.id.avatar);
 	}
 
 	/**
@@ -258,6 +258,10 @@ public class DetailCommentFragment extends Fragment {
 			lstComment.setAdapter(DetailCommentFragment.this.mAdapter);
 
 			EditText edtComment = (EditText) v.findViewById(R.id.edtComment);
+			ImageView avatar = (ImageView)v.findViewById(R.id.avatar);
+			if (GlobalVariable.avatarFace != "" || GlobalVariable.avatarFace.compareTo("null") != 0)
+				GlobalVariable.cyImageLoader.showImage(GlobalVariable.avatarFace, avatar);
+			
 			edtComment.setOnEditorActionListener(new OnEditorActionListener() {
 
 				@Override

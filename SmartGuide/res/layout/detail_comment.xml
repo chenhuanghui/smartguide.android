@@ -39,7 +39,7 @@
                 android:layout_alignParentTop="true" >
 
                 <ImageView
-                    android:id="@+id/imageView2"
+                    android:id="@+id/avatar"
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"
                     android:layout_margin="1dp"
