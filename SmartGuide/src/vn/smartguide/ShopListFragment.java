@@ -404,6 +404,11 @@ public class ShopListFragment extends Fragment {
 		public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
 			mHighLightItem.add(position);
 			Shop s = mShopList.get(position);
+			if (s.mPromotionStatus == false){
+				GlobalVariable.showToast("Cửa hàng hiện không có khuyến mãi", getActivity());
+				return;
+			}
+			
 			GlobalVariable.mCurrentShop = s;
 			notifyDataSetChanged();
 			mListener.onShopClick(s);

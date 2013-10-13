@@ -178,8 +178,8 @@
 
                     <Button
                         android:id="@+id/btnSelectAll"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
+                        android:layout_width="65dp"
+                        android:layout_height="20dp"
                         android:layout_gravity="right"
                         android:layout_marginRight="8dp"
                         android:background="@drawable/button_checknon"
@@ -189,8 +189,8 @@
 
                     <Button
                         android:id="@+id/btnDeselectAll"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
+                        android:layout_width="75dp"
+                        android:layout_height="20dp"
                         android:background="@drawable/button_checkall"
                         android:text="Bỏ chọn tất cả"
                         android:textColor="#FFFFFF"

@@ -27,19 +27,6 @@
 	    	  android:layout_height="fill_parent"
 	    	  android:background="#BF282e3a"
 	    	  android:visibility="invisible">
-	    <ImageButton
-                android:orientation="vertical"
-                android:layout_width="fill_parent"
-                android:layout_height="20dp"
-                android:background="@drawable/blur_top_repeat">
-        </ImageButton>
-        <ImageButton
-            android:layout_width="fill_parent"
-            android:layout_height="20dp"
-            android:layout_alignParentBottom="true"
-            android:layout_alignParentLeft="true"
-            android:background="@drawable/blur_bottom_repeat"
-            android:orientation="vertical" />
 	</RelativeLayout>
 
 	<RelativeLayout

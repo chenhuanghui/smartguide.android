@@ -3,7 +3,8 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:background="#ffffff"
-    android:orientation="vertical" >
+    android:orientation="vertical"
+    android:layout_marginTop="8dp" >
 
     <LinearLayout
         android:id="@+id/linearLayout2"
@@ -91,8 +92,9 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="Mỗi lần quét thẻ bạn nhận được điểm"
+            android:layout_marginLeft="15dp"
             android:textColor="#000000"
-            android:textSize="13dp" />
+            android:textSize="12dp" />
 
         <TextView
             android:layout_width="wrap_content"
@@ -100,7 +102,7 @@
             android:layout_marginLeft="3dp"
             android:text="P"
             android:textColor="#C95436"
-            android:textSize="14dp"
+            android:textSize="13dp"
             android:textStyle="bold" />
 
         <TextView
@@ -109,7 +111,8 @@
             android:layout_marginLeft="3dp"
             android:text="tương ứng"
             android:textColor="#000000"
-            android:textSize="13dp" />
+            android:textSize="12dp"
+            android:layout_marginRight="15dp" />
     </LinearLayout>
 
 </LinearLayout>

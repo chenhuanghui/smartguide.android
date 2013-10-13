@@ -1,13 +1,13 @@
 <?xml version="1.0" encoding="utf-8"?>
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    android:layout_width="match_parent"
-    android:layout_height="match_parent"
+    android:layout_width="fill_parent"
+    android:layout_height="fill_parent"
     android:layout_marginBottom="5dp"
     android:background="#282e3a" >
 
     <LinearLayout
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
+        android:layout_width="fill_parent"
+        android:layout_height="fill_parent"
         android:background="#282e3a"
         android:orientation="vertical" >
 
@@ -15,17 +15,16 @@
             android:id="@+id/linearLayout2"
             android:layout_width="fill_parent"
             android:layout_height="wrap_content"
-            android:layout_above="@+id/relativeLayout2"
-            android:layout_alignParentBottom="false"
             android:background="#282e3a"
             android:orientation="vertical" >
 
             <ImageButton
                 android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
+                android:layout_height="0dip"
                 android:layout_gravity="center"
-                android:background="@drawable/arrow_up"
-                android:layout_marginBottom="5dp" >
+                android:layout_marginBottom="5dp"
+                android:layout_weight="7.71"
+                android:background="@drawable/arrow_up" >
             </ImageButton>
         </LinearLayout>
 
@@ -50,29 +49,12 @@
                 android:verticalSpacing="5dp" >
             </GridView>
 
-            <ImageButton
-                android:layout_width="fill_parent"
-                android:layout_height="20dp"
-                android:background="@drawable/blur_top"
-                android:orientation="vertical"
-                android:visibility="gone" >
-
-            </ImageButton>
-
-            <ImageButton
-                android:layout_width="fill_parent"
-                android:layout_height="20dp"
-                android:layout_alignParentBottom="true"
-                android:layout_alignParentLeft="true"
-                android:background="@drawable/blur_bottom" />
 
         </RelativeLayout>
 
         <LinearLayout
             android:layout_width="fill_parent"
             android:layout_height="wrap_content"
-            android:layout_above="@+id/relativeLayout2"
-            android:layout_alignParentBottom="false"
             android:background="#282e3a"
             android:orientation="vertical" >
 
@@ -80,7 +62,6 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_gravity="center"
-                android:layout_marginBottom="5dp"
                 android:layout_marginTop="5dp"
                 android:background="@drawable/arrow_down" >
             </ImageButton>
@@ -104,9 +85,10 @@
         android:id="@+id/foregroundLoading"
         android:layout_width="fill_parent"
         android:layout_height="fill_parent"
+        android:layout_alignParentBottom="true"
         android:background="#282e3a"
         android:orientation="vertical"
-        android:visibility="invisible" >
+        android:visibility="gone" >
 
         <ImageView
             android:id="@+id/loadingBackgroundS"

@@ -24,10 +24,11 @@
             android:layout_alignLeft="@+id/imageView1"
             android:layout_alignRight="@+id/imageView1"
             android:layout_alignTop="@+id/imageView1"
-            android:background="@drawable/popup_gift" >
-
+            android:background="@drawable/popup_gift"
+            android:listSelector="@android:color/transparent"
+            android:divider="#535760"
+            android:dividerHeight="0.75px" >
         </ListView>
-
     </RelativeLayout>
 
 </LinearLayout>
