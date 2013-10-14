@@ -2331,11 +2331,8 @@ public class MainActivity extends FragmentActivity implements MainAcitivyListene
 			pairs.add(new BasicNameValuePair("user_id", GlobalVariable.userID));
 			pairs.add(new BasicNameValuePair("promotion_2_id", Integer.toString(mAwardId)));
 			pairs.add(new BasicNameValuePair("code", mQRCode));
-			
-			if (GlobalVariable.mLat != -1 && GlobalVariable.mLng != -1){
-				pairs.add(new BasicNameValuePair("user_lat", Float.toString(GlobalVariable.mLat)));
-				pairs.add(new BasicNameValuePair("user_lng", Float.toString(GlobalVariable.mLng)));
-			}
+			pairs.add(new BasicNameValuePair("user_lat", Float.toString(GlobalVariable.mLat)));
+			pairs.add(new BasicNameValuePair("user_lng", Float.toString(GlobalVariable.mLng)));
 
 			String json = NetworkManger.post(APILinkMaker.mGetAwardType2(), pairs);
 			try {
@@ -2441,11 +2438,8 @@ public class MainActivity extends FragmentActivity implements MainAcitivyListene
 				List<NameValuePair> pairs = new ArrayList<NameValuePair>();
 				pairs.add(new BasicNameValuePair("user_id", GlobalVariable.userID));
 				pairs.add(new BasicNameValuePair("code", mQRCode));
-				
-				if (GlobalVariable.mLat != -1 && GlobalVariable.mLng != -1){
-					pairs.add(new BasicNameValuePair("user_lat", Float.toString(GlobalVariable.mLat)));
-					pairs.add(new BasicNameValuePair("user_lng", Float.toString(GlobalVariable.mLng)));
-				}
+				pairs.add(new BasicNameValuePair("user_lat", Float.toString(GlobalVariable.mLat)));
+				pairs.add(new BasicNameValuePair("user_lng", Float.toString(GlobalVariable.mLng)));
 
 				String json = NetworkManger.post(APILinkMaker.mGetSGP(), pairs);
 
