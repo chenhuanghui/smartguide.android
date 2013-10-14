@@ -876,33 +876,33 @@ public class MainActivity extends FragmentActivity implements MainAcitivyListene
 
 	public void toggleCamera() {
 
-		if (!mShowCamera && (mScanningCode == 1 || mScanningCode == 2)){
-			LocationManager locationManager = (LocationManager) getSystemService(LOCATION_SERVICE);
-			boolean isGPSOn = locationManager.isProviderEnabled(LocationManager.GPS_PROVIDER);
-			boolean isWifiOn = locationManager.isProviderEnabled(LocationManager.NETWORK_PROVIDER);
-
-			if(!isGPSOn && !isWifiOn){
-				AlertDialog.Builder alertDialog = new AlertDialog.Builder(mActivity);
-				String message = "";
-				message = "Bạn cần bật GPS hoặc wireless location trước khi scan code!!";
-
-				alertDialog.setMessage(message);
-
-				alertDialog.setPositiveButton("Thiết lập", new DialogInterface.OnClickListener() {
-					public void onClick(DialogInterface dialog,int which) {
-						startActivity(new Intent(Settings.ACTION_LOCATION_SOURCE_SETTINGS));
-					}
-				});
-
-				alertDialog.setNegativeButton("Hủy", new DialogInterface.OnClickListener() {
-					public void onClick(DialogInterface dialog, int which) {
-						dialog.cancel();
-					}
-				});
-				alertDialog.show();
-				return;
-			}
-		}
+//		if (!mShowCamera && (mScanningCode == 1 || mScanningCode == 2)){
+//			LocationManager locationManager = (LocationManager) getSystemService(LOCATION_SERVICE);
+//			boolean isGPSOn = locationManager.isProviderEnabled(LocationManager.GPS_PROVIDER);
+//			boolean isWifiOn = locationManager.isProviderEnabled(LocationManager.NETWORK_PROVIDER);
+//
+//			if(!isGPSOn && !isWifiOn){
+//				AlertDialog.Builder alertDialog = new AlertDialog.Builder(mActivity);
+//				String message = "";
+//				message = "Bạn cần bật GPS hoặc wireless location trước khi scan code!!";
+//
+//				alertDialog.setMessage(message);
+//
+//				alertDialog.setPositiveButton("Thiết lập", new DialogInterface.OnClickListener() {
+//					public void onClick(DialogInterface dialog,int which) {
+//						startActivity(new Intent(Settings.ACTION_LOCATION_SOURCE_SETTINGS));
+//					}
+//				});
+//
+//				alertDialog.setNegativeButton("Hủy", new DialogInterface.OnClickListener() {
+//					public void onClick(DialogInterface dialog, int which) {
+//						dialog.cancel();
+//					}
+//				});
+//				alertDialog.show();
+//				return;
+//			}
+//		}
 
 		RelativeLayout layoutQR = (RelativeLayout) findViewById(R.id.layoutQR);
 		if (layoutQR.getVisibility() == View.GONE) {
@@ -931,16 +931,16 @@ public class MainActivity extends FragmentActivity implements MainAcitivyListene
 			mIsCanWipe = true;
 			//mScanCover.setVisibility(View.VISIBLE);
 
-			if (GlobalVariable.mLat == -1){
-				mMirrorFront.setVisibility(View.INVISIBLE);
-				mMirror.setVisibility(View.VISIBLE);
-				mShopNameText.setVisibility(View.INVISIBLE);
-				mSGPText.setVisibility(View.INVISIBLE);
-				mContentText.setVisibility(View.INVISIBLE);
-				mProgressBar.setVisibility(View.VISIBLE);
-				isCanScan = false;
-				Toast.makeText(mActivity, "Vui lòng chờ lấy tọa độ GPS", Toast.LENGTH_LONG).show();
-			}
+//			if (GlobalVariable.mLat == -1){
+//				mMirrorFront.setVisibility(View.INVISIBLE);
+//				mMirror.setVisibility(View.VISIBLE);
+//				mShopNameText.setVisibility(View.INVISIBLE);
+//				mSGPText.setVisibility(View.INVISIBLE);
+//				mContentText.setVisibility(View.INVISIBLE);
+//				mProgressBar.setVisibility(View.VISIBLE);
+//				isCanScan = false;
+//				Toast.makeText(mActivity, "Vui lòng chờ lấy tọa độ GPS", Toast.LENGTH_LONG).show();
+//			}
 		}
 		else{
 			QRCodeTextView.setText("CHẠM VÀO ĐỂ NHẬN ĐIỂM");
@@ -2331,8 +2331,11 @@ public class MainActivity extends FragmentActivity implements MainAcitivyListene
 			pairs.add(new BasicNameValuePair("user_id", GlobalVariable.userID));
 			pairs.add(new BasicNameValuePair("promotion_2_id", Integer.toString(mAwardId)));
 			pairs.add(new BasicNameValuePair("code", mQRCode));
-			pairs.add(new BasicNameValuePair("user_lat", Float.toString(GlobalVariable.mLat)));
-			pairs.add(new BasicNameValuePair("user_lng", Float.toString(GlobalVariable.mLng)));
+			
+			if (GlobalVariable.mLat != -1 && GlobalVariable.mLng != -1){
+				pairs.add(new BasicNameValuePair("user_lat", Float.toString(GlobalVariable.mLat)));
+				pairs.add(new BasicNameValuePair("user_lng", Float.toString(GlobalVariable.mLng)));
+			}
 
 			String json = NetworkManger.post(APILinkMaker.mGetAwardType2(), pairs);
 			try {
@@ -2438,8 +2441,11 @@ public class MainActivity extends FragmentActivity implements MainAcitivyListene
 				List<NameValuePair> pairs = new ArrayList<NameValuePair>();
 				pairs.add(new BasicNameValuePair("user_id", GlobalVariable.userID));
 				pairs.add(new BasicNameValuePair("code", mQRCode));
-				pairs.add(new BasicNameValuePair("user_lat", Float.toString(GlobalVariable.mLat)));
-				pairs.add(new BasicNameValuePair("user_lng", Float.toString(GlobalVariable.mLng)));
+				
+				if (GlobalVariable.mLat != -1 && GlobalVariable.mLng != -1){
+					pairs.add(new BasicNameValuePair("user_lat", Float.toString(GlobalVariable.mLat)));
+					pairs.add(new BasicNameValuePair("user_lng", Float.toString(GlobalVariable.mLng)));
+				}
 
 				String json = NetworkManger.post(APILinkMaker.mGetSGP(), pairs);
 
