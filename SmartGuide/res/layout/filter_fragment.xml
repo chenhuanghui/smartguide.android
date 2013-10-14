@@ -96,10 +96,11 @@
                     <RadioButton
                         android:id="@+id/radioMostPoint"
                         style="@style/RadioButton"
-                        android:checked="true"
                         android:layout_width="wrap_content"
                         android:layout_height="17dp"
-                        android:text="QUAN TÂM NHẤT"
+                        android:checked="true"
+                        android:gravity="center_vertical"
+                        android:text=" QUAN TÂM NHẤT"
                         android:textColor="#8494B8"
                         android:textSize="14dp" />
 
@@ -109,7 +110,7 @@
                         android:layout_width="wrap_content"
                         android:layout_height="17dp"
                         android:checked="false"
-                        android:text="ƯA THÍCH NHẤT"
+                        android:text=" ƯA THÍCH NHẤT"
                         android:textColor="#8494B8"
                         android:textSize="14dp" />
 
@@ -119,7 +120,7 @@
                         android:layout_width="wrap_content"
                         android:layout_height="17dp"
                         android:checked="false"
-                        android:text="XEM NHIỀU NHẤT"
+                        android:text=" XEM NHIỀU NHẤT"
                         android:textColor="#8494B8"
                         android:textSize="14dp" />
 
@@ -129,7 +130,7 @@
                         android:layout_width="match_parent"
                         android:layout_height="17dp"
                         android:checked="false"
-                        android:text="KHOẢNG CÁCH"
+                        android:text=" KHOẢNG CÁCH"
                         android:textColor="#8494B8"
                         android:textSize="14dp" />
                 </RadioGroup>

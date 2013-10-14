@@ -302,7 +302,6 @@ public class ShopDetailFragment extends Fragment {
 
 				pairs.add(new BasicNameValuePair("user_lat", Float.toString(GlobalVariable.mLat)));
 				pairs.add(new BasicNameValuePair("user_lng", Float.toString(GlobalVariable.mLng)));
-				pairs.add(new BasicNameValuePair("version", "1"));
 			
 				String json = NetworkManger.post(APILinkMaker.mGetShopUser(), pairs);
 				JSONObject jRoot = new JSONObject(json);

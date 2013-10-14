@@ -178,7 +178,7 @@ public class MainActivity extends FragmentActivity implements MainAcitivyListene
 	private boolean			mIsMenuExpand = false;
 	private ImageButton		mUpdateInforBtn;
 	private EditText		mRenameBtn;
-	private LinearLayout	mExpandMenuLO;
+	private RelativeLayout	mExpandMenuLO;
 	private String			avatarURL = "";
 	private String			name;
 	private Dialog			dialog;
@@ -273,7 +273,7 @@ public class MainActivity extends FragmentActivity implements MainAcitivyListene
 		mUiHelper.onCreate(savedInstanceState);
 
 		//test connection
-		if (NetworkManger.isOnline(this) == false){
+		if (NetworkManger.isOnline(this) == false) {
 			exitWithError();
 			return;
 		}
@@ -346,189 +346,190 @@ public class MainActivity extends FragmentActivity implements MainAcitivyListene
 		}
 	}
 
-	@Override
-	public void goToPage(int index) {
-		switch (index){
-		case 0:
-			enableFilterMap();
-			mShopListFragment.releaseMemory();
-			mMapButton.setClickable(false);
-			mMapButton.setImageResource(R.drawable.menu_map_lock);
-			break;
-		case 1:
-			enableFilterMap();
-			mShopDetailFragment.releaseMemory();
-			mMapButton.setClickable(true);
-			mMapButton.setImageResource(R.drawable.map_btn);
-			break;
-		case 2:
-			disableFilterMap();
-
-		}
-		mViewPager.setCurrentItem(index, true);
-	}
+//	@Override
+//	public void goToPage(int index) {
+//		switch (index){
+//		case 0:
+//			enableFilterMap();
+//			mShopListFragment.releaseMemory();
+////			mMapButton.setClickable(false);
+////			mMapButton.setImageResource(R.drawable.menu_map_lock);
+//			break;
+//		case 1:
+//			enableFilterMap();
+//			mShopDetailFragment.releaseMemory();
+////			mMapButton.setClickable(true);
+////			mMapButton.setImageResource(R.drawable.map_btn);
+//			break;
+//		case 2:
+//			disableFilterMap();
+//
+//		}
+//		mViewPager.setCurrentItem(index, true);
+//	}
 
 	private void turnToPage(int index) {
 		mViewPager.setCurrentItem(index, true);
 	}
 
-	@Override
-	public void goNextPage() {
-		int current_index = mViewPager.getCurrentItem();
-		if (current_index == mFragmentList.size() - 1)
-			return;
+//	@Override
+//	public void goNextPage() {
+//		int current_index = mViewPager.getCurrentItem();
+//		if (current_index == mFragmentList.size() - 1)
+//			return;
+//
+//		int pageWillGo = current_index + 1;
+//		switch (pageWillGo){
+//		case 1:
+//			enableFilterMap();
+//			int lengthOfFilterString = GlobalVariable.mFilterString.length();
+//			if (lengthOfFilterString >= 2)
+//				setNaviText("NHIỀU DANH MỤC");
+//			else{
+//				int shopType = Integer.valueOf(GlobalVariable.mFilterString);
+//				switch(shopType){
+//				case 1:
+//					setNaviText("ẨM THỰC");
+//					break;
+//				case 2:
+//					setNaviText("CAFE & BAR");
+//					break;
+//				case 3:
+//					setNaviText("LÀM ĐẸP");
+//					break;
+//				case 4:
+//					setNaviText("GIẢI TRÍ");
+//					break;
+//				case 5:
+//					setNaviText("THỜI TRANG");
+//					break;
+//				case 6:
+//					setNaviText("DU LỊCH");
+//					break;
+//				case 7:
+//					setNaviText("SẢN PHẨM");
+//					break;					
+//				case 8:
+//					setNaviText("GIÁO DỤC");
+//					break;
+//				}
+//			}
+//
+//			break;
+//		case 2:
+//			disableFilterMap();
+//			setNaviText(GlobalVariable.mCurrentShop.mName);
+//			break;
+//		case 0:
+////			mMapButton.setClickable(false);
+////			mMapButton.setImageResource(R.drawable.menu_map_lock);
+//			break;
+//		}
+//
+//		mViewPager.setCurrentItem(pageWillGo, true);
+//	}
 
-		int pageWillGo = current_index + 1;
-		switch (pageWillGo){
-		case 1:
-			enableFilterMap();
-			int lengthOfFilterString = GlobalVariable.mFilterString.length();
-			if (lengthOfFilterString >= 2)
-				setNaviText("NHIỀU DANH MỤC");
-			else{
-				int shopType = Integer.valueOf(GlobalVariable.mFilterString);
-				switch(shopType){
-				case 1:
-					setNaviText("ẨM THỰC");
-					break;
-				case 2:
-					setNaviText("CAFE & BAR");
-					break;
-				case 3:
-					setNaviText("LÀM ĐẸP");
-					break;
-				case 4:
-					setNaviText("GIẢI TRÍ");
-					break;
-				case 5:
-					setNaviText("THỜI TRANG");
-					break;
-				case 6:
-					setNaviText("DU LỊCH");
-					break;
-				case 7:
-					setNaviText("SẢN PHẨM");
-					break;					
-				case 8:
-					setNaviText("GIÁO DỤC");
-					break;
-				}
-			}
-
-			break;
-		case 2:
-			disableFilterMap();
-			setNaviText(GlobalVariable.mCurrentShop.mName);
-			break;
-		case 0:
-			mMapButton.setClickable(false);
-			mMapButton.setImageResource(R.drawable.menu_map_lock);
-			break;
-		}
-
-		mViewPager.setCurrentItem(pageWillGo, true);
-	}
-
-	@Override
-	public void goPreviousPage() {
-		int current_index = mViewPager.getCurrentItem();
-
-		if (current_index == 0){
-			if (doubleBackToExitPressedOnce) {
-				stopAds();
-				super.onBackPressed();
-				return;
-			}
-
-			doubleBackToExitPressedOnce = true;
-			Toast.makeText(this, "Nhấn back lần nữa để thoát chương trình", Toast.LENGTH_SHORT).show();
-			new Handler().postDelayed(new Runnable() {
-
-				@Override
-				public void run() {
-					doubleBackToExitPressedOnce = false;
-				}
-			}, 2000);
-		}else
-			doubleBackToExitPressedOnce = false;
-
-		int pageWillGo = current_index - 1;
-		try{
-			switch (pageWillGo){
-			case 1:
-				mShopDetailFragment.releaseMemory();
-				enableFilterMap();
-				int lengthOfFilterString = GlobalVariable.mFilterString.length();
-				if (lengthOfFilterString >= 2)
-					setNaviText("NHIỀU DANH MỤC");
-				else{
-					int shopType = Integer.valueOf(GlobalVariable.mFilterString);
-					switch(shopType){
-					case 1:
-						setNaviText("ẨM THỰC");
-						break;
-					case 2:
-						setNaviText("CAFE & BAR");
-						break;
-					case 3:
-						setNaviText("LÀM ĐẸP");
-						break;
-					case 4:
-						setNaviText("GIẢI TRÍ");
-						break;
-					case 5:
-						setNaviText("THỜI TRANG");
-						break;
-					case 6:
-						setNaviText("DU LỊCH");
-						break;
-					case 7:
-						setNaviText("SẢN PHẨM");
-						break;					
-					case 8:
-						setNaviText("GIÁO DỤC");
-						break;
-					}
-				}
-				break;
-
-			case 0:
-				enableFilterMap();
-				mMapButton.setClickable(false);
-				mMapButton.setImageResource(R.drawable.menu_map_lock);
-				setNaviText("DANH MỤC");
-				mShopListFragment.releaseMemory();
-				break;
-			}	
-		}catch(Exception ex){
-			setNaviText("DANH MỤC");
-		}
-		mViewPager.setCurrentItem(current_index - 1, true);
-	}
+//	@Override
+//	public void goPreviousPage() {
+//		int current_index = mViewPager.getCurrentItem();
+//
+//		if (current_index == 0){
+//			if (doubleBackToExitPressedOnce) {
+//				stopAds();
+//				super.onBackPressed();
+//				return;
+//			}
+//
+//			doubleBackToExitPressedOnce = true;
+//			Toast.makeText(this, "Nhấn back lần nữa để thoát chương trình", Toast.LENGTH_SHORT).show();
+//			new Handler().postDelayed(new Runnable() {
+//
+//				@Override
+//				public void run() {
+//					doubleBackToExitPressedOnce = false;
+//				}
+//			}, 2000);
+//		}else
+//			doubleBackToExitPressedOnce = false;
+//
+//		int pageWillGo = current_index - 1;
+//		try{
+//			switch (pageWillGo){
+//			case 1:
+//				mShopDetailFragment.releaseMemory();
+//				enableFilterMap();
+//				int lengthOfFilterString = GlobalVariable.mFilterString.length();
+//				if (lengthOfFilterString >= 2)
+//					setNaviText("NHIỀU DANH MỤC");
+//				else{
+//					int shopType = Integer.valueOf(GlobalVariable.mFilterString);
+//					switch(shopType){
+//					case 1:
+//						setNaviText("ẨM THỰC");
+//						break;
+//					case 2:
+//						setNaviText("CAFE & BAR");
+//						break;
+//					case 3:
+//						setNaviText("LÀM ĐẸP");
+//						break;
+//					case 4:
+//						setNaviText("GIẢI TRÍ");
+//						break;
+//					case 5:
+//						setNaviText("THỜI TRANG");
+//						break;
+//					case 6:
+//						setNaviText("DU LỊCH");
+//						break;
+//					case 7:
+//						setNaviText("SẢN PHẨM");
+//						break;					
+//					case 8:
+//						setNaviText("GIÁO DỤC");
+//						break;
+//					}
+//				}
+//				break;
+//
+//			case 0:
+//				enableFilterMap();
+////				mMapButton.setClickable(false);
+////				mMapButton.setImageResource(R.drawable.menu_map_lock);
+//				setNaviText("DANH MỤC");
+//				mShopListFragment.releaseMemory();
+//				break;
+//			}	
+//		}catch(Exception ex){
+//			setNaviText("DANH MỤC");
+//		}
+//		mViewPager.setCurrentItem(current_index - 1, true);
+//	}
 
 	public void toggleShowContent() {
 		mShowContent = !mShowContent;
-
-		if (mShowContent && mViewPager.getCurrentItem() == 2)
-			disableFilterMap();
-		else
-			enableFilterUserMap();
+//
+//		if (mShowContent && mViewPager.getCurrentItem() == 2)
+//			disableFilterMap();
+//		else
+//			enableFilterUserMap();
 
 		ObjectAnimator animator = null;
 		int height = findViewById(R.id.layoutContentHolder).getHeight();
 		View layout = findViewById(R.id.layoutContentFrame);
 		if (mShowContent){
 			animator = ObjectAnimator.ofFloat(layout, "translationY", -height, 0);
-			mMapButton.setImageResource(R.drawable.menu_map);
+//			mMapButton.setImageResource(R.drawable.menu_map);
 		}
 		else{
-			mMapButton.setImageResource(R.drawable.menu_list);
+//			mMapButton.setImageResource(R.drawable.menu_list);
 			animator = ObjectAnimator.ofFloat(layout, "translationY", 0, -height);
 			updateMap();
 		}
 
 		animator.setInterpolator(new AccelerateDecelerateInterpolator());
 		animator.start();
+		updateHeader();
 	}
 
 	///////////////////////////////////////////////////////////////////////////
@@ -1433,11 +1434,12 @@ public class MainActivity extends FragmentActivity implements MainAcitivyListene
 					return;
 				}
 				
-				new UpdateUserInfo().execute();
+				new UpdateUserInfo().setDisableView(mUpdateInforBtn)
+				.setVisibleView(mLoadingLO).execute();
 			}
 		});
 		mRenameBtn = (EditText)menu.getMenu().findViewById(R.id.renameBtn);
-		mExpandMenuLO = (LinearLayout)menu.getMenu().findViewById(R.id.expandLayout);;
+		mExpandMenuLO = (RelativeLayout)menu.getMenu().findViewById(R.id.expandLayout);;
 		reviewBtn = (RelativeLayout)menu.getMenu().findViewById(R.id.reviewSmartGuide);
 		reviewBtn.setOnClickListener(new View.OnClickListener() {	
 			@Override
@@ -1505,8 +1507,8 @@ public class MainActivity extends FragmentActivity implements MainAcitivyListene
 						mUserFragment.toggle();
 					if (mFiterFragment.isShow())
 						mFiterFragment.toggle();
-					if (!mShowContent)
-						toggleShowContent();
+//					if (!mShowContent)
+//						toggleShowContent();
 					mActiveView = EnumView.ShopDetail;
 					mPreShopDetail = EnumView.ShopList;
 					turnToPage(2);
@@ -1598,6 +1600,7 @@ public class MainActivity extends FragmentActivity implements MainAcitivyListene
 		});
 
 		initToggleCamera();
+		updateHeader();
 	}
 
 	///////////////////////////////////////////////////////////////////////////
@@ -1738,7 +1741,7 @@ public class MainActivity extends FragmentActivity implements MainAcitivyListene
 				GlobalVariable.mCityID = GlobalVariable.mCityIDes.get(mChoiceLocation);
 				mLocationTV.setText(GlobalVariable.mCityNames.get(mChoiceLocation));
 				menu.toggle();
-				goToPage(0);
+//				goToPage(0);
 				((CategoryListFragment)mFragmentList.get(0)).autoUpdate();
 
 				GlobalVariable.smartGuideDB.deleteUserSetting();
@@ -1898,8 +1901,8 @@ public class MainActivity extends FragmentActivity implements MainAcitivyListene
 		mCategoryListFragment.firstTimeUpdate();
 		mAdsFragment.startDownImage();
 
-		mMapButton.setClickable(true);
-		mMapButton.setImageResource(R.drawable.map_btn);
+//		mMapButton.setClickable(true);
+//		mMapButton.setImageResource(R.drawable.map_btn);
 	}
 
 	void exitWithError() {
@@ -2036,7 +2039,7 @@ public class MainActivity extends FragmentActivity implements MainAcitivyListene
 	private EnumView mPreUserCollection;
 
 	private static final boolean[][] HEADER_BUTTON_STATE = new boolean[][] {
-		{true, true, true},
+		{true, true, false},
 		{true, true, true},
 		{false, true, false},
 		{false, true, false},
@@ -2869,42 +2872,42 @@ public class MainActivity extends FragmentActivity implements MainAcitivyListene
 		//		mTotalSGP.setText(score + " P");
 	}
 
-	public void enableFilterMap(){
-		mFilterBtn.setClickable(true);
-		mMapButton.setClickable(true);
-		mFilterBtn.setImageResource(R.drawable.menu_filter);
-		mMapButton.setImageResource(R.drawable.map_btn);
-	}
-
-	public void disableFilterMap(){
-		mFilterBtn.setImageResource(R.drawable.menu_filter_lock);
-		mMapButton.setImageResource(R.drawable.menu_map_lock);
-		mFilterBtn.setClickable(false);
-		mMapButton.setClickable(false);
-	}
-
-	public void enableUserMap(){
-		mUserButton.setClickable(true);
-		mMapButton.setClickable(true);
-		mUserButton.setImageResource(R.drawable.user_btn);
-		mMapButton.setImageResource(R.drawable.map_btn);
-	}
-
-	public void disableUserMap(){
-		mUserButton.setClickable(false);
-		mMapButton.setClickable(false);
-		mUserButton.setImageResource(R.drawable.user_btn);
-		mMapButton.setImageResource(R.drawable.menu_map_lock);
-	}
-
-	public void enableFilterUserMap(){
-		mFilterBtn.setClickable(true);
-		mMapButton.setClickable(true);
-		mUserButton.setClickable(true);
-		mFilterBtn.setImageResource(R.drawable.menu_filter);
-		mMapButton.setImageResource(R.drawable.map_btn);
-		mUserButton.setImageResource(R.drawable.user_btn);
-	}
+//	public void enableFilterMap(){
+//		mFilterBtn.setClickable(true);
+//		mMapButton.setClickable(true);
+//		mFilterBtn.setImageResource(R.drawable.menu_filter);
+//		mMapButton.setImageResource(R.drawable.map_btn);
+//	}
+//
+//	public void disableFilterMap(){
+//		mFilterBtn.setImageResource(R.drawable.menu_filter_lock);
+//		mMapButton.setImageResource(R.drawable.menu_map_lock);
+//		mFilterBtn.setClickable(false);
+//		mMapButton.setClickable(false);
+//	}
+//
+//	public void enableUserMap(){
+//		mUserButton.setClickable(true);
+//		mMapButton.setClickable(true);
+//		mUserButton.setImageResource(R.drawable.user_btn);
+//		mMapButton.setImageResource(R.drawable.map_btn);
+//	}
+//
+//	public void disableUserMap(){
+//		mUserButton.setClickable(false);
+//		mMapButton.setClickable(false);
+//		mUserButton.setImageResource(R.drawable.user_btn);
+//		mMapButton.setImageResource(R.drawable.menu_map_lock);
+//	}
+//
+//	public void enableFilterUserMap(){
+//		mFilterBtn.setClickable(true);
+//		mMapButton.setClickable(true);
+//		mUserButton.setClickable(true);
+//		mFilterBtn.setImageResource(R.drawable.menu_filter);
+//		mMapButton.setImageResource(R.drawable.map_btn);
+//		mUserButton.setImageResource(R.drawable.user_btn);
+//	}
 
 	private class QCToDetail extends AsyncTask<Void, Void, Boolean> {
 		@Override
@@ -3060,85 +3063,79 @@ public class MainActivity extends FragmentActivity implements MainAcitivyListene
 		return registrationId;
 	}
 	
-	public class UpdateUserInfo extends AsyncTask<Void, Void, Boolean> {
-		String JSResult = null;
+	public class UpdateUserInfo extends CyAsyncTask {
+		
+		private JSONObject JSResult;
+		private Exception mEx;
+		
 		@Override
-		protected Boolean doInBackground(Void... params) {
-			
-			List<NameValuePair> pairs = new ArrayList<NameValuePair>();
-			pairs.add(new BasicNameValuePair("name", name));
-			if (avatarURL == "" || avatarURL.length() == 0)
-				avatarURL = GlobalVariable.mAvatarList.get(0);
-			
-			pairs.add(new BasicNameValuePair("avatar", avatarURL));
-			JSResult = NetworkManger.post(APILinkMaker.mUpdateUserInfo(), pairs);
-			if (JSResult == "")
-				return false; 
-			return true;
-		}
-
-		@Override
-		protected void onPostExecute(Boolean k){
-			if (k == true){
-				try{
-					JSONObject result = new JSONObject(JSResult);
-					int code = result.getInt("code");
-					if (code == 1){
-						mLoadingLO.setVisibility(View.GONE);
-						
-						GlobalVariable.nameFace = name;
-						GlobalVariable.avatarFace = avatarURL;
-						
-						HashMap<String, String> token =  new  HashMap<String, String>();
-						token.put("userID", "-1");
-						token.put("avatar",avatarURL);
-						token.put("name",name);
-
-						GlobalVariable.smartGuideDB.insertFacebook(token);
-						
-						mUserFragment.updateAvatar();
-						
-						AlertDialog.Builder builder = new AlertDialog.Builder(MainActivity.this);
-
-						builder.setMessage("Cập nhật thông tin thành công");
-						builder.setCancelable(true);
-
-						builder.setNegativeButton("Đồng ý", new DialogInterface.OnClickListener() {
-							public void onClick(DialogInterface dialog, int which) {
-								mExpandMenuBtn.performClick();
-							}
-						});
-						
-						AlertDialog dialog = builder.show();
-						TextView messageView = (TextView)dialog.findViewById(android.R.id.message);
-						messageView.setGravity(Gravity.CENTER);
-						
-						return;
-					}
-				}catch(Exception ex){
-
-				}
+		protected Void doInBackground(Void... params) {
+			try {
+				List<NameValuePair> pairs = new ArrayList<NameValuePair>();
+				pairs.add(new BasicNameValuePair("name", name));
+				if (avatarURL == "" || avatarURL.length() == 0)
+					avatarURL = GlobalVariable.mAvatarList.get(0);
+				
+				pairs.add(new BasicNameValuePair("avatar", avatarURL));
+				JSResult = new JSONObject(NetworkManger.post(APILinkMaker.mUpdateUserInfo(), pairs));
+			} catch (Exception e) {
+				mEx = e;
 			}
-			
-			AlertDialog.Builder builder = new AlertDialog.Builder(MainActivity.this);
-
-			builder.setMessage("Có lỗi xảy ra vui lòng thử lại");
-			builder.setCancelable(true);
-
-			builder.setNegativeButton("Đồng ý", new DialogInterface.OnClickListener() {
-				public void onClick(DialogInterface dialog, int which) {
-					
-				}
-			});
-			
-			AlertDialog dialog = builder.show();
-			TextView messageView = (TextView)dialog.findViewById(android.R.id.message);
-			messageView.setGravity(Gravity.CENTER);
+			return null;
 		}
 
 		@Override
-		protected void onPreExecute(){
-			mLoadingLO.setVisibility(View.VISIBLE);
+		protected void onPostExecute(Object r) {
+			super.onPostExecute(r);
+
+			try {
+				if (mEx != null)
+					throw mEx;
+				
+				JSONObject result = JSResult;
+				int code = result.getInt("code");
+				if (code == 1){
+
+					GlobalVariable.nameFace = name;
+					GlobalVariable.avatarFace = avatarURL;
+
+					HashMap<String, String> token =  new  HashMap<String, String>();
+					token.put("userID", "-1");
+					token.put("avatar",avatarURL);
+					token.put("name",name);
+
+					GlobalVariable.smartGuideDB.insertFacebook(token);
+
+					mUserFragment.updateAvatar();
+
+					AlertDialog.Builder builder = new AlertDialog.Builder(MainActivity.this);
+
+					builder.setMessage("Cập nhật thông tin thành công");
+					builder.setCancelable(true);
+
+					builder.setNegativeButton("Đồng ý", new DialogInterface.OnClickListener() {
+						public void onClick(DialogInterface dialog, int which) {
+							mExpandMenuBtn.performClick();
+						}
+					});
+
+					AlertDialog dialog = builder.show();
+					TextView messageView = (TextView)dialog.findViewById(android.R.id.message);
+					messageView.setGravity(Gravity.CENTER);
+
+					return;
+				}
+			} catch(Exception ex) {
+				AlertDialog.Builder builder = new AlertDialog.Builder(MainActivity.this);
+
+				builder.setMessage("Có lỗi xảy ra vui lòng thử lại");
+				builder.setCancelable(true);
+				builder.setNegativeButton("Đồng ý", null);
+
+				AlertDialog dialog = builder.show();
+				TextView messageView = (TextView)dialog.findViewById(android.R.id.message);
+				messageView.setGravity(Gravity.CENTER);
+			}
 		}
 	}
 }

@@ -331,7 +331,7 @@ public class ShopListFragment extends Fragment {
 				mDistantTV.setText(Float.toString(mShop.mDistance) + " KM");			
 
 			// Set promotion type
-			if (mShop.mPromotionStatus) {					
+			if (mShop.mPromotionStatus) {
 				switch(mShop.mPromotion.getType()) {
 				case 1:
 					PromotionTypeOne promotionTypeOne = (PromotionTypeOne) mShop.mPromotion;

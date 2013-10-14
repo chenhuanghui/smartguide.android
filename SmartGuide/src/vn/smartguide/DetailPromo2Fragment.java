@@ -47,6 +47,9 @@ public class DetailPromo2Fragment extends DetailPromoFragment {
 	public void setData(Shop s) {
 		final Shop mShop = s;
 		Button rewardBtn = (Button)getView().findViewById(R.id.imageButton1);
+		TextView txtDuration = (TextView) getView().findViewById(R.id.txtPromoDuration);
+		txtDuration.setText(((PromotionTypeTwo) mShop.mPromotion).mDuration);
+		
 		rewardBtn.setOnClickListener(new View.OnClickListener() {
 			@Override
 			public void onClick(View v) {
@@ -110,6 +113,7 @@ public class DetailPromo2Fragment extends DetailPromoFragment {
 					("Tích lũy ").length(),
 					("Tích lũy " + getItem(position).P + " P").length(), 0);
 			txtP.setText(span);
+			((TextView) v.findViewById(R.id.txtType)).setText(getItem(position).numberVoucher);
 			return v;
 		}
 	}

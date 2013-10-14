@@ -14,7 +14,7 @@
         <LinearLayout
             android:layout_width="47dp"
             android:layout_height="wrap_content"
-            android:gravity="center_horizontal|center_vertical"
+            android:gravity="center"
             android:orientation="vertical" >
 
             <TextView
@@ -25,13 +25,13 @@
                 android:gravity="center"
                 android:text="05"
                 android:textColor="#ffffff"
-                android:textSize="20dp" />
+                android:textSize="20sp" />
         </LinearLayout>
 
         <LinearLayout
             android:layout_width="49dp"
             android:layout_height="wrap_content"
-            android:gravity="bottom|center_horizontal|center_vertical"
+            android:gravity="center"
             android:orientation="vertical" >
 
             <TextView
@@ -43,7 +43,7 @@
                 android:gravity="center"
                 android:text="05"
                 android:textColor="#ffffff"
-                android:textSize="20dp" />
+                android:textSize="13sp" />
 
             <ImageView
                 android:layout_width="wrap_content"
@@ -64,7 +64,8 @@
                 android:minHeight="30dp"
                 android:text="1 phần khuyến mãi "
                 android:textColor="#ffffff"
-                android:textSize="15dp" />
+                android:textSize="13sp" />
+
         </LinearLayout>
     </LinearLayout>
 

@@ -8,6 +8,14 @@
     android:paddingTop="20dp" >
 
     <TextView
+        android:id="@+id/txtType"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Loại A"
+        android:layout_marginBottom="10dp"
+        android:textStyle="bold" />
+
+    <TextView
         android:id="@+id/txtDes"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"

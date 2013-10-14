@@ -11,9 +11,12 @@ import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import vn.smartguide.CyImageLoader.Listener;
+
 import android.annotation.SuppressLint;
 import android.app.Activity;
 import android.graphics.Bitmap;
+import android.graphics.Point;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.os.Handler;
@@ -157,65 +160,41 @@ public class DetailCommentFragment extends Fragment {
 			TextView txtName = (TextView) convertView.findViewById(R.id.txtName);
 			TextView txtTime = (TextView) convertView.findViewById(R.id.txtTime);
 			TextView txtComment = (TextView) convertView.findViewById(R.id.txtComment);
-			ImageView imgAva = (ImageView) convertView.findViewById(R.id.imgAva);
+			final ImageView imgAva = (ImageView) convertView.findViewById(R.id.imgAva);			
 
 			Comment item = mItemList.get(position);
 			txtName.setText(item.mUser);
 			txtTime.setText(item.mTime);
 			txtComment.setText(item.mComment);
-
-			if (item.mAva != null)
-				imgAva.setImageBitmap(item.mAva);
-			else {
-				// Load image
-				loadImage(item);
-			}
-
-			if (position == 0) {
-				loadMore();
-			}
+			imgAva.setTag(item.mAvaUrl);
+			GlobalVariable.cyImageLoader.loadImage(item.mAvaUrl, new Listener() {
+				@Override
+				public void startLoad(int from) {
+					switch (from) {
+						case CyImageLoader.FROM_DISK:
+						case CyImageLoader.FROM_NETWORK:
+							imgAva.setImageResource(R.drawable.ava_loading);
+							break;
+					}
+				}
+				
+				@Override
+				public void loadFinish(int from, Bitmap image, String url) {
+					switch (from) {
+					case CyImageLoader.FROM_MEMORY:
+						imgAva.setImageBitmap(image);
+						break;
+						
+					case CyImageLoader.FROM_DISK:
+					case CyImageLoader.FROM_NETWORK:
+						if (((String) imgAva.getTag()).equals(url))
+							imgAva.setImageBitmap(image);
+						break;
+					}
+				}
+			}, new Point(), getActivity());
 
 			return convertView;
-		}
-
-		private void loadImage(Comment item) {
-			if (item.mAva != null || item.mLoading)
-				return;
-
-			item.mLoading = true;
-			new HttpConnection(new Handler() {
-
-				private Comment mItem;
-
-				public Handler init(Comment item) {
-					mItem = item;
-					return this;
-				}
-
-				@Override
-				public void handleMessage(Message message) {
-
-					switch (message.what) {
-					case HttpConnection.DID_START: {
-						break;
-					}
-					case HttpConnection.DID_SUCCEED: {
-						Bitmap response = (Bitmap) message.obj;
-						mItem.mAva = response;
-						mItem.mLoading = false;
-						notifyDataSetChanged();
-						break;
-					}
-					case HttpConnection.DID_ERROR: {
-						Exception e = (Exception) message.obj;
-						e.printStackTrace();
-						mItem.mLoading = false;
-						break;
-					}
-					}
-				}
-
-			}.init(item)).bitmap(item.mAvaUrl);
 		}
 
 		@Override

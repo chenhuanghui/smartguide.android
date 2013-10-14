@@ -18,6 +18,7 @@ public class PromotionTypeTwo extends Promotion {
 	public static class Voucher {
 		public String description;
 		public int P;
+		public String numberVoucher;
 		
 		@Override
 		public String toString() {
@@ -41,12 +42,14 @@ public class PromotionTypeTwo extends Promotion {
 	
 	public PromotionTypeTwo parse(JSONObject jPromotion) throws JSONException {
 		mMoney = jPromotion.getString("money");
+		mDuration = jPromotion.getString("duration");
 		JSONArray jVoucherArr = jPromotion.getJSONArray("list_voucher");
 		for (int i = 0; i < jVoucherArr.length(); i++) {
 			JSONObject jVoucher = jVoucherArr.getJSONObject(i);
 			Voucher v = new Voucher();
 			v.description = jVoucher.getString("description");
 			v.P = jVoucher.getInt("P");
+			v.numberVoucher = jVoucher.getString("numberVoucher"); 
 			mVoucherList.add(v);
 		}
 		return this;

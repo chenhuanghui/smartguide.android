@@ -25,9 +25,11 @@
             android:layout_alignRight="@+id/imageView1"
             android:layout_alignTop="@+id/imageView1"
             android:background="@drawable/popup_gift"
-            android:listSelector="@android:color/transparent"
+            android:cacheColorHint="#00000000"
             android:divider="#535760"
-            android:dividerHeight="0.75px" >
+            android:dividerHeight="0.75px"
+            android:listSelector="@android:color/transparent" >
+
         </ListView>
     </RelativeLayout>
 
