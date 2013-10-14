@@ -39,7 +39,7 @@ import android.widget.TextView.OnEditorActionListener;
  * Get, show and post comment
  *
  */
-@SuppressLint("ValidFragment")
+@SuppressLint("ValidFragment")	
 public class DetailCommentFragment extends Fragment {
 	private CommentListAdapter 		mAdapter;
 	private Shop 					mShop;
