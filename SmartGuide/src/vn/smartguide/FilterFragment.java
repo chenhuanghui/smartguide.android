@@ -236,7 +236,7 @@ public class FilterFragment extends Fragment {
 			this.symbol = symbol;
 			this.nameVN = nameVN;
 			this.name   = name;
-			this.status = true;
+			this.status = false;
 		}
 	}
 	

@@ -15,14 +15,17 @@ import org.json.JSONObject;
 import android.animation.ObjectAnimator;
 import android.app.Activity;
 import android.app.AlertDialog;
+import android.app.AlertDialog.Builder;
 import android.app.Dialog;
 import android.content.Context;
 import android.content.DialogInterface;
+import android.content.DialogInterface.OnClickListener;
 import android.content.Intent;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.v4.app.FragmentActivity;
 import android.telephony.PhoneNumberUtils;
+import android.util.Log;
 import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.Menu;
@@ -51,7 +54,7 @@ import com.facebook.widget.LoginButton;
 import com.facebook.widget.LoginButton.OnErrorListener;
 import com.google.analytics.tracking.android.EasyTracker;
 
-public class WellcomeActivity extends FragmentActivity{
+public class WellcomeActivity extends FragmentActivity {
 
 	// Data
 	private boolean isConfirm = false;	
@@ -87,7 +90,7 @@ public class WellcomeActivity extends FragmentActivity{
 	private RelativeLayout loadingFace;
 
 	// Others
-	private UiLifecycleHelper 	mUiHelper;
+	private UiLifecycleHelper mUiHelper;
 	private ImageButton mChangeAvatarBtn;
 	private ImageView mAvatarView;
 	private Button mDoneCreatACCBtn;
@@ -102,11 +105,17 @@ public class WellcomeActivity extends FragmentActivity{
 		// Set up Facebook
 		Session.StatusCallback callback = new Session.StatusCallback() {
 			public void call(Session session, SessionState state, Exception exception) {
-					
-				if (state.isOpened()) {
+				
+				if (state == SessionState.CLOSED_LOGIN_FAILED) {
+					Log.d("CycrixDebug", state.toString());
+					showLoginFbFailDlg();
+				} else if (state.isOpened()) {
 					mStatusText.setText("Vui lòng chờ cập nhật thông tin...");
 					makeMeRequest(session);
-				} else if (state.isClosed()) {
+				} else {
+					mLogin.setClickable(true);
+					viaCreateACCBtn.setClickable(true);
+					loadingFace.setVisibility(View.INVISIBLE);
 				}
 			}
 		};
@@ -156,7 +165,7 @@ public class WellcomeActivity extends FragmentActivity{
 						mStatusText.setText("Số điện thoại không hợp lệ...");
 						mNumberField.setText("");
 					}
-				}else{
+				} else {
 					if (timer != null)
 						timer.cancel();
 
@@ -401,6 +410,7 @@ public class WellcomeActivity extends FragmentActivity{
 				}
 
 				if (response.getError() != null) {
+					showLoginFbFailDlg();
 				}
 			}
 		});
@@ -409,6 +419,22 @@ public class WellcomeActivity extends FragmentActivity{
 		bundle.putString("fields", "picture,birthday,email,gender,id,name,name_format,first_name,last_name,work");
 		request.setParameters(bundle);
 		request.executeAsync();
+	}
+	
+	private void showLoginFbFailDlg() {
+		AlertDialog.Builder builder = new AlertDialog.Builder(WellcomeActivity.this);
+		builder.setMessage("Đăng nhập Facebook thất bại, " +
+				"vui lòng đăng nhập lại hoặc tạo tài khoản mới");
+		builder.setPositiveButton("OK", new OnClickListener() {
+			
+			@Override
+			public void onClick(DialogInterface arg0, int arg1) {
+				mLogin.setClickable(true);
+				viaCreateACCBtn.setClickable(true);
+				loadingFace.setVisibility(View.INVISIBLE);
+			}
+		});
+		builder.create().show();
 	}
 
 	@Override
@@ -577,9 +603,12 @@ public class WellcomeActivity extends FragmentActivity{
 				boolean success = result.getBoolean("result");
 				GlobalVariable.userID = result.getString("user_id");
 				boolean connect_fb = result.getBoolean("connect_fb");
-				String name = "";
+				
 				if (!result.isNull("name"))
 					name = result.optString("name");
+				
+//				connect_fb = false;
+//				name = "";
 
 				if (success) {
 					GlobalVariable.footerURL = "&phone=" + phoneNumber + "&code=" + confirmCode;

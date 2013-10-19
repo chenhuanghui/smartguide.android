@@ -164,7 +164,7 @@ public class DetailCommentFragment extends Fragment {
 
 			Comment item = mItemList.get(position);
 			txtName.setText(item.mUser);
-			txtTime.setText(item.mTime);
+			txtTime.setText(item.mFullTime);
 			txtComment.setText(item.mComment);
 			imgAva.setTag(item.mAvaUrl);
 			GlobalVariable.cyImageLoader.loadImage(item.mAvaUrl, new Listener() {
@@ -314,7 +314,8 @@ public class DetailCommentFragment extends Fragment {
 					jComment.getString("user"),
 					jComment.getString("comment"),
 					jComment.getString("avatar"),
-					jComment.getString("time")));
+					jComment.getString("time"),
+					jComment.getString("fulltime")));
 		}
 
 		return commentList;
@@ -419,6 +420,7 @@ public class DetailCommentFragment extends Fragment {
 
 			if (k) {
 				String timeStamp = new SimpleDateFormat("HH:mm").format(Calendar.getInstance().getTime());
+				String fullTimeStamp = new SimpleDateFormat("dd/MM/yy HH:mm").format(Calendar.getInstance().getTime());
 				String username = "Anomynous User";
 				String url = "";
 
@@ -427,7 +429,7 @@ public class DetailCommentFragment extends Fragment {
 					url = GlobalVariable.avatarFace;
 				}
 
-				addComment(new Comment(username, mContent, url, timeStamp));
+				addComment(new Comment(username, mContent, url, timeStamp, fullTimeStamp));
 			}
 		}
 

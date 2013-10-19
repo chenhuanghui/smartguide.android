@@ -3,17 +3,20 @@
     android:layout_width="match_parent"
     android:layout_height="wrap_content" >
 
-    <LinearLayout
+    <RelativeLayout
         android:id="@+id/layoutShopBar"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:background="@drawable/shop_bar"
         android:gravity="center_vertical"
         android:orientation="horizontal" >
 
         <LinearLayout
-            android:layout_width="47dp"
+            android:id="@+id/linearLayout1"
+            android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:layout_alignBottom="@+id/linearLayout3"
+            android:layout_alignTop="@+id/linearLayout3"
+            android:background="@drawable/shop_bar_1"
             android:gravity="center"
             android:orientation="vertical" >
 
@@ -29,8 +32,14 @@
         </LinearLayout>
 
         <LinearLayout
-            android:layout_width="49dp"
+            android:id="@+id/linearLayout2"
+            android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:layout_alignBottom="@+id/linearLayout3"
+            android:layout_alignParentTop="true"
+            android:layout_alignTop="@+id/linearLayout3"
+            android:layout_toRightOf="@+id/linearLayout1"
+            android:background="@drawable/shop_bar_2"
             android:gravity="center"
             android:orientation="vertical" >
 
@@ -52,9 +61,14 @@
         </LinearLayout>
 
         <LinearLayout
-            android:layout_width="match_parent"
+            android:id="@+id/linearLayout3"
+            android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:gravity="center_vertical" >
+            android:layout_alignParentRight="true"
+            android:layout_toRightOf="@+id/linearLayout2"
+            android:background="@drawable/shop_bar_3"
+            android:gravity="center_vertical"
+            android:paddingLeft="8dp" >
 
             <TextView
                 android:id="@+id/txtAwardName"
@@ -65,8 +79,8 @@
                 android:text="1 phần khuyến mãi "
                 android:textColor="#ffffff"
                 android:textSize="13sp" />
-
         </LinearLayout>
-    </LinearLayout>
+
+    </RelativeLayout>
 
 </LinearLayout>

@@ -136,7 +136,7 @@ public class DetailPromo1Fragment extends DetailPromoFragment {
     		spanString.setSpan(new StyleSpan(Typeface.BOLD), 0, ("" + promo.mPperSGP).length(), 0);
     		txtPperSGP.setText(spanString);
     		
-    		spanString = new SpannableString("Với mỗi " + promo.mCost/1000 + "k trên hóa đơn bạn sẽ được 1 lược quét thẻ");
+    		spanString = new SpannableString("Với mỗi " + promo.mCost/1000 + "k trên hóa đơn bạn sẽ được 1 lượt quét thẻ");
     		spanString.setSpan(new ForegroundColorSpan(0xFFC95436),
     				"Với mỗi ".length(), ("Với mỗi " + promo.mCost/1000 + "k").length(), 0);
     		spanString.setSpan(new StyleSpan(Typeface.BOLD),
@@ -285,14 +285,20 @@ public class DetailPromo1Fragment extends DetailPromoFragment {
     		convertView = super.getView(position, convertView, parent);
     		
     		// Xử trường hợp loại 2
-    		LinearLayout bar = (LinearLayout) convertView.findViewById(R.id.layoutShopBar);
+    		LinearLayout bar1 = (LinearLayout) convertView.findViewById(R.id.linearLayout1);
+    		LinearLayout bar2 = (LinearLayout) convertView.findViewById(R.id.linearLayout2);
+    		LinearLayout bar3 = (LinearLayout) convertView.findViewById(R.id.linearLayout3);
 //    		HorizontalScrollView scrollView = (HorizontalScrollView) convertView.findViewById(R.id.scrollView);
 //    		scrollView.fling(1);
     		
-    		if (getItem(position).required <= mTotalScore) {	
-    			bar.setBackgroundResource(R.drawable.shop_bar_highlight);
+    		if (getItem(position).required <= mTotalScore) {
+    			bar1.setBackgroundResource(R.drawable.shop_bar_1_highlight);
+    			bar2.setBackgroundResource(R.drawable.shop_bar_2_highlight);
+    			bar3.setBackgroundResource(R.drawable.shop_bar_3_highlight);
     		} else {
-    			bar.setBackgroundResource(R.drawable.shop_bar);
+    			bar1.setBackgroundResource(R.drawable.shop_bar_1);
+    			bar2.setBackgroundResource(R.drawable.shop_bar_2);
+    			bar3.setBackgroundResource(R.drawable.shop_bar_3);
     		}
     		
     		TextView txtSGP = (TextView) convertView.findViewById(R.id.txtSGP);

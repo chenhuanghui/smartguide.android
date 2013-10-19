@@ -23,8 +23,8 @@
     <string name="descr_image">Image</string>
     <string name="title_activity_wellcome">WellcomeActivity</string>
     <string name="title_activity_flash_screen">FlashScreenActivity</string>
-    <string name="app_id">1391698407719065</string>
-    <!-- <string name="app_id">561987533836523</string>  -->
+    <!-- <string name="app_id">1391698407719065</string> -->
+    <string name="app_id">561987533836523</string>
     <string name="title_activity_map">MapActivity</string>
     <string name="title_activity_review">ReviewActivity</string>
     <string name="title_activity_take_picture">TakePictureActivity</string>
