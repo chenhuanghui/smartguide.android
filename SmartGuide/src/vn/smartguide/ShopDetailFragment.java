@@ -429,7 +429,7 @@ public class ShopDetailFragment extends Fragment {
 	    		JSONObject jComment = jCommentArr.getJSONObject(i);
 	    		
 	    		mShop.mCommentList.add(0, new Comment(jComment.getString("user"), jComment.getString("comment"),
-	    				jComment.getString("avatar"), jComment.getString("time")));
+	    				jComment.getString("avatar"), jComment.getString("time"), jComment.getString("fulltime")));
 	    		} catch (JSONException e) { }
 	    	}
     	

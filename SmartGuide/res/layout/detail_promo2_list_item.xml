@@ -5,6 +5,8 @@
     android:gravity="center_horizontal"
     android:orientation="vertical"
     android:paddingBottom="20dp"
+    android:paddingLeft="20dp"
+    android:paddingRight="20dp"
     android:paddingTop="20dp" >
 
     <TextView
@@ -17,10 +19,11 @@
 
     <TextView
         android:id="@+id/txtDes"
-        android:layout_width="wrap_content"
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginBottom="10dp"
         android:text="PHẦN QUÀ 1"
+        android:gravity="center_horizontal"
         android:textStyle="bold" />
 
     <TextView

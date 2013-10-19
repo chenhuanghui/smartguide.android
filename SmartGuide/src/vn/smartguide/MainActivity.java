@@ -530,6 +530,7 @@ public class MainActivity extends FragmentActivity implements MainAcitivyListene
 		animator.setInterpolator(new AccelerateDecelerateInterpolator());
 		animator.start();
 		updateHeader();
+		createDestroyMap();
 	}
 
 	///////////////////////////////////////////////////////////////////////////
@@ -645,6 +646,7 @@ public class MainActivity extends FragmentActivity implements MainAcitivyListene
 			public void onInfoWindowClick(Marker marker) {
 				Shop s = getShopListFragment().mShopList.get(Integer.parseInt(marker.getSnippet()));
 				GlobalVariable.mCurrentShop = s;
+				mShopDetailFragment.setData(GlobalVariable.mCurrentShop, false);
 				goToShopDetail();
 			}
 		});

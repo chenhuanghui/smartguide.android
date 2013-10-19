@@ -108,7 +108,6 @@ public class FlashScreenActivity extends Activity {
 				return false;
 			}
 
-
 			if (action_type != 0)
 				return false;
 
@@ -231,7 +230,7 @@ public class FlashScreenActivity extends Activity {
 					case 1:
 						String link =  key.getString("link");
 						String content = key.getString("content");
-						String message = '"' + "<a href=\"" + link + "\">" + content + "Check this link out</a>";
+						String message = "<a href=\"" + link + "\">" + content + "</a>";
 
 						AlertDialog d = new AlertDialog.Builder(FlashScreenActivity.this)
 						.setPositiveButton("OK", new OnClickListener() {
