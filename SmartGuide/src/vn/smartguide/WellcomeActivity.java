@@ -107,10 +107,10 @@ public class WellcomeActivity extends FragmentActivity {
 			public void call(Session session, SessionState state, Exception exception) {
 				
 				if (state == SessionState.CLOSED_LOGIN_FAILED) {
-					Log.d("CycrixDebug", state.toString());
+					//Log.d("CycrixDebug", state.toString());
 					showLoginFbFailDlg();
 				} else if (state.isOpened()) {
-					mStatusText.setText("Vui lÃ²ng chá»� cáº­p nháº­t thÃ´ng tin...");
+					mStatusText.setText("Vui lòng chờ cập nhật thông tin...");
 					makeMeRequest(session);
 				} else {
 					mLogin.setClickable(true);
@@ -162,7 +162,7 @@ public class WellcomeActivity extends FragmentActivity {
 
 						confirmPhone();
 					} else {
-						mStatusText.setText("Sá»‘ Ä‘iá»‡n thoáº¡i khÃ´ng há»£p lá»‡...");
+						mStatusText.setText("Số điện thoại không hợp lệ...");
 						mNumberField.setText("");
 					}
 				} else {
@@ -189,6 +189,7 @@ public class WellcomeActivity extends FragmentActivity {
 		});
 
 		authButton.setReadPermissions(Arrays.asList("basic_info","email"));
+		//Cấm tuyệt đối ko được bỏ đoạn này, bỏ --> ko kết nối facebook được
 		authButton.setSessionStatusCallback(new Session.StatusCallback() {
 			@Override
 			public void call(Session session, SessionState state, Exception exception) {
@@ -228,7 +229,7 @@ public class WellcomeActivity extends FragmentActivity {
 				mResendCode.setVisibility(View.INVISIBLE);
 				m84TV.setVisibility(View.INVISIBLE);
 				isConfirm = true;
-				mStatusText.setText("Chá»� vÃ  nháº­p mÃ£ xÃ¡c nháº­n...");
+				mStatusText.setText("Chờ và nhập mã xác nhận...");
 				mNumberField.setText("");
 
 				new GetActivateCode().execute();
@@ -284,9 +285,9 @@ public class WellcomeActivity extends FragmentActivity {
 					AlertDialog.Builder builder = new AlertDialog.Builder(WellcomeActivity.this);
 
 					if (name.length() == 0)
-						builder.setMessage("Báº¡n cáº§n nháº­p tÃªn");
+						builder.setMessage("Bạn cần nhập tên");
 					else 
-						builder.setMessage("Báº¡n cáº§n chá»�n áº£nh Ä‘áº¡i diá»‡n");
+						builder.setMessage("Bạn cần chọn hình đại diện");
 						
 					builder.setCancelable(true);
 
@@ -423,8 +424,8 @@ public class WellcomeActivity extends FragmentActivity {
 	
 	private void showLoginFbFailDlg() {
 		AlertDialog.Builder builder = new AlertDialog.Builder(WellcomeActivity.this);
-		builder.setMessage("Ä�Äƒng nháº­p Facebook tháº¥t báº¡i, " +
-				"vui lÃ²ng Ä‘Äƒng nháº­p láº¡i hoáº·c táº¡o tÃ i khoáº£n má»›i");
+		builder.setMessage("Đăng nhập facebook thất bại, " +
+				"vui lòng đăng nhập lại hoặc tạo tài khoản mới");
 		builder.setPositiveButton("OK", new OnClickListener() {
 			
 			@Override
@@ -453,11 +454,11 @@ public class WellcomeActivity extends FragmentActivity {
 
 		AlertDialog.Builder builder = new AlertDialog.Builder(this);
 
-		builder.setMessage("(+84)" + phoneNumber.substring(2) +"\nMÃ£ kÃ­ch hoáº¡t SmartGuide sáº½ Ä‘Æ°á»£c gá»­i Ä‘áº¿n sá»‘ Ä‘iá»‡n thoáº¡i trÃªn" +
-				" qua tin nháº¯n. Chá»�n Ä�á»“ng Ã½ Ä‘á»ƒ tiáº¿p tá»¥c hoáº·c há»§y Ä‘á»ƒ thay Ä‘á»•i sá»‘ Ä‘iá»‡n thoáº¡i");
+		builder.setMessage("(+84)" + phoneNumber.substring(2) +"\nMã kích hoạt SmartGuide sẽ được gửi đến số điện thoại trên" +
+				" qua tin nhắn. Chọn Đồng ý để tiếp tục hoặc hủy để thay đổi số điện thoại");
 		builder.setCancelable(true);
 
-		builder.setNegativeButton("Ä�á»“ng Ã½", new DialogInterface.OnClickListener() {
+		builder.setNegativeButton("Đồng ý", new DialogInterface.OnClickListener() {
 			public void onClick(DialogInterface dialog, int which) {
 				InputMethodManager imm = (InputMethodManager) getSystemService(Context.INPUT_METHOD_SERVICE);
 				imm.hideSoftInputFromWindow(mNumberField.getWindowToken(), 0);
@@ -466,7 +467,7 @@ public class WellcomeActivity extends FragmentActivity {
 
 				m84TV.setVisibility(View.INVISIBLE);
 				isConfirm = true;
-				mStatusText.setText("Chá»� vÃ  nháº­p mÃ£ xÃ¡c nháº­n...");
+				mStatusText.setText("Chờ và nhập mã xác nhận...");
 				mNumberField.setText("");
 				new GetActivateCode().execute();
 			}
@@ -474,7 +475,7 @@ public class WellcomeActivity extends FragmentActivity {
 
 		builder.setPositiveButton("Há»§y", new DialogInterface.OnClickListener() {
 			public void onClick(DialogInterface dialog, int which) {
-				mStatusText.setText("Nháº­p sá»‘ Ä‘iá»‡n thoáº¡i...");
+				mStatusText.setText("Nhập số điện thoại...");
 				mNumberField.setText("");
 			}
 		});
@@ -514,7 +515,7 @@ public class WellcomeActivity extends FragmentActivity {
 	public void startCounting(){
 		mTailText.setVisibility(View.VISIBLE);
 		mHeadText.setVisibility(View.VISIBLE);
-		mHeadText.setText("Báº¡n sáº½ nháº­n Ä‘Æ°á»£c mÃ£ kÃ­ch hoáº¡t sau ");
+		mHeadText.setText("Bạn sẽ nhận được mã kích hoạt sau ");
 		mTimeText.setVisibility(View.VISIBLE);
 
 		timer = new Timer();
@@ -528,7 +529,7 @@ public class WellcomeActivity extends FragmentActivity {
 					public void run() {
 						if (i == - 1){
 							mHeadText.setVisibility(View.VISIBLE);
-							mHeadText.setText("Báº¡n chÆ°a nháº­n Ä‘Æ°á»£c mÃ£ xÃ¡c nháº­n?");
+							mHeadText.setText("Bạn chưa nhận được mã xác nhận?");
 							mTailText.setVisibility(View.INVISIBLE);
 							mTimeText.setVisibility(View.INVISIBLE);
 							mResendCode.setVisibility(View.VISIBLE);
@@ -569,10 +570,10 @@ public class WellcomeActivity extends FragmentActivity {
 		protected void onPostExecute(Boolean k) { 
 			if (mEx == null) {
 				isConfirm = true;
-				mStatusText.setText("Chá»� vÃ  nháº­p mÃ£ xÃ¡c nháº­n...");
+				mStatusText.setText("Chờ và nhập mã xác nhận...");
 				mNumberField.setText("");
 			} else {
-				GlobalVariable.showToast("KhÃ´ng thá»ƒ gá»Ÿi mÃ£ xÃ¡c nháº­n", WellcomeActivity.this);
+				GlobalVariable.showToast("Không thể gởi mã xác nhận", WellcomeActivity.this);
 				mNumberField.setText("");
 			}
 		}
@@ -644,12 +645,12 @@ public class WellcomeActivity extends FragmentActivity {
 					faceOrACCScreen.setVisibility(View.VISIBLE);
 					new GetDefaultAvatar().setDisableView(mChangeAvatarBtn).execute();
 				} else {
-					mStatusText.setText("MÃ£ xÃ¡c nháº­n khÃ´ng há»£p lá»‡");
+					mStatusText.setText("Mã xác nhận không hợp lệ");
 					mNumberField.setText("");
 				}
 
 			} catch (Exception e) {
-				GlobalVariable.showToast("KhÃ´ng thá»ƒ xÃ¡c nháº­n Ä‘Æ°á»£c", WellcomeActivity.this);
+				GlobalVariable.showToast("Không thể xác nhận được", WellcomeActivity.this);
 				mNumberField.setText("");
 			}
 		}
@@ -743,10 +744,10 @@ public class WellcomeActivity extends FragmentActivity {
 				
 				AlertDialog.Builder builder = new AlertDialog.Builder(WellcomeActivity.this);
 
-				builder.setMessage("CÃ³ lá»—i xáº£y ra vui lÃ²ng thá»­ láº¡i");
+				builder.setMessage("Có lỗi xảy ra vui lòng thử lại");
 				builder.setCancelable(true);
 
-				builder.setNegativeButton("Ä�á»“ng Ã½", new DialogInterface.OnClickListener() {
+				builder.setNegativeButton("Đồng ý", new DialogInterface.OnClickListener() {
 					public void onClick(DialogInterface dialog, int which) {
 						
 					}
