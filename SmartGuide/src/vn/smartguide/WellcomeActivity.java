@@ -180,22 +180,22 @@ public class WellcomeActivity extends FragmentActivity{
 		});
 
 		authButton.setReadPermissions(Arrays.asList("basic_info","email"));
-//		authButton.setSessionStatusCallback(new Session.StatusCallback() {
-//			@Override
-//			public void call(Session session, SessionState state, Exception exception) {
-//
-//				if (session.isOpened()) {
-//					Request.executeMeRequestAsync(session,
-//							new Request.GraphUserCallback() {
-//						@Override
-//						public void onCompleted(GraphUser user,Response response) {
-//							if (user != null) { 
-//							}
-//						}
-//					});
-//				}
-//			}
-//		});
+		authButton.setSessionStatusCallback(new Session.StatusCallback() {
+			@Override
+			public void call(Session session, SessionState state, Exception exception) {
+
+				if (session.isOpened()) {
+					Request.executeMeRequestAsync(session,
+							new Request.GraphUserCallback() {
+						@Override
+						public void onCompleted(GraphUser user,Response response) {
+							if (user != null) { 
+							}
+						}
+					});
+				}
+			}
+		});
 
 		mLogin.setOnClickListener(new View.OnClickListener() {
 
