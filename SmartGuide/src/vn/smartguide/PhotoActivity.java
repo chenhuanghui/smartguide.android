@@ -243,7 +243,7 @@ public class PhotoActivity extends FragmentActivity{
 				return;
 
 			ImageView img = (ImageView) v.findViewById(R.id.imgFullPhoto);
-			ProgressBar prgWait = (ProgressBar) v.findViewById(R.id.prgWait);
+			final ProgressBar prgWait = (ProgressBar) v.findViewById(R.id.prgWait);
 			TextView txtTitle = (TextView) v.findViewById(R.id.txtTit);
 			TextView txtDsc = (TextView) v.findViewById(R.id.txtDesc);
 
@@ -267,6 +267,11 @@ public class PhotoActivity extends FragmentActivity{
 						return this;
 					}
 					
+					@Override 
+					public void startLoad(int from) { 
+						prgWait.setVisibility(View.VISIBLE);
+					}
+					
 					@Override
 					public void loadFinish(int from, Bitmap image, String url) {
 
@@ -284,6 +289,8 @@ public class PhotoActivity extends FragmentActivity{
 							break;
 						}
 						}
+						
+						prgWait.setVisibility(View.GONE);
 					}
 
 					@Override
@@ -297,6 +304,7 @@ public class PhotoActivity extends FragmentActivity{
 
 						ImageView img = (ImageView) rootView.findViewById(R.id.imgFullPhoto);
 						img.setImageResource(R.drawable.ava_loading);
+						prgWait.setVisibility(View.VISIBLE);
 					}
 
 				}.init(this), size, PhotoActivity.this);
