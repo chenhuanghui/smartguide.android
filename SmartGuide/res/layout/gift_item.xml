@@ -24,9 +24,8 @@
                 <ImageView
                     android:id="@+id/imageView1"
                     android:layout_width="match_parent"
-                	android:layout_height="match_parent"
-                	android:background="@drawable/gift" />
-
+                    android:layout_height="match_parent"
+                    android:background="@drawable/gift" />
             </LinearLayout>
 
             <LinearLayout
@@ -34,9 +33,7 @@
                 android:layout_height="match_parent"
                 android:background="@drawable/round_corner_ava_user"
                 android:orientation="vertical" >
-
             </LinearLayout>
-
         </FrameLayout>
 
         <LinearLayout
@@ -51,10 +48,15 @@
                 android:id="@+id/txtGiftName"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:ellipsize="end"
+                android:cursorVisible="false"
+                android:ellipsize="marquee"
+                android:focusableInTouchMode="true"
+                android:marqueeRepeatLimit="marquee_forever"
+                android:typeface="normal" 
                 android:singleLine="true"
                 android:text="■ Quà tặng 1"
                 android:textColor="#E0E0E2"
+                android:freezesText="true"
                 android:textSize="9sp"
                 android:textStyle="bold" />
 
@@ -66,7 +68,6 @@
                 android:text="Số điểm quy đổi"
                 android:textColor="#94A5C3"
                 android:textSize="9sp" />
-
         </LinearLayout>
 
         <LinearLayout
@@ -106,7 +107,6 @@
             android:textColor="#282E3A"
             android:textSize="9sp"
             android:textStyle="bold" />
-
     </LinearLayout>
 
 </LinearLayout>

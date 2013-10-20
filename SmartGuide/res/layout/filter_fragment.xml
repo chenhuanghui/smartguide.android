@@ -97,42 +97,45 @@
                         android:id="@+id/radioMostPoint"
                         style="@style/RadioButton"
                         android:layout_width="wrap_content"
-                        android:layout_height="17dp"
-                        android:checked="true"
+                        android:layout_height="15dp"
                         android:gravity="center_vertical"
                         android:text=" QUAN TÂM NHẤT"
                         android:textColor="#8494B8"
-                        android:textSize="14dp" />
+                        android:checked="false"
+                        android:textSize="12dp" />
 
                     <RadioButton
                         android:id="@+id/radioMostLike"
+                        android:layout_marginTop="4dp"
                         style="@style/RadioButton"
                         android:layout_width="wrap_content"
-                        android:layout_height="17dp"
+                        android:layout_height="15dp"
                         android:checked="false"
                         android:text=" ƯA THÍCH NHẤT"
                         android:textColor="#8494B8"
-                        android:textSize="14dp" />
+                        android:textSize="12dp" />
 
                     <RadioButton
                         android:id="@+id/radioMostView"
                         style="@style/RadioButton"
+                        android:layout_marginTop="4dp"
                         android:layout_width="wrap_content"
-                        android:layout_height="17dp"
+                        android:layout_height="15dp"
                         android:checked="false"
                         android:text=" XEM NHIỀU NHẤT"
                         android:textColor="#8494B8"
-                        android:textSize="14dp" />
+                        android:textSize="12dp" />
 
                     <RadioButton
                         android:id="@+id/radioDistance"
                         style="@style/RadioButton"
+                        android:layout_marginTop="4dp"
                         android:layout_width="match_parent"
-                        android:layout_height="17dp"
-                        android:checked="false"
+                        android:layout_height="15dp"
+                        android:checked="true"
                         android:text=" KHOẢNG CÁCH"
                         android:textColor="#8494B8"
-                        android:textSize="14dp" />
+                        android:textSize="12dp" />
                 </RadioGroup>
 
                 <ImageButton
@@ -140,7 +143,7 @@
                     android:layout_width="49dp"
                     android:layout_height="wrap_content"
                     android:layout_gravity="center"
-                    android:layout_marginTop="5dp"
+                    android:layout_marginTop="7dp"
                     android:adjustViewBounds="true"
                     android:background="@drawable/dummy"
                     android:cropToPadding="false"

@@ -344,4 +344,10 @@ public class DetailShopPhotoFragment extends Fragment {
     	
     	return imageList;
     }
+	
+	public void addNewPhoto(String url, String description){
+		mShop.mUserImageList.add(0, new ImageStr(url, description));
+		mUserAdapter.setData(mShop.mUserImageList);
+		mUserAdapter.notifyDataSetChanged();
+	}
 }

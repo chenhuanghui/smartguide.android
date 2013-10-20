@@ -47,6 +47,7 @@ import com.facebook.FacebookException;
 import com.facebook.Request;
 import com.facebook.Response;
 import com.facebook.Session;
+import com.facebook.SessionLoginBehavior;
 import com.facebook.SessionState;
 import com.facebook.UiLifecycleHelper;
 import com.facebook.model.GraphUser;
@@ -181,6 +182,8 @@ public class WellcomeActivity extends FragmentActivity {
 		});
 
 		authButton = (LoginButton) findViewById(R.id.authButton);
+		// Mở app facebook
+		authButton.setLoginBehavior(SessionLoginBehavior.SUPPRESS_SSO);
 		authButton.setOnErrorListener(new OnErrorListener() {
 
 			@Override
@@ -473,7 +476,7 @@ public class WellcomeActivity extends FragmentActivity {
 			}
 		});
 
-		builder.setPositiveButton("Há»§y", new DialogInterface.OnClickListener() {
+		builder.setPositiveButton("Hủy", new DialogInterface.OnClickListener() {
 			public void onClick(DialogInterface dialog, int which) {
 				mStatusText.setText("Nhập số điện thoại...");
 				mNumberField.setText("");

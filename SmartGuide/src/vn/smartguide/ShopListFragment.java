@@ -605,7 +605,7 @@ public class ShopListFragment extends Fragment {
 	// Debug stuff
 	///////////////////////////////////////////////////////////////////////////
 	
-	private static final boolean isDebug = true;
+	private static final boolean isDebug = false;
 	private static final String TAG = "CycrixDebug";
 	private static final String HEADER = "ShopListFragment";
 	private static void debugLog(String message) {

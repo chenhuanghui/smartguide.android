@@ -112,6 +112,9 @@ import vn.smartguide.DetailPromo1Fragment.PromotionStr;
 import vn.smartguide.UserFragment.GiftItem;
 
 import java.io.ByteArrayOutputStream;
+import java.net.InetAddress;
+import java.net.URL;
+import java.net.URLConnection;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
@@ -163,7 +166,7 @@ public class MainActivity extends FragmentActivity implements MainAcitivyListene
 	private TextView mContentText;
 	private TextView mSGPText;
 	private ImageButton mCloseBtn;
-//	private ImageView mScanCover;
+	//	private ImageView mScanCover;
 	private Activity mActivity;
 	//private TextView mTotalSGP;
 
@@ -184,7 +187,7 @@ public class MainActivity extends FragmentActivity implements MainAcitivyListene
 	private Dialog			dialog;
 	private boolean			mIsNeedChangeAvatar = false;
 	private RelativeLayout	mLoadingLO; 
-	
+
 	// Viewpager
 	private FragmentManager mFragmentManager;
 	private List<Fragment> mFragmentList;
@@ -267,6 +270,10 @@ public class MainActivity extends FragmentActivity implements MainAcitivyListene
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 
+		// Không được bỏ
+		StrictMode.ThreadPolicy policy = new StrictMode.ThreadPolicy.Builder().permitAll().build();
+		StrictMode.setThreadPolicy(policy); 
+
 		setContentView(R.layout.activity_main);
 
 		mUiHelper = new UiLifecycleHelper(this, callback);
@@ -277,7 +284,17 @@ public class MainActivity extends FragmentActivity implements MainAcitivyListene
 			exitWithError();
 			return;
 		}
-		
+
+		try{
+			URL myUrl = new URL(APILinkMaker.mHostName);
+			URLConnection connection = myUrl.openConnection();
+			connection.setConnectTimeout(3000);
+			connection.connect();
+		} catch (Exception e) {
+			unableConnect2Server();
+			return;
+		}
+
 		init();
 
 		if (GlobalVariable.getActivateCodeFromDB() == false){
@@ -346,183 +363,183 @@ public class MainActivity extends FragmentActivity implements MainAcitivyListene
 		}
 	}
 
-//	@Override
-//	public void goToPage(int index) {
-//		switch (index){
-//		case 0:
-//			enableFilterMap();
-//			mShopListFragment.releaseMemory();
-////			mMapButton.setClickable(false);
-////			mMapButton.setImageResource(R.drawable.menu_map_lock);
-//			break;
-//		case 1:
-//			enableFilterMap();
-//			mShopDetailFragment.releaseMemory();
-////			mMapButton.setClickable(true);
-////			mMapButton.setImageResource(R.drawable.map_btn);
-//			break;
-//		case 2:
-//			disableFilterMap();
-//
-//		}
-//		mViewPager.setCurrentItem(index, true);
-//	}
+	//	@Override
+	//	public void goToPage(int index) {
+	//		switch (index){
+	//		case 0:
+	//			enableFilterMap();
+	//			mShopListFragment.releaseMemory();
+	////			mMapButton.setClickable(false);
+	////			mMapButton.setImageResource(R.drawable.menu_map_lock);
+	//			break;
+	//		case 1:
+	//			enableFilterMap();
+	//			mShopDetailFragment.releaseMemory();
+	////			mMapButton.setClickable(true);
+	////			mMapButton.setImageResource(R.drawable.map_btn);
+	//			break;
+	//		case 2:
+	//			disableFilterMap();
+	//
+	//		}
+	//		mViewPager.setCurrentItem(index, true);
+	//	}
 
 	private void turnToPage(int index) {
 		mViewPager.setCurrentItem(index, true);
 	}
 
-//	@Override
-//	public void goNextPage() {
-//		int current_index = mViewPager.getCurrentItem();
-//		if (current_index == mFragmentList.size() - 1)
-//			return;
-//
-//		int pageWillGo = current_index + 1;
-//		switch (pageWillGo){
-//		case 1:
-//			enableFilterMap();
-//			int lengthOfFilterString = GlobalVariable.mFilterString.length();
-//			if (lengthOfFilterString >= 2)
-//				setNaviText("NHIỀU DANH MỤC");
-//			else{
-//				int shopType = Integer.valueOf(GlobalVariable.mFilterString);
-//				switch(shopType){
-//				case 1:
-//					setNaviText("ẨM THỰC");
-//					break;
-//				case 2:
-//					setNaviText("CAFE & BAR");
-//					break;
-//				case 3:
-//					setNaviText("LÀM ĐẸP");
-//					break;
-//				case 4:
-//					setNaviText("GIẢI TRÍ");
-//					break;
-//				case 5:
-//					setNaviText("THỜI TRANG");
-//					break;
-//				case 6:
-//					setNaviText("DU LỊCH");
-//					break;
-//				case 7:
-//					setNaviText("SẢN PHẨM");
-//					break;					
-//				case 8:
-//					setNaviText("GIÁO DỤC");
-//					break;
-//				}
-//			}
-//
-//			break;
-//		case 2:
-//			disableFilterMap();
-//			setNaviText(GlobalVariable.mCurrentShop.mName);
-//			break;
-//		case 0:
-////			mMapButton.setClickable(false);
-////			mMapButton.setImageResource(R.drawable.menu_map_lock);
-//			break;
-//		}
-//
-//		mViewPager.setCurrentItem(pageWillGo, true);
-//	}
+	//	@Override
+	//	public void goNextPage() {
+	//		int current_index = mViewPager.getCurrentItem();
+	//		if (current_index == mFragmentList.size() - 1)
+	//			return;
+	//
+	//		int pageWillGo = current_index + 1;
+	//		switch (pageWillGo){
+	//		case 1:
+	//			enableFilterMap();
+	//			int lengthOfFilterString = GlobalVariable.mFilterString.length();
+	//			if (lengthOfFilterString >= 2)
+	//				setNaviText("NHIỀU DANH MỤC");
+	//			else{
+	//				int shopType = Integer.valueOf(GlobalVariable.mFilterString);
+	//				switch(shopType){
+	//				case 1:
+	//					setNaviText("ẨM THỰC");
+	//					break;
+	//				case 2:
+	//					setNaviText("CAFE & BAR");
+	//					break;
+	//				case 3:
+	//					setNaviText("LÀM ĐẸP");
+	//					break;
+	//				case 4:
+	//					setNaviText("GIẢI TRÍ");
+	//					break;
+	//				case 5:
+	//					setNaviText("THỜI TRANG");
+	//					break;
+	//				case 6:
+	//					setNaviText("DU LỊCH");
+	//					break;
+	//				case 7:
+	//					setNaviText("SẢN PHẨM");
+	//					break;					
+	//				case 8:
+	//					setNaviText("GIÁO DỤC");
+	//					break;
+	//				}
+	//			}
+	//
+	//			break;
+	//		case 2:
+	//			disableFilterMap();
+	//			setNaviText(GlobalVariable.mCurrentShop.mName);
+	//			break;
+	//		case 0:
+	////			mMapButton.setClickable(false);
+	////			mMapButton.setImageResource(R.drawable.menu_map_lock);
+	//			break;
+	//		}
+	//
+	//		mViewPager.setCurrentItem(pageWillGo, true);
+	//	}
 
-//	@Override
-//	public void goPreviousPage() {
-//		int current_index = mViewPager.getCurrentItem();
-//
-//		if (current_index == 0){
-//			if (doubleBackToExitPressedOnce) {
-//				stopAds();
-//				super.onBackPressed();
-//				return;
-//			}
-//
-//			doubleBackToExitPressedOnce = true;
-//			Toast.makeText(this, "Nhấn back lần nữa để thoát chương trình", Toast.LENGTH_SHORT).show();
-//			new Handler().postDelayed(new Runnable() {
-//
-//				@Override
-//				public void run() {
-//					doubleBackToExitPressedOnce = false;
-//				}
-//			}, 2000);
-//		}else
-//			doubleBackToExitPressedOnce = false;
-//
-//		int pageWillGo = current_index - 1;
-//		try{
-//			switch (pageWillGo){
-//			case 1:
-//				mShopDetailFragment.releaseMemory();
-//				enableFilterMap();
-//				int lengthOfFilterString = GlobalVariable.mFilterString.length();
-//				if (lengthOfFilterString >= 2)
-//					setNaviText("NHIỀU DANH MỤC");
-//				else{
-//					int shopType = Integer.valueOf(GlobalVariable.mFilterString);
-//					switch(shopType){
-//					case 1:
-//						setNaviText("ẨM THỰC");
-//						break;
-//					case 2:
-//						setNaviText("CAFE & BAR");
-//						break;
-//					case 3:
-//						setNaviText("LÀM ĐẸP");
-//						break;
-//					case 4:
-//						setNaviText("GIẢI TRÍ");
-//						break;
-//					case 5:
-//						setNaviText("THỜI TRANG");
-//						break;
-//					case 6:
-//						setNaviText("DU LỊCH");
-//						break;
-//					case 7:
-//						setNaviText("SẢN PHẨM");
-//						break;					
-//					case 8:
-//						setNaviText("GIÁO DỤC");
-//						break;
-//					}
-//				}
-//				break;
-//
-//			case 0:
-//				enableFilterMap();
-////				mMapButton.setClickable(false);
-////				mMapButton.setImageResource(R.drawable.menu_map_lock);
-//				setNaviText("DANH MỤC");
-//				mShopListFragment.releaseMemory();
-//				break;
-//			}	
-//		}catch(Exception ex){
-//			setNaviText("DANH MỤC");
-//		}
-//		mViewPager.setCurrentItem(current_index - 1, true);
-//	}
+	//	@Override
+	//	public void goPreviousPage() {
+	//		int current_index = mViewPager.getCurrentItem();
+	//
+	//		if (current_index == 0){
+	//			if (doubleBackToExitPressedOnce) {
+	//				stopAds();
+	//				super.onBackPressed();
+	//				return;
+	//			}
+	//
+	//			doubleBackToExitPressedOnce = true;
+	//			Toast.makeText(this, "Nhấn back lần nữa để thoát chương trình", Toast.LENGTH_SHORT).show();
+	//			new Handler().postDelayed(new Runnable() {
+	//
+	//				@Override
+	//				public void run() {
+	//					doubleBackToExitPressedOnce = false;
+	//				}
+	//			}, 2000);
+	//		}else
+	//			doubleBackToExitPressedOnce = false;
+	//
+	//		int pageWillGo = current_index - 1;
+	//		try{
+	//			switch (pageWillGo){
+	//			case 1:
+	//				mShopDetailFragment.releaseMemory();
+	//				enableFilterMap();
+	//				int lengthOfFilterString = GlobalVariable.mFilterString.length();
+	//				if (lengthOfFilterString >= 2)
+	//					setNaviText("NHIỀU DANH MỤC");
+	//				else{
+	//					int shopType = Integer.valueOf(GlobalVariable.mFilterString);
+	//					switch(shopType){
+	//					case 1:
+	//						setNaviText("ẨM THỰC");
+	//						break;
+	//					case 2:
+	//						setNaviText("CAFE & BAR");
+	//						break;
+	//					case 3:
+	//						setNaviText("LÀM ĐẸP");
+	//						break;
+	//					case 4:
+	//						setNaviText("GIẢI TRÍ");
+	//						break;
+	//					case 5:
+	//						setNaviText("THỜI TRANG");
+	//						break;
+	//					case 6:
+	//						setNaviText("DU LỊCH");
+	//						break;
+	//					case 7:
+	//						setNaviText("SẢN PHẨM");
+	//						break;					
+	//					case 8:
+	//						setNaviText("GIÁO DỤC");
+	//						break;
+	//					}
+	//				}
+	//				break;
+	//
+	//			case 0:
+	//				enableFilterMap();
+	////				mMapButton.setClickable(false);
+	////				mMapButton.setImageResource(R.drawable.menu_map_lock);
+	//				setNaviText("DANH MỤC");
+	//				mShopListFragment.releaseMemory();
+	//				break;
+	//			}	
+	//		}catch(Exception ex){
+	//			setNaviText("DANH MỤC");
+	//		}
+	//		mViewPager.setCurrentItem(current_index - 1, true);
+	//	}
 
 	public void toggleShowContent() {
 		mShowContent = !mShowContent;
-//
-//		if (mShowContent && mViewPager.getCurrentItem() == 2)
-//			disableFilterMap();
-//		else
-//			enableFilterUserMap();
+		//
+		//		if (mShowContent && mViewPager.getCurrentItem() == 2)
+		//			disableFilterMap();
+		//		else
+		//			enableFilterUserMap();
 
 		ObjectAnimator animator = null;
 		int height = findViewById(R.id.layoutContentHolder).getHeight();
 		View layout = findViewById(R.id.layoutContentFrame);
 		if (mShowContent){
 			animator = ObjectAnimator.ofFloat(layout, "translationY", -height, 0);
-//			mMapButton.setImageResource(R.drawable.menu_map);
+			//			mMapButton.setImageResource(R.drawable.menu_map);
 		}
 		else{
-//			mMapButton.setImageResource(R.drawable.menu_list);
+			//			mMapButton.setImageResource(R.drawable.menu_list);
 			animator = ObjectAnimator.ofFloat(layout, "translationY", 0, -height);
 			updateMap();
 		}
@@ -879,33 +896,33 @@ public class MainActivity extends FragmentActivity implements MainAcitivyListene
 
 	public void toggleCamera() {
 
-//		if (!mShowCamera && (mScanningCode == 1 || mScanningCode == 2)){
-//			LocationManager locationManager = (LocationManager) getSystemService(LOCATION_SERVICE);
-//			boolean isGPSOn = locationManager.isProviderEnabled(LocationManager.GPS_PROVIDER);
-//			boolean isWifiOn = locationManager.isProviderEnabled(LocationManager.NETWORK_PROVIDER);
-//
-//			if(!isGPSOn && !isWifiOn){
-//				AlertDialog.Builder alertDialog = new AlertDialog.Builder(mActivity);
-//				String message = "";
-//				message = "Bạn cần bật GPS hoặc wireless location trước khi scan code!!";
-//
-//				alertDialog.setMessage(message);
-//
-//				alertDialog.setPositiveButton("Thiết lập", new DialogInterface.OnClickListener() {
-//					public void onClick(DialogInterface dialog,int which) {
-//						startActivity(new Intent(Settings.ACTION_LOCATION_SOURCE_SETTINGS));
-//					}
-//				});
-//
-//				alertDialog.setNegativeButton("Hủy", new DialogInterface.OnClickListener() {
-//					public void onClick(DialogInterface dialog, int which) {
-//						dialog.cancel();
-//					}
-//				});
-//				alertDialog.show();
-//				return;
-//			}
-//		}
+		//		if (!mShowCamera && (mScanningCode == 1 || mScanningCode == 2)){
+		//			LocationManager locationManager = (LocationManager) getSystemService(LOCATION_SERVICE);
+		//			boolean isGPSOn = locationManager.isProviderEnabled(LocationManager.GPS_PROVIDER);
+		//			boolean isWifiOn = locationManager.isProviderEnabled(LocationManager.NETWORK_PROVIDER);
+		//
+		//			if(!isGPSOn && !isWifiOn){
+		//				AlertDialog.Builder alertDialog = new AlertDialog.Builder(mActivity);
+		//				String message = "";
+		//				message = "Bạn cần bật GPS hoặc wireless location trước khi scan code!!";
+		//
+		//				alertDialog.setMessage(message);
+		//
+		//				alertDialog.setPositiveButton("Thiết lập", new DialogInterface.OnClickListener() {
+		//					public void onClick(DialogInterface dialog,int which) {
+		//						startActivity(new Intent(Settings.ACTION_LOCATION_SOURCE_SETTINGS));
+		//					}
+		//				});
+		//
+		//				alertDialog.setNegativeButton("Hủy", new DialogInterface.OnClickListener() {
+		//					public void onClick(DialogInterface dialog, int which) {
+		//						dialog.cancel();
+		//					}
+		//				});
+		//				alertDialog.show();
+		//				return;
+		//			}
+		//		}
 
 		RelativeLayout layoutQR = (RelativeLayout) findViewById(R.id.layoutQR);
 		if (layoutQR.getVisibility() == View.GONE) {
@@ -934,16 +951,16 @@ public class MainActivity extends FragmentActivity implements MainAcitivyListene
 			mIsCanWipe = true;
 			//mScanCover.setVisibility(View.VISIBLE);
 
-//			if (GlobalVariable.mLat == -1){
-//				mMirrorFront.setVisibility(View.INVISIBLE);
-//				mMirror.setVisibility(View.VISIBLE);
-//				mShopNameText.setVisibility(View.INVISIBLE);
-//				mSGPText.setVisibility(View.INVISIBLE);
-//				mContentText.setVisibility(View.INVISIBLE);
-//				mProgressBar.setVisibility(View.VISIBLE);
-//				isCanScan = false;
-//				Toast.makeText(mActivity, "Vui lòng chờ lấy tọa độ GPS", Toast.LENGTH_LONG).show();
-//			}
+			//			if (GlobalVariable.mLat == -1){
+			//				mMirrorFront.setVisibility(View.INVISIBLE);
+			//				mMirror.setVisibility(View.VISIBLE);
+			//				mShopNameText.setVisibility(View.INVISIBLE);
+			//				mSGPText.setVisibility(View.INVISIBLE);
+			//				mContentText.setVisibility(View.INVISIBLE);
+			//				mProgressBar.setVisibility(View.VISIBLE);
+			//				isCanScan = false;
+			//				Toast.makeText(mActivity, "Vui lòng chờ lấy tọa độ GPS", Toast.LENGTH_LONG).show();
+			//			}
 		}
 		else{
 			QRCodeTextView.setText("CHẠM VÀO ĐỂ NHẬN ĐIỂM");
@@ -978,11 +995,24 @@ public class MainActivity extends FragmentActivity implements MainAcitivyListene
 			@Override
 			public void onAnimationEnd(Animator animation) {
 				if (mShowCamera){
-					InitCamera();
+					new Handler().postDelayed(new Runnable() {
+						@Override
+						public void run() {
+							InitCamera();
+							
+						}
+					}, 500);
+
 				}
 				else{
-					releaseCamera();
-					mScanningCode = 1;
+					new Handler().postDelayed(new Runnable() {
+						@Override
+						public void run() {
+							releaseCamera();
+							mScanningCode = 1;
+						}
+					}, 500);
+					
 				}
 			}
 
@@ -996,7 +1026,7 @@ public class MainActivity extends FragmentActivity implements MainAcitivyListene
 		ObjectAnimator[] objectAnimators = arrayListObjectAnimators.toArray(new ObjectAnimator[arrayListObjectAnimators.size()]);
 		AnimatorSet animSetXY = new AnimatorSet();
 		animSetXY.playTogether(objectAnimators);
-		animSetXY.setDuration(600);
+		animSetXY.setDuration(1);
 		animSetXY.start();
 	}
 
@@ -1039,7 +1069,7 @@ public class MainActivity extends FragmentActivity implements MainAcitivyListene
 
 			try {
 				rs = mQRCodeReader.decode(bitmap);
-//				rs = mDataMatrixReader.decode(bitmap);
+				//				rs = mDataMatrixReader.decode(bitmap);
 			} catch (NotFoundException e) {
 				//				try {
 				//					rs = mQRCodeReader.decode(bitmap);
@@ -1205,6 +1235,19 @@ public class MainActivity extends FragmentActivity implements MainAcitivyListene
 			public boolean onCategoryClick(int position) {
 				if (GlobalVariable.json10FirstShop.length() != 0 && 
 						GlobalVariable.mSortByString.compareTo("0") == 0) {
+
+					try{
+						JSONArray shopArry = new JSONArray(GlobalVariable.json10FirstShop);
+						for(int i = 0; i < shopArry.length();i++){
+							JSONObject object = (JSONObject)shopArry.get(i);
+							if ((int)object.getDouble("distance") == -1 && GlobalVariable.mLat != -1)
+								return false;
+							else
+								break;
+						}}catch(Exception ex){
+
+						}
+
 					getShopListFragment().update(GlobalVariable.json10FirstShop);
 					goToShopList();
 					return true;
@@ -1350,7 +1393,7 @@ public class MainActivity extends FragmentActivity implements MainAcitivyListene
 				}
 			}
 		});
-		
+
 		mLoadingLO = (RelativeLayout)menu.getMenu().findViewById(R.id.loadingLO);
 		mExpandMenuBtn = (ImageButton)menu.getMenu().findViewById(R.id.expandMenuBtn);
 		mExpandMenuBtn.setOnClickListener(new OnClickListener() {
@@ -1359,7 +1402,7 @@ public class MainActivity extends FragmentActivity implements MainAcitivyListene
 				if (mIsMenuExpand == false){
 					InputMethodManager imm = (InputMethodManager) getSystemService(Context.INPUT_METHOD_SERVICE);
 					imm.hideSoftInputFromWindow(mRenameBtn.getWindowToken(), 0);
-					
+
 					RotateAnimation anim = new RotateAnimation(0f, 45f, Animation.RELATIVE_TO_SELF, 0.5f, Animation.RELATIVE_TO_SELF, 0.5f);
 					anim.setInterpolator(new LinearInterpolator());
 					anim.setRepeatCount(0);
@@ -1395,7 +1438,7 @@ public class MainActivity extends FragmentActivity implements MainAcitivyListene
 
 				mRenameBtn.setText(GlobalVariable.nameFace);
 				avatarURL = GlobalVariable.avatarFace;
-				
+
 				mIsMenuExpand = !mIsMenuExpand;
 			}
 		});
@@ -1407,7 +1450,7 @@ public class MainActivity extends FragmentActivity implements MainAcitivyListene
 			public void onClick(View v) {
 				InputMethodManager imm = (InputMethodManager) getSystemService(Context.INPUT_METHOD_SERVICE);
 				imm.hideSoftInputFromWindow(mRenameBtn.getWindowToken(), 0);
-				
+
 				name = mRenameBtn.getText().toString();
 				if (name.compareTo(GlobalVariable.nameFace) == 0 && avatarURL.compareTo(GlobalVariable.avatarFace) == 0){
 					mExpandMenuLO.setVisibility(View.GONE);
@@ -1418,7 +1461,7 @@ public class MainActivity extends FragmentActivity implements MainAcitivyListene
 					anim.setDuration(200);
 					return;
 				}
-				
+
 				if (name == "" || name.length() == 0){
 					AlertDialog.Builder builder = new AlertDialog.Builder(MainActivity.this);
 
@@ -1429,13 +1472,13 @@ public class MainActivity extends FragmentActivity implements MainAcitivyListene
 						public void onClick(DialogInterface dialog, int which) {
 						}
 					});
-					
+
 					AlertDialog dialog = builder.show();
 					TextView messageView = (TextView)dialog.findViewById(android.R.id.message);
 					messageView.setGravity(Gravity.CENTER);
 					return;
 				}
-				
+
 				new UpdateUserInfo().setDisableView(mUpdateInforBtn)
 				.setVisibleView(mLoadingLO).execute();
 			}
@@ -1509,8 +1552,8 @@ public class MainActivity extends FragmentActivity implements MainAcitivyListene
 						mUserFragment.toggle();
 					if (mFiterFragment.isShow())
 						mFiterFragment.toggle();
-//					if (!mShowContent)
-//						toggleShowContent();
+					//					if (!mShowContent)
+					//						toggleShowContent();
 					mActiveView = EnumView.ShopDetail;
 					mPreShopDetail = EnumView.ShopList;
 					turnToPage(2);
@@ -1591,7 +1634,7 @@ public class MainActivity extends FragmentActivity implements MainAcitivyListene
 
 		//
 		mProgressBar = (ProgressBar)findViewById(R.id.progressBar1);
-//		mScanCover = (ImageView)findViewById(R.id.scanCover); 
+		//		mScanCover = (ImageView)findViewById(R.id.scanCover); 
 		QRCodeTextView = (TextView)findViewById(R.id.textViewGetScore);
 		mCloseQRC = (ImageButton)findViewById(R.id.closeQRCode);
 		mCloseQRC.setOnClickListener(new OnClickListener() {
@@ -1743,7 +1786,7 @@ public class MainActivity extends FragmentActivity implements MainAcitivyListene
 				GlobalVariable.mCityID = GlobalVariable.mCityIDes.get(mChoiceLocation);
 				mLocationTV.setText(GlobalVariable.mCityNames.get(mChoiceLocation));
 				menu.toggle();
-//				goToPage(0);
+				//				goToPage(0);
 				((CategoryListFragment)mFragmentList.get(0)).autoUpdate();
 
 				GlobalVariable.smartGuideDB.deleteUserSetting();
@@ -1903,8 +1946,8 @@ public class MainActivity extends FragmentActivity implements MainAcitivyListene
 		mCategoryListFragment.firstTimeUpdate();
 		mAdsFragment.startDownImage();
 
-//		mMapButton.setClickable(true);
-//		mMapButton.setImageResource(R.drawable.map_btn);
+		//		mMapButton.setClickable(true);
+		//		mMapButton.setImageResource(R.drawable.map_btn);
 	}
 
 	void exitWithError() {
@@ -1921,6 +1964,19 @@ public class MainActivity extends FragmentActivity implements MainAcitivyListene
 		dlgAlert.create().show();
 	}
 
+	void unableConnect2Server() {
+		AlertDialog.Builder dlgAlert  = new AlertDialog.Builder(this);                      
+		dlgAlert.setMessage("Máy chủ hiện đang bảo trì hoặc đường truyền của bạn không ổn định");
+		dlgAlert.setTitle("Lỗi kết nối với máy chủ");
+		dlgAlert.setPositiveButton("OK",new DialogInterface.OnClickListener() {
+			public void onClick(DialogInterface dialog, int whichButton) {
+				finish(); 
+			}
+		});
+
+		dlgAlert.setCancelable(false);
+		dlgAlert.create().show();
+	}
 	//	public void toogleUser(){
 	//
 	//		if (mShowUser){
@@ -2573,6 +2629,7 @@ public class MainActivity extends FragmentActivity implements MainAcitivyListene
 					item.id 		= jGift.getInt("id");
 					item.score 		= jGift.getInt("score");
 					item.status 	= jGift.getInt("status");
+					item.imageAward = jGift.getString("thumbnail");
 					giftList.add(item);
 				}
 
@@ -2874,42 +2931,42 @@ public class MainActivity extends FragmentActivity implements MainAcitivyListene
 		//		mTotalSGP.setText(score + " P");
 	}
 
-//	public void enableFilterMap(){
-//		mFilterBtn.setClickable(true);
-//		mMapButton.setClickable(true);
-//		mFilterBtn.setImageResource(R.drawable.menu_filter);
-//		mMapButton.setImageResource(R.drawable.map_btn);
-//	}
-//
-//	public void disableFilterMap(){
-//		mFilterBtn.setImageResource(R.drawable.menu_filter_lock);
-//		mMapButton.setImageResource(R.drawable.menu_map_lock);
-//		mFilterBtn.setClickable(false);
-//		mMapButton.setClickable(false);
-//	}
-//
-//	public void enableUserMap(){
-//		mUserButton.setClickable(true);
-//		mMapButton.setClickable(true);
-//		mUserButton.setImageResource(R.drawable.user_btn);
-//		mMapButton.setImageResource(R.drawable.map_btn);
-//	}
-//
-//	public void disableUserMap(){
-//		mUserButton.setClickable(false);
-//		mMapButton.setClickable(false);
-//		mUserButton.setImageResource(R.drawable.user_btn);
-//		mMapButton.setImageResource(R.drawable.menu_map_lock);
-//	}
-//
-//	public void enableFilterUserMap(){
-//		mFilterBtn.setClickable(true);
-//		mMapButton.setClickable(true);
-//		mUserButton.setClickable(true);
-//		mFilterBtn.setImageResource(R.drawable.menu_filter);
-//		mMapButton.setImageResource(R.drawable.map_btn);
-//		mUserButton.setImageResource(R.drawable.user_btn);
-//	}
+	//	public void enableFilterMap(){
+	//		mFilterBtn.setClickable(true);
+	//		mMapButton.setClickable(true);
+	//		mFilterBtn.setImageResource(R.drawable.menu_filter);
+	//		mMapButton.setImageResource(R.drawable.map_btn);
+	//	}
+	//
+	//	public void disableFilterMap(){
+	//		mFilterBtn.setImageResource(R.drawable.menu_filter_lock);
+	//		mMapButton.setImageResource(R.drawable.menu_map_lock);
+	//		mFilterBtn.setClickable(false);
+	//		mMapButton.setClickable(false);
+	//	}
+	//
+	//	public void enableUserMap(){
+	//		mUserButton.setClickable(true);
+	//		mMapButton.setClickable(true);
+	//		mUserButton.setImageResource(R.drawable.user_btn);
+	//		mMapButton.setImageResource(R.drawable.map_btn);
+	//	}
+	//
+	//	public void disableUserMap(){
+	//		mUserButton.setClickable(false);
+	//		mMapButton.setClickable(false);
+	//		mUserButton.setImageResource(R.drawable.user_btn);
+	//		mMapButton.setImageResource(R.drawable.menu_map_lock);
+	//	}
+	//
+	//	public void enableFilterUserMap(){
+	//		mFilterBtn.setClickable(true);
+	//		mMapButton.setClickable(true);
+	//		mUserButton.setClickable(true);
+	//		mFilterBtn.setImageResource(R.drawable.menu_filter);
+	//		mMapButton.setImageResource(R.drawable.map_btn);
+	//		mUserButton.setImageResource(R.drawable.user_btn);
+	//	}
 
 	private class QCToDetail extends AsyncTask<Void, Void, Boolean> {
 		@Override
@@ -3064,12 +3121,12 @@ public class MainActivity extends FragmentActivity implements MainAcitivyListene
 		}
 		return registrationId;
 	}
-	
+
 	public class UpdateUserInfo extends CyAsyncTask {
-		
+
 		private JSONObject JSResult;
 		private Exception mEx;
-		
+
 		@Override
 		protected Void doInBackground(Void... params) {
 			try {
@@ -3077,7 +3134,7 @@ public class MainActivity extends FragmentActivity implements MainAcitivyListene
 				pairs.add(new BasicNameValuePair("name", name));
 				if (avatarURL == "" || avatarURL.length() == 0)
 					avatarURL = GlobalVariable.mAvatarList.get(0);
-				
+
 				pairs.add(new BasicNameValuePair("avatar", avatarURL));
 				JSResult = new JSONObject(NetworkManger.post(APILinkMaker.mUpdateUserInfo(), pairs));
 			} catch (Exception e) {
@@ -3093,7 +3150,7 @@ public class MainActivity extends FragmentActivity implements MainAcitivyListene
 			try {
 				if (mEx != null)
 					throw mEx;
-				
+
 				JSONObject result = JSResult;
 				int code = result.getInt("code");
 				if (code == 1){

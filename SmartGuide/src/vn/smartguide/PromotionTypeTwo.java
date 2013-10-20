@@ -41,7 +41,7 @@ public class PromotionTypeTwo extends Promotion {
 	}
 	
 	public PromotionTypeTwo parse(JSONObject jPromotion) throws JSONException {
-		mMoney = jPromotion.getString("money");
+		mMoney = jPromotion.getString("str_money");
 		mDuration = jPromotion.getString("duration");
 		JSONArray jVoucherArr = jPromotion.getJSONArray("list_voucher");
 		for (int i = 0; i < jVoucherArr.length(); i++) {

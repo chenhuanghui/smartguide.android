@@ -74,7 +74,7 @@
                         android:layout_weight="1"
                         android:background="#282E3A"
                         android:gravity="center_vertical|center_horizontal"
-                        android:text="detail"
+                        android:text="Chi tiết"
                         android:textColor="#FFFFFF"
                         android:textSize="9sp"
                         android:textStyle="italic" />

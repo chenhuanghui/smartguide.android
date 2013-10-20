@@ -303,6 +303,7 @@ public class DetailPromo1Fragment extends DetailPromoFragment {
     		
     		TextView txtSGP = (TextView) convertView.findViewById(R.id.txtSGP);
     		TextView txtAwardName = (TextView) convertView.findViewById(R.id.txtAwardName);
+    		txtAwardName.setSelected(true);
     		TextView txtType = (TextView) convertView.findViewById(R.id.txtType);
 
     		txtSGP.setText("" + getItem(position).required);

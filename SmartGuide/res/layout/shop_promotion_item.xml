@@ -52,11 +52,12 @@
                 android:gravity="center"
                 android:text="05"
                 android:textColor="#ffffff"
-                android:textSize="13sp" />
+                android:textSize="16sp"
+                android:textStyle="bold" />
 
             <ImageView
                 android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
+                android:layout_height="8dp"
                 android:src="@drawable/sgp" />
         </LinearLayout>
 
@@ -74,13 +75,21 @@
                 android:id="@+id/txtAwardName"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
+                android:layout_marginLeft="5dp"
+                android:layout_marginRight="5dp"
+                android:cursorVisible="false"
+                android:ellipsize="marquee"
+                android:focusableInTouchMode="true"
                 android:gravity="center"
+                android:marqueeRepeatLimit="marquee_forever"
                 android:minHeight="30dp"
+                android:singleLine="true"
+                android:freezesText="true"
                 android:text="1 phần khuyến mãi "
                 android:textColor="#ffffff"
-                android:textSize="13sp" />
+                android:textSize="13sp"
+                android:typeface="normal" />
         </LinearLayout>
-
     </RelativeLayout>
 
 </LinearLayout>

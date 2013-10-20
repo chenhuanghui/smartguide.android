@@ -52,13 +52,13 @@ public class FilterFragment extends Fragment {
 	// GUI elements
 	
 	private final FilterItem[] mItemList = new FilterItem[] {
-			new FilterItem(R.drawable.icon12, R.drawable.icon12_gray, R.drawable.iconpin_food, "ĂN", "food"),
-			new FilterItem(R.drawable.icon13, R.drawable.icon13_gray, R.drawable.iconpin_drink, "UỐNG", "drink"),
-			new FilterItem(R.drawable.icon14, R.drawable.icon14_gray, R.drawable.iconpin_healness, "SỨC KHỎE", "health&fitness"),
+			new FilterItem(R.drawable.icon12, R.drawable.icon12_gray, R.drawable.iconpin_food, "ẨM THỰC", "food"),
+			new FilterItem(R.drawable.icon13, R.drawable.icon13_gray, R.drawable.iconpin_drink, "CAFE & BAR", "cafe & bar"),
+			new FilterItem(R.drawable.icon14, R.drawable.icon14_gray, R.drawable.iconpin_healness, "LÀM ĐẸP", "health&fitness"),
 			new FilterItem(R.drawable.icon15, R.drawable.icon15_gray, R.drawable.iconpin_entertaiment, "GIẢI TRÍ", "entertainment"),
 			new FilterItem(R.drawable.icon16, R.drawable.icon16_gray, R.drawable.iconpin_fashion, "THỜI TRANG", "fashion"),
 			new FilterItem(R.drawable.icon17, R.drawable.icon17_gray, R.drawable.iconpin_travel, "DU LỊCH", "travel"),
-			new FilterItem(R.drawable.icon18, R.drawable.icon18_gray, R.drawable.iconpin_shopping, "MUA SẮM", "production"),
+			new FilterItem(R.drawable.icon18, R.drawable.icon18_gray, R.drawable.iconpin_shopping, "SẢN PHẨM", "production"),
 			new FilterItem(R.drawable.icon19, R.drawable.icon19_gray, R.drawable.iconpin_education, "GIÁO DỤC", "education"),
 	};
 	

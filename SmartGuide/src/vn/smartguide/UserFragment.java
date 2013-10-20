@@ -18,6 +18,7 @@ import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
 import android.support.v4.app.Fragment;
+import android.text.method.ScrollingMovementMethod;
 import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -213,7 +214,6 @@ public class UserFragment extends Fragment{
 		
 		private LayoutInflater inflater;
 		private List<Shop> mShops;
-		private List<Drawable> mBitmaps;
 		private List<TextView> mSGPTexts;
 		
 		public CollectionAdapter() {
@@ -222,10 +222,8 @@ public class UserFragment extends Fragment{
 		
 		public void setData(List<Shop> shops){
 			mShops = shops;
-			mBitmaps = new ArrayList<Drawable>();
 			mSGPTexts = new ArrayList<TextView>();
 			for(int i = 0; i < shops.size(); i++) {
-				mBitmaps.add(null);
 				mSGPTexts.add(null);
 			}
 		}
@@ -233,7 +231,6 @@ public class UserFragment extends Fragment{
 		public void addData(List<Shop> shops){
 			for(int i = 0; i < shops.size(); i++){
 				mShops.add(shops.get(i));
-				mBitmaps.add(null);
 				mSGPTexts.add(null);
 			}
 		}
@@ -271,40 +268,7 @@ public class UserFragment extends Fragment{
 			mSGPTexts.set(position, sgpTextView);
 			
 			shopTextView.setText(sp.mName);
-			Drawable nowDrawable = mBitmaps.get(position); 
-			if (nowDrawable == null){
-				new Handler().postDelayed(new Runnable() {
-					@Override
-					public void run() {
-						new HttpConnection(new Handler() {
-			        		@SuppressWarnings("deprecation")
-							@Override
-			        		public void handleMessage(Message message) {
-			        			
-			        			switch (message.what) {
-			        			case HttpConnection.DID_START: {
-			        				break;
-			        			}
-			        			case HttpConnection.DID_SUCCEED: {
-			        				Bitmap response = (Bitmap) message.obj;
-			        				Drawable drawable = new BitmapDrawable(getActivity().getResources(), response);
-			        				mBitmaps.set(position, drawable);
-			        				shopAva.setBackgroundDrawable(drawable);
-			        				break;
-			        			}
-			        			case HttpConnection.DID_ERROR: {
-			        				Exception e = (Exception) message.obj;
-			        				e.printStackTrace();
-			        				break;
-			        			}
-			        			}
-			        		}
-			        		
-			        	}).bitmap(sp.mLogo);
-					}
-				}, 2000);
-			}else
-				shopAva.setBackgroundDrawable(nowDrawable);
+			GlobalVariable.cyImageLoader.showImage(sp.mLogo, shopAva);
 			
 			if (sp.mPromotionStatus == true){
 				int type = sp.mPromotion.getType();
@@ -341,6 +305,7 @@ public static class GiftItem {
 		public int score;
 		public String content;
 		public int status;
+		public String imageAward;
 	}
 	
 	public class GiftAdapter extends BaseAdapter {
@@ -385,16 +350,25 @@ public static class GiftItem {
 			GiftItem gift = mGiftList.get(position);
 			
 			TextView txtName = (TextView) convertView.findViewById(R.id.txtGiftName);
+			//txtName.setMovementMethod(new ScrollingMovementMethod());
+			txtName.setSelected(true);
 			TextView txtPoint = (TextView) convertView.findViewById(R.id.txtPoint);
 			
 			txtName.setText("■ " + gift.content);
 			txtPoint.setText("" + gift.score + " P");
 			Button btnDoiQua = (Button) convertView.findViewById(R.id.btnDoiQua);
 			btnDoiQua.setTag(position);
-			if (gift.status == 0)
-				btnDoiQua.setAlpha(1f);
-			else
+			
+			GlobalVariable.cyImageLoader.showImage(gift.imageAward, (ImageView)convertView.findViewById(R.id.imageView1));
+			
+			if (gift.status == 0){
 				btnDoiQua.setAlpha(0.5f);
+				btnDoiQua.setClickable(false);
+				btnDoiQua.setEnabled(false);
+			}
+			else
+				btnDoiQua.setAlpha(1f);
+			
 			btnDoiQua.setOnClickListener(new OnClickListener() {
 				
 				@Override

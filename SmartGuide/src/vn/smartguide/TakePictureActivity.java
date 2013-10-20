@@ -151,7 +151,6 @@ public class TakePictureActivity extends Activity {
 				}
 			}else{
 				authButton.performClick();
-				return;
 			}
 		}catch(Exception ex){
 			authButton.performClick();
