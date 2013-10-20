@@ -37,7 +37,8 @@ public class ReviewActivity extends Activity {
 	List<Review> mReviews;
 	ChangeReview mChangeReview = null;
 	boolean mFirstTimeClick = true;
-
+	boolean mIsReviewing = false;
+	
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
@@ -61,6 +62,14 @@ public class ReviewActivity extends Activity {
 		mName = (TextView)findViewById(R.id.textView1);
 
 		mReviewText = (EditText)findViewById(R.id.editText1);
+		mReviewText.setOnFocusChangeListener(new OnFocusChangeListener() {
+			
+			@Override
+			public void onFocusChange(View v, boolean hasFocus) {
+				mIsReviewing = hasFocus;
+			}
+		});
+		
 		mReviewBtn = (Button)findViewById(R.id.button1);
 		mActivity = this;
 
@@ -164,7 +173,9 @@ public class ReviewActivity extends Activity {
 			}catch(Exception ex){
 
 			}
-			startReview();
+			
+			if (mIsReviewing == false)
+				startReview();
 		}
 
 		@Override

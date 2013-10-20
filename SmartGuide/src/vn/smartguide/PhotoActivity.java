@@ -266,7 +266,7 @@ public class PhotoActivity extends FragmentActivity{
 						this.frag = frag;
 						return this;
 					}
-
+					
 					@Override
 					public void loadFinish(int from, Bitmap image, String url) {
 
