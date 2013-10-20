@@ -100,6 +100,8 @@ import com.google.zxing.common.HybridBinarizer;
 import com.google.zxing.datamatrix.DataMatrixReader;
 import com.google.zxing.qrcode.QRCodeReader;
 import com.jeremyfeinstein.slidingmenu.lib.SlidingMenu;
+import com.jeremyfeinstein.slidingmenu.lib.SlidingMenu.OnClosedListener;
+import com.jeremyfeinstein.slidingmenu.lib.SlidingMenu.OnOpenListener;
 
 import org.apache.http.NameValuePair;
 import org.apache.http.message.BasicNameValuePair;
@@ -1165,7 +1167,21 @@ public class MainActivity extends FragmentActivity implements MainAcitivyListene
 		menu.setFadeDegree(0.35f);
 		menu.attachToActivity(this, SlidingMenu.SLIDING_CONTENT);
 		menu.setMenu(R.layout.side_menu_fragment);
-
+		menu.setOnOpenListener(new OnOpenListener() {
+			
+			@Override
+			public void onOpen() {
+				stopAds();
+			}
+		});
+		
+		menu.setOnClosedListener(new OnClosedListener() {
+			@Override
+			public void onClosed() {
+				startAds();
+			}
+		});
+		
 		// Create fragment list
 		mFragmentManager = getSupportFragmentManager();
 		mFragmentList = new ArrayList<Fragment>();
