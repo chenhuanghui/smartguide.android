@@ -269,11 +269,6 @@ public class MainActivity extends FragmentActivity implements MainAcitivyListene
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
-
-		// Không được bỏ
-		StrictMode.ThreadPolicy policy = new StrictMode.ThreadPolicy.Builder().permitAll().build();
-		StrictMode.setThreadPolicy(policy); 
-
 		setContentView(R.layout.activity_main);
 
 		mUiHelper = new UiLifecycleHelper(this, callback);
@@ -282,16 +277,6 @@ public class MainActivity extends FragmentActivity implements MainAcitivyListene
 		//test connection
 		if (NetworkManger.isOnline(this) == false) {
 			exitWithError();
-			return;
-		}
-
-		try{
-			URL myUrl = new URL(APILinkMaker.mHostName);
-			URLConnection connection = myUrl.openConnection();
-			connection.setConnectTimeout(3000);
-			connection.connect();
-		} catch (Exception e) {
-			unableConnect2Server();
 			return;
 		}
 
@@ -1952,8 +1937,8 @@ public class MainActivity extends FragmentActivity implements MainAcitivyListene
 
 	void exitWithError() {
 		AlertDialog.Builder dlgAlert  = new AlertDialog.Builder(this);                      
-		dlgAlert.setMessage("Bật kết nối mạng và thử lại");
-		dlgAlert.setTitle("Lỗi kết nối mạng");
+		dlgAlert.setMessage("Xảy ra lỗi khi kết nối với máy chủ. Bật kết nối mạng và thử lại");
+		dlgAlert.setTitle("Lỗi kết nối");
 		dlgAlert.setPositiveButton("OK",new DialogInterface.OnClickListener() {
 			public void onClick(DialogInterface dialog, int whichButton) {
 				finish(); 

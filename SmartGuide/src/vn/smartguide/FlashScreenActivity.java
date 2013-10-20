@@ -1,5 +1,7 @@
 package vn.smartguide;
 
+import java.net.URL;
+import java.net.URLConnection;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -97,7 +99,7 @@ public class FlashScreenActivity extends Activity {
 		@Override
 		protected Boolean doInBackground(Void... params) {
 			try{
-				key = new JSONObject(NetworkManger.get(APILinkMaker.mCheckEmergence() + "?access_token=" + GlobalVariable.tokenID + "&versioin=android"+ 
+				key = new JSONObject(NetworkManger.get(APILinkMaker.mCheckEmergence() + "?access_token=" + GlobalVariable.tokenID + "&version=android"+ 
 				Build.VERSION.RELEASE + "_" + getPackageManager().getPackageInfo(getPackageName(), 0).versionName, 
 						false));
 //				key = new JSONObject(
@@ -111,6 +113,18 @@ public class FlashScreenActivity extends Activity {
 			if (action_type != 0)
 				return false;
 
+			try{
+				URL myUrl = new URL(APILinkMaker.mHostName);
+				URLConnection connection = myUrl.openConnection();
+				connection.setConnectTimeout(3000);
+				connection.connect();
+			} catch (Exception e) {
+				resultData = new Intent();
+				resultData.putExtra("Database", "OK");
+				resultData.putExtra("Connection", "False");
+				return true;
+			}
+			
 			GlobalVariable.getActivateCodeFromDB();
 			GlobalVariable.getTokenFromDB();
 			GlobalVariable.getVersionFromDB();
@@ -154,7 +168,7 @@ public class FlashScreenActivity extends Activity {
 			pairs.add(new BasicNameValuePair("env", Integer.toString(GlobalVariable.mMode)));
 
 			json = NetworkManger.post(APILinkMaker.mGroupByCity(), pairs);
-
+			
 			if (json != "") {
 				resultData = new Intent();
 				resultData.putExtra("Database", "OK");

@@ -110,7 +110,12 @@ public class Shop {
 				mShop.mPromotion = new PromotionTypeZero(sp);	
 				break;
 			case 1:
-				int cost = promotion.getInt("cost");
+				String cost = "";
+				try{
+					cost = promotion.getString("str_cost");
+				}catch(Exception ex){
+					cost = Integer.toString(promotion.getInt("cost") / 1000) + "K";
+				}
 				int sgp = promotion.getInt("sgp");
 				int min_score = promotion.optInt("min_score", 0);
 				int pPerSGP = promotion.getInt("P");

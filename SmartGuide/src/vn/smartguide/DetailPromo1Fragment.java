@@ -136,11 +136,11 @@ public class DetailPromo1Fragment extends DetailPromoFragment {
     		spanString.setSpan(new StyleSpan(Typeface.BOLD), 0, ("" + promo.mPperSGP).length(), 0);
     		txtPperSGP.setText(spanString);
     		
-    		spanString = new SpannableString("Với mỗi " + promo.mCost/1000 + "k trên hóa đơn bạn sẽ được 1 lượt quét thẻ");
+    		spanString = new SpannableString("Với mỗi " + promo.mCost + " trên hóa đơn bạn sẽ được 1 lượt quét thẻ");
     		spanString.setSpan(new ForegroundColorSpan(0xFFC95436),
-    				"Với mỗi ".length(), ("Với mỗi " + promo.mCost/1000 + "k").length(), 0);
+    				"Với mỗi ".length(), ("Với mỗi " + promo.mCost).length(), 0);
     		spanString.setSpan(new StyleSpan(Typeface.BOLD),
-    				"Với mỗi ".length(), ("Với mỗi " + promo.mCost/1000 + "k").length(), 0);
+    				"Với mỗi ".length(), ("Với mỗi " + promo.mCost).length(), 0);
     		mCostPerSGP.setText(spanString);
     		
     		new GetPromotionDetail().execute();
