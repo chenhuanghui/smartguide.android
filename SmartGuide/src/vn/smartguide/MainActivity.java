@@ -580,7 +580,7 @@ public class MainActivity extends FragmentActivity implements MainAcitivyListene
 					case 1: {
 						PromotionTypeOne promo = (PromotionTypeOne) s.mPromotion; 
 						txtPoint.setText("" + promo.mSGP);
-						txtMinPoint.setText("/10");
+						txtMinPoint.setText("/" + promo.mMinScore);
 						txtPointName.setText("POINT");
 					}
 					break;
@@ -726,6 +726,7 @@ public class MainActivity extends FragmentActivity implements MainAcitivyListene
 		if (googleMap.getMyLocation() == null)
 			return;
 
+		GlobalVariable.showToast("Đang tìm đường đến cửa hàng", MainActivity.this);
 		double myLat = googleMap.getMyLocation().getLatitude();
 		double myLon = googleMap.getMyLocation().getLongitude();
 		double dstLat = nearby.mLat;

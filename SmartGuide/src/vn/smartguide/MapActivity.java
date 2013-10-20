@@ -74,6 +74,7 @@ public class MapActivity extends FragmentActivity {
 	private void RequestDirection(double lat, double lng, double myLat, double myLon, final GoogleMap googleMap) {
 		
 		googleMap.setOnMyLocationChangeListener(null);
+		GlobalVariable.showToast("Đang tìm đường đến cửa hàng", MapActivity.this);
 		Handler handler = new Handler() {
 
 			@Override
