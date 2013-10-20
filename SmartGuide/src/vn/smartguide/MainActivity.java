@@ -1890,6 +1890,10 @@ public class MainActivity extends FragmentActivity implements MainAcitivyListene
 
 	@Override
 	public void onPause() {
+		if (mShowCamera){
+			toggleCamera();
+		}
+		
 		super.onPause();
 		mUiHelper.onPause();
 	}
@@ -3199,4 +3203,5 @@ public class MainActivity extends FragmentActivity implements MainAcitivyListene
 			}
 		}
 	}
+	
 }
