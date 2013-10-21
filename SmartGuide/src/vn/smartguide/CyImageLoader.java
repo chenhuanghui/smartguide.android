@@ -37,9 +37,9 @@ import android.widget.ImageView;
  *  Resample image 
  */
 public class CyImageLoader {
-	
+
 	public static final int MAX_MEM_CACHE = 10 * 1024 * 1024;
-	
+
 	public static String[] DUMMY_PATH = new String[] {
 		"http://vtcdn.com/sites/default/files/images/2010/10/23/img-1287809436-1.jpg",
 		"http://d.f1.photo.zdn.vn/upload/original/2010/03/24/12/12694081522091761785_574_574.jpg",
@@ -62,80 +62,80 @@ public class CyImageLoader {
 		"http://img2.news.zing.vn/2012/10/24/ho-khanh3.jpg",
 		"http://files.myopera.com/nguoicodoccuatheky/blog/shakira-orig.jpg"
 	};
-	
+
 	public static final int FROM_MEMORY	= 0;
 	public static final int FROM_DISK	= 1;
 	public static final int FROM_NETWORK= 2;
-	
-//	public static final int CONNECTION_NUM	= 8;
-	
+
+	//	public static final int CONNECTION_NUM	= 8;
+
 	private TaskQueue mTaskQueue = new TaskQueue();
-	
+
 	// <Sample+Path, Bitmap>
 	private MemCache mMemCacheMap = new MemCache();
-	
+
 	// <Path, hash>
 	private DiskCache mDiskCacheMap = new DiskCache();
-	
+
 	private Context ct;
-	
+
 	///////////////////////////////////////////////////////////////////////////
 	// Public method
 	///////////////////////////////////////////////////////////////////////////
-	
+
 	public CyImageLoader(Context ct) {
 		this.ct = ct;
-		
+
 		clearCache(ct);
 	}
-	
+
 	public void release() {
 		ct = null;
 	}
-	
+
 	public void showImage(String path, ImageView imgView) {
 
 		loadImage(path, new Listener() {
-			
+
 			private ImageView imgView;
-			
+
 			public Listener init(ImageView img) {
 				imgView = img;
 				return this;
 			}
-			
+
 			@Override
 			public void loadFinish(int from, Bitmap image, String url) {
 				imgView.setImageBitmap(image);
 			}
 		}.init(imgView), new Point(imgView.getWidth(), imgView.getHeight()), imgView.getContext());
 	}
-	
+
 	public void loadImage(String path, Listener listener, Point expectedSize, Context ct) {
-		
-//		debugLog("Incoming request: " + right(path));
-		
+
+		//		debugLog("Incoming request: " + right(path));
+
 		listener.mExpectedSize = expectedSize;
-		
+
 		// Check mem cache
 		Bitmap bm = mMemCacheMap.checkMemCache(path, expectedSize);
-		
+
 		// If hit mem cache, deliver bitmap to listener
 		if (bm != null) {
 			listener.startLoad(FROM_MEMORY);
 			listener.loadFinish(FROM_MEMORY, bm, path);
 			return;
 		}
-		
+
 		// Check disk cache
 		BitmapInfo bmInf = mDiskCacheMap.checkDiskCache(path);
-		
+
 		// If hit disk cache, check task queue
 		if (bmInf != null) {
 			int sample = calcSample(bmInf, expectedSize);
 			listener.startLoad(FROM_DISK);
 			Task t = mTaskQueue.checkDecoding(path, sample);
-			
+
 			if (t != null) {
 				// If decoding, add listener
 				debugLog("Decoding, add listener to " + right(path));
@@ -171,18 +171,18 @@ public class CyImageLoader {
 		for (File f : cacheDir.listFiles())
 			f.delete();
 	}
-	
+
 	///////////////////////////////////////////////////////////////////////////
 	// Private method
 	///////////////////////////////////////////////////////////////////////////	
 
 	private Bitmap loadOptimize(BitmapInfo bmInf, int sample) throws Exception {
-		
-//		ActivityManager activityManager =  (ActivityManager) ct.getSystemService(Context.ACTIVITY_SERVICE);
-//		MemoryInfo memoryInfo = new MemoryInfo();
-//		activityManager.getMemoryInfo(memoryInfo);
-//		debugLog("" + memoryInfo.availMem / 1024 + "/" + activityManager.getMemoryClass() + " MB");
-		
+
+		//		ActivityManager activityManager =  (ActivityManager) ct.getSystemService(Context.ACTIVITY_SERVICE);
+		//		MemoryInfo memoryInfo = new MemoryInfo();
+		//		activityManager.getMemoryInfo(memoryInfo);
+		//		debugLog("" + memoryInfo.availMem / 1024 + "/" + activityManager.getMemoryClass() + " MB");
+
 		Options opt = new Options();
 		opt.inScaled = false;
 		opt.inSampleSize = sample;
@@ -195,16 +195,16 @@ public class CyImageLoader {
 	}
 
 	private int calcSample(BitmapInfo bmInf, Point expectedSize) {
-		
+
 		if (expectedSize.x == 0 || expectedSize.y == 0)
 			return 1;
-		
+
 		int w = expectedSize.x;
 		int h = expectedSize.y;
 		int bmW = bmInf.w;
 		int bmH = bmInf.h;
 		int scale = 1;
-		
+
 		while (bmW / 2 > h && bmH / 2 > w) {
 			scale = scale << 1;
 			bmW = bmW >> 1;
@@ -213,9 +213,9 @@ public class CyImageLoader {
 
 		return scale;
 	}
-	
+
 	public static String generateRandomImageFileName(Context ct) {
-		
+
 		Random random = new Random(System.currentTimeMillis());
 		String name = null;
 		File f = null;
@@ -225,30 +225,30 @@ public class CyImageLoader {
 			for (int i = 0; i < GlobalVariable.IMAGE_FILE_NAME_LENGTH; i++) {
 				builder.append((char) ('a' + random.nextInt('z' - 'a')));
 			}
-			
+
 			// check existence
 			name = builder.toString();
 			f = ct.getFileStreamPath(name);
 		} while (f.isFile());
-		
+
 		return name;
 	}
 
 	///////////////////////////////////////////////////////////////////////////
 	// Inner class
 	///////////////////////////////////////////////////////////////////////////
-	
+
 	private static class TaskQueue extends ArrayList<Task> {
-		
+
 		public void addTask(Task t) {
 			t.executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR);
 			add(t);
 		}
-		
+
 		public void removeTask(Task t) {
 			remove(t);
 		}
-		
+
 		public Task checkDecoding(String path, int sample) {
 			for (Task t : this)
 				if (t.mType == Task.TYPE_DECODE && t.mPath.equals(path))
@@ -256,7 +256,7 @@ public class CyImageLoader {
 						return t;
 			return null;
 		}
-		
+
 		public Task checkDownloading(String path) {
 			for (Task t : this)
 				if (t.mType == Task.TYPE_DOWNLOAD && t.mPath.equals(path))
@@ -264,130 +264,130 @@ public class CyImageLoader {
 			return null;
 		}
 	}
-	
+
 	private class MemCache extends LruCache<String, Bitmap> {
-		
+
 		public MemCache() {
 			super(MAX_MEM_CACHE);
 		}
-		
+
 		@Override
 		protected int sizeOf(String key, Bitmap value) {
-//			return value.getByteCount();
+			//			return value.getByteCount();
 			return value.getRowBytes() * value.getHeight() * 4;
 		}
-		
+
 		public Bitmap checkMemCache(String path, Point expectedSize) {
 			BitmapInfo bmInf = mDiskCacheMap.get(path);
 			if (bmInf == null) {
 				return null;
 			}
-				
+
 			int expectedSample = calcSample(bmInf, expectedSize);
 			Bitmap bm = get(String.format("%03d", expectedSample) + path);
 			if (bm == null) {
-//				debugLog("checkMemCache miss");
+				//				debugLog("checkMemCache miss");
 			} else {
 				debugLog("checkMemCache hit");
 			}
 			return bm;
 		}
-		
+
 		public void cacheMem(Bitmap bm, String path, int sample) {
 			put(String.format("%03d", sample) + path, bm);
 			debugLogA("Memcache size = " + size() / 1024 + " KB");
-//			debugLog("cacheMem " + path);
+			//			debugLog("cacheMem " + path);
 		}
 	}
-	
+
 	private static class DiskCache extends HashMap<String, BitmapInfo> {
-		
+
 		public BitmapInfo checkDiskCache(String path) {
 			BitmapInfo bmInf = get(path);
 			if (bmInf == null) {
-//				debugLog("checkDiskCache miss");
+				//				debugLog("checkDiskCache miss");
 			} else {
 				debugLog("checkDiskCache hit");
 			}
 			return bmInf;
 		}
-		
+
 		public void cacheDisk(String path, BitmapInfo bmInf) {
-//			debugLog("cacheDisk " + path);
+			//			debugLog("cacheDisk " + path);
 			put(path, bmInf);
 		}
 	}
-	
+
 	private abstract class Task extends AsyncTask<Object, Void, Object> {
-		
+
 		public static final int TYPE_DECODE 	= 1;
 		public static final int TYPE_DOWNLOAD 	= 2;
-		
+
 		public int mType;
 		public String mPath;
 		public List<Listener> mListenerList = new ArrayList<Listener>();
-		
+
 		public Task(String path) {
 			mPath = path;
 		}
-		
+
 		public synchronized void addListener(Listener listener) {
 			mListenerList.add(listener);
 		}
-		
+
 		public synchronized List<Listener> cloneListenerList() {
 			return new ArrayList<Listener>(mListenerList);
 		}
 	}
-	
+
 	private class TaskDownload extends Task {
-		
+
 		public ArrayList<Integer> sampleSet;
 		public BitmapInfo bmInf;
 		public Exception mEx;
-		
+
 		public TaskDownload(String path) {
 			super(path);
 			mType = TYPE_DOWNLOAD;
 			mPath = path;
 		}
-		
+
 		@Override
 		protected Object doInBackground(Object... shit) {
 			try {
 				HttpClient httpClient = new DefaultHttpClient();
 				HttpParams params = httpClient.getParams();
-		    	HttpConnectionParams.setSoTimeout(params, 10000);
-		    	HttpConnectionParams.setConnectionTimeout(params, 10000);
-				
+				HttpConnectionParams.setSoTimeout(params, 10000);
+				HttpConnectionParams.setConnectionTimeout(params, 10000);
+
 				// Download
 				HttpResponse response = httpClient.execute(new HttpGet(mPath));
 				String fileName = generateRandomImageFileName(ct);
 				processGetFile(response.getEntity(), fileName);
-				
+
 				// Determine bitmap size
 				Options opt = new Options();
 				opt.inScaled = false;
 				opt.inJustDecodeBounds = true;
-				
+
 				String cachePath = ct.getCacheDir().getAbsolutePath();
 				FileInputStream in = new FileInputStream(cachePath + "/" + 
 						GlobalVariable.IMAGE_FILE_PATH + fileName);
 				BitmapFactory.decodeStream(in, null, opt);
 				in.close();
-				
+
 				if (opt.outWidth == -1 || opt.outHeight == -1)
 					throw new Exception("Cannot decode bitmap " + fileName);
-				
+
 				// Create bitmpa info
 				bmInf = new BitmapInfo();
 				bmInf.w = opt.outWidth;
 				bmInf.h = opt.outHeight;
 				bmInf.hash = fileName;
-				
+
 				//////////////// load optimize ////////////////
 				List<Listener> listenerList = null;
-				
+
 				// copy array list
 				listenerList = cloneListenerList();
 
@@ -404,85 +404,88 @@ public class CyImageLoader {
 				Bitmap[] bmArr = new Bitmap[sampleSet.size()];
 				for (int i = 0; i < bmArr.length; i++)
 					bmArr[i] = loadOptimize(bmInf, sampleSet.get(i));
-				
+
 				return bmArr;
 
 			} catch (Exception e) {
 				mEx = e;
 			}
-			
+
 			return null;
 		}
-		
+
 		@Override
 		protected void onPostExecute(Object result) {
-			
-			if (mEx == null) {
-				Bitmap[] bmArr = (Bitmap[]) result;
-				
-				// cache disk
-				mDiskCacheMap.cacheDisk(mPath, bmInf);
-				
-				// cache mem
-				for (int i = 0; i < sampleSet.size(); i++)
-					mMemCacheMap.cacheMem(bmArr[i], mPath, sampleSet.get(i));
-				
-				// deliver to listener
-				debugLog("downloading task complete, path=" + right(mPath) + ", sample:");
-				for (Listener l : mListenerList) {
-					int sample = calcSample(bmInf, l.mExpectedSize);
-					int pos = Collections.binarySearch(sampleSet, sample);
-					if (pos >= 0) {
-						// Everything allright :)
-//						debugLog("sample = " + sample);
-						l.loadFinish(FROM_NETWORK, bmArr[pos], mPath);
-					} else {
-						// Oh shit! Some requests come after decoding :(
-						debugLog("Sample not found, add new decode task, sample = " + sample);
-						TaskDecode decode = new TaskDecode(mPath, bmInf, sample);
-						decode.addListener(l);
-						mTaskQueue.addTask(decode);
+			try{
+				if (mEx == null) {
+					Bitmap[] bmArr = (Bitmap[]) result;
+
+					// cache disk
+					mDiskCacheMap.cacheDisk(mPath, bmInf);
+
+					// cache mem
+					for (int i = 0; i < sampleSet.size(); i++)
+						mMemCacheMap.cacheMem(bmArr[i], mPath, sampleSet.get(i));
+
+					// deliver to listener
+					debugLog("downloading task complete, path=" + right(mPath) + ", sample:");
+					for (Listener l : mListenerList) {
+						int sample = calcSample(bmInf, l.mExpectedSize);
+						int pos = Collections.binarySearch(sampleSet, sample);
+						if (pos >= 0) {
+							// Everything allright :)
+							//						debugLog("sample = " + sample);
+							l.loadFinish(FROM_NETWORK, bmArr[pos], mPath);
+						} else {
+							// Oh shit! Some requests come after decoding :(
+							debugLog("Sample not found, add new decode task, sample = " + sample);
+							TaskDecode decode = new TaskDecode(mPath, bmInf, sample);
+							decode.addListener(l);
+							mTaskQueue.addTask(decode);
+						}
 					}
+
+				} else {
+					// deliver
+					debugLog("downloading task fail, path=" + right(mPath) + mEx.getMessage());
+					for (Listener l : mListenerList)
+						l.loadFail(mEx);
 				}
-				
-			} else {
-				// deliver
-				debugLog("downloading task fail, path=" + right(mPath) + mEx.getMessage());
-				for (Listener l : mListenerList)
-					l.loadFail(mEx);
+
+				mTaskQueue.removeTask(this);
+			}catch(Exception ex){
+
 			}
-			
-			mTaskQueue.removeTask(this);
 		}
-		
+
 		private void processGetFile(HttpEntity entity, String fileName) throws Exception {
-	    	
-	    	InputStream in = entity.getContent();    	
-	    	String cachePath = ct.getCacheDir().getAbsolutePath();
-	    	File imageCacheFolder = new File(cachePath + "/" + GlobalVariable.IMAGE_FILE_PATH);
-	    	imageCacheFolder.mkdirs();
-	    	FileOutputStream out = new FileOutputStream(cachePath + "/" 
-	    			+ GlobalVariable.IMAGE_FILE_PATH + fileName);
-	    	
-	    	byte[] buffer = new byte[1024 * 5];
-	    	int justRead = 0;
-	    	int hasRead = 0;
-	    	while ((justRead = in.read(buffer)) != -1) {
-	    		out.write(buffer, 0, justRead);
-	    		hasRead += justRead;
-	    	}
-	    	in.close();
-	    	out.close();
-	    }
+
+			InputStream in = entity.getContent();    	
+			String cachePath = ct.getCacheDir().getAbsolutePath();
+			File imageCacheFolder = new File(cachePath + "/" + GlobalVariable.IMAGE_FILE_PATH);
+			imageCacheFolder.mkdirs();
+			FileOutputStream out = new FileOutputStream(cachePath + "/" 
+					+ GlobalVariable.IMAGE_FILE_PATH + fileName);
+
+			byte[] buffer = new byte[1024 * 5];
+			int justRead = 0;
+			int hasRead = 0;
+			while ((justRead = in.read(buffer)) != -1) {
+				out.write(buffer, 0, justRead);
+				hasRead += justRead;
+			}
+			in.close();
+			out.close();
+		}
 	}
-	
+
 	private class TaskDecode extends Task {
-		
+
 		public BitmapInfo mBmInfo;
 		public int mSample;
 		public String mPath;
 		public Exception mEx;
-		
+
 		public TaskDecode(String path, BitmapInfo bmInfo, int sample) {
 			super(path);
 			this.mBmInfo = bmInfo;
@@ -492,7 +495,7 @@ public class CyImageLoader {
 
 		@Override
 		protected Object doInBackground(Object... params) {
-			
+
 			// Load optimize
 			Bitmap bm = null;
 			try {
@@ -500,19 +503,19 @@ public class CyImageLoader {
 			} catch (Exception e) {
 				mEx = e;
 			}
-			
+
 			return bm;
 		}
-		
+
 		@Override
 		protected void onPostExecute(Object result) {
-			
+
 			if (mEx == null) {
-				
+
 				// Cache mem
 				Bitmap bm = (Bitmap) result;
 				mMemCacheMap.cacheMem(bm, mPath, mSample);
-				
+
 				// Deliver to listener
 				debugLog("Completed, deliver decoding task listener, path=" + right(mPath));
 				for (Listener l : mListenerList) {
@@ -524,31 +527,31 @@ public class CyImageLoader {
 				for (Listener l : mListenerList)
 					l.loadFail(mEx);
 			}
-			
+
 			mBmInfo = null;
 			mTaskQueue.removeTask(this);
 		}
 	}
-	
+
 	public static class Listener {
-		
+
 		public Point mExpectedSize;
-		
+
 		public void startLoad(int from) { }
 		public void loadFinish(int from, Bitmap image, String url) { }
 		public void loadFail(Exception e) { }
 	}
-	
+
 	private static class BitmapInfo {
-		
+
 		public String hash;
 		public int h, w;
 	}
-	
+
 	///////////////////////////////////////////////////////////////////////////
 	// Debug stuff
 	///////////////////////////////////////////////////////////////////////////
-	
+
 	private static final boolean isDebug = false;
 	private static final String TAG = "CycrixDebug";
 	private static final String HEADER = "ImageLoader";

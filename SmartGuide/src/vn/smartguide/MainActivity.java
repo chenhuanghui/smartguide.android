@@ -146,7 +146,7 @@ public class MainActivity extends FragmentActivity implements MainAcitivyListene
 	// QRcode 
 	DataMatrixReader mDataMatrixReader = new DataMatrixReader();
 	QRCodeReader mQRCodeReader = new QRCodeReader();
-	
+
 	private Camera mCamera;
 	private CameraPreview mPreview;
 	private Handler autoFocusHandler;
@@ -584,7 +584,7 @@ public class MainActivity extends FragmentActivity implements MainAcitivyListene
 						PromotionTypeOne promo = (PromotionTypeOne) s.mPromotion; 
 						txtPoint.setText("" + promo.mSGP);
 						txtMinPoint.setText("/" + promo.mMinScore);
-						txtPointName.setText("POINT");
+						txtPointName.setText("SGP");
 					}
 					break;
 
@@ -988,7 +988,7 @@ public class MainActivity extends FragmentActivity implements MainAcitivyListene
 						@Override
 						public void run() {
 							InitCamera();
-							
+
 						}
 					}, 500);
 
@@ -1001,7 +1001,7 @@ public class MainActivity extends FragmentActivity implements MainAcitivyListene
 							mScanningCode = 1;
 						}
 					}, 500);
-					
+
 				}
 			}
 
@@ -1169,20 +1169,20 @@ public class MainActivity extends FragmentActivity implements MainAcitivyListene
 		menu.attachToActivity(this, SlidingMenu.SLIDING_CONTENT);
 		menu.setMenu(R.layout.side_menu_fragment);
 		menu.setOnOpenListener(new OnOpenListener() {
-			
+
 			@Override
 			public void onOpen() {
 				stopAds();
 			}
 		});
-		
+
 		menu.setOnClosedListener(new OnClosedListener() {
 			@Override
 			public void onClosed() {
 				startAds();
 			}
 		});
-		
+
 		// Create fragment list
 		mFragmentManager = getSupportFragmentManager();
 		mFragmentList = new ArrayList<Fragment>();
@@ -1891,10 +1891,14 @@ public class MainActivity extends FragmentActivity implements MainAcitivyListene
 
 	@Override
 	public void onPause() {
-		if (mShowCamera){
-			toggleCamera();
+		try{
+			if (mShowCamera){
+				toggleCamera();
+			}
+		}catch(Exception ex){
+
 		}
-		
+
 		super.onPause();
 		mUiHelper.onPause();
 	}
@@ -2278,72 +2282,76 @@ public class MainActivity extends FragmentActivity implements MainAcitivyListene
 	@Override
 	public void onBackPressed() {
 
-		if (menu.isMenuShowing()) {
-			menu.toggle();
-			return;
-		}
-
-		if (mShowCamera) {
-			toggleCamera();
-			return;
-		}
-
-		if (mShowSearch) {
-			toggleSearch();
-			return;
-		}
-
-		if (mActiveView == EnumView.Filter) {
-			if (mPreFilter == EnumView.ShopCategory)
-				goToShopCategory();
-			else if (mPreFilter == EnumView.ShopList)
-				goToShopList();
-			return;
-		}
-
-		if (mActiveView == EnumView.UserCollection) {
-			switch (mPreUserCollection) {
-			case ShopCategory:
-				goToShopCategory();
-				break;
-			case ShopList:
-				goToShopList();
-				break;
-			case ShopDetail:
-				goToShopDetail();
-				break;
-			}
-			return;
-		}
-
-		if (mActiveView == EnumView.ShopDetail) {
-			if (mPreShopDetail == EnumView.ShopList)
-				goToShopList();
-			else if (mPreShopDetail == EnumView.UserCollection)
-				goToUserCollection();
-			return;
-		}
-
-		if (mActiveView == EnumView.ShopList) {
-			goToShopCategory();
-			return;
-		}
-
-		if (mActiveView == EnumView.ShopCategory) {
-			if (doubleBackToExitPressedOnce) {
-				super.onBackPressed();
+		try{
+			if (menu.isMenuShowing()) {
+				menu.toggle();
 				return;
 			}
 
-			doubleBackToExitPressedOnce = true;
-			Toast.makeText(this, "Nhấn back lần nữa để thoát chương trình", Toast.LENGTH_SHORT).show();
-			new Handler().postDelayed(new Runnable() {
+			if (mShowCamera) {
+				toggleCamera();
+				return;
+			}
 
-				@Override
-				public void run() {
-					doubleBackToExitPressedOnce = false;   
+			if (mShowSearch) {
+				toggleSearch();
+				return;
+			}
+
+			if (mActiveView == EnumView.Filter) {
+				if (mPreFilter == EnumView.ShopCategory)
+					goToShopCategory();
+				else if (mPreFilter == EnumView.ShopList)
+					goToShopList();
+				return;
+			}
+
+			if (mActiveView == EnumView.UserCollection) {
+				switch (mPreUserCollection) {
+				case ShopCategory:
+					goToShopCategory();
+					break;
+				case ShopList:
+					goToShopList();
+					break;
+				case ShopDetail:
+					goToShopDetail();
+					break;
 				}
-			}, 2000);
+				return;
+			}
+
+			if (mActiveView == EnumView.ShopDetail) {
+				if (mPreShopDetail == EnumView.ShopList)
+					goToShopList();
+				else if (mPreShopDetail == EnumView.UserCollection)
+					goToUserCollection();
+				return;
+			}
+
+			if (mActiveView == EnumView.ShopList) {
+				goToShopCategory();
+				return;
+			}
+
+			if (mActiveView == EnumView.ShopCategory) {
+				if (doubleBackToExitPressedOnce) {
+					super.onBackPressed();
+					return;
+				}
+
+				doubleBackToExitPressedOnce = true;
+				Toast.makeText(this, "Nhấn back lần nữa để thoát chương trình", Toast.LENGTH_SHORT).show();
+				new Handler().postDelayed(new Runnable() {
+
+					@Override
+					public void run() {
+						doubleBackToExitPressedOnce = false;   
+					}
+				}, 2000);
+			}
+		}catch(Exception ex){
+
 		}
 		return;
 	}
@@ -3204,5 +3212,5 @@ public class MainActivity extends FragmentActivity implements MainAcitivyListene
 			}
 		}
 	}
-	
+
 }
