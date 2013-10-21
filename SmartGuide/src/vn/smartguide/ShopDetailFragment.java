@@ -193,7 +193,7 @@ public class ShopDetailFragment extends Fragment {
     	DetailMenuFragment menu = (DetailMenuFragment) getFragmentManager().findFragmentById(R.id.detailMenuFragment);
     	
     	// Prepare data
-    	new GetShopDetail(parseAll).execute();
+    	
     	
     	// Set promotion fragment either 1 or 2
     	if (parseAll) {
@@ -249,6 +249,8 @@ public class ShopDetailFragment extends Fragment {
     	((DetailShopPhotoFragment) mDetailFragmentList.get(2)).setData(null);
     	((DetailCommentFragment) mDetailFragmentList.get(3)).setData(null);
     	((DetailShowMapFragment) mDetailFragmentList.get(4)).setData(null);
+    	
+    	new GetShopDetail(parseAll).execute();
     	
 //    	if (s.mPromotionStatus == true && s.mPromotion.getType() == 1)
 //    		mPromo1Fragment.runAnimation();

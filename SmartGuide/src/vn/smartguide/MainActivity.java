@@ -146,6 +146,7 @@ public class MainActivity extends FragmentActivity implements MainAcitivyListene
 	// QRcode 
 	DataMatrixReader mDataMatrixReader = new DataMatrixReader();
 	QRCodeReader mQRCodeReader = new QRCodeReader();
+	
 	private Camera mCamera;
 	private CameraPreview mPreview;
 	private Handler autoFocusHandler;
