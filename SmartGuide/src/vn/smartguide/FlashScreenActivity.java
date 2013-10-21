@@ -100,8 +100,8 @@ public class FlashScreenActivity extends Activity {
 		protected Boolean doInBackground(Void... params) {
 			try{
 				key = new JSONObject(NetworkManger.get(APILinkMaker.mCheckEmergence() + "?access_token=" + GlobalVariable.tokenID + "&version=android"+ 
-				Build.VERSION.RELEASE + "_" + getPackageManager().getPackageInfo(getPackageName(), 0).versionName, 
-						false));
+				Build.VERSION.RELEASE + "_" + getPackageManager().getPackageInfo(getPackageName(), 0).versionName, false));
+				////+ getPackageManager().getPackageInfo(getPackageName(), 0).versionName
 //				key = new JSONObject(
 //						"{\"notify_list\":[{\"content\":\"xcscxczxczc\",\"notification_id\":1}],\"notification_type\":2}");
 				action_type = key.getInt("notification_type");
@@ -253,7 +253,8 @@ public class FlashScreenActivity extends Activity {
 								resultData = new Intent();
 								resultData.putExtra("Database", "OK");
 								resultData.putExtra("Connection", "False");
-								setResult(RESULT_CANCELED, resultData);
+								resultData.putExtra("Finish", "True");
+								setResult(Activity.RESULT_OK, resultData);
 								finish();
 								overridePendingTransition(android.R.anim.slide_in_left, android.R.anim.slide_out_right);
 								return;

@@ -315,6 +315,16 @@ public class MainActivity extends FragmentActivity implements MainAcitivyListene
 				disableAll();
 				return;
 			}
+			
+			try{
+				if (data.getStringExtra("Finish").compareTo("True") == 0){
+					finish();
+					return;
+				}
+				
+			}catch(Exception ex){
+				
+			}
 			if (data.getStringExtra("Database").compareTo("OK") == 0 && 
 					data.getStringExtra("Connection").compareTo("OK") == 0){
 				new Handler().postDelayed(new Runnable() {
