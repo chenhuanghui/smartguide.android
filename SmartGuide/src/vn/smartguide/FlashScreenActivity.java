@@ -169,6 +169,15 @@ public class FlashScreenActivity extends Activity {
 
 			json = NetworkManger.post(APILinkMaker.mGroupByCity(), pairs);
 			
+			try{
+				JSONObject object = new JSONObject(json);
+				if (object.getString("error").compareTo("invalid_grant") == 0 || object.getString("error").compareTo("invalid_client") == 0){
+					return false;
+				}
+			}catch(Exception ex){
+				
+			}
+			
 			if (json != "") {
 				resultData = new Intent();
 				resultData.putExtra("Database", "OK");
