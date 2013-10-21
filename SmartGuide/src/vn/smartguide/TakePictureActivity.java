@@ -18,6 +18,7 @@ import org.apache.http.entity.mime.content.FileBody;
 import org.apache.http.entity.mime.content.StringBody;
 import org.apache.http.message.BasicNameValuePair;
 import org.apache.http.util.EntityUtils;
+import org.json.JSONObject;
 
 import com.facebook.FacebookException;
 import com.facebook.Session;
@@ -34,15 +35,19 @@ import android.os.Environment;
 import android.provider.MediaStore;
 import android.annotation.SuppressLint;
 import android.app.Activity;
+import android.app.AlertDialog;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.Matrix;
+import android.view.Gravity;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.RelativeLayout;
+import android.widget.TextView;
 
 public class TakePictureActivity extends Activity {
 	
@@ -58,6 +63,7 @@ public class TakePictureActivity extends Activity {
 	LoginButton authButton = null;
 	private boolean mShareFace = false;
 	private RelativeLayout mLoadingLO = null;
+	Intent resultData = null;
 	
 	@SuppressLint("SimpleDateFormat")
 	@Override
@@ -65,6 +71,9 @@ public class TakePictureActivity extends Activity {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.activity_take_picture);
 
+		resultData = new Intent();
+		resultData.putExtra("update", "0");
+		
 		Session.StatusCallback callback = new Session.StatusCallback() {
 			@Override
 			public void call(Session session, SessionState state, Exception exception) {
@@ -314,6 +323,8 @@ public class TakePictureActivity extends Activity {
 	}
 
 	public class uploadImage extends AsyncTask<Void, Void, Boolean> {
+		String mJSR = "";
+		
 		@Override
 		protected Boolean doInBackground(Void... params) {
 			String URL = APILinkMaker.mUploadImage() + "?access_token=" + GlobalVariable.tokenID + GlobalVariable.footerURL;
@@ -334,7 +345,7 @@ public class TakePictureActivity extends Activity {
 
 				HttpResponse response = NetworkManger.httpclient.execute(post);
 				HttpEntity resEntity = response.getEntity();
-				EntityUtils.toString(resEntity);
+				mJSR = EntityUtils.toString(resEntity);
 				
 			}catch(Exception ex){
 				return false;
@@ -344,6 +355,56 @@ public class TakePictureActivity extends Activity {
 
 		protected void onPostExecute(Boolean k) {
 			mLoadingLO.setVisibility(View.GONE);
+			try{
+				JSONObject JSO = new JSONObject(mJSR);
+				int status = JSO.getInt("status");
+				switch(status){
+				case -1:
+					break;
+				case 0:
+					
+					break;
+				case 1:
+					String url = JSO.getString("url");
+					
+					resultData = new Intent();
+					resultData.putExtra("update", "1");
+					resultData.putExtra("url", url);
+					resultData.putExtra("des", mDescription.getText().toString());
+					
+					if (getParent() == null) 
+						setResult(Activity.RESULT_OK, resultData);
+					else
+						getParent().setResult(Activity.RESULT_OK, resultData);
+					
+					finish();
+					return;
+				}
+				
+				AlertDialog.Builder builder = new AlertDialog.Builder(TakePictureActivity.this);
+				builder.setMessage(JSO.getString("message"));
+				builder.setCancelable(true);
+
+				builder.setPositiveButton("OK", new DialogInterface.OnClickListener() {
+					public void onClick(DialogInterface dialog, int which) {
+						
+						if (getParent() == null) 
+							setResult(Activity.RESULT_OK, resultData);
+						else
+							getParent().setResult(Activity.RESULT_OK, resultData);
+						
+						finish();
+					}
+				});
+				
+				AlertDialog dialog = builder.show();
+				TextView messageView = (TextView)dialog.findViewById(android.R.id.message);
+				messageView.setGravity(Gravity.CENTER);
+				
+			}catch(Exception ex){
+				
+			}
+			
 			finish();
 		}
 		protected void onPreExecute(){ 

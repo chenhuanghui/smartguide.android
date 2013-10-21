@@ -35,10 +35,11 @@ import android.widget.ImageView;
 @SuppressLint("ValidFragment")
 public class DetailShopPhotoFragment extends Fragment {
 
-//	public static DetailShopPhotoFragment thiz;
+	//	public static DetailShopPhotoFragment thiz;
 	private static final int MEDIA_TYPE_IMAGE = 1;
 	private static final int CAPTURE_IMAGE_ACTIVITY_REQUEST_CODE = 4;
-	
+	private static final int POST_PHOTO_ACTIVITY = 11;
+
 	// Data
 	private Shop mShop;
 	private Uri fileUri;
@@ -49,7 +50,7 @@ public class DetailShopPhotoFragment extends Fragment {
 
 	public PhotoListAdapter		mShopAdapter;
 	public HorizontalListView	mShopList;
-	 
+
 	///////////////////////////////////////////////////////////////////////////
 	// Override methods
 	///////////////////////////////////////////////////////////////////////////
@@ -57,8 +58,6 @@ public class DetailShopPhotoFragment extends Fragment {
 	@Override
 	public View onCreateView(LayoutInflater inflater, ViewGroup container,
 			Bundle savedInstanceState) {
-
-//		thiz = this;
 		return inflater.inflate(R.layout.detail_shopphoto, container, false);
 	}
 
@@ -95,61 +94,65 @@ public class DetailShopPhotoFragment extends Fragment {
 				showDialog(true);
 			}
 		});
-		
+
 		((Button) getView().findViewById(R.id.btnTakePhoto))
 		.setOnClickListener(new OnClickListener() {
 
 			@Override
 			public void onClick(View arg0) {
-				getActivity().startActivity(new Intent(getActivity(), TakePictureActivity.class));
+				getActivity().startActivityForResult(new Intent(getActivity(), TakePictureActivity.class), POST_PHOTO_ACTIVITY);
 			}
 		});
 	}
-	
+
 	@Override
-	public void onDestroy() {
-		
+	public void onDestroy(){
 		super.onDestroy();
-//		thiz = null;
 	}
-	
+
 	@Override
-		public void onActivityResult(int requestCode, int resultCode, Intent data) {
-			
-			if (requestCode == CAPTURE_IMAGE_ACTIVITY_REQUEST_CODE) {
-				if (resultCode == Activity.RESULT_OK) {
-//					// Load image from file
-//					String imagePath = fileUri.getPath();
-//					
-//					// calculate optimize scales
-//					int scale = 1;
-//					Options opt = new Options();
-//					opt.inJustDecodeBounds = true;
-//					Bitmap bitmap = BitmapFactory.decodeFile(imagePath, opt);
-//					
-//					while (opt.outWidth * opt.outHeight > PHOTO_SIZE_LIMIT) {
-//						scale = scale << 1;
-//						opt.outWidth = opt.outWidth >> 1;
-//						opt.outHeight = opt.outHeight >> 1;
-//					}
-//					
-//					// Decode photo with scale
-//					opt = new Options();
-//					opt.inSampleSize = scale;
-//					bitmap = BitmapFactory.decodeFile(imagePath, opt);
-					
-					
-				}
-			} else
-				super.onActivityResult(requestCode, resultCode, data);
+	public void onActivityResult(int requestCode, int resultCode, Intent data){
+		if (resultCode == Activity.RESULT_OK){
+			switch(requestCode){
+			case CAPTURE_IMAGE_ACTIVITY_REQUEST_CODE:
+				break;
+			case POST_PHOTO_ACTIVITY:
+				if (data.getStringExtra("update").compareTo("1") == 0)
+					addNewPhoto(data.getStringExtra("url"), data.getStringExtra("des"));
+				break;
+			}
 		}
+		//			if (requestCode == CAPTURE_IMAGE_ACTIVITY_REQUEST_CODE) {
+		//				if (resultCode == Activity.RESULT_OK) {
+		//					// Load image from file
+		//					String imagePath = fileUri.getPath();
+		//					
+		//					// calculate optimize scales
+		//					int scale = 1;
+		//					Options opt = new Options();
+		//					opt.inJustDecodeBounds = true;
+		//					Bitmap bitmap = BitmapFactory.decodeFile(imagePath, opt);
+		//					
+		//					while (opt.outWidth * opt.outHeight > PHOTO_SIZE_LIMIT) {
+		//						scale = scale << 1;
+		//						opt.outWidth = opt.outWidth >> 1;
+		//						opt.outHeight = opt.outHeight >> 1;
+		//					}
+		//					
+		//					// Decode photo with scale
+		//					opt = new Options();
+		//					opt.inSampleSize = scale;
+		//					bitmap = BitmapFactory.decodeFile(imagePath, opt);				
+		//				}
+		//			}
+	}
 
 	///////////////////////////////////////////////////////////////////////////
 	// Public methods
 	///////////////////////////////////////////////////////////////////////////
 
 	public void setData(Shop s) {
-
+		
 		if (s != null) {
 			mShop = s;
 			mShopAdapter.setData(s.mShopImageList);
@@ -163,24 +166,24 @@ public class DetailShopPhotoFragment extends Fragment {
 			mUserAdapter.notifyDataSetChanged();
 		}
 	}
-//	
-//	public void releaseMemory() {
-//		mShopAdapter.setData(new ArrayList<ImageStr>());
-//		mUserAdapter.setData(new ArrayList<ImageStr>());
-//	}
-	
+	//	
+	//	public void releaseMemory() {
+	//		mShopAdapter.setData(new ArrayList<ImageStr>());
+	//		mUserAdapter.setData(new ArrayList<ImageStr>());
+	//	}
+
 	private void showDialog(boolean isUser) {
-		
+
 		if (isUser)
 			PhotoActivity.newInstance(getActivity(), mShop.mUserImageList, isUser, mShop.mID);
 		else
 			PhotoActivity.newInstance(getActivity(), mShop.mShopImageList, isUser, mShop.mID);
 	}
-	
+
 	///////////////////////////////////////////////////////////////////////////
 	// Adapter
 	///////////////////////////////////////////////////////////////////////////
-	
+
 	public class PhotoListAdapter extends BaseAdapter {
 
 		public LayoutInflater 	inflater 	= getActivity().getLayoutInflater();
@@ -204,16 +207,16 @@ public class DetailShopPhotoFragment extends Fragment {
 			}
 		}
 
-//		public void loadMore(boolean isUser) {
-//
-//			if (mEndList)
-//				return;
-//
-//			if (!mLoadingMore) {
-//				mLoadingMore = true;
-//				new GetImage(mPageLoaded + 1, isUser).execute();
-//			}
-//		} 
+		//		public void loadMore(boolean isUser) {
+		//
+		//			if (mEndList)
+		//				return;
+		//
+		//			if (!mLoadingMore) {
+		//				mLoadingMore = true;
+		//				new GetImage(mPageLoaded + 1, isUser).execute();
+		//			}
+		//		} 
 
 		@Override
 		public int getCount() {
@@ -236,7 +239,7 @@ public class DetailShopPhotoFragment extends Fragment {
 			// Load image
 			final ImageStr imageItem = mItemList.get(position);
 			img.setTag(imageItem.url);
-			
+
 			if (imageItem.loadFail) {
 				img.setImageResource(R.drawable.ava_loading);
 			} else {
@@ -265,7 +268,7 @@ public class DetailShopPhotoFragment extends Fragment {
 					}
 				}, new Point(144, 144), getActivity());
 			}
-			
+
 			return convertView;
 		}
 
@@ -280,71 +283,71 @@ public class DetailShopPhotoFragment extends Fragment {
 		}
 	}
 
-//		private class GetImage extends AsyncTask<Void, Void, Boolean> {
-//
-//			private int mPage;
-//			private boolean mIsUser;
-//
-//			public GetImage(int page, boolean isUser) {
-//				
-//				mPage = page;
-//				mIsUser = isUser;
-//			}
-//
-//			@Override
-//			protected Boolean doInBackground(Void... params) {
-//
-//				try {
-//					List<NameValuePair> pairs = new ArrayList<NameValuePair>();
-//					pairs.add(new BasicNameValuePair("shop_id", Integer.toString(mShop.mID)));
-//					pairs.add(new BasicNameValuePair("page", Integer.toString(mPage)));
-//
-//					String json = null;
-//					if (mIsUser)
-//						NetworkManger.post(APILinkMaker.mGetUserImage(), pairs);
-//					else
-//						NetworkManger.post(APILinkMaker.mGetShopImage(), pairs);
-//
-//					JSONArray jImgArr = new JSONArray(json);
-//					int beforeSize = mItemList.size();
-//
-//					parseJsonImage(jImgArr, mItemList);
-//
-//					if (beforeSize == mItemList.size())
-//						mEndList = true;
-//					else
-//						mPageLoaded++;
-//
-//				} catch (JSONException e) {
-//					e.printStackTrace();
-//				}
-//
-//				return true;
-//			}
-//
-//			protected void onPostExecute(Boolean k) {
-//				
-//				mLoadingMore = false;
-//			}
-//			
-//			protected void onPreExecute() { }
-//		}
-	
+	//		private class GetImage extends AsyncTask<Void, Void, Boolean> {
+	//
+	//			private int mPage;
+	//			private boolean mIsUser;
+	//
+	//			public GetImage(int page, boolean isUser) {
+	//				
+	//				mPage = page;
+	//				mIsUser = isUser;
+	//			}
+	//
+	//			@Override
+	//			protected Boolean doInBackground(Void... params) {
+	//
+	//				try {
+	//					List<NameValuePair> pairs = new ArrayList<NameValuePair>();
+	//					pairs.add(new BasicNameValuePair("shop_id", Integer.toString(mShop.mID)));
+	//					pairs.add(new BasicNameValuePair("page", Integer.toString(mPage)));
+	//
+	//					String json = null;
+	//					if (mIsUser)
+	//						NetworkManger.post(APILinkMaker.mGetUserImage(), pairs);
+	//					else
+	//						NetworkManger.post(APILinkMaker.mGetShopImage(), pairs);
+	//
+	//					JSONArray jImgArr = new JSONArray(json);
+	//					int beforeSize = mItemList.size();
+	//
+	//					parseJsonImage(jImgArr, mItemList);
+	//
+	//					if (beforeSize == mItemList.size())
+	//						mEndList = true;
+	//					else
+	//						mPageLoaded++;
+	//
+	//				} catch (JSONException e) {
+	//					e.printStackTrace();
+	//				}
+	//
+	//				return true;
+	//			}
+	//
+	//			protected void onPostExecute(Boolean k) {
+	//				
+	//				mLoadingMore = false;
+	//			}
+	//			
+	//			protected void onPreExecute() { }
+	//		}
+
 	public static List<ImageStr> parseJsonImage(JSONArray jImgArr, List<ImageStr> imageList) throws JSONException {
-    	
-    	if (imageList == null)
-    		imageList = new ArrayList<ImageStr>();
-    	
-    	for (int i = 0; i < jImgArr.length(); i++) {
-    		JSONObject jImage =  jImgArr.getJSONObject(i);
-    		imageList.add(new ImageStr(
-    				jImage.getString("image"),
-    				jImage.getString("description")));
-    	}
-    	
-    	return imageList;
-    }
-	
+
+		if (imageList == null)
+			imageList = new ArrayList<ImageStr>();
+
+		for (int i = 0; i < jImgArr.length(); i++) {
+			JSONObject jImage =  jImgArr.getJSONObject(i);
+			imageList.add(new ImageStr(
+					jImage.getString("image"),
+					jImage.getString("description")));
+		}
+
+		return imageList;
+	}
+
 	public void addNewPhoto(String url, String description){
 		mShop.mUserImageList.add(0, new ImageStr(url, description));
 		mUserAdapter.setData(mShop.mUserImageList);

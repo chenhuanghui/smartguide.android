@@ -459,7 +459,6 @@ public class CyImageLoader {
 		}
 
 		private void processGetFile(HttpEntity entity, String fileName) throws Exception {
-
 			InputStream in = entity.getContent();    	
 			String cachePath = ct.getCacheDir().getAbsolutePath();
 			File imageCacheFolder = new File(cachePath + "/" + GlobalVariable.IMAGE_FILE_PATH);

@@ -10,6 +10,7 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 import vn.smartguide.DetailPromo1Fragment.PromotionStr;
+import android.content.Intent;
 import android.content.res.Resources;
 import android.graphics.drawable.Drawable;
 import android.os.AsyncTask;
@@ -60,6 +61,13 @@ public class ShopDetailFragment extends Fragment {
         return inflater.inflate(R.layout.shop_detail, container, false);
     }
 
+    @Override
+	public void onActivityResult(int requestCode, int resultCode, Intent data) {
+    	if (requestCode == 11){
+    		((DetailShopPhotoFragment) mDetailFragmentList.get(2)).onActivityResult(requestCode, resultCode, data);
+    	}
+    }
+    
     @Override
     public void onViewCreated(View view, Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);

@@ -347,6 +347,8 @@ public class MainActivity extends FragmentActivity implements MainAcitivyListene
 
 		case TutorialRequestCode:
 			updateInformation();
+		case 11:
+			mShopDetailFragment.onActivityResult(requestCode, resultCode, data);
 			break;
 		}
 	}
