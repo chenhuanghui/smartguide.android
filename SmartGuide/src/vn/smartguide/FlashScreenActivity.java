@@ -288,12 +288,12 @@ public class FlashScreenActivity extends Activity {
 						.setPositiveButton("OK", new OnClickListener() {
 							@Override
 							public void onClick(DialogInterface dialog, int which) {
-								resultData = new Intent();
-								resultData.putExtra("Database", "OK");
-								resultData.putExtra("Connection", "False");
-								setResult(RESULT_CANCELED, resultData);
-								finish();
-								overridePendingTransition(android.R.anim.slide_in_left, android.R.anim.slide_out_right);
+//								resultData = new Intent();
+//								resultData.putExtra("Database", "OK");
+//								resultData.putExtra("Connection", "False");
+//								setResult(RESULT_CANCELED, resultData);
+//								finish();
+//								overridePendingTransition(android.R.anim.slide_in_left, android.R.anim.slide_out_right);
 								return;
 							}
 						})
@@ -310,7 +310,8 @@ public class FlashScreenActivity extends Activity {
 								resultData = new Intent();
 								resultData.putExtra("Database", "OK");
 								resultData.putExtra("Connection", "False");
-								setResult(RESULT_CANCELED, resultData);
+								resultData.putExtra("Finish", "True");
+								setResult(Activity.RESULT_OK, resultData);
 								finish();
 								overridePendingTransition(android.R.anim.slide_in_left, android.R.anim.slide_out_right);
 								return;

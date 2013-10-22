@@ -1,5 +1,7 @@
 package vn.smartguide;
 
+import java.net.URL;
+import java.net.URLConnection;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
@@ -22,9 +24,12 @@ import android.content.DialogInterface;
 import android.content.DialogInterface.OnClickListener;
 import android.content.Intent;
 import android.os.AsyncTask;
+import android.os.Build;
 import android.os.Bundle;
 import android.support.v4.app.FragmentActivity;
 import android.telephony.PhoneNumberUtils;
+import android.text.Html;
+import android.text.method.LinkMovementMethod;
 import android.util.Log;
 import android.view.Gravity;
 import android.view.LayoutInflater;
@@ -102,11 +107,13 @@ public class WellcomeActivity extends FragmentActivity {
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.activity_wellcome);
-		
+
+		loadingFace = (RelativeLayout)findViewById(R.id.loadingFace);
+		new CheckEmergence().execute();
 		// Set up Facebook
 		Session.StatusCallback callback = new Session.StatusCallback() {
 			public void call(Session session, SessionState state, Exception exception) {
-				
+
 				if (state == SessionState.CLOSED_LOGIN_FAILED) {
 					//Log.d("CycrixDebug", state.toString());
 					showLoginFbFailDlg();
@@ -252,14 +259,13 @@ public class WellcomeActivity extends FragmentActivity {
 			}
 		});
 
-		loadingFace = (RelativeLayout)findViewById(R.id.loadingFace);
 		mChangeAvatarBtn = (ImageButton)findViewById(R.id.changeAvaBtn);
 		mChangeAvatarBtn.setOnClickListener(new View.OnClickListener() {
 			@Override
 			public void onClick(View v) {   
 				Context context = WellcomeActivity.this;
 				AlertDialog.Builder builder = new AlertDialog.Builder(context); 
-				
+
 				LayoutInflater inflater = (LayoutInflater) context.getSystemService(LAYOUT_INFLATER_SERVICE);   
 				View layout = inflater.inflate(R.layout.avatar_dialog, (ViewGroup) findViewById(R.id.layout_root));   
 				GridView gridview = (GridView) layout.findViewById(R.id.avatar_list);   
@@ -271,13 +277,13 @@ public class WellcomeActivity extends FragmentActivity {
 						GlobalVariable.cyImageLoader.showImage(GlobalVariable.mAvatarList.get(position), mAvatarView);					}   
 				});
 
-				    
+
 				builder.setView(layout);     
 				dialog = builder.create();
 				dialog.show(); 
 			}
 		});
-		
+
 		mAvatarView = (ImageView) findViewById(R.id.avatar);
 		mDoneCreatACCBtn = (Button)findViewById(R.id.doneCreateACCBtn);
 		mDoneCreatACCBtn.setOnClickListener(new View.OnClickListener() {
@@ -291,7 +297,7 @@ public class WellcomeActivity extends FragmentActivity {
 						builder.setMessage("Bạn cần nhập tên");
 					else 
 						builder.setMessage("Bạn cần chọn hình đại diện");
-						
+
 					builder.setCancelable(true);
 
 					builder.setNegativeButton("OK", new DialogInterface.OnClickListener() {
@@ -304,19 +310,19 @@ public class WellcomeActivity extends FragmentActivity {
 					messageView.setGravity(Gravity.CENTER);
 					return;
 				}
-				
+
 				InputMethodManager imm = (InputMethodManager) getSystemService(Context.INPUT_METHOD_SERVICE);
 				imm.hideSoftInputFromWindow(mNumberField.getWindowToken(), 0);
-				
+
 				new UpdateUserInfo().execute();
 			}
 		});
-		
+
 		mNameField = (EditText)findViewById(R.id.nameField);
 	}
 
 	Dialog dialog;
-	
+
 	@Override
 	public boolean onCreateOptionsMenu(Menu menu) {
 		return true;
@@ -424,13 +430,13 @@ public class WellcomeActivity extends FragmentActivity {
 		request.setParameters(bundle);
 		request.executeAsync();
 	}
-	
+
 	private void showLoginFbFailDlg() {
 		AlertDialog.Builder builder = new AlertDialog.Builder(WellcomeActivity.this);
 		builder.setMessage("Đăng nhập facebook thất bại, " +
 				"vui lòng đăng nhập lại hoặc tạo tài khoản mới");
 		builder.setPositiveButton("OK", new OnClickListener() {
-			
+
 			@Override
 			public void onClick(DialogInterface arg0, int arg1) {
 				mLogin.setClickable(true);
@@ -514,7 +520,6 @@ public class WellcomeActivity extends FragmentActivity {
 	}
 
 	Timer timer;
-
 	public void startCounting(){
 		mTailText.setVisibility(View.VISIBLE);
 		mHeadText.setVisibility(View.VISIBLE);
@@ -548,11 +553,11 @@ public class WellcomeActivity extends FragmentActivity {
 			}
 		}, 0, 1000);
 	}
-	
+
 	///////////////////////////////////////////////////////////////////////////
 	// Network AsyncTask
 	///////////////////////////////////////////////////////////////////////////
-	
+
 	private class GetActivateCode extends AsyncTask<Void, Void, Boolean> {
 
 		private Exception mEx;
@@ -561,7 +566,7 @@ public class WellcomeActivity extends FragmentActivity {
 
 		@Override
 		protected Boolean doInBackground(Void... params) {
-			
+
 			try {
 				String json = NetworkManger.get_throw(GlobalVariable.urlGetActivateCode + phoneNumber, false);
 			} catch (Exception e) {
@@ -581,7 +586,7 @@ public class WellcomeActivity extends FragmentActivity {
 			}
 		}
 	}
-	
+
 	private class ConfirmActivateCode extends AsyncTask<Void, Void, Boolean> {
 
 		private JSONObject result;
@@ -607,17 +612,17 @@ public class WellcomeActivity extends FragmentActivity {
 				boolean success = result.getBoolean("result");
 				GlobalVariable.userID = result.getString("user_id");
 				boolean connect_fb = result.getBoolean("connect_fb");
-				
+
 				if (!result.isNull("name"))
 					name = result.optString("name");
-//				
-//				connect_fb = false;
-//				name = "";
+				//				
+				//				connect_fb = false;
+				//				name = "";
 
 				if (success) {
 					GlobalVariable.footerURL = "&phone=" + phoneNumber + "&code=" + confirmCode;
 					GlobalVariable.getTokenFromDB();
-					
+
 					InputMethodManager imm = (InputMethodManager) getSystemService(Context.INPUT_METHOD_SERVICE);
 					imm.hideSoftInputFromWindow(mNumberField.getWindowToken(), 0);
 
@@ -632,7 +637,7 @@ public class WellcomeActivity extends FragmentActivity {
 						token2.put("nameFace", name);
 
 						GlobalVariable.smartGuideDB.insertActivateCode(token2);
-						
+
 						HashMap<String, String> token = new HashMap<String, String>();
 						token.put("userID", "-1");
 						token.put("avatar",result.optString("avatar"));
@@ -658,19 +663,19 @@ public class WellcomeActivity extends FragmentActivity {
 			}
 		}
 	}
-	
+
 	public static class GetDefaultAvatar extends CyAsyncTask {
 		private String JSResult = null;
 		private Exception mEx;
-		
+
 		@Override
 		protected Boolean doInBackground(Void... params) {
 			try {
-			List<NameValuePair> pairs = new ArrayList<NameValuePair>();
-//			pairs.add(new BasicNameValuePair("name", name));
-			JSResult = NetworkManger.post_throw(APILinkMaker.mGetDefaultAvatar(), pairs);
-			if (JSResult == "")
-				return false; //for test
+				List<NameValuePair> pairs = new ArrayList<NameValuePair>();
+				//			pairs.add(new BasicNameValuePair("name", name));
+				JSResult = NetworkManger.post_throw(APILinkMaker.mGetDefaultAvatar(), pairs);
+				if (JSResult == "")
+					return false; //for test
 			} catch (Exception e) {
 				mEx = e;
 			}
@@ -694,17 +699,17 @@ public class WellcomeActivity extends FragmentActivity {
 			}
 		}
 	}
-	
+
 	private class UpdateUserInfo extends AsyncTask<Void, Void, Boolean> {
 		String JSResult = null;
 		@Override
 		protected Boolean doInBackground(Void... params) {
-			
+
 			List<NameValuePair> pairs = new ArrayList<NameValuePair>();
 			pairs.add(new BasicNameValuePair("name", name));
 			if (avatarURL == "" || avatarURL.length() == 0)
 				avatarURL = GlobalVariable.avatarFace;
-			
+
 			pairs.add(new BasicNameValuePair("avatar", avatarURL));
 			JSResult = NetworkManger.post(APILinkMaker.mUpdateUserInfo(), pairs);
 			if (JSResult == "")
@@ -728,14 +733,14 @@ public class WellcomeActivity extends FragmentActivity {
 						token2.put("nameFace", name);
 
 						GlobalVariable.smartGuideDB.insertActivateCode(token2);
-						
+
 						HashMap<String, String> token =  new  HashMap<String, String>();
 						token.put("userID", "-1");
 						token.put("avatar",avatarURL);
 						token.put("name",name);
 
 						GlobalVariable.smartGuideDB.insertFacebook(token);
-						
+
 						loadingFace.setVisibility(View.GONE);
 						exit();
 					}
@@ -744,7 +749,7 @@ public class WellcomeActivity extends FragmentActivity {
 				}
 			} else {
 				loadingFace.setVisibility(View.GONE);
-				
+
 				AlertDialog.Builder builder = new AlertDialog.Builder(WellcomeActivity.this);
 
 				builder.setMessage("Có lỗi xảy ra vui lòng thử lại");
@@ -752,10 +757,10 @@ public class WellcomeActivity extends FragmentActivity {
 
 				builder.setNegativeButton("Đồng ý", new DialogInterface.OnClickListener() {
 					public void onClick(DialogInterface dialog, int which) {
-						
+
 					}
 				});
-				
+
 				AlertDialog dialog = builder.show();
 				TextView messageView = (TextView)dialog.findViewById(android.R.id.message);
 				messageView.setGravity(Gravity.CENTER);
@@ -764,7 +769,149 @@ public class WellcomeActivity extends FragmentActivity {
 
 		@Override
 		protected void onPreExecute() {
+
+		}
+	}
+
+	private class CheckEmergence extends AsyncTask<Void, Void, Boolean> {
+		Intent resultData = null;
+		int action_type = -1;
+		JSONObject key;
+		@Override
+		protected Boolean doInBackground(Void... params) {
+			try{
+				key = new JSONObject(NetworkManger.get(APILinkMaker.mCheckEmergence() + "?access_token=" + GlobalVariable.tokenID + "&version=android"+ 
+						Build.VERSION.RELEASE + "_" + getPackageManager().getPackageInfo(getPackageName(), 0).versionName, false));
+				action_type = key.getInt("notification_type");
+			}catch(Exception ex){
+				action_type = -1;
+				return false;
+			}
+
+			if (action_type != 0)
+				return false;
+
+			try{
+				URL myUrl = new URL(APILinkMaker.mHostName);
+				URLConnection connection = myUrl.openConnection();
+				connection.setConnectTimeout(3000);
+				connection.connect();
+			} catch (Exception e) {
+				return true;
+			}
 			
+			// Test
+//			action_type = 3;
+//			return false;
+			return true;
+		}
+
+		@Override
+		protected void onPostExecute(Boolean k) {
+			loadingFace.setVisibility(View.GONE);
+			if (k == true){
+			} else {
+				try{
+					switch(action_type) {
+					case -1:
+						resultData = new Intent();
+						resultData.putExtra("Database", "OK");
+						resultData.putExtra("Connection", "False");
+						resultData.putExtra("GOAHEAD", "OK");
+
+						if (getParent() == null) 
+							setResult(Activity.RESULT_OK, resultData);
+						else
+							getParent().setResult(Activity.RESULT_OK, resultData);
+						finish();
+						overridePendingTransition(android.R.anim.slide_in_left, android.R.anim.slide_out_right);
+						break;
+					case 1:
+						String link =  key.getString("link");
+						String content = key.getString("content");
+						String message = "<a href=\"" + link + "\">" + content + "</a>";
+
+						AlertDialog d = new AlertDialog.Builder(WellcomeActivity.this)
+						.setPositiveButton("OK", new OnClickListener() {
+							@Override
+							public void onClick(DialogInterface dialog, int which) {
+								resultData = new Intent();
+								resultData.putExtra("Database", "OK");
+								resultData.putExtra("Connection", "False");
+								resultData.putExtra("Finish", "True");
+								setResult(Activity.RESULT_OK, resultData);
+								finish();
+								overridePendingTransition(android.R.anim.slide_in_left, android.R.anim.slide_out_right);
+								return;
+
+							}
+						})
+						.setIcon(R.drawable.logo)
+						.setMessage(Html.fromHtml(message))
+						.create();
+						d.show();
+						// Make the textview clickable. Must be called after show()   
+						((TextView)d.findViewById(android.R.id.message)).setMovementMethod(LinkMovementMethod.getInstance());
+						break;
+					case 2:
+						JSONArray jNotifyArr = key.getJSONArray("notify_list");
+						StringBuilder builder = new StringBuilder();
+						for (int i = 0; i < jNotifyArr.length(); i++) {
+							builder.append(jNotifyArr.getJSONObject(i).getString("content")).append("\n");
+						}
+
+						AlertDialog g = new AlertDialog.Builder(WellcomeActivity.this)
+						.setPositiveButton("OK", new OnClickListener() {
+							@Override
+							public void onClick(DialogInterface dialog, int which) {
+//								resultData = new Intent();
+//								resultData.putExtra("Database", "OK");
+//								resultData.putExtra("Connection", "False");
+//								resultData.putExtra("GOAHEAD", "OK");
+//								setResult(Activity.RESULT_OK, resultData);
+//								finish();
+//								overridePendingTransition(android.R.anim.slide_in_left, android.R.anim.slide_out_right);
+								return;
+							}
+						})
+						.setIcon(R.drawable.logo)
+						.setMessage(builder.toString())
+						.create();
+						g.show();
+						break;
+					case 3:
+						AlertDialog f = new AlertDialog.Builder(WellcomeActivity.this)
+						.setPositiveButton("OK", new OnClickListener() {
+							@Override
+							public void onClick(DialogInterface dialog, int which) {
+								resultData = new Intent();
+								resultData.putExtra("Database", "OK");
+								resultData.putExtra("Connection", "False");
+								resultData.putExtra("GOAHEAD", "False");
+								setResult(Activity.RESULT_OK, resultData);
+								finish();
+								overridePendingTransition(android.R.anim.slide_in_left, android.R.anim.slide_out_right);
+								return;
+
+							}
+						})
+						.setIcon(R.drawable.logo)
+						.setMessage(key.getString("content"))
+						.create();
+						f.show();
+						// Make the textview clickable. Must be called after show()   
+						((TextView)f.findViewById(android.R.id.message)).setMovementMethod(LinkMovementMethod.getInstance());
+						break;
+					}
+				}catch(Exception ex){
+
+				}
+			}
+		}
+
+		@Override
+		protected void onPreExecute() {
+			loadingFace.setVisibility(View.VISIBLE);
 		}
 	}
 }

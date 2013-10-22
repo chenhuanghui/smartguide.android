@@ -343,6 +343,27 @@ public class MainActivity extends FragmentActivity implements MainAcitivyListene
 			break;
 
 		case WelcomeRequestCode:
+			try{
+				if (data.getStringExtra("Finish").compareTo("True") == 0){
+					finish();
+					return;
+				}	
+			}catch(Exception ex){
+				
+			}
+			
+			try{
+				if (data.getStringExtra("Database").compareTo("OK") == 0 && 
+						data.getStringExtra("Connection").compareTo("OK") == 0){
+				}else{
+					exitWithError();
+					return;
+				}
+				
+			}catch(Exception ex){
+				
+			}
+			
 			if (data.getStringExtra("GOAHEAD").compareTo("OK") == 0)
 				startActivityForResult(new Intent(this, FlashScreenActivity.class), FlashScreenRequestCode);
 			else
