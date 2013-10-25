@@ -1,5 +1,21 @@
 package vn.smartguide;
 
+import java.io.ByteArrayOutputStream;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Locale;
+
+import org.apache.http.NameValuePair;
+import org.apache.http.message.BasicNameValuePair;
+import org.json.JSONArray;
+import org.json.JSONException;
+import org.json.JSONObject;
+
+import vn.smartguide.CategoryListFragment.Listener;
+import vn.smartguide.DetailPromo1Fragment.PromotionStr;
+import vn.smartguide.UserFragment.GiftItem;
 import android.animation.Animator;
 import android.animation.Animator.AnimatorListener;
 import android.animation.AnimatorSet;
@@ -45,9 +61,9 @@ import android.view.KeyEvent;
 import android.view.LayoutInflater;
 import android.view.MotionEvent;
 import android.view.View;
-import android.view.ViewGroup;
 import android.view.View.OnClickListener;
 import android.view.View.OnTouchListener;
+import android.view.ViewGroup;
 import android.view.animation.AccelerateDecelerateInterpolator;
 import android.view.animation.Animation;
 import android.view.animation.LinearInterpolator;
@@ -73,7 +89,6 @@ import com.facebook.SessionState;
 import com.facebook.UiLifecycleHelper;
 import com.facebook.model.GraphUser;
 import com.facebook.widget.LoginButton;
-
 import com.google.analytics.tracking.android.EasyTracker;
 import com.google.android.gms.common.ConnectionResult;
 import com.google.android.gms.common.GooglePlayServicesUtil;
@@ -102,26 +117,6 @@ import com.google.zxing.qrcode.QRCodeReader;
 import com.jeremyfeinstein.slidingmenu.lib.SlidingMenu;
 import com.jeremyfeinstein.slidingmenu.lib.SlidingMenu.OnClosedListener;
 import com.jeremyfeinstein.slidingmenu.lib.SlidingMenu.OnOpenListener;
-
-import org.apache.http.NameValuePair;
-import org.apache.http.message.BasicNameValuePair;
-import org.json.JSONArray;
-import org.json.JSONException;
-import org.json.JSONObject;
-
-import vn.smartguide.CategoryListFragment.Listener;
-import vn.smartguide.DetailPromo1Fragment.PromotionStr;
-import vn.smartguide.UserFragment.GiftItem;
-
-import java.io.ByteArrayOutputStream;
-import java.net.InetAddress;
-import java.net.URL;
-import java.net.URLConnection;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Locale;
 
 public class MainActivity extends FragmentActivity implements MainAcitivyListener, OnTouchListener  {
 	private final int WelcomeRequestCode 		= 44444;
@@ -1006,6 +1001,8 @@ public class MainActivity extends FragmentActivity implements MainAcitivyListene
 			animatorPopup = ObjectAnimator.ofFloat(layoutTC, "translationY", 0, heightTC - cameraViewHeight);
 			animatorOptical = ObjectAnimator.ofFloat(mOpticalFrame, "alpha", 1.0f, 0.0f);
 		}
+		mOpticalFrame.setClickable(mShowCamera);
+		menu.setSlidingEnabled(!mShowCamera);
 
 		animatorPopup.addListener(new AnimatorListener() {
 			@Override
