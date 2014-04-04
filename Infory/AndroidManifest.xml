@@ -49,7 +49,7 @@
         android:largeHeap="true"
         android:theme="@style/AppTheme" >
 
-        <!-- Debug -->
+        <!-- Debug AIzaSyAeI9eh2GMZqSwfNyUsyfYA8EPem3eowVI -->
         <meta-data
             android:name="com.google.android.maps.v2.API_KEY"
             android:value="AIzaSyCQ4BvxHuDyT59o6dXIh9XIleeKU0VNZwE" />

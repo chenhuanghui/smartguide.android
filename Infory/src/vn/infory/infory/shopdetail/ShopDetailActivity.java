@@ -336,7 +336,9 @@ public class ShopDetailActivity extends FragmentActivity {
 			mShowUserGalleryRight = false;
 
 			mImgGalleryOverlay.setImageResource(R.drawable.photo_firsttime);
+			mLstGallery.setVisibility(View.GONE);
 		} else {
+			mLstGallery.setVisibility(View.VISIBLE);
 			mShowUserGalleryLeft = true;
 			if (mShop.userGallery.size() > 1) {
 				mImgUserGalleryRight.setAlpha(0);
