@@ -155,12 +155,11 @@ public class TelephoneFragment extends Fragment implements BackListener {
 					.setMessage("Xin vui lòng nhập số điện thoại!").create();
 			dialog.show();
 			((TextView) dialog.findViewById(android.R.id.message)).setGravity(Gravity.CENTER);
-		} else if (PhoneNumberUtils.isGlobalPhoneNumber(mPhoneNumber) 
-				&& validatePhoneNumber(mPhoneNumber)) {
+		} else if (validatePhoneNumber(mPhoneNumber)) {
 			// Valid
 			mPhoneNumber = formatPhone(mPhoneNumber);
-			if (mPhoneNumber.charAt(0) == '+')
-				mPhoneNumber = mPhoneNumber.substring(1);
+//			if (mPhoneNumber.charAt(0) == '+')
+//				mPhoneNumber = mPhoneNumber.substring(1);
 
 			// Builder dialog to ensure user
 			AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
@@ -342,29 +341,46 @@ public class TelephoneFragment extends Fragment implements BackListener {
 
 	// Logic
 	private String formatPhone(String phone) {
+		phone = phone.trim();
 		if (phone.trim().length() == 0)
 			return "";
 
 		if (phone.charAt(0) == '+')
 			phone = phone.substring(1);
 
-		if (phone.charAt(0) != '0')
-			return "84" + phone;
+		if (phone.startsWith("84"))
+			phone = phone.substring(2);
+		
+		if (phone.charAt(0) == '0')
+			phone = phone.substring(1);
 
-		try {
-			String first3c = phone.substring(0, 2);
-			if (first3c.compareTo("84") == 0)
-				return phone;
-			else
-				return "84" + phone.substring(1);
-		} catch (Exception ex) {
-			return "";
-		}
+		return "84" + phone;
 	}
 
 	private boolean validatePhoneNumber(String phone) {
-		//		return true;
-		return !(phone.length() != 11 && phone.length() != 10);
+		
+		// 8 - 14
+		if (phone.length() < 8 || phone.length() > 14)
+			return false;
+		
+		if (phone.charAt(0) == '+')
+			phone = phone.substring(1);
+		
+		if (phone.startsWith("84"))
+			phone = phone.substring(2);
+		
+		if (phone.charAt(0) == '0')
+			phone = phone.substring(1);
+		
+		if (phone.length() < 9 || phone.length() > 10)
+			return false;
+		
+		for (int i = 0; i < phone.length(); i++) {
+			if (phone.charAt(i) < '0' || phone.charAt(i) > '9')
+				return false;
+		}
+		
+		return true;
 	}
 	
 	///////////////////////////////////////////////////////////////////////////
