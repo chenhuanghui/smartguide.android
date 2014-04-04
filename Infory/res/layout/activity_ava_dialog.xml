@@ -34,7 +34,7 @@
                 android:layout_height="wrap_content"
                 android:layout_centerVertical="true" >
 
-                <vn.infory.infory.infory.login.AvaPager
+                <vn.infory.infory.login.AvaPager
                     android:id="@+id/pagerAva"
                     android:layout_width="wrap_content"
                     android:layout_height="match_parent"
