@@ -1,0 +1,102 @@
+[
+    {
+        "idPlacelist": 2,
+        "title": "Quán chân gà nướng",
+        "description": "Danh sách các quán sân gà nướng không có thịt",
+        "image": "",
+        "numOfView": 45,
+        "loveStatus": 0,
+        "authorName": "galaxy",
+        "authorAvatar": "http://dev2.smartguide.vn//media/user/avatar/bcb0a0257dbccf1d176b150757a378fe.jpeg"
+    },
+    {
+        "idPlacelist": 219,
+        "title": "Placelist 16",
+        "description": "Description of Placelist num 16",
+        "image": "",
+        "numOfView": 297,
+        "loveStatus": 0,
+        "authorName": null,
+        "authorAvatar": "http://dev2.smartguide.vn/"
+    },
+    {
+        "idPlacelist": 154,
+        "title": "Placelist 1",
+        "description": "Description of Placelist num 1",
+        "image": "",
+        "numOfView": 30,
+        "loveStatus": 0,
+        "authorName": null,
+        "authorAvatar": "http://dev2.smartguide.vn/"
+    },
+    {
+        "idPlacelist": 158,
+        "title": "Placelist 5",
+        "description": "Description of Placelist num 5",
+        "image": "",
+        "numOfView": 13,
+        "loveStatus": 0,
+        "authorName": "Nguyen Ngoc Chau Sang",
+        "authorAvatar": "http://dev2.smartguide.vn//media/user/avatar/dfbc2f2c12bc1b20967410cd92b4736a.jpeg"
+    },
+    {
+        "idPlacelist": 168,
+        "title": "Placelist 15",
+        "description": "Description of Placelist num 15",
+        "image": "",
+        "numOfView": 12,
+        "loveStatus": 0,
+        "authorName": "",
+        "authorAvatar": "http://graph.facebook.com/100000074057347/picture?width=180&height=180"
+    },
+    {
+        "idPlacelist": 202,
+        "title": "Placelist 24",
+        "description": "Description of Placelist num 24",
+        "image": "",
+        "numOfView": 12,
+        "loveStatus": 0,
+        "authorName": "",
+        "authorAvatar": "http://graph.facebook.com/100000650008134/picture?width=180&height=180"
+    },
+    {
+        "idPlacelist": 222,
+        "title": "Placelist 19",
+        "description": "Description of Placelist num 19",
+        "image": "",
+        "numOfView": 16,
+        "loveStatus": 0,
+        "authorName": "",
+        "authorAvatar": "http://graph.facebook.com/1094404132/picture?width=180&height=180"
+    },
+    {
+        "idPlacelist": 208,
+        "title": "Placelist 5",
+        "description": "Description of Placelist num 5",
+        "image": "",
+        "numOfView": 10,
+        "loveStatus": 0,
+        "authorName": "",
+        "authorAvatar": "http://graph.facebook.com/100005176512433/picture?width=180&height=180"
+    },
+    {
+        "idPlacelist": 164,
+        "title": "Placelist 11",
+        "description": "Description of Placelist num 11",
+        "image": "",
+        "numOfView": 10,
+        "loveStatus": 0,
+        "authorName": "Ma Cà Rồng",
+        "authorAvatar": "http://graph.facebook.com/1529618324/picture?width=180&height=180"
+    },
+    {
+        "idPlacelist": 224,
+        "title": "Placelist 21",
+        "description": "Description of Placelist num 21",
+        "image": "",
+        "numOfView": 10,
+        "loveStatus": 0,
+        "authorName": "",
+        "authorAvatar": "http://graph.facebook.com/100001582882715/picture?width=180&height=180"
+    }
+]

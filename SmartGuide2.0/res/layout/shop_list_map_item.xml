@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="wrap_content"
+    android:layout_height="wrap_content"
+    android:background="@drawable/pin_info"
+    android:orientation="vertical" >
+
+    <EditText
+        android:id="@+id/txtShopName"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:background="#00000000"
+        android:contentDescription="@string/sfu_heavy"
+        android:enabled="false"
+        android:maxWidth="200dp"
+        android:paddingLeft="4dp"
+        android:paddingRight="8dp"
+        android:text="SmartGuide"
+        android:textColor="#ffffff"
+        android:textSize="15sp" />
+    
+    <EditText
+        android:id="@+id/txtShopType"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:background="#00000000"
+        android:contentDescription="@string/sfu_normal"
+        android:enabled="false"
+        android:maxWidth="200dp"
+        android:paddingLeft="4dp"
+        android:paddingRight="8dp"
+        android:text="Giải trí"
+        android:textColor="#ffffff"
+        android:textSize="14sp" />
+
+</LinearLayout>

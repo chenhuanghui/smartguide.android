@@ -1,0 +1,121 @@
+<?xml version="1.0" encoding="utf-8"?>
+<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/scrollView1"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="#EBEBEB" >
+
+    <FrameLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent" >
+
+        <ImageView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:alpha="0.2"
+            android:layout_gravity="right"
+            android:background="@drawable/coverdetail"
+            android:scaleType="fitXY"
+            android:src="@drawable/bg_detailcover" />
+
+        <LinearLayout
+            android:id="@+id/layoutRootContent"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:orientation="vertical"
+            android:paddingBottom="27dp"
+            android:paddingLeft="16dp"
+            android:paddingRight="16dp"
+            android:animateLayoutChanges="true"
+            android:paddingTop="27dp" >
+
+            <TextView
+                android:id="@+id/txtShopName"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:shadowColor="#FFFFFF"
+                android:shadowDx="0"
+                android:shadowDy="3"
+                android:shadowRadius="1"
+                android:text="SHOP NAME"
+                android:textColor="#3B3734"
+                android:textSize="18sp"
+                android:textStyle="bold"
+                android:typeface="serif" />
+
+            <TextView
+                android:id="@+id/txtShopType"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:drawableLeft="@drawable/icon_typecoffee"
+                android:text=" Coffee shop"
+                android:textColor="#3B3734"
+                android:textStyle="bold|italic" />
+
+            <FrameLayout
+                android:layout_width="200dp"
+                android:layout_height="1px"
+                android:layout_marginTop="5dp"
+                android:background="#B2B2B2" >
+            </FrameLayout>
+
+            <TextView
+                android:id="@+id/txtAddress"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="5dp"
+                android:text="76 Lê Lai, Bến Thành,"
+                android:textColor="#3B3734"
+                android:typeface="serif" />
+
+            <TextView
+                android:id="@+id/txtIntroHeader"
+                android:layout_width="match_parent"
+                android:layout_height="32dp"
+                android:layout_marginTop="24dp"
+                android:background="@drawable/frame_detail_info_header"
+                android:gravity="center"
+                android:text="GIỚI THIỆU"
+                android:textColor="#3B3734"
+                android:textStyle="bold"
+                android:typeface="serif" />
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:background="@drawable/frame_detail_info_footer"
+                android:orientation="vertical"
+                android:animateLayoutChanges="true"
+                android:padding="8dp" >
+
+                <TextView
+                    android:id="@+id/txtIntroContent"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:ellipsize="end"
+                    android:text="Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat."
+                    android:textColor="#3B3734"
+                    android:typeface="serif" />
+
+                <TextView
+                    android:id="@+id/txtReadmore"
+                    android:layout_width="100dp"
+                    android:layout_height="24dp"
+                    android:layout_gravity="right"
+                    android:gravity="right|bottom"
+                    android:text="Xem thêm"
+                    android:textColor="#02A8FE"
+                    android:typeface="serif" />
+
+            </LinearLayout>
+
+            <ProgressBar
+                android:id="@+id/prgLoading"
+                style="?android:attr/progressBarStyleLarge"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content" />
+
+        </LinearLayout>
+    </FrameLayout>
+
+</ScrollView>

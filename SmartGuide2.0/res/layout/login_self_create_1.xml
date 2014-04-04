@@ -1,0 +1,88 @@
+<?xml version="1.0" encoding="utf-8"?>
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:layout_weight="1" >
+
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center"
+        android:layout_weight="1"
+        android:orientation="vertical" >
+
+        <ImageView
+            android:id="@+id/imgAva"
+            android:layout_width="74dp"
+            android:layout_height="74dp"
+            android:layout_alignParentTop="true"
+            android:layout_centerHorizontal="true"
+            android:layout_marginTop="8dp"
+            android:background="@drawable/pic_ava_login"
+            android:scaleType="centerCrop"
+            android:src="@drawable/frame_ava_login" />
+
+        <EditText
+            android:id="@+id/edtUserName"
+            android:layout_width="200dp"
+            android:layout_height="wrap_content"
+            android:layout_below="@+id/imgAva"
+            android:layout_centerHorizontal="true"
+            android:layout_marginTop="8dp"
+            android:background="@drawable/bg_numbbox_login"
+            android:contentDescription="@string/sfu_heavy"
+            android:gravity="center"
+            android:singleLine="true"
+            android:textColor="#616161"
+            android:textCursorDrawable="@null" >
+        </EditText>
+
+        <ImageButton
+            android:id="@+id/btnNext"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_below="@+id/edtUserName"
+            android:layout_centerHorizontal="true"
+            android:layout_marginTop="8dp"
+            android:background="@drawable/button_next_login" />
+
+        <TextView
+            android:id="@+id/txtAvaNoti"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignTop="@+id/imgAva"
+            android:layout_marginLeft="-24dp"
+            android:layout_marginTop="-8dp"
+            android:layout_toRightOf="@+id/imgAva"
+            android:background="@drawable/bg_notice_login"
+            android:contentDescription="@string/sfu_italic"
+            android:gravity="center"
+            android:paddingBottom="8dp"
+            android:paddingLeft="9dp"
+            android:paddingRight="6dp"
+            android:paddingTop="6dp"
+            android:text="Chọn ảnh đại diện"
+            android:textColor="#8A8A8A"
+            android:textSize="12sp" />
+
+        <TextView
+            android:id="@+id/txtUserNameNoti"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_above="@+id/edtUserName"
+            android:layout_marginBottom="-30dp"
+            android:layout_marginLeft="-70dp"
+            android:layout_toRightOf="@+id/edtUserName"
+            android:background="@drawable/bg_notice_login"
+            android:contentDescription="@string/sfu_italic"
+            android:gravity="center"
+            android:paddingBottom="8dp"
+            android:paddingLeft="9dp"
+            android:paddingRight="6dp"
+            android:paddingTop="6dp"
+            android:text="Tên đăng nhập"
+            android:textColor="#8A8A8A"
+            android:textSize="12sp" />
+    </RelativeLayout>
+
+</FrameLayout>

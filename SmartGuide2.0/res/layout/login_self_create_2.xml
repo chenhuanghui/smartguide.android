@@ -1,0 +1,115 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:gravity="center"
+    android:orientation="vertical" >
+
+    <FrameLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content" >
+
+        <LinearLayout
+            android:id="@+id/layoutDOB"
+            android:layout_width="wrap_content"
+            android:layout_height="71dp"
+            android:layout_gravity="center"
+            android:gravity="center"
+            android:orientation="horizontal"
+            android:paddingTop="16dp" >
+
+            <TextView
+                android:id="@+id/txtDay"
+                android:layout_width="48dp"
+                android:layout_height="match_parent"
+                android:background="@drawable/bg_numbbox_login"
+                android:gravity="center"
+                android:text="1"
+                android:textColor="#616161"
+                android:textSize="20sp"
+                android:textStyle="bold" />
+
+            <TextView
+                android:id="@+id/txtMonth"
+                android:layout_width="48dp"
+                android:layout_height="match_parent"
+                android:layout_marginLeft="8dp"
+                android:background="@drawable/bg_numbbox_login"
+                android:gravity="center"
+                android:text="1"
+                android:textColor="#616161"
+                android:textSize="20sp"
+                android:textStyle="bold" />
+
+            <TextView
+                android:id="@+id/txtYear"
+                android:layout_width="68dp"
+                android:layout_height="match_parent"
+                android:layout_marginLeft="8dp"
+                android:background="@drawable/bg_numbbox_login"
+                android:gravity="center"
+                android:text="1990"
+                android:textColor="#616161"
+                android:textSize="20sp"
+                android:textStyle="bold" />
+        </LinearLayout>
+
+        <TextView
+            android:id="@+id/txtDOBNoti"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center_horizontal"
+            android:layout_marginLeft="100dp"
+            android:background="@drawable/bg_notice_login"
+            android:contentDescription="@string/sfu_italic"
+            android:gravity="center"
+            android:paddingBottom="8dp"
+            android:paddingLeft="9dp"
+            android:paddingRight="6dp"
+            android:paddingTop="6dp"
+            android:text="Ngày sinh"
+            android:textColor="#8A8A8A"
+            android:textSize="12sp" />
+    </FrameLayout>
+
+    <ImageView
+        android:id="@+id/imageView1"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="16dp"
+        android:src="@drawable/line_comment" />
+
+    <LinearLayout
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="8dp" >
+
+        <TextView
+            android:id="@+id/txtMale"
+            android:layout_width="72dp"
+            android:layout_height="wrap_content"
+            android:contentDescription="@string/sfu_normal"
+            android:drawableBottom="@drawable/button_tickon"
+            android:gravity="center"
+            android:text="Nam"
+            android:textColor="#616161" />
+
+        <TextView
+            android:id="@+id/txtFemale"
+            android:layout_width="72dp"
+            android:layout_height="wrap_content"
+            android:contentDescription="@string/sfu_normal"
+            android:drawableBottom="@drawable/button_tickoff"
+            android:gravity="center"
+            android:text="Nữ"
+            android:textColor="#616161" />
+    </LinearLayout>
+
+    <ImageButton
+        android:id="@+id/btnConfirm"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="8dp"
+        android:background="@drawable/button_confirm_login" />
+
+</LinearLayout>

@@ -1,0 +1,115 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="#383735"
+    android:orientation="vertical" >
+
+    <ViewFlipper
+        android:id="@+id/fliperLeftTitle"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginLeft="8dp"
+        android:layout_marginTop="10dp"
+        android:inAnimation="@anim/alpha_in"
+        android:outAnimation="@anim/alpha_out" >
+
+        <ImageButton
+            android:id="@+id/btnSideMenu"
+            android:layout_width="32dp"
+            android:layout_height="32dp"
+            android:background="#00000000"
+            android:src="@drawable/button_navigation" />
+        
+        <TextView
+            android:id="@+id/txtBack"
+            android:layout_width="wrap_content"
+            android:layout_height="32dp"
+            android:gravity="center"
+            android:text="&lt; back"
+            android:textColor="#E9E9E9"
+            android:textStyle="italic" />
+
+    </ViewFlipper>
+
+    <TextView
+        android:id="@+id/textView1"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_centerHorizontal="true"
+        android:layout_marginTop="16dp"
+        android:text="Store"
+        android:textColor="#E9E9E9"
+        android:textSize="16sp"
+        android:textStyle="bold|italic" />
+
+    <ImageButton
+        android:id="@+id/btnPayment"
+        android:layout_width="32dp"
+        android:layout_height="32dp"
+        android:layout_alignParentRight="true"
+        android:layout_marginRight="10dp"
+        android:layout_marginTop="10dp"
+        android:background="#00000000"
+        android:src="@drawable/button_addcart" />
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_below="@+id/btnPayment"
+        android:gravity="bottom"
+        android:orientation="vertical"
+        android:weightSum="140" >
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="0dp"
+            android:layout_weight="39"
+            android:orientation="horizontal"
+            android:weightSum="4" >
+
+            <ImageView
+                android:id="@+id/imgAnimation"
+                android:layout_width="0dp"
+                android:layout_height="match_parent"
+                android:layout_weight="7"
+                android:scaleType="fitXY"
+                android:src="@drawable/bg_animation" />
+        </LinearLayout>
+
+        <FrameLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_weight="101"
+            android:background="#E9E9E9" >
+        </FrameLayout>
+    </LinearLayout>
+
+    <vn.infory.infory.NonSlidePager
+        android:id="@+id/pagerStore"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_below="@+id/btnPayment" />
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_below="@+id/btnPayment"
+        android:orientation="vertical"
+        android:weightSum="7" >
+
+        <FrameLayout
+            android:layout_width="match_parent"
+            android:layout_height="0dp"
+            android:layout_weight="2" >
+
+            <FrameLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_gravity="bottom"
+                android:background="@drawable/ads_tooth" >
+            </FrameLayout>
+        </FrameLayout>
+    </LinearLayout>
+
+</RelativeLayout>

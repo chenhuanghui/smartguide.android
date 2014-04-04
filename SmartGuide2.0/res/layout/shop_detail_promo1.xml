@@ -1,0 +1,154 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:layout_alignParentLeft="true"
+    android:layout_below="@+id/relativeLayout2"
+    android:background="@drawable/pattern_promotion_repeat" >
+
+    <FrameLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="@drawable/line_detail" >
+    </FrameLayout>
+
+    <RelativeLayout
+        android:id="@+id/relativeLayout2"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="8dp"
+        android:paddingLeft="16dp"
+        android:paddingRight="16dp" >
+
+        <ImageView
+            android:id="@+id/imageView4"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_centerVertical="true"
+            android:src="@drawable/icon_promotion" />
+
+        <TextView
+            android:id="@+id/textView7"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_centerVertical="true"
+            android:layout_marginLeft="5dp"
+            android:layout_toRightOf="@+id/imageView4"
+            android:contentDescription="@string/sfu_normal"
+            android:text="Thời gian khuyến mãi đến"
+            android:textColor="#7C7C7C"
+            android:textSize="12sp"
+            android:textStyle="bold" />
+
+        <TextView
+            android:id="@+id/txtDuration"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentRight="true"
+            android:layout_centerVertical="true"
+            android:contentDescription="@string/sfu_heavy"
+            android:text="31/12/2013"
+            android:textColor="#7c7c7c"
+            android:textSize="16sp" />
+    </RelativeLayout>
+
+    <FrameLayout
+        android:id="@+id/frameLayout2"
+        android:layout_width="match_parent"
+        android:layout_height="1px"
+        android:layout_below="@+id/relativeLayout2"
+        android:layout_marginLeft="8dp"
+        android:layout_marginRight="8dp"
+        android:background="#9E9E9E" >
+    </FrameLayout>
+
+    <TextView
+        android:id="@+id/txtCost"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/frameLayout2"
+        android:layout_marginLeft="8dp"
+        android:layout_marginRight="8dp"
+        android:layout_marginTop="3dp"
+        android:contentDescription="@string/sfu_normal"
+        android:gravity="center_horizontal"
+        android:text="Với 100k trên hóa đơn bạn sẽ được 1 lượt quét thẻ"
+        android:textColor="#9c9c9c"
+        android:textSize="12sp"
+        android:textStyle="bold" />
+
+    <FrameLayout
+        android:id="@+id/layoutSGP"
+        android:layout_width="match_parent"
+        android:layout_height="94dp"
+        android:layout_below="@+id/txtCost"
+        android:gravity="center" >
+
+        <FrameLayout
+            android:id="@+id/layoutScanSGP"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent" >
+
+            <ImageButton
+                android:id="@+id/btnScan2"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center"
+                android:background="#00000000"
+                android:src="@drawable/icon_scanfirsttime" />
+
+            <LinearLayout
+                android:id="@+id/layoutHasSGP"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:gravity="center"
+                android:visibility="invisible" >
+
+                <TextView
+                    android:id="@+id/txtSGP"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:background="@drawable/icon_sgp_promotion_1"
+                    android:gravity="center"
+                    android:text="99"
+                    android:textColor="#515352"
+                    android:textSize="24sp"
+                    android:textStyle="bold"
+                    android:typeface="normal" />
+
+                <ImageButton
+                    android:id="@+id/btnScan"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:background="@drawable/button_getgifft" />
+            </LinearLayout>
+
+        </FrameLayout>
+
+    </FrameLayout>
+
+    <TextView
+        android:id="@+id/txtText"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/layoutSGP"
+        android:layout_centerHorizontal="true"
+        android:contentDescription="@string/sfu_normal"
+        android:text="Nhận thẻ và quà từ nhân viên cửa hàng"
+        android:textColor="#9c9c9c"
+        android:textSize="12sp"
+        android:textStyle="bold" />
+
+    <LinearLayout
+        android:id="@+id/layoutVoucher"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/txtText"
+        android:layout_centerHorizontal="true"
+        android:layout_marginLeft="8dp"
+        android:layout_marginRight="8dp"
+        android:layout_marginTop="2dp"
+        android:orientation="vertical" >
+    </LinearLayout>
+
+</RelativeLayout>

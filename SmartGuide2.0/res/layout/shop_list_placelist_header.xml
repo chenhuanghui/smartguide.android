@@ -1,0 +1,94 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:background="#FFFFFF"
+    android:orientation="vertical"
+    android:paddingBottom="12dp"
+    android:paddingLeft="12dp"
+    android:paddingTop="12dp" >
+
+    <ImageView
+        android:id="@+id/imageView1"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="5dp"
+        android:src="@drawable/icon_playlist" />
+
+    <RelativeLayout
+        android:id="@+id/relativeLayout1"
+        android:layout_width="120dp"
+        android:layout_height="wrap_content"
+        android:layout_alignParentRight="true" >
+
+        <ImageView
+            android:id="@+id/imgAva"
+            android:layout_width="35dp"
+            android:layout_height="35dp"
+            android:layout_centerHorizontal="true" />
+
+        <TextView
+            android:id="@+id/txtAuthor"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_below="@+id/imgAva"
+            android:layout_centerHorizontal="true"
+            android:contentDescription="@string/sfu_normal"
+            android:ellipsize="end"
+            android:singleLine="true"
+            android:text="by Ngọc Hùng"
+            android:textColor="#DD1313" />
+
+        <TextView
+            android:id="@+id/txtViews"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_below="@+id/txtAuthor"
+            android:layout_centerHorizontal="true"
+            android:contentDescription="@string/sfu_normal"
+                        android:singleLine="true"
+            android:ellipsize="end"
+            android:text="2.450 lượt xem"
+            android:textColor="#4C4C4C" />
+
+    </RelativeLayout>
+
+    <TextView
+        android:id="@+id/txtName"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginLeft="7dp"
+        android:layout_toLeftOf="@+id/relativeLayout1"
+        android:layout_toRightOf="@+id/imageView1"
+        android:contentDescription="@string/sfu_heavy"
+        android:ellipsize="end"
+        android:singleLine="true"
+        android:text="CÁC ĐỊA ĐIỂM ĂN KHUYA Ở SÀI GÒN"
+        android:textColor="#000000"
+        android:textStyle="bold" />
+
+    <TextView
+        android:id="@+id/txtDescription"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignLeft="@+id/txtName"
+        android:layout_alignRight="@+id/txtName"
+        android:layout_below="@+id/txtName"
+        android:contentDescription="@string/sfu_italic"
+        android:ellipsize="end"
+        android:lines="3"
+        android:lineSpacingExtra="-2dp"
+        android:text="Một số địa điểm ăn khuya thu hút đông thực khách ở Sài Gòn như gỏi xào bò trước ga Sài Gòn"
+        android:textColor="#4C4C4C" />
+
+    <FrameLayout
+        android:layout_width="1px"
+        android:layout_height="wrap_content"
+        android:layout_alignBottom="@+id/txtDescription"
+        android:layout_alignParentTop="true"
+        android:layout_toLeftOf="@+id/relativeLayout1"
+        android:background="#DDDDDD" >
+
+    </FrameLayout>
+
+</RelativeLayout>

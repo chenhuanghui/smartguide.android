@@ -1,0 +1,37 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:background="@drawable/frame_detail_info_footer"
+    android:gravity="center_vertical"
+    android:orientation="horizontal"
+    android:padding="8dp" >
+
+    <ImageView
+        android:id="@+id/imgImage"
+        android:layout_width="64dp"
+        android:layout_height="64dp"
+        android:src="@drawable/ava" />
+
+    <TextView
+        android:id="@+id/txtTitle"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginLeft="24dp"
+        android:layout_toRightOf="@+id/imgImage"
+        android:text="Lorem ipsum"
+        android:textColor="#3B3734"
+        android:textStyle="bold"
+        android:typeface="serif" />
+
+    <TextView
+        android:id="@+id/txtContent"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_alignLeft="@+id/txtTitle"
+        android:layout_below="@+id/txtTitle"
+        android:text="Lorem ipsum dolor sit amet, consectetur adipisicing elit, "
+        android:textColor="#3B3734"
+        android:typeface="serif" />
+
+</RelativeLayout>

@@ -1,0 +1,15 @@
+{
+    "status": 1,
+    "accessToken": "N2MzZDg5NTUyMDRjZTkxYmYwZDNlNjI1NjY1MjYzYmM4M2I5NjM2ZjM4MWQ2MDBlYzUyNjM3MDFjYjc1ODg1Yg",
+    "refreshToken": "NzhhNmYzNmRhZDE3YjRjODdjMTJhYjk0MjQyYTJjNGM0YzYwMTkzMjhiMGRhZTFlNWFlZWZjYzczMmFkYWYxNw",
+    "userProfile": {
+        "idUser": 2,
+        "name": "Nguyễn Ngọc Hùng",
+        "gender": 1,
+        "cover": "",
+        "avatar": "http://dev2.smartguide.vn/media/users/avatar/2/2572-2014-03-01-02-12-25.jpeg",
+        "phone": "841267082519",
+        "dob": "03/05/1991",
+        "socialType": 0
+    }
+}

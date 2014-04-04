@@ -1,0 +1,235 @@
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="#ebebeb"
+    tools:context=".UserSettingActivity" >
+
+    <com.facebook.widget.LoginButton
+        android:id="@+id/fbBtn"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:visibility="invisible" />
+    
+    <RelativeLayout
+        android:id="@+id/relativeLayout1"
+        android:layout_width="match_parent"
+        android:layout_height="48dp"
+        android:background="#383735" >
+
+        <ImageButton
+            android:id="@+id/btnBack"
+            android:layout_width="48dp"
+            android:layout_height="48dp"
+            android:layout_centerVertical="true"
+            android:background="#00000000"
+            android:src="@drawable/button_backarrow"
+            tools:ignore="ContentDescription" />
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_centerHorizontal="true"
+            android:layout_centerVertical="true"
+            android:text="User Setting"
+            android:textColor="#e9e9e9"
+            android:textSize="16sp"
+            android:textStyle="bold|italic"
+            android:typeface="serif" />
+
+        <ImageView
+            android:id="@+id/btnDone"
+            android:layout_width="48dp"
+            android:layout_height="match_parent"
+            android:layout_alignParentRight="true"
+            android:layout_alignParentTop="true"
+            android:background="#00000000"
+            android:scaleType="center"
+            android:src="@drawable/button_done"
+            android:text="Done"
+            android:textStyle="italic" />
+    </RelativeLayout>
+
+    <vn.infory.infory.RatioFrameLayout
+        android:id="@+id/layoutCover"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_alignParentLeft="true"
+        android:layout_below="@+id/relativeLayout1"
+        android:background="@drawable/bg_blur_navigation"
+        android:contentDescription="ratio:2.46" >
+
+        <FrameLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:background="@drawable/blur_photoupload" >
+
+        </FrameLayout>
+
+        <FrameLayout
+            android:layout_width="81dp"
+            android:layout_height="81dp"
+            android:layout_gravity="center" >
+
+            <ImageView
+                android:id="@+id/imgAva"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:layout_margin="7dp"
+                android:scaleType="centerCrop" />
+
+            <FrameLayout
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:background="@drawable/frame_avauser_uc" >
+            </FrameLayout>
+        </FrameLayout>
+    </vn.infory.infory.RatioFrameLayout>
+
+    <EditText
+        android:id="@+id/edtUserName"
+        android:layout_width="200dp"
+        android:layout_height="46dp"
+        android:layout_below="@+id/layoutCover"
+        android:layout_centerHorizontal="true"
+        android:layout_marginTop="-23dp"
+        android:background="@drawable/bg_numbbox_login"
+        android:contentDescription="@string/sfu_heavy"
+        android:gravity="center"
+        android:singleLine="true"
+        android:text="Nguyễn Ngọc Hùng"
+        android:textColor="#616161"
+        android:textCursorDrawable="@null"
+        android:textSize="14sp" >
+    </EditText>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_below="@+id/layoutCover"
+        android:layout_marginTop="23dp"
+        android:gravity="center_horizontal"
+        android:orientation="vertical" >
+
+        <Button
+            android:id="@+id/btnLogout"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:background="#00000000"
+            android:contentDescription="@string/sfu_normal"
+            android:drawableLeft="@drawable/button_logout"
+            android:text=" Thoát tài khoản"
+            android:textColor="#a3a3a3"
+            android:textSize="14sp" />
+
+        <LinearLayout
+            android:layout_width="300dp"
+            android:layout_height="wrap_content"
+            android:background="@drawable/button_call"
+            android:orientation="vertical"
+            android:paddingLeft="16dp" >
+
+            <RelativeLayout
+                android:layout_width="match_parent"
+                android:layout_height="38dp" >
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_centerVertical="true"
+                    android:text="Ngày sinh"
+                    android:textColor="#9d9d9d"
+                    android:textSize="12sp" />
+
+                <Button
+                    android:id="@+id/btnDobEdit"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_alignParentRight="true"
+                    android:background="#00000000"
+                    android:text="sửa"
+                    android:textColor="#55c8fe"
+                    android:textSize="12sp" />
+
+                <TextView
+                    android:id="@+id/txtDob"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_centerInParent="true"
+                    android:text="12/10/1991"
+                    android:textColor="#505050" />
+
+                <FrameLayout
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_alignParentBottom="true"
+                    android:background="@drawable/line_comment" >
+                </FrameLayout>
+            </RelativeLayout>
+
+            <RelativeLayout
+                android:layout_width="match_parent"
+                android:layout_height="38dp" >
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_centerVertical="true"
+                    android:text="Giới tính"
+                    android:textColor="#9d9d9d"
+                    android:textSize="12sp" />
+
+                <Button
+                    android:id="@+id/btnSexEdit"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_alignParentBottom="true"
+                    android:layout_alignParentRight="true"
+                    android:background="#00000000"
+                    android:text="sửa"
+                    android:textColor="#55c8fe"
+                    android:textSize="12sp" />
+
+                <TextView
+                    android:id="@+id/txtSex"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_centerInParent="true"
+                    android:text="Nam"
+                    android:textColor="#505050" />
+            </RelativeLayout>
+        </LinearLayout>
+
+        <ImageButton
+            android:id="@+id/btnFacebook"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="8dp"
+            android:background="@drawable/button_facebook_login" />
+
+        <ImageButton
+            android:id="@+id/btnGooglePlus"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="8dp"
+            android:background="@drawable/button_google_login" />
+    </LinearLayout>
+
+    <FrameLayout
+        android:id="@+id/layoutLoading"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:background="#80000000"
+        android:clickable="true"
+        android:visibility="invisible" >
+
+        <FrameLayout
+            android:id="@+id/layoutLoadingAni"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:background="@drawable/button_loading_big" >
+        </FrameLayout>
+    </FrameLayout>
+
+</RelativeLayout>

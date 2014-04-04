@@ -1,0 +1,122 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical" >
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_weight="2"
+        android:gravity="center_horizontal"
+        android:weightSum="3" >
+
+        <RelativeLayout
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:layout_weight="2">
+
+            <ImageView
+                android:id="@+id/imageView1"
+                android:layout_width="52dp"
+                android:layout_height="52dp"
+                android:src="@drawable/ava" />
+
+            <TextView
+                android:id="@+id/textView1"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_centerHorizontal="true"
+                android:layout_marginTop="8dp"
+                android:text="SHOP NAME"
+                android:singleLine="true"
+                android:ellipsize="end"
+                android:textColor="#FFFFFF" />
+
+            <TextView
+                android:id="@+id/textView2"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_below="@+id/textView1"
+                android:layout_centerHorizontal="true"
+                android:layout_marginTop="8dp"
+                android:text="Coffee shop"
+                android:textColor="#AAAAAA" />
+
+            <TextView
+                android:id="@+id/imgMore"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_alignParentLeft="true"
+                android:layout_below="@+id/imageView1"
+                android:layout_marginTop="8dp"
+                android:lines="2"
+                android:ellipsize="end"
+                android:text="Neque porro quisquam est qui dolorem ipsum quia dolor sit amet, consectetur"
+                android:textColor="#C4C4C4" />
+
+        </RelativeLayout>
+
+    </LinearLayout>
+
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_weight="5"
+        android:background="#E9E9E9" >
+
+        <LinearLayout
+            android:id="@+id/linearLayout1"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal" >
+
+            <Button
+                android:id="@+id/btnNewest"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:background="#FFE9E9E9"
+                android:text="Newest"
+                android:textColor="#9B9B9B" />
+
+            <FrameLayout
+                android:layout_width="1px"
+                android:layout_height="match_parent"
+                android:layout_marginBottom="6dp"
+                android:layout_marginTop="6dp"
+                android:background="#616161" >
+            </FrameLayout>
+
+            <Button
+                android:id="@+id/btnTopSellers"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:background="#FFE9E9E9"
+                android:text="Top sellers"
+                android:textColor="#373634" />
+        </LinearLayout>
+
+        <GridView
+            android:id="@+id/gridMenu"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_below="@+id/linearLayout1"
+            android:listSelector="#00000000"
+            android:layoutAnimation="@anim/layout_grid_fade"
+            android:numColumns="2" >
+
+        </GridView>
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="4dp"
+            android:layout_below="@+id/linearLayout1"
+            android:background="@drawable/store_shop_shadow" >
+
+        </LinearLayout>
+
+    </RelativeLayout>
+
+</LinearLayout>

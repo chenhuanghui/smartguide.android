@@ -1,0 +1,173 @@
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context=".ScanCodeActivity" >
+
+    <FrameLayout
+        android:id="@+id/layoutCameraHolder"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_above="@+id/layoutScanCode"
+        android:layout_below="@+id/RelativeLayout01"
+        android:layout_marginBottom="-12dp"
+        android:layout_marginTop="-12dp" >
+    </FrameLayout>
+
+    <RelativeLayout
+        android:id="@+id/layoutScanCode"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_alignParentBottom="true" >
+
+        <LinearLayout
+            android:id="@+id/linearLayout1"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical" >
+
+            <FrameLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:background="@drawable/camera_tooth" >
+            </FrameLayout>
+
+            <FrameLayout
+                android:layout_width="match_parent"
+                android:layout_height="40dp"
+                android:layout_marginTop="-1dp"
+                android:background="#FF8468" >
+            </FrameLayout>
+        </LinearLayout>
+
+        <FrameLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_alignBottom="@+id/linearLayout1"
+            android:layout_alignTop="@+id/linearLayout1"
+            android:background="@drawable/background_light" >
+        </FrameLayout>
+
+        <ImageView
+            android:id="@+id/imgScanCode"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignBottom="@+id/linearLayout1"
+            android:layout_alignTop="@+id/linearLayout1"
+            android:layout_centerHorizontal="true"
+            android:layout_marginTop="10dp"
+            android:scaleType="center"
+            android:src="@drawable/button_scan" />
+
+        <ImageView
+            android:id="@+id/imgScanCodeSmall"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignBottom="@+id/linearLayout1"
+            android:layout_alignTop="@+id/linearLayout1"
+            android:layout_centerHorizontal="true"
+            android:layout_marginBottom="24dp"
+            android:layout_marginTop="10dp"
+            android:scaleType="center"
+            android:src="@drawable/button_scan_small"
+            android:visibility="invisible" />
+    </RelativeLayout>
+
+    <RelativeLayout
+        android:id="@+id/RelativeLayout01"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_alignParentLeft="true"
+        android:layout_alignParentTop="true" >
+
+        <LinearLayout
+            android:id="@+id/LinearLayout01"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical" >
+
+            <FrameLayout
+                android:layout_width="match_parent"
+                android:layout_height="40dp"
+                android:layout_marginTop="-1dp"
+                android:background="#FF8468" >
+            </FrameLayout>
+
+            <FrameLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:background="@drawable/camera_tooth_top" >
+            </FrameLayout>
+        </LinearLayout>
+
+        <FrameLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_alignBottom="@+id/LinearLayout01"
+            android:layout_alignTop="@+id/LinearLayout01"
+            android:background="@drawable/background_light_top" >
+        </FrameLayout>
+
+        <TextView
+            android:id="@+id/textView1"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignBottom="@+id/LinearLayout01"
+            android:layout_alignTop="@+id/LinearLayout01"
+            android:layout_centerHorizontal="true"
+            android:gravity="center"
+            android:paddingBottom="8dp"
+            android:text="Nhận thẻ và quà từ nhân viên cửa hàng"
+            android:textColor="#000000"
+            android:textSize="12sp"
+            android:typeface="serif" />
+
+        <ImageButton
+            android:id="@+id/btnClose"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignBottom="@+id/LinearLayout01"
+            android:layout_alignParentRight="true"
+            android:layout_alignTop="@+id/LinearLayout01"
+            android:layout_marginRight="8dp"
+            android:background="#00000000"
+            android:paddingBottom="8dp"
+            android:src="@drawable/button_close" />
+    </RelativeLayout>
+
+    <ImageView
+        android:id="@+id/imageView1"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_centerInParent="true"
+        android:src="@drawable/scan" />
+
+    <Button
+        android:id="@+id/btnFlash"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignRight="@+id/imageView1"
+        android:layout_below="@+id/imageView1"
+        android:background="#00000000"
+        android:drawableRight="@drawable/button_flashcamera"
+        android:text="Off"
+        android:textSize="12sp" />
+
+    <FrameLayout
+        android:id="@+id/layoutLoading"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:background="#80000000"
+        android:clickable="true"
+        android:visibility="invisible" >
+
+        <FrameLayout
+            android:id="@+id/layoutLoadingAnimation"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:background="@drawable/button_loading_big" >
+        </FrameLayout>
+    </FrameLayout>
+
+</RelativeLayout>
