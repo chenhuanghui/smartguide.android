@@ -36,8 +36,8 @@ public class ScanCode extends CyAsyncTask {
 			pairs.add(new BasicNameValuePair("userLng", Float.toString(s.lng)));
 			pairs.add(new BasicNameValuePair("code", mCode));
 			
-//			String json = NetworkManager.post(APILinkMaker.mScan, pairs);
-			String json = readWholeFile(mContext, R.raw.scan_1);
+			String json = NetworkManager.post(APILinkMaker.mScan, pairs);
+//			String json = readWholeFile(mContext, R.raw.scan_1);
 			
 			ScanResponse scanResponse = new ScanResponse();
 			JsonParser.parseObject(scanResponse, json);
