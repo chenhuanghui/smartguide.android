@@ -5,14 +5,12 @@ import java.util.List;
 
 import org.apache.http.NameValuePair;
 import org.apache.http.message.BasicNameValuePair;
-import org.json.JSONObject;
 
-import com.cycrix.jsonparser.JsonParser;
-
-import vn.infory.infory.R;
 import vn.infory.infory.data.ScanResponse;
 import vn.infory.infory.data.Settings;
 import android.content.Context;
+
+import com.cycrix.jsonparser.JsonParser;
 
 public class ScanCode extends CyAsyncTask {
 

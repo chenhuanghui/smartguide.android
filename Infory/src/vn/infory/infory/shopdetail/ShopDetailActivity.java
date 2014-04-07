@@ -354,10 +354,13 @@ public class ShopDetailActivity extends FragmentActivity {
 			if (mShop.userGallery.size() > 0)
 				itemList.add(new UserGallery());
 			itemList.addAll(mShop.userGallery);
+			if (mShop.userGallery.size() % LazyLoadAdapter.ITEM_PER_PAGE != 0)
+				itemList.add(new UserGallery());
 			UserGalleryAdapter adapter = new UserGalleryAdapter(this, itemList, "" + mShop.idShop, mTaskList);
 			adapter.setPage(mShop.userGallery.size() / LazyLoadAdapter.ITEM_PER_PAGE);
 			if (mShop.userGallery.size() % LazyLoadAdapter.ITEM_PER_PAGE != 0)
 				adapter.mIsMore = false;
+			
 			mLstGallery.setAdapter(adapter);
 			mLstGallery.setOnScrollListener(adapter);
 			mLstGallery.setOnItemClickListener(adapter);

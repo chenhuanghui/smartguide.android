@@ -79,7 +79,7 @@ implements Listener2, OnPageChangeListener {
 		if (itemList.size() > 0) {
 			mItemList.addAll(itemList);
 			mPageNum++;			
-			CyUtils.showToast("Loaded " + mPageNum + " pages", mAct);
+//			CyUtils.showToast("Loaded " + mPageNum + " pages", mAct);
 		}
 		
 		if (itemList.size() < LazyLoadAdapter.ITEM_PER_PAGE)

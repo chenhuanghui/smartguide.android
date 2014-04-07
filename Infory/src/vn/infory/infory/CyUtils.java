@@ -1,6 +1,5 @@
 package vn.infory.infory;
 
-import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 import android.app.AlertDialog.Builder;

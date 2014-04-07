@@ -7,11 +7,9 @@ package vn.infory.infory.scancode;
 
 import java.io.IOException;
 
-import vn.infory.infory.CyUtils;
 import android.content.Context;
 import android.hardware.Camera;
 import android.hardware.Camera.AutoFocusCallback;
-import android.hardware.Camera.CameraInfo;
 import android.hardware.Camera.PreviewCallback;
 import android.os.Handler;
 import android.util.AttributeSet;
@@ -43,9 +41,9 @@ public class CameraPreview extends SurfaceView implements SurfaceHolder.Callback
 		}
 	}
 
-	public CameraPreview(Context context, Camera cam) {
+	public CameraPreview(Context context) {
 		super(context);
-		mCamera = cam;
+//		mCamera = cam;
 		init();
 	}
 
@@ -63,6 +61,17 @@ public class CameraPreview extends SurfaceView implements SurfaceHolder.Callback
 		mHolder = getHolder();
 		mHolder.addCallback(this);
 	}
+	
+	public void setCamera(Camera camera) {
+        mCamera = camera;
+        try {
+			camera.setPreviewDisplay(mHolder);
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+    }
+	
 //	
 //	public Camera getCamera() {
 //		return mCamera;
@@ -70,19 +79,25 @@ public class CameraPreview extends SurfaceView implements SurfaceHolder.Callback
 	
 	public void setPreviewCallback(PreviewCallback callback) {
 		previewCallback = callback;
+		mCamera.setPreviewCallback(callback);
 	}
 
 	public void surfaceCreated(SurfaceHolder holder) {
 		// The Surface has been created, now tell the camera where to draw the preview.
 		try {
-			mCamera.setPreviewDisplay(holder);
-			mCamera.startPreview();
-		} catch (IOException e) {
-		}
+            if (mCamera != null) {
+                mCamera.setPreviewDisplay(holder);
+            }
+        } catch (IOException exception) {
+//            Log.e(TAG, "IOException caused by setPreviewDisplay()", exception);
+        }
 	}
 
 	public void surfaceDestroyed(SurfaceHolder holder) {
 		// Camera preview released in activity
+//		if (mCamera != null) {
+//            mCamera.stopPreview();
+//        }
 	}
 
 	public void surfaceChanged(SurfaceHolder holder, int format, int width, int height) {
@@ -90,6 +105,7 @@ public class CameraPreview extends SurfaceView implements SurfaceHolder.Callback
 		 * If your preview can change or rotate, take care of those events here.
 		 * Make sure to stop the preview before resizing or reformatting it.
 		 */
+		
 		if (mHolder.getSurface() == null) {
 			// preview surface does not exist
 			return;
@@ -105,7 +121,6 @@ public class CameraPreview extends SurfaceView implements SurfaceHolder.Callback
 		try {
 			// Hard code camera surface rotation 90 degs to match Activity view in portrait
 			mCamera.setDisplayOrientation(90);
-
 			mCamera.setPreviewDisplay(mHolder);
 			mCamera.setPreviewCallback(previewCallback);
 			mCamera.startPreview();
