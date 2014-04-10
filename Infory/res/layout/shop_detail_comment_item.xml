@@ -1,82 +1,88 @@
 <?xml version="1.0" encoding="utf-8"?>
-<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<vn.infory.infory.shopdetail.CommentLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
-    android:layout_height="match_parent"
+    android:layout_height="wrap_content"
     android:orientation="vertical"
-    android:paddingLeft="8dp"
-    android:paddingRight="8dp" >
-
-    <FrameLayout
-        android:id="@+id/frameLayout1"
-        android:layout_width="49dp"
-        android:layout_height="49dp"
-        android:foreground="@drawable/frame_avacomment"
-        android:padding="6dp" >
-
-        <ImageView
-            android:id="@+id/imgAva"
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:scaleType="centerCrop" />
-
-    </FrameLayout>
-
-    <TextView
-        android:id="@+id/txtName"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_alignParentTop="true"
-        android:layout_marginLeft="8dp"
-        android:layout_toRightOf="@+id/frameLayout1"
-        android:text="UserName"
-        android:textColor="#3E3E3E"
-        android:textStyle="bold" />
-
-    <TextView
-        android:id="@+id/txtContent"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_alignLeft="@+id/txtName"
-        android:layout_below="@+id/txtName"
-        android:text="TextView"
-        android:textColor="#3E3E3E" />
+    android:paddingLeft="9dp"
+    android:paddingRight="9dp" >
 
     <RelativeLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_alignLeft="@+id/txtContent"
-        android:layout_below="@+id/txtContent"
-        android:layout_toRightOf="@+id/frameLayout1" >
+        android:background="#ffffff"
+        android:paddingLeft="7dp"
+        android:paddingRight="7dp" >
+
+        <FrameLayout
+            android:id="@+id/frameLayout1"
+            android:layout_width="49dp"
+            android:layout_height="49dp"
+            android:foreground="@drawable/frame_avacomment"
+            android:padding="6dp" >
+
+            <ImageView
+                android:id="@+id/imgAva"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:scaleType="centerCrop" />
+        </FrameLayout>
 
         <TextView
-            android:id="@+id/txtTime"
+            android:id="@+id/txtName"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_centerVertical="true"
-            android:text="lúc 2 giờ trước"
-            android:textColor="#aaaaaa"
-            android:textSize="12sp"
-            android:textStyle="italic" />
+            android:layout_alignParentTop="true"
+            android:layout_marginLeft="8dp"
+            android:layout_toRightOf="@+id/frameLayout1"
+            android:text="UserName"
+            android:textColor="#3E3E3E"
+            android:textStyle="bold" />
 
         <TextView
-            android:id="@+id/txtAgreeNum"
+            android:id="@+id/txtContent"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_centerVertical="true"
-            android:layout_marginRight="8dp"
-            android:layout_toLeftOf="@+id/btnAgree"
-            android:text="18 lượt"
-            android:textColor="#aaaaaa"
-            android:textSize="12sp" />
+            android:layout_alignLeft="@+id/txtName"
+            android:layout_below="@+id/txtName"
+            android:text="TextView"
+            android:textColor="#3E3E3E" />
 
-        <ImageButton
-            android:id="@+id/btnAgree"
-            android:layout_width="wrap_content"
+        <RelativeLayout
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_centerVertical="true"
-            android:layout_alignParentRight="true"
-            android:background="@drawable/button_agree" />
+            android:layout_alignLeft="@+id/txtContent"
+            android:layout_below="@+id/txtContent"
+            android:layout_toRightOf="@+id/frameLayout1" >
 
+            <TextView
+                android:id="@+id/txtTime"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_centerVertical="true"
+                android:text="lúc 2 giờ trước"
+                android:textColor="#aaaaaa"
+                android:textSize="12sp"
+                android:textStyle="italic" />
+
+            <TextView
+                android:id="@+id/txtAgreeNum"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_centerVertical="true"
+                android:layout_marginRight="8dp"
+                android:layout_toLeftOf="@+id/btnAgree"
+                android:text="18 lượt"
+                android:textColor="#aaaaaa"
+                android:textSize="12sp" />
+
+            <ImageButton
+                android:id="@+id/btnAgree"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_alignParentRight="true"
+                android:layout_centerVertical="true"
+                android:background="@drawable/button_agree" />
+        </RelativeLayout>
     </RelativeLayout>
 
-</RelativeLayout>
+</vn.infory.infory.shopdetail.CommentLayout>

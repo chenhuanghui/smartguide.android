@@ -125,6 +125,37 @@ public class CyImageLoader {
 		return showImage(path, imgView, new Point(imgView.getWidth(), imgView.getHeight()));
 	}
 	
+	public void showImageListView(String path, final ImageView imgView, 
+			Point expectedSize, final List<CyAsyncTask> taskList) {
+		imgView.setTag(path);
+		CyAsyncTask task = loadImage(path, new CyImageLoader.Listener() {
+			@Override
+			public void startLoad(int from) {
+				switch (from) {
+				case CyImageLoader.FROM_DISK:
+				case CyImageLoader.FROM_NETWORK:
+					imgView.setImageBitmap(null);
+					break;
+				}
+			}
+
+			@Override
+			public void loadFinish(int from, Bitmap image, String url, CyAsyncTask task) {
+				taskList.remove(task);
+				if (imgView.getTag().equals(url))
+					imgView.setImageBitmap(image);
+			}
+			
+			@Override
+			public void loadFail(Exception e, CyAsyncTask task) {
+				taskList.remove(task);
+			}
+		}, new Point(), imgView.getContext());
+		
+		if (task != null)
+			taskList.add(task);
+	}
+	
 	public CyAsyncTask showImageSmooth(String path, View view, Point expectedSize, 
 			final List<CyAsyncTask> taskList) {
 
@@ -167,7 +198,7 @@ public class CyImageLoader {
 		}.init(view), expectedSize, view.getContext());
 		
 		if (task != null)
-			taskList.remove(task);
+			taskList.add(task);
 		
 		return task;
 	}

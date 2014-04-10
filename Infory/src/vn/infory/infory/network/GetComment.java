@@ -7,6 +7,7 @@ import org.apache.http.NameValuePair;
 import org.apache.http.message.BasicNameValuePair;
 import org.json.JSONArray;
 
+import vn.infory.infory.R;
 import vn.infory.infory.data.Comment;
 import vn.infory.infory.data.Settings;
 import vn.infory.infory.data.ShopGallery;
@@ -55,7 +56,7 @@ public class GetComment extends CyAsyncTask {
 			pairs.add(new BasicNameValuePair("sort", Integer.toString(mSort)));
 			
 			String json = NetworkManager.post(APILinkMaker.mComment, pairs);
-//			String json = readWholeFile(mContext, R.raw.place_list);
+//			String json = readWholeFile(mContext, R.raw.comment);
 			
 			if (json.equalsIgnoreCase("null"))
 				json = "[]";

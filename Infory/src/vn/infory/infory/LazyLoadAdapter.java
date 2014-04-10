@@ -22,6 +22,7 @@ public abstract class LazyLoadAdapter extends BaseAdapter implements OnScrollLis
 	protected ArrayList mItemList;
 	protected LayoutInflater mInflater;
 	public boolean mLoading, mIsMore = true;
+	public boolean mHideLoading = true;
 	protected int mPageNum = 0;
 	protected Activity mAct;
 	protected int mContentTypeCount;
@@ -45,7 +46,7 @@ public abstract class LazyLoadAdapter extends BaseAdapter implements OnScrollLis
 
 	@Override
 	public final int getCount() {
-		return mItemList.size() + (mIsMore ? 1 : 0);
+		return mItemList.size() + (mIsMore || !mHideLoading ? 1 : 0);
 	}
 	
 	@Override

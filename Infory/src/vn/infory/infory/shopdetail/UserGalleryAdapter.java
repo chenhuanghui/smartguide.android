@@ -3,9 +3,13 @@ package vn.infory.infory.shopdetail;
 import it.sephiroth.android.library.widget.AbsHListView;
 import it.sephiroth.android.library.widget.AdapterView;
 import it.sephiroth.android.library.widget.AdapterView.OnItemClickListener;
+import it.sephiroth.android.library.widget.HListView;
 
 import java.util.ArrayList;
 import java.util.List;
+
+import com.cycrix.androidannotation.AndroidAnnotationParser;
+import com.cycrix.androidannotation.ViewById;
 
 import vn.infory.infory.CyImageLoader;
 import vn.infory.infory.LazyLoadAdapter;
@@ -29,21 +33,57 @@ implements AbsHListView.OnScrollListener, OnItemClickListener {
 
 	private ShopDetailActivity mAct;
 	private List<CyAsyncTask> mTaskList;
+	
+	boolean mShowUserGalleryLeft 	= false;
+	boolean mShowUserGalleryRight 	= false;
+	
+	@ViewById(id = R.id.imgUserGalleryLeft)		private View mImgUserGalleryLeft;
+	@ViewById(id = R.id.imgUserGalleryRight)	private View mImgUserGalleryRight;
+	@ViewById(id = R.id.lstUserGallery)			private HListView mLstGallery;
+	@ViewById(id = R.id.imgGallaryOverlay)		private ImageView mImgGalleryOverlay;
 
 	public UserGalleryAdapter(ShopDetailActivity act, ArrayList<UserGallery> itemList, String shopId,
-			List<CyAsyncTask> taskList) {
+			List<CyAsyncTask> taskList, View convertView) {
 		super(act, new GetUserGallery(act, shopId, 0),
 				R.layout.shop_detail_user_gallery_loading, 2, itemList);
-		//			mIsMore = false;
+		
 		mAct = act;
 		mTaskList = taskList;
+		
+		try {
+			AndroidAnnotationParser.parse(this, convertView);
+		} catch (Exception e) {
+			return;
+		}
+		
+		if (itemList.size() == 0) {
+			mImgUserGalleryLeft.setAlpha(0);
+			mImgUserGalleryRight.setAlpha(0);
+			mShowUserGalleryLeft = false;
+			mShowUserGalleryRight = false;
+
+			mImgGalleryOverlay.setImageResource(R.drawable.photo_firsttime);
+			mLstGallery.setVisibility(View.GONE);
+		} else {
+			mLstGallery.setVisibility(View.VISIBLE);
+			mShowUserGalleryLeft = true;
+			if (itemList.size() > 3) {
+				mImgUserGalleryRight.setAlpha(0);
+				mShowUserGalleryRight = false;
+			} else {
+				mImgUserGalleryRight.setAlpha(1);
+				mShowUserGalleryRight = true;
+			}
+
+			mImgGalleryOverlay.setImageResource(R.drawable.frame_photo);
+		}
 	}
 
 	@Override
 	public View getView(int position, View convertView, ViewGroup parent) {
 
 		View view = super.getView(position, convertView, parent);
-		int h = mAct.mLstGallery.getHeight();
+		int h = parent.getHeight();
 		if (convertView == null) {
 			if (view == null)
 				convertView = mInflater.inflate(R.layout.shop_detail_user_image_item, parent, false);
@@ -132,30 +172,30 @@ implements AbsHListView.OnScrollListener, OnItemClickListener {
 
 		View firstView = view.getChildAt(0);
 		if ((firstVisibleItem != 0 || firstView.getRight() <= 1) 
-				^ (mAct.mShowUserGalleryLeft)) {
+				^ (mShowUserGalleryLeft)) {
 			ObjectAnimator animator = null;
-			if (mAct.mShowUserGalleryLeft)
+			if (mShowUserGalleryLeft)
 				// hide
-				animator = ObjectAnimator.ofFloat(mAct.mImgUserGalleryLeft, "alpha", 1, 0);
+				animator = ObjectAnimator.ofFloat(mImgUserGalleryLeft, "alpha", 1, 0);
 			else
 				// show
-				animator = ObjectAnimator.ofFloat(mAct.mImgUserGalleryLeft, "alpha", 0, 1);
+				animator = ObjectAnimator.ofFloat(mImgUserGalleryLeft, "alpha", 0, 1);
 			animator.start();
-			mAct.mShowUserGalleryLeft = !mAct.mShowUserGalleryLeft;
+			mShowUserGalleryLeft = !mShowUserGalleryLeft;
 		}
 
 		if ((firstVisibleItem + visibleItemCount != mItemList.size() ||
 				(firstVisibleItem == mItemList.size() - 4 && firstView.getLeft() >= -1)) 
-				^ (mAct.mShowUserGalleryRight)) {
+				^ (mShowUserGalleryRight)) {
 			ObjectAnimator animator = null;
-			if (mAct.mShowUserGalleryRight)
+			if (mShowUserGalleryRight)
 				// hide
-				animator = ObjectAnimator.ofFloat(mAct.mImgUserGalleryRight, "alpha", 1, 0);
+				animator = ObjectAnimator.ofFloat(mImgUserGalleryRight, "alpha", 1, 0);
 			else
 				// show
-				animator = ObjectAnimator.ofFloat(mAct.mImgUserGalleryRight, "alpha", 0, 1);
+				animator = ObjectAnimator.ofFloat(mImgUserGalleryRight, "alpha", 0, 1);
 			animator.start();
-			mAct.mShowUserGalleryRight = !mAct.mShowUserGalleryRight;
+			mShowUserGalleryRight = !mShowUserGalleryRight;
 		}
 	}
 

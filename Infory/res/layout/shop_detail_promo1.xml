@@ -6,12 +6,6 @@
     android:layout_below="@+id/relativeLayout2"
     android:background="@drawable/pattern_promotion_repeat" >
 
-    <FrameLayout
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:background="@drawable/line_detail" >
-    </FrameLayout>
-
     <RelativeLayout
         android:id="@+id/relativeLayout2"
         android:layout_width="match_parent"

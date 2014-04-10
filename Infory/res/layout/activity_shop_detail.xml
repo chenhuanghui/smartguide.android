@@ -1,284 +1,114 @@
-<vn.infory.infory.shopdetail.NonChildFocusScrollView
-    xmlns:tools="http://schemas.android.com/tools"
+<FrameLayout xmlns:tools="http://schemas.android.com/tools"
     xmlns:android="http://schemas.android.com/apk/res/android"
-    android:id="@+id/scrollView1"
     android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    android:background="#EBEBEB"
-    android:scrollbars="none"
-    android:fillViewport="true"
-    tools:context=".ShopDetailActivity" >
+    android:layout_height="match_parent" >
 
-    <LinearLayout
-        android:id="@+id/layoutPage1"
+    <ListView
+        android:id="@+id/lst"
         android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:background="#EBEBEB"
+        android:divider="@null"
+        android:dividerHeight="0dp"
+        android:fillViewport="true"
+        android:scrollbars="none"
+        tools:context=".ShopDetailActivity" >
+
+    </ListView>
+    
+    <vn.infory.infory.shopdetail.FullScreenLayout
+        android:id="@+id/layoutCommentHeader"
+        android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:animateLayoutChanges="true"
-        android:orientation="vertical" >
+        android:orientation="vertical"
+        android:paddingLeft="8dp"
+        android:paddingRight="8dp" >
 
-        <RelativeLayout
+        <FrameLayout
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:animateLayoutChanges="true" >
+            android:layout_below="@+id/relativeLayout2"
+            android:background="@drawable/bg_comment_list2" >
+        </FrameLayout>
+
+        <RelativeLayout
+            android:id="@+id/relativeLayout2"
+            android:layout_width="match_parent"
+            android:layout_height="130dp"
+            android:background="#EBEBEB"
+            android:orientation="vertical" >
+
+            <FrameLayout
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:layout_marginTop="70dp"
+                android:background="@drawable/bg_comment_list1" >
+            </FrameLayout>
+
+            <TextView
+                android:id="@+id/textView2"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="4dp"
+                android:contentDescription="@string/sfu_normal"
+                android:drawableLeft="@drawable/icon_dottitle"
+                android:text=" Mọi người nói về địa điểm"
+                android:textColor="#737373" />
+
+            <EditText
+                android:id="@+id/editText1"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_above="@+id/relativeLayout1"
+                android:layout_below="@+id/textView2"
+                android:layout_marginLeft="11dp"
+                android:layout_marginRight="11dp"
+                android:background="@drawable/bg_typecomment_head"
+                android:gravity="top|left"
+                android:hint="Nhập nhận xét của bạn..."
+                android:lines="2"
+                android:paddingLeft="8dp"
+                android:paddingRight="8dp"
+                android:textColor="#000000"
+                android:textColorHint="#C7C7C7"
+                android:textSize="14sp"
+                android:textStyle="italic" >
+            </EditText>
 
             <RelativeLayout
-                android:id="@+id/relativeLayout2"
+                android:id="@+id/relativeLayout1"
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content" >
-
-                <vn.infory.infory.RatioFrameLayout
-                    android:id="@+id/layoutCover"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:contentDescription="ratio:1.6" >
-                    
-                    <android.support.v4.view.ViewPager
-                        android:id="@+id/pagerCover"
-                        android:layout_width="match_parent"
-                        android:layout_height="match_parent" >
-                        
-                    </android.support.v4.view.ViewPager>
-
-                    <FrameLayout
-                        android:layout_width="match_parent"
-                        android:layout_height="match_parent"
-                        android:background="@drawable/cover_blur" >
-
-                    </FrameLayout>
-
-                </vn.infory.infory.RatioFrameLayout>
-                
-                <RelativeLayout
-                    android:id="@+id/relativeLayout1"
-                    android:layout_width="match_parent"
-                    android:layout_height="44dp"
-                    android:layout_alignParentBottom="true"
-                    android:layout_below="@+id/layoutCover"
-                    android:background="@drawable/shop_detail_cover_bg" >
-
-                    <LinearLayout
-                        android:id="@+id/linearLayout1"
-                        android:layout_width="wrap_content"
-                        android:layout_height="match_parent"
-                        android:layout_alignParentRight="true"
-                        android:gravity="center_vertical|right"
-                        android:orientation="vertical"
-                        android:paddingRight="8dp" >
-
-                        <LinearLayout
-                            android:layout_width="match_parent"
-                            android:layout_height="wrap_content"
-                            android:gravity="right" >
-
-                            <TextView
-                                android:id="@+id/txtViewNum"
-                                android:layout_width="wrap_content"
-                                android:layout_height="wrap_content"
-                                android:text="0"
-                                android:textColor="#6B6B6B"
-                                android:textStyle="italic|bold" />
-
-                            <TextView
-                                android:layout_width="wrap_content"
-                                android:layout_height="wrap_content"
-                                android:contentDescription="@string/sfu_normal"
-                                android:singleLine="true"
-                                android:text=" Lượt xem"
-                                android:textColor="#6B6B6B"
-                                android:textStyle="italic" />
-
-                        </LinearLayout>
-
-                        <LinearLayout
-                            android:layout_width="match_parent"
-                            android:layout_height="wrap_content"
-                            android:gravity="right" >
-
-                            <TextView
-                                android:id="@+id/txtCommentNum"
-                                android:layout_width="wrap_content"
-                                android:layout_height="wrap_content"
-                                android:text="0"
-                                android:textColor="#6B6B6B"
-                                android:textStyle="italic|bold" />
-
-                            <TextView
-                                android:id="@+id/TextView01"
-                                android:layout_width="wrap_content"
-                                android:layout_height="wrap_content"
-                                android:contentDescription="@string/sfu_normal"
-                                android:text=" Nhận xét"
-                                android:textColor="#6B6B6B"
-                                android:textStyle="italic" />
-
-                        </LinearLayout>
-
-                    </LinearLayout>
-
-                    <FrameLayout
-                        android:layout_width="2px"
-                        android:layout_height="match_parent"
-                        android:layout_marginBottom="5dp"
-                        android:layout_marginRight="4dp"
-                        android:layout_marginTop="5dp"
-                        android:layout_toLeftOf="@+id/linearLayout1"
-                        android:background="#B1B1B1" >
-                    </FrameLayout>
-
-                    <LinearLayout
-                        android:id="@+id/linearLayout2"
-                        android:layout_width="wrap_content"
-                        android:layout_height="match_parent"
-                        android:layout_marginRight="12dp"
-                        android:layout_toLeftOf="@+id/linearLayout1"
-                        android:gravity="center"
-                        android:orientation="vertical" >
-
-                        <ImageView
-                            android:id="@+id/imageView2"
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:layout_marginBottom="5dp"
-                            android:src="@drawable/icon_view" />
-
-                        <ImageView
-                            android:id="@+id/imageView3"
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:src="@drawable/icon_comment" />
-                    </LinearLayout>
-
-                    <ImageButton
-                        android:id="@+id/imageButton1"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_centerVertical="true"
-                        android:layout_marginRight="8dp"
-                        android:layout_toLeftOf="@+id/linearLayout2"
-                        android:background="#00000000"
-                        android:src="@drawable/button_love_hover" />
-
-                    <LinearLayout
-                        android:layout_width="wrap_content"
-                        android:layout_height="match_parent"
-                        android:layout_marginRight="8dp"
-                        android:layout_toLeftOf="@+id/imageButton1"
-                        android:gravity="center"
-                        android:orientation="vertical" >
-
-                        <TextView
-                            android:id="@+id/txtLoveNum"
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:text="0"
-                            android:textColor="#7C7C7C"
-                            android:textStyle="bold|italic" />
-
-                        <TextView
-                            android:id="@+id/txtLoved"
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:layout_marginTop="-5dp"
-                            android:contentDescription="@string/sfu_normal"
-                            android:text="lượt thích"
-                            android:textColor="#7C7C7C"
-                            android:textSize="12sp"
-                            android:textStyle="italic" />
-
-                    </LinearLayout>
-                </RelativeLayout>
+                android:layout_height="wrap_content"
+                android:layout_alignParentBottom="true"
+                android:layout_marginLeft="11dp"
+                android:layout_marginRight="11dp"
+                android:background="@drawable/bg_comment"
+                android:paddingLeft="4dp" >
 
                 <FrameLayout
-                    android:id="@+id/layoutLogo"
-                    android:layout_width="74dp"
-                    android:layout_height="74dp"
-                    android:layout_alignBottom="@+id/relativeLayout1"
-                    android:layout_marginBottom="7dp"
-                    android:layout_marginLeft="7dp"
-                    android:background="#EBEBEB" >
+                    android:layout_width="49dp"
+                    android:layout_height="49dp"
+                    android:layout_centerInParent="true"
+                    android:foreground="@drawable/frame_avacomment"
+                    android:padding="6dp" >
 
-                    <FrameLayout
+                    <ImageView
+                        android:id="@+id/imgAva"
                         android:layout_width="match_parent"
                         android:layout_height="match_parent"
-                        android:background="@drawable/round_corner_ava" >
-                    </FrameLayout>
+                        android:scaleType="centerCrop" />
                 </FrameLayout>
 
-                <TextView
-                    android:id="@+id/txtShopType"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_above="@+id/relativeLayout1"
-                    android:layout_marginBottom="3dp"
-                    android:layout_marginLeft="8dp"
-                    android:layout_toRightOf="@+id/layoutLogo"
-                    android:contentDescription="@string/sfu_normal"
-                    android:shadowColor="#000000"
-                    android:shadowDx="0"
-                    android:shadowDy="3"
-                    android:shadowRadius="1"
-                    android:textColor="#ECECEC"
-                    android:textStyle="italic" />
-
-                <TextView
-                    android:id="@+id/txtShopName"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_above="@+id/txtShopType"
-                    android:layout_alignLeft="@+id/txtShopType"
-                    android:layout_toLeftOf="@+id/btnInfo"
-                    android:contentDescription="@string/sfu_bold"
-                    android:shadowColor="#000000"
-                    android:shadowDx="0"
-                    android:shadowDy="3"
-                    android:shadowRadius="1"
-                    android:textColor="#ECECEC" />
-
                 <ImageButton
-                    android:id="@+id/btnInfo"
+                    android:id="@+id/btnSend"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:layout_above="@+id/relativeLayout1"
                     android:layout_alignParentRight="true"
-                    android:layout_marginBottom="6dp"
-                    android:layout_marginRight="8dp"
                     android:background="#00000000"
-                    android:src="@drawable/button_info" />
+                    android:src="@drawable/button_send" />
             </RelativeLayout>
-
-            <FrameLayout
-                android:id="@+id/layoutPromo"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_below="@+id/relativeLayout2"
-                android:animateLayoutChanges="true" >
-
-            </FrameLayout>
-
-            <FrameLayout
-                android:id="@+id/layoutNews"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:animateLayoutChanges="true"
-                android:layout_below="@+id/layoutPromo" >
-
-            </FrameLayout>
-
         </RelativeLayout>
-        <include
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:animateLayoutChanges="true"
-        layout="@layout/shop_detail_2" />
-        
-        <include
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:animateLayoutChanges="true"
-        layout="@layout/shop_detail_3" />
-        
-    </LinearLayout>
+    </vn.infory.infory.shopdetail.FullScreenLayout>
 
-    
-
-</vn.infory.infory.shopdetail.NonChildFocusScrollView>
+</FrameLayout>

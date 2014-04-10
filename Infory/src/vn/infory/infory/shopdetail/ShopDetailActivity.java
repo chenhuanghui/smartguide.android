@@ -3,6 +3,7 @@ package vn.infory.infory.shopdetail;
 import it.sephiroth.android.library.widget.HListView;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 import java.util.Locale;
 
@@ -19,22 +20,18 @@ import vn.infory.infory.data.PhotoGallery;
 import vn.infory.infory.data.Promotion;
 import vn.infory.infory.data.PromotionTypeOne;
 import vn.infory.infory.data.PromotionTypeTwo;
-import vn.infory.infory.data.Settings;
 import vn.infory.infory.data.Shop;
 import vn.infory.infory.data.UserGallery;
 import vn.infory.infory.network.CyAsyncTask;
+import vn.infory.infory.network.GetComment;
 import vn.infory.infory.network.GetShopDetail;
 import vn.infory.infory.network.GetShopGallery;
 import vn.infory.infory.network.NetworkManager;
 import vn.infory.infory.scancode.ScanCodeActivity;
 import android.app.Activity;
 import android.content.Intent;
-import android.graphics.Bitmap;
 import android.graphics.Point;
-import android.graphics.drawable.BitmapDrawable;
-import android.graphics.drawable.ColorDrawable;
-import android.graphics.drawable.Drawable;
-import android.graphics.drawable.TransitionDrawable;
+import android.graphics.drawable.AnimationDrawable;
 import android.net.Uri;
 import android.os.Bundle;
 import android.support.v4.app.FragmentActivity;
@@ -45,21 +42,21 @@ import android.view.View;
 import android.view.View.MeasureSpec;
 import android.view.View.OnClickListener;
 import android.view.ViewGroup;
-import android.widget.FrameLayout;
+import android.view.ViewGroup.LayoutParams;
+import android.widget.AbsListView;
 import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
+import android.widget.ListView;
 import android.widget.TextView;
 
 import com.cycrix.androidannotation.AndroidAnnotationParser;
-import com.cycrix.androidannotation.Click;
 import com.cycrix.androidannotation.ViewById;
-import com.cycrix.jsonparser.JsonObject;
 
 public class ShopDetailActivity extends FragmentActivity {
 
 	private static Shop sShop;
-	
+
 	private CyLogger mLog = new CyLogger("ShopDetailActivity", true);
 
 	// Data
@@ -69,7 +66,7 @@ public class ShopDetailActivity extends FragmentActivity {
 	public static Point mCoverSize;
 	private Point mAvaSize;
 	private Point mMapSize;
-	
+
 	private boolean mLoadedLogo 		= false;
 	private boolean mLoadedNewsImage 	= false;
 	private boolean mLoadedMap 			= false;
@@ -77,42 +74,10 @@ public class ShopDetailActivity extends FragmentActivity {
 	boolean mShowUserGalleryLeft 	= false;
 	boolean mShowUserGalleryRight 	= false;
 
-	@ViewById(id = R.id.layoutShopDetail2)	private ViewGroup mLayoutShopDetail2;
-
-//	@ViewById(id = R.id.layoutUserImage)	private UserImageLayout mLayoutUserImage;
-//	@ViewById(id = R.id.imgCover)			private ImageView mImgCover;
-	@ViewById(id = R.id.pagerCover)			private ViewPager mPagerCover;
-	@ViewById(id = R.id.layoutLogo)			private View mLayoutLogo;
-
-	@ViewById(id = R.id.txtShopName) 		private TextView mTxtShopName;
-	@ViewById(id = R.id.txtShopType) 		private TextView mTxtShopType;
-	@ViewById(id = R.id.txtLoveNum)			private TextView mTxtLoveNum;
-	@ViewById(id = R.id.txtViewNum)			private TextView mTxtViewNum;
-	@ViewById(id = R.id.txtCommentNum)		private TextView mTxtCommentNum;
-	@ViewById(id = R.id.txtDuration)		private TextView mTxtDuration;
-	@ViewById(id = R.id.txtAddress)			private TextView mTxtAddress;
-	@ViewById(id = R.id.txtTel)				private TextView mTxtTel;
-	@ViewById(id = R.id.layoutPage1)		private ViewGroup mLayoutPage1;
-
-	@ViewById(id = R.id.layoutPromo)		private FrameLayout mLayoutPromo;
-	@ViewById(id = R.id.layoutNews)			private FrameLayout mLayoutNews;
-
-	@ViewById(id = R.id.layoutMap)			private FrameLayout mLayoutMap;
-
-	//	@ViewById(id = R.id.layoutUserImage) 	private UserImageLayout mlayoutUserImage;
-	@ViewById(id = R.id.lstUserGallery)		HListView mLstGallery;
-	@ViewById(id = R.id.imgUserGalleryLeft) View mImgUserGalleryLeft;
-	@ViewById(id = R.id.imgUserGalleryRight)View mImgUserGalleryRight;
-	@ViewById(id = R.id.imgGallaryOverlay)	private ImageView mImgGalleryOverlay;
-
-	@ViewById(id = R.id.imgAva)				private ImageView mImgAva;
-
-	private View mViewPromo;
-	private View mViewNews;
-
-	@ViewById(id = R.id.lstComment)			private CommentListView mLstComment;
-
-	private CommentAdapter mCommentAdapter;
+	private ShopDetailAdapter mAdapter;
+	
+	@ViewById(id = R.id.lst)				private ListView mLst;
+	@ViewById(id = R.id.layoutCommentHeader)private View mLayoutCommentHeader;
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
@@ -130,43 +95,20 @@ public class ShopDetailActivity extends FragmentActivity {
 			return;
 		}
 
-		calcMapSize();
+		calcSize();
 
 		// Set data layout
-		setData(mShop);
+		mAdapter = new ShopDetailAdapter();
+		mAdapter.mHideLoading = false;
+		mLst.setAdapter(mAdapter);
+		mLst.setOnScrollListener(mAdapter);
 
 		// Get ShopDetail
 		GetShopDetail task = new GetShopDetail(this, mShop, mShop.idShop) {
 			@Override
 			protected void onCompleted(Object result2) {
 				mTaskList.remove(this);
-				Shop s = (Shop) result2;
-
-				// Inflate promotion layout
-				switch (s.promotionType) {
-				case 1:
-					mLayoutPromo.removeAllViews();
-					mViewPromo = getLayoutInflater().inflate(R.layout.shop_detail_promo1, mLayoutPromo, true);
-					setDataPromo1(s.promotionDetail);
-					FontsCollection.setFont(mViewPromo);
-					break;
-				case 2:
-					mLayoutPromo.removeAllViews();
-					mViewPromo = getLayoutInflater().inflate(R.layout.shop_detail_promo2, mLayoutPromo, true);
-					setDataPromo2(s.promotionDetail);
-					FontsCollection.setFont(mViewPromo);
-					break;
-				}
-
-				// Inflate news layout
-				if (s.promotionNews != null) {
-					mLayoutNews.removeAllViews();
-					mViewNews = getLayoutInflater().inflate(R.layout.shop_detail_news, mLayoutNews, true);
-					setDataNews(s.promotionNews);
-					FontsCollection.setFont(mViewNews);
-				}
-
-				setData(s);
+				mAdapter.reset();
 			}
 
 			@Override
@@ -177,17 +119,17 @@ public class ShopDetailActivity extends FragmentActivity {
 		};
 		mTaskList.add(task);
 		task.executeOnExecutor(NetworkManager.THREAD_POOL);
-		
+
 		FontsCollection.setFont(findViewById(android.R.id.content));
 	}
 
 	@Override
 	protected void onDestroy() {
 		super.onDestroy();
-		
+
 		if (mTaskList.size() > 0)
 			mLog.d("onDestroy with " + mTaskList.size() + " remaining tasks.");
-		
+
 		for (CyAsyncTask task : mTaskList)
 			task.cancel(true);
 	}
@@ -210,199 +152,86 @@ public class ShopDetailActivity extends FragmentActivity {
 		overridePendingTransition(R.anim.alpha_in, R.anim.slide_out_up_detail);
 	}
 
-	@Click(id = R.id.btnInfo)
-	private void onShopDetailInfoClick(View v) {
-		ShopDetailInfo.newInstance(this, mShop);
-	}
-
-	@Click(id = R.id.layoutMap)
-	private void onMapPreviewClick(View v) {
-		if (mShop.shopLat != -1 && mShop.shopLng != -1)
-			MapActivity.newInstance(this, mShop);
-	}
-
-	@Click(id = R.id.layoutTel)
-	private void onTelClick(View v) {
-		Intent call = new Intent(Intent.ACTION_CALL);
-		call.setData(Uri.parse("tel:" + mShop.tel));
-		startActivity(call);	
-	}
-
 	///////////////////////////////////////////////////////////////////////////
 	// Private methods
 	///////////////////////////////////////////////////////////////////////////
 
-	private void setData(Shop s) {
-
+	private void setShopGalleryInfoBar(ViewGroup view) {
 		// Download cover
-		s.normalize();
+		mShop.normalize();
+		ViewPager pagerCover = (ViewPager) view.findViewById(R.id.pagerCover);
 		GalleryFullAdapter shopGalleryadapter = new GalleryFullAdapter(this, 
-				(List<PhotoGallery>) (Object) s.shopGallery, 
-				new GetShopGallery(this, "" + s.idShop, 0), true);
-		
+				(List<PhotoGallery>) (Object) mShop.shopGallery, 
+				new GetShopGallery(this, "" + mShop.idShop, 0), true);
+
 		shopGalleryadapter.setPage(mShop.shopGallery.size() / LazyLoadAdapter.ITEM_PER_PAGE);
 		if (mShop.shopGallery.size() % LazyLoadAdapter.ITEM_PER_PAGE != 0
 				|| mShop.shopGallery.size() == 0)
 			shopGalleryadapter.mIsMore = false;
-		mPagerCover.setAdapter(shopGalleryadapter);
-		mPagerCover.setOnPageChangeListener(shopGalleryadapter);
+		pagerCover.setAdapter(shopGalleryadapter);
+		pagerCover.setOnPageChangeListener(shopGalleryadapter);
 
 		// Download logo
-		if (!mLoadedLogo && s.logo != null) {
+		View layoutLogo = view.findViewById(R.id.layoutLogo); 
+		if (!mLoadedLogo && mShop.logo != null) {
 			mLoadedLogo = true;
-			
-			CyAsyncTask task = CyImageLoader.instance().loadImage(s.logo, new CyImageLoader.Listener() {
-				@Override
-				public void loadFinish(int from, Bitmap image, String url, CyAsyncTask task) {
-					mTaskList.remove(task);
-					switch (from) {
-					case CyImageLoader.FROM_MEMORY:
-					case CyImageLoader.FROM_DISK:
-						mLayoutLogo.setBackgroundDrawable(new BitmapDrawable(image));
-						break;
-
-					case CyImageLoader.FROM_NETWORK:
-						TransitionDrawable trans = new TransitionDrawable(new Drawable[] {
-								new ColorDrawable(0xFFEBEBEB),
-								new BitmapDrawable(image)
-						});
-
-						mLayoutLogo.setBackgroundDrawable(trans);
-						trans.startTransition(300);
-						break;
-					}
-				}
-
-				@Override
-				public void loadFail(Exception e, CyAsyncTask task) {
-					mTaskList.remove(task);
-					mLoadedLogo = false;
-//					CyUtils.showError("Không thể tải logo", e, ShopDetailActivity.this);
-				}
-			}
-			, mAvaSize, this);
-			if (task != null)
-				mTaskList.add(task);
+			CyImageLoader.instance().showImageSmooth(mShop.logo, layoutLogo, mAvaSize, mTaskList);
 		}
 
-		// Download map image
+		// Info
+		((TextView) view.findViewById(R.id.txtShopName)).setText(mShop.shopName);
+		((TextView) view.findViewById(R.id.txtShopType)).setText(mShop.shopTypeDisplay);
+
+		((TextView) view.findViewById(R.id.txtLoveNum)).setText(mShop.numOfLove);
+		((TextView) view.findViewById(R.id.txtViewNum)).setText(mShop.numOfView);
+	}
+
+	private void setInfo(ViewGroup view) {
+		TextView txtAddress = (TextView) view.findViewById(R.id.txtAddress);
+		TextView txtTel = (TextView) view.findViewById(R.id.txtTel);
+		txtAddress.setText(mShop.address);
+		if (mShop.displayTel == null)
+			txtTel.setText("");
+		else
+			txtTel.setText(" " + mShop.displayTel);
+
 		if (mShop.shopLat != -1 && mShop.shopLng != -1 && !mLoadedMap) {
 			mLoadedMap = true;
 			String path = "http://maps.googleapis.com/maps/api/staticmap" +
 					"?zoom=13&size=%dx%d&markers=%f,%f&sensor=false&scale=" +
 					"1&visual_refresh=true&key=AIzaSyA4AYLIeG8R-i8BOQylnwMsShwqfapttP4";
 			path = String.format(Locale.US, path, mMapSize.x, mMapSize.y, mShop.shopLat, mShop.shopLng);
-			
-			CyImageLoader.instance().showImageSmooth(path, mLayoutMap, mMapSize, mTaskList);
-			CyAsyncTask task = CyImageLoader.instance().loadImage(path, new CyImageLoader.Listener() {
-				@Override
-				public void loadFinish(int from, Bitmap image, String url, CyAsyncTask task) {
-					mTaskList.remove(task);
-					switch (from) {
-					case CyImageLoader.FROM_MEMORY:
-					case CyImageLoader.FROM_DISK:
-						mLayoutMap.setBackgroundDrawable(new BitmapDrawable(image));
-						break;
-
-					case CyImageLoader.FROM_NETWORK:
-						TransitionDrawable trans = new TransitionDrawable(new Drawable[] {
-								new ColorDrawable(0xFFEBEBEB),
-								new BitmapDrawable(image)
-						});
-
-						mLayoutMap.setBackgroundDrawable(trans);
-						trans.startTransition(300);
-						break;
-					}
-				}
-
-				@Override
-				public void loadFail(Exception e, CyAsyncTask task) {
-					mTaskList.remove(task);
-					mLoadedMap = false;
-//					CyUtils.showError("Không thể tải logo", e, ShopDetailActivity.this);
-				}
-			}, mMapSize, this);
-			
-			if (task != null)
-				mTaskList.add(task);
+			View layoutMap = view.findViewById(R.id.layoutMap);
+			CyImageLoader.instance().showImageSmooth(path, layoutMap, mMapSize, mTaskList);
 		}
-
-		// Set up UserGallery
-		if (mShop.userGallery.size() == 0) {
-			mImgUserGalleryLeft.setAlpha(0);
-			mImgUserGalleryRight.setAlpha(0);
-			mShowUserGalleryLeft = false;
-			mShowUserGalleryRight = false;
-
-			mImgGalleryOverlay.setImageResource(R.drawable.photo_firsttime);
-			mLstGallery.setVisibility(View.GONE);
-		} else {
-			mLstGallery.setVisibility(View.VISIBLE);
-			mShowUserGalleryLeft = true;
-			if (mShop.userGallery.size() > 1) {
-				mImgUserGalleryRight.setAlpha(0);
-				mShowUserGalleryRight = false;
-			} else {
-				mImgUserGalleryRight.setAlpha(1);
-				mShowUserGalleryRight = true;
-			}
-
-			mImgGalleryOverlay.setImageResource(R.drawable.frame_photo);
-
-			ArrayList<UserGallery> itemList = new ArrayList<UserGallery>();
-			if (mShop.userGallery.size() > 0)
-				itemList.add(new UserGallery());
-			itemList.addAll(mShop.userGallery);
-			if (mShop.userGallery.size() % LazyLoadAdapter.ITEM_PER_PAGE != 0)
-				itemList.add(new UserGallery());
-			UserGalleryAdapter adapter = new UserGalleryAdapter(this, itemList, "" + mShop.idShop, mTaskList);
-			adapter.setPage(mShop.userGallery.size() / LazyLoadAdapter.ITEM_PER_PAGE);
-			if (mShop.userGallery.size() % LazyLoadAdapter.ITEM_PER_PAGE != 0)
-				adapter.mIsMore = false;
-			
-			mLstGallery.setAdapter(adapter);
-			mLstGallery.setOnScrollListener(adapter);
-			mLstGallery.setOnItemClickListener(adapter);
+		
+		HListView mLstGallery = (HListView) view.findViewById(R.id.lstUserGallery);
+		ArrayList<UserGallery> itemList = new ArrayList<UserGallery>();
+		if (mShop.userGallery.size() > 0)
+			itemList.add(new UserGallery());
+		itemList.addAll(mShop.userGallery);
+		if (mShop.userGallery.size() % LazyLoadAdapter.ITEM_PER_PAGE != 0)
+			itemList.add(new UserGallery());
+		UserGalleryAdapter adapter = new UserGalleryAdapter(this, itemList, "" + mShop.idShop, mTaskList, view);
+		adapter.setPage(mShop.userGallery.size() / LazyLoadAdapter.ITEM_PER_PAGE);
+		if (mShop.userGallery.size() % LazyLoadAdapter.ITEM_PER_PAGE != 0) {
+			adapter.mIsMore = false;
 		}
-
-		// Set up comments
-		int avaSize = CyUtils.dpToPx(37, this);
-		CyImageLoader.instance().showImageSmooth(Settings.instance().avatar, mImgAva, 
-				new Point(avaSize, avaSize), mTaskList);
-
-		if (s.comments != null) {
-			mCommentAdapter= new CommentAdapter(this, (ArrayList<Comment>) s.comments, "" + s.idShop, mTaskList);
-			mCommentAdapter.setPage(s.comments.size() / LazyLoadAdapter.ITEM_PER_PAGE);
-			if (s.comments.size() % LazyLoadAdapter.ITEM_PER_PAGE != 0)
-				mCommentAdapter.mIsMore = false;
-			mLstComment.setAdapter(mCommentAdapter);
-			mLstComment.setOnScrollListener(mCommentAdapter);
-			mCommentAdapter.setOnScrollListener(mLstComment);
-		}
-
-		mTxtShopName.setText(mShop.shopName);
-		mTxtShopType.setText(mShop.shopTypeDisplay);
-
-		mTxtLoveNum.setText(mShop.numOfLove);
-		mTxtViewNum.setText(mShop.numOfView);
-		mTxtCommentNum.setText(mShop.numOfComment);
-
-		mTxtAddress.setText(mShop.address);
-		if (mShop.displayTel == null)
-			mTxtTel.setText("");
-		else
-			mTxtTel.setText(" " + mShop.displayTel);
+		mLstGallery.setAdapter(adapter);
+		mLstGallery.setOnScrollListener(adapter);
+		mLstGallery.setOnItemClickListener(adapter);
 	}
 
-	private void setDataPromo1(Promotion promo) {
+	private void setDataPromo1(ViewGroup view) {
+		Promotion promo = mShop.promotionDetail;
+
 		if (!(promo instanceof PromotionTypeOne))
 			return;
 
 		PromotionTypeOne promo1 = (PromotionTypeOne) promo;
 		Promo1Holder holder = new Promo1Holder();
 		try {
-			AndroidAnnotationParser.parse(holder, mViewPromo);
+			AndroidAnnotationParser.parse(holder, view);
 		} catch (Exception e) {
 			return;
 		}
@@ -441,14 +270,16 @@ public class ShopDetailActivity extends FragmentActivity {
 		}
 	}
 
-	private void setDataPromo2(Promotion promo) {
+	private void setDataPromo2(ViewGroup view) {
+		Promotion promo = mShop.promotionDetail;
+
 		if (!(promo instanceof PromotionTypeTwo))
 			return;
 
 		PromotionTypeTwo promo2 = (PromotionTypeTwo) promo;
 		Promo2Holder holder = new Promo2Holder();
 		try {
-			AndroidAnnotationParser.parse(holder, mViewPromo);
+			AndroidAnnotationParser.parse(holder, view);
 		} catch (Exception e) {
 			return;
 		}
@@ -483,72 +314,33 @@ public class ShopDetailActivity extends FragmentActivity {
 			holder.mLayoutVoucher.addView(viewVoucher);
 		}
 	}
-
-	private void setDataNews(News news) {
+	
+	private void setDataNews(ViewGroup view) {
 		final NewsHolder holder = new NewsHolder();
 		try {
-			AndroidAnnotationParser.parse(holder, mViewNews);
+			AndroidAnnotationParser.parse(holder, view);
 		} catch (Exception e) {
 			return;
 		}
+		
+		News news = mShop.promotionNews;
 
 		holder.mTxtTitle.setText(news.title);
 		holder.mTxtContent.setText(news.content);
+		
+		if (news.imageHeight == 0)
+			holder.mImgImage.setContentDescription("ratio:2.6");
+		else
+			holder.mImgImage.setContentDescription("ratio:" + (float) news.imageWidth / news.imageHeight);
 
 		// Download news image
 		if (!mLoadedNewsImage) {
 			mLoadedNewsImage = true;
-			CyImageLoader.instance().loadImage(news.image, new CyImageLoader.Listener() {
-				@Override
-				public void loadFinish(int from, Bitmap image, String url, CyAsyncTask task) {
-
-					switch (from) {
-					case CyImageLoader.FROM_MEMORY:
-					case CyImageLoader.FROM_DISK:
-						holder.mImgImage.setBackgroundDrawable(new BitmapDrawable(image));
-						break;
-
-					case CyImageLoader.FROM_NETWORK:
-						TransitionDrawable trans = new TransitionDrawable(new Drawable[] {
-								new ColorDrawable(0),
-								new BitmapDrawable(image)
-						});
-
-						holder.mImgImage.setBackgroundDrawable(trans);
-						trans.startTransition(300);
-						break;
-					}
-				}
-
-				@Override
-				public void loadFail(Exception e, CyAsyncTask task) {
-					mLoadedNewsImage = false;
-					CyUtils.showError("Không thể tải ảnh khuyến mãi", e, ShopDetailActivity.this);
-				}
-			}
-			, new Point(), this);
+			CyImageLoader.instance().showImageSmooth(news.image, holder.mImgImage, mMapSize, mTaskList);
 		}
 	}
 
-	private SpannableString makeHighlight(String content, String highlightPos) {
-		SpannableString span = new SpannableString(content);
-
-		try {
-			String[] numStrArr = highlightPos.split("[,;]");
-
-			for (int i = 0; i < numStrArr.length; i += 2) {
-				int begin = Integer.parseInt(numStrArr[i]);
-				int len = Integer.parseInt(numStrArr[i + 1]);
-				Object spanObj = new ForegroundColorSpan(0xFFFF4E25);
-				span.setSpan(spanObj, begin, begin + len, 0);
-			}
-		} catch (Exception e) {
-		}
-
-		return span;
-	}
-
-	private void calcMapSize() {
+	private void calcSize() {
 		View v = getLayoutInflater().inflate(R.layout.shop_detail_map_preview_measure, 
 				(ViewGroup) findViewById(android.R.id.content), false);
 		int w = getResources().getDisplayMetrics().widthPixels;
@@ -563,14 +355,9 @@ public class ShopDetailActivity extends FragmentActivity {
 	}
 
 	///////////////////////////////////////////////////////////////////////////
-	// Adapter
-	///////////////////////////////////////////////////////////////////////////
-
-	///////////////////////////////////////////////////////////////////////////
 	// Inner class
 	///////////////////////////////////////////////////////////////////////////
 
-	@JsonObject
 	private static class Promo1Holder {
 		@ViewById(id = R.id.layoutHasSGP)	public View mLayoutHasSGP;
 		@ViewById(id = R.id.txtDuration)	public TextView mTxtDuration;
@@ -594,5 +381,261 @@ public class ShopDetailActivity extends FragmentActivity {
 		@ViewById(id = R.id.txtTitle)		public TextView mTxtTitle;
 		@ViewById(id = R.id.txtContent)		public TextView mTxtContent;
 		@ViewById(id = R.id.imgImage)		public ImageView mImgImage;
+	}
+
+	///////////////////////////////////////////////////////////////////////////
+	// Adapter
+	///////////////////////////////////////////////////////////////////////////
+	
+	private class ShopDetailAdapter extends LazyLoadAdapter implements CommentLayout.MeasureListener {
+
+		// 0: cover + info bar
+		// 1: promotion
+		// 2: news
+		// 3: info
+		// 4: comment header pad
+		// 5: comment items
+
+		private List<Integer> mTypeList = new ArrayList<Integer>();
+		private ViewGroup mLayoutShopGallery;
+		private ViewGroup mLayoutInfo;
+		private ViewGroup mLayoutPromo;
+		private ArrayList<Integer> mHeightList = new ArrayList<Integer>();
+		private int mCommentLstHeight;
+
+		public ShopDetailAdapter() {
+			super(ShopDetailActivity.this, 
+					new GetComment(ShopDetailActivity.this, "" + mShop.idShop, 0, 0), 
+					R.layout.shop_detail_comment_loading, 6, (ArrayList) mShop.comments);
+
+			mItemList.add(0, new Comment());
+			mItemList.add(0, new Comment());
+			mItemList.add(0, new Comment());
+
+			mTypeList.addAll(Arrays.asList(0, 3, 4, 5));
+			
+			if (hasNews()) {
+				mTypeList.add(1, 2);
+				mItemList.add(0, new Comment());
+			}
+
+			if (hasPromo()) {
+				mTypeList.add(1, 1);
+				mItemList.add(0, new Comment());
+			}
+
+			setPage(mShop.comments.size() / LazyLoadAdapter.ITEM_PER_PAGE);
+
+			if (mShop.comments.size() % LazyLoadAdapter.ITEM_PER_PAGE != 0)
+				mIsMore = false;
+		}
+
+		public void reset() {
+			if (!mTypeList.contains(2) && hasNews()) {
+				mTypeList.add(1, 2);
+				mItemList.add(0, new Comment());
+				notifyDataSetChanged();
+			}
+			
+			if (!mTypeList.contains(1) && hasPromo()) {
+				mTypeList.add(1, 1);
+				mItemList.add(0, new Comment());
+				notifyDataSetChanged();
+			}
+
+			setShopGalleryInfoBar(mLayoutShopGallery);
+			setInfo(mLayoutInfo);
+		}
+
+		private boolean hasPromo() {
+			return mShop.promotionType == 1 || mShop.promotionType == 2;
+		}
+		
+		private boolean hasNews() {
+			return mShop.promotionNews != null;
+		}
+
+		@Override
+		public int getItemViewType(int position) {
+
+			int type = super.getItemViewType(position);
+			if (type != -1) {
+				return type;
+			} else {
+				return mTypeList.get(Math.min(position, mTypeList.size() - 1));
+			}
+		}
+
+		@Override
+		public View getView(int position, View convertView, ViewGroup parent) {
+			if (mHeightList.size() < position + 1)
+				mHeightList.add(0);
+
+			convertView = super.getView(position, convertView, parent);
+
+			if (position >= mItemList.size()) {
+				View aniLayout = convertView.findViewById(R.id.layoutLoading);
+				if (mIsMore)
+					((AnimationDrawable) aniLayout.getBackground()).start();
+				else
+					aniLayout.setVisibility(View.GONE);
+				LayoutParams param = convertView.getLayoutParams();
+				param.height = getCommentTailHeight();
+				convertView.setLayoutParams(param);
+				return convertView;
+			}
+
+			int type = getItemViewType(position);
+			if (convertView == null) {
+				switch (type) {
+				case 0: // shop gallery + info bar
+					convertView = mInflater.inflate(R.layout.shop_detail_1, parent, false);
+					mLayoutShopGallery = (ViewGroup) convertView;
+					mLayoutShopGallery.findViewById(R.id.btnInfo)
+					.setOnClickListener(new OnClickListener() {
+						@Override
+						public void onClick(View arg0) {
+							ShopDetailInfo.newInstance(ShopDetailActivity.this, mShop);
+						}
+					});
+					setShopGalleryInfoBar(mLayoutShopGallery);
+
+					// Calc comment list height
+					{
+						int screenHeight = parent.getHeight();
+						int commentHeaderHeight = CyUtils.dpToPx(130, ShopDetailActivity.this);
+						mCommentLstHeight = screenHeight - commentHeaderHeight;
+					}
+					break;
+					
+				case 1:	// promotion
+					switch (mShop.promotionType) {
+					case 1:
+						convertView = mInflater.inflate(R.layout.shop_detail_promo1, parent, false);
+						setDataPromo1((ViewGroup) convertView);
+						break;
+					case 2:
+						convertView = mInflater.inflate(R.layout.shop_detail_promo2, parent, false);
+						setDataPromo2((ViewGroup) convertView);
+						break;
+					}
+					mLayoutPromo = (ViewGroup) convertView;
+					break;
+					
+				case 2:	// news
+					convertView = mInflater.inflate(R.layout.shop_detail_news, parent, false);
+					setDataNews((ViewGroup) convertView);
+					break;
+					
+				case 3:	// info + user gallery
+					convertView = mInflater.inflate(R.layout.shop_detail_2, parent, false);
+					mLayoutInfo = (ViewGroup) convertView;
+					mLayoutInfo.findViewById(R.id.layoutMap)
+					.setOnClickListener(new OnClickListener() {
+						@Override
+						public void onClick(View arg0) {
+							if (mShop.shopLat != -1 && mShop.shopLng != -1)
+								MapActivity.newInstance(ShopDetailActivity.this, mShop);
+						}
+					});
+					mLayoutInfo.findViewById(R.id.layoutTel)
+					.setOnClickListener(new OnClickListener() {
+						@Override
+						public void onClick(View arg0) {
+							Intent call = new Intent(Intent.ACTION_CALL);
+							call.setData(Uri.parse("tel:" + mShop.tel));
+							startActivity(call);
+						}
+					});
+					setInfo(mLayoutInfo);
+					break;
+					
+				case 4:
+					convertView = mInflater.inflate(R.layout.shop_detail_comment_heade_pad, parent, false);
+					break;
+					
+				case 5:	// comment
+					convertView = mInflater.inflate(R.layout.shop_detail_comment_item, parent, false);
+					CommentHolder holder = new CommentHolder();
+					try {
+						AndroidAnnotationParser.parse(holder, convertView);
+					} catch (Exception e) {}
+					convertView.setTag(holder);
+
+					((CommentLayout) convertView).setListener(this);
+					break;
+				}
+				FontsCollection.setFont(convertView);
+			}
+
+			if (type == 5) {
+				CommentHolder holder = (CommentHolder) convertView.getTag();
+				Comment item = (Comment) getItem(position);
+				holder.mTxtName.setText(item.username);
+				holder.mTxtContent.setText(item.comment);
+				holder.mTxtTime.setText(item.time);
+				holder.mTxtAgreeNum.setText(item.numOfAgree);
+				CyImageLoader.instance().showImageListView(
+						item.avatar, holder.mImgAva, mAvaSize, mTaskList);
+
+				((CommentLayout) convertView).setPos(position);
+			}
+
+			return convertView;
+		}
+
+		@Override
+		public void onScroll(AbsListView view, int firstVisibleItem,
+				int visibleItemCount, int totalItemCount) {
+			super.onScroll(view, firstVisibleItem, visibleItemCount, totalItemCount);
+
+			// Find comment header pad position
+			int commentHeaderPos = 0;
+			for (int i = 0; i < mTypeList.size(); i++)
+				if (mTypeList.get(i) == 4) {
+					commentHeaderPos = i;
+					break;
+				}
+
+			// if comment header pad is visible
+			if (firstVisibleItem <= commentHeaderPos &&
+					commentHeaderPos < firstVisibleItem + visibleItemCount) {
+				mLayoutCommentHeader.setVisibility(View.VISIBLE);
+				// move pad along
+				int y = view.getChildAt(commentHeaderPos - firstVisibleItem).getTop();
+				y = Math.max(y, 0);
+				mLayoutCommentHeader.setTranslationY(y);
+			} else if (firstVisibleItem >= commentHeaderPos) {
+				mLayoutCommentHeader.setTranslationY(0);
+			} else {
+				// take it out off screen
+				mLayoutCommentHeader.setTranslationY(mLst.getHeight());
+			}
+		}
+
+		@Override
+		public void measure(CommentLayout thiz) {
+			mHeightList.set(thiz.mPos, thiz.getMeasuredHeight());
+		}
+
+		private int getCommentTailHeight() {
+			int height = mCommentLstHeight;
+
+			// calculate tail height
+			for (int i = 0; i < mHeightList.size() && height > 0; i++)
+				height -= mHeightList.get(i);
+
+			height = Math.max(0, height);
+			mLog.d("get height=" + height);
+			return height;
+		}
+	}
+
+	private static class CommentHolder {
+		@ViewById(id = R.id.txtAgreeNum)	public TextView mTxtAgreeNum;
+		@ViewById(id = R.id.txtName)		public TextView mTxtName;
+		@ViewById(id = R.id.txtContent)		public TextView mTxtContent;
+		@ViewById(id = R.id.imgAva)			public ImageView mImgAva;
+		@ViewById(id = R.id.txtTime)		public TextView mTxtTime;
 	}
 }

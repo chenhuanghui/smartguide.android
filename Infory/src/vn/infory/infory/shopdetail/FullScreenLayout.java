@@ -5,8 +5,9 @@ import android.util.AttributeSet;
 import android.view.Display;
 import android.view.WindowManager;
 import android.widget.LinearLayout;
+import android.widget.RelativeLayout;
 
-public class FullScreenLayout extends LinearLayout {
+public class FullScreenLayout extends RelativeLayout {
 	
 	private Context mCt;
 

@@ -40,6 +40,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="match_parent"
                 android:layout_alignParentRight="true"
+                android:layout_marginBottom="3dp"
                 android:gravity="center_vertical|right"
                 android:orientation="vertical"
                 android:paddingRight="8dp" >
@@ -70,6 +71,7 @@
                 <LinearLayout
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
+                    android:layout_marginTop="-5dp"
                     android:gravity="right" >
 
                     <TextView
@@ -88,13 +90,14 @@
                         android:text=" Nhận xét"
                         android:textColor="#6B6B6B"
                         android:textStyle="italic" />
+
                 </LinearLayout>
             </LinearLayout>
 
             <FrameLayout
                 android:layout_width="2px"
                 android:layout_height="match_parent"
-                android:layout_marginBottom="5dp"
+                android:layout_marginBottom="8dp"
                 android:layout_marginRight="4dp"
                 android:layout_marginTop="5dp"
                 android:layout_toLeftOf="@+id/linearLayout1"
@@ -105,6 +108,7 @@
                 android:id="@+id/linearLayout2"
                 android:layout_width="wrap_content"
                 android:layout_height="match_parent"
+                android:layout_marginBottom="3dp"
                 android:layout_marginRight="12dp"
                 android:layout_toLeftOf="@+id/linearLayout1"
                 android:gravity="center"
@@ -129,6 +133,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_centerVertical="true"
+                android:layout_marginBottom="3dp"
                 android:layout_marginRight="8dp"
                 android:layout_toLeftOf="@+id/linearLayout2"
                 android:background="#00000000"
@@ -137,6 +142,7 @@
             <LinearLayout
                 android:layout_width="wrap_content"
                 android:layout_height="match_parent"
+                android:layout_marginBottom="3dp"
                 android:layout_marginRight="8dp"
                 android:layout_toLeftOf="@+id/imageButton1"
                 android:gravity="center"
@@ -161,6 +167,14 @@
                     android:textSize="12sp"
                     android:textStyle="italic" />
             </LinearLayout>
+
+            <FrameLayout
+                android:layout_width="match_parent"
+                android:layout_height="3dp"
+                android:layout_alignParentBottom="true"
+                android:background="@drawable/line_detail" >
+
+            </FrameLayout>
         </RelativeLayout>
 
         <FrameLayout

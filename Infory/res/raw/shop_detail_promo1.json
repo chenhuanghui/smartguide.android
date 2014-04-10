@@ -149,7 +149,7 @@
       "agreeStatus": 0
     }
   ],
-  "promotionType": 1,
+  "promotionType": 0,
   "description": "Tọa lạc trên vị trí chiến lược trong khu vực trung tâm hành chánh, thương mại, mua sắm và giải trí tại thành phố Hồ Chí Minh.\n\nNhà hàng Panorama (thuộc khách sạn New Epoch): có khung cảnh ấm cúng, sang trọng ngắm nhìn toàn cảnh Sài Gòn về đêm. Với vị trí đắc địa tọa lạc tại trung tâm tài chính- thương mại, mua sắm và giải trí của TP.HCM, New Epoch là khách sạn quốc tế 3 sao hàng đầu tại TP.HCM, có nhiều dịch vụ đạt chuẩn như: piano bar, phòng họp, hội nghị, business center, spa, sauna, massage, giặt ủi, đánh giày, đặt vé máy bay, thu đổi ngoại tê, làm visa, hộ chiếu, sắp xếp tour, bãi đậu xe...\n\nKhu vực nước uống có sẵn: Các loại nước trái cây, Trà, Nước Ngọt, Nước Sâm. (Quý khách có nhu cầu sử dụng các loại nước uống khác như bia, rượu, vui lòng gọi và thanh toán thêm tại nhà hàng)\n\nThực đơn phong phú với  hơn 60 món: Soup, salad, Gỏi, hải sản, món nướng/ quay tại bàn, các món chiên, xào, cơm mì, rau, thịt bò, heo, gà vịt....\n\nĐầu bếp chuyên nghiệp, có nhiều năm kinh nghiệm trong việc chế biến và phục vụ tiệc buffet.\n\nNhân viên phục vụ nhiệt tình và chu đáo.\n\n",
   "promotionDetail": {
     "duration": "19/1/2014",
@@ -172,5 +172,12 @@
       }
     ]
   },
-  "promotionNews": {}
+  "promotionNews": {
+  "duration": "15/12/2013",
+    "image": "http://dev2.smartguide.vn/media/shop/31/3413-2013-11-04-12-51-00.jpeg",
+    "title": "Quán chuẩn bị đóng cửa",
+    "content": "Cà phê sân vườn Trung Du Xanh được thiết kế trên ý tưởng mơ ước đem một phần khung cảnh thiên nhiên của miền trung du cao nguyên đến với thành phố. Với mục đích tạo dựng nên khuôn viên sân vườn hoàn toàn mới, không và hoàn toàn không copy thiết kế của bất cứ quán cafe sân vườn nào khác trong thành phố Sài Gòn - một thành phố nổi tiếng với các quán cafe sân vườn đẹp.\n\nVà trên hết là tạo ra một không gian cà phê thật đặc biệt – một góc thiên nhiên thu nhỏ, còn mang nét hoang sơ cùng với tiện nghi của chốn thị thành hoà trộn vào nhau không ranh giới. Trung Du Xanh là nơi mà bạn có thể đắm mình trong hơi sương buổi sáng, nghe tiếng róc rách của thác nước, thoảng trong gió là hương vị cafe của vùng cao nguyên, nhẹ nhàng hơn là những bản nhạc trữ tình những buổi ban mai cuối tuần …trong khi đó, chiếc Ipad của bạn vẫn cần cù nhận email, điểm tin cho bạn suốt cả ngày lẫn đêm…Đối tác, hay bạn bè của bạn sẽ thốt lên: chỗ này hay đấy …!",
+    "imageWidth": 753,
+    "imageHeight": 362
+  }
 }
