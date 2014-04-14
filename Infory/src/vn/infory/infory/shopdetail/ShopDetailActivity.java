@@ -20,6 +20,7 @@ import vn.infory.infory.data.PhotoGallery;
 import vn.infory.infory.data.Promotion;
 import vn.infory.infory.data.PromotionTypeOne;
 import vn.infory.infory.data.PromotionTypeTwo;
+import vn.infory.infory.data.Settings;
 import vn.infory.infory.data.Shop;
 import vn.infory.infory.data.UserGallery;
 import vn.infory.infory.network.CyAsyncTask;
@@ -96,6 +97,7 @@ public class ShopDetailActivity extends FragmentActivity {
 	@ViewById(id = R.id.btnSort)			private ImageView mBtnSort;
 	@ViewById(id = R.id.btnSend)			private ImageView mBtnSend;
 	@ViewById(id = R.id.edtComment) 		private EditText mEdtComment;
+	@ViewById(id = R.id.imgAva)				private ImageView mImgAva;
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
@@ -139,6 +141,10 @@ public class ShopDetailActivity extends FragmentActivity {
 		task.executeOnExecutor(NetworkManager.THREAD_POOL);
 
 		FontsCollection.setFont(findViewById(android.R.id.content));
+		
+		// Load ava
+		CyImageLoader.instance().showImageSmooth(
+				Settings.instance().avatar, mImgAva, mAvaSize, mTaskList);
 		
 		// Set sendbutton event
 		mEdtComment.setOnFocusChangeListener(new OnFocusChangeListener() {
