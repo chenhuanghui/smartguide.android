@@ -36,6 +36,10 @@ public class GetComment extends CyAsyncTask {
 		mPage = page;
 	}
 	
+	public void setSort(int sort) {
+		mSort = sort;
+	}
+	
 	@Override
 	public GetComment clone() {
 		return new GetComment(mContext, mId, mPage, mSort);

@@ -152,7 +152,6 @@ implements AbsHListView.OnScrollListener, OnItemClickListener {
 
 	@Override
 	public int getItemViewType(int position) {
-
 		return 0;
 	}
 

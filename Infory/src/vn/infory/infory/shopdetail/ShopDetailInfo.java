@@ -3,18 +3,9 @@ package vn.infory.infory.shopdetail;
 import java.util.ArrayList;
 import java.util.List;
 
-import com.cycrix.androidannotation.AndroidAnnotationParser;
-import com.cycrix.androidannotation.Click;
-import com.cycrix.androidannotation.ViewById;
-
 import vn.infory.infory.CyImageLoader;
 import vn.infory.infory.CyUtils;
 import vn.infory.infory.R;
-import vn.infory.infory.CyImageLoader.Listener;
-import vn.infory.infory.R.anim;
-import vn.infory.infory.R.drawable;
-import vn.infory.infory.R.id;
-import vn.infory.infory.R.layout;
 import vn.infory.infory.data.DetailInfoBlock;
 import vn.infory.infory.data.DetailInfoItem1;
 import vn.infory.infory.data.DetailInfoItem2;
@@ -24,22 +15,23 @@ import vn.infory.infory.data.Shop;
 import vn.infory.infory.network.CyAsyncTask;
 import vn.infory.infory.network.GetShopDetailInfo;
 import vn.infory.infory.network.NetworkManager;
-import android.os.Bundle;
 import android.app.Activity;
 import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.Point;
+import android.os.Bundle;
 import android.text.Html;
-import android.text.SpannableString;
-import android.text.TextUtils.TruncateAt;
 import android.text.method.LinkMovementMethod;
-import android.view.Menu;
 import android.view.View;
 import android.view.View.OnLayoutChangeListener;
 import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.ProgressBar;
 import android.widget.TextView;
+
+import com.cycrix.androidannotation.AndroidAnnotationParser;
+import com.cycrix.androidannotation.Click;
+import com.cycrix.androidannotation.ViewById;
 
 public class ShopDetailInfo extends Activity {
 	

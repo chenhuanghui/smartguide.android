@@ -11,6 +11,7 @@
         android:divider="@null"
         android:dividerHeight="0dp"
         android:fillViewport="true"
+        android:listSelector="@drawable/dummy"
         android:scrollbars="none"
         tools:context=".ShopDetailActivity" >
 
@@ -57,7 +58,7 @@
                 android:textColor="#737373" />
 
             <EditText
-                android:id="@+id/editText1"
+                android:id="@+id/edtComment"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_above="@+id/relativeLayout1"
@@ -100,13 +101,23 @@
                         android:scaleType="centerCrop" />
                 </FrameLayout>
 
-                <ImageButton
+                <ImageView
                     android:id="@+id/btnSend"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_alignParentRight="true"
-                    android:background="#00000000"
-                    android:src="@drawable/button_send" />
+                    android:alpha="0"
+                    android:background="@drawable/button_send"
+                    android:visibility="invisible" />
+                
+                <ImageView
+                    android:id="@+id/btnSort"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_alignBottom="@+id/btnSend"
+                    android:layout_alignParentRight="true"
+                    android:background="@drawable/button_topcomment" />
+
             </RelativeLayout>
         </RelativeLayout>
     </vn.infory.infory.shopdetail.FullScreenLayout>

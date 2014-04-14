@@ -5,7 +5,6 @@ import java.util.ArrayList;
 import vn.infory.infory.CyImageLoader;
 import vn.infory.infory.LazyLoadAdapter;
 import vn.infory.infory.R;
-import vn.infory.infory.CyImageLoader.Listener;
 import vn.infory.infory.data.PhotoGallery;
 import vn.infory.infory.network.CyAsyncTask;
 import android.app.Activity;

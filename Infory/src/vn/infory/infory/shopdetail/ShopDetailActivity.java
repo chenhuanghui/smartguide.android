@@ -28,7 +28,14 @@ import vn.infory.infory.network.GetShopDetail;
 import vn.infory.infory.network.GetShopGallery;
 import vn.infory.infory.network.NetworkManager;
 import vn.infory.infory.scancode.ScanCodeActivity;
+import android.animation.Animator;
+import android.animation.Animator.AnimatorListener;
+import android.animation.AnimatorSet;
+import android.animation.ObjectAnimator;
 import android.app.Activity;
+import android.app.AlertDialog;
+import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.graphics.Point;
 import android.graphics.drawable.AnimationDrawable;
@@ -38,12 +45,17 @@ import android.support.v4.app.FragmentActivity;
 import android.support.v4.view.ViewPager;
 import android.text.SpannableString;
 import android.text.style.ForegroundColorSpan;
+import android.view.MotionEvent;
 import android.view.View;
 import android.view.View.MeasureSpec;
 import android.view.View.OnClickListener;
+import android.view.View.OnFocusChangeListener;
+import android.view.View.OnTouchListener;
 import android.view.ViewGroup;
 import android.view.ViewGroup.LayoutParams;
+import android.view.inputmethod.InputMethodManager;
 import android.widget.AbsListView;
+import android.widget.EditText;
 import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
@@ -51,11 +63,16 @@ import android.widget.ListView;
 import android.widget.TextView;
 
 import com.cycrix.androidannotation.AndroidAnnotationParser;
+import com.cycrix.androidannotation.Click;
 import com.cycrix.androidannotation.ViewById;
 
 public class ShopDetailActivity extends FragmentActivity {
 
 	private static Shop sShop;
+	private static final String[] COMMENT_SORT_TYPE = new String[] {
+		"Thích nhiều nhất", "Mới nhất"};
+	private static final int[] COMMENT_RID_TYPE = new int[] {
+		R.drawable.button_topcomment, R.drawable.button_newest};
 
 	private CyLogger mLog = new CyLogger("ShopDetailActivity", true);
 
@@ -70,14 +87,15 @@ public class ShopDetailActivity extends FragmentActivity {
 	private boolean mLoadedLogo 		= false;
 	private boolean mLoadedNewsImage 	= false;
 	private boolean mLoadedMap 			= false;
-
-	boolean mShowUserGalleryLeft 	= false;
-	boolean mShowUserGalleryRight 	= false;
+	private int mSortComment			= 0;
 
 	private ShopDetailAdapter mAdapter;
 	
 	@ViewById(id = R.id.lst)				private ListView mLst;
 	@ViewById(id = R.id.layoutCommentHeader)private View mLayoutCommentHeader;
+	@ViewById(id = R.id.btnSort)			private ImageView mBtnSort;
+	@ViewById(id = R.id.btnSend)			private ImageView mBtnSend;
+	@ViewById(id = R.id.edtComment) 		private EditText mEdtComment;
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
@@ -121,6 +139,59 @@ public class ShopDetailActivity extends FragmentActivity {
 		task.executeOnExecutor(NetworkManager.THREAD_POOL);
 
 		FontsCollection.setFont(findViewById(android.R.id.content));
+		
+		// Set sendbutton event
+		mEdtComment.setOnFocusChangeListener(new OnFocusChangeListener() {
+			@Override
+			public void onFocusChange(View v, boolean hasFocus) {
+				if (hasFocus) {
+					toggleSendSort(mBtnSend, mBtnSort);
+					mLst.smoothScrollToPositionFromTop(mAdapter.mTypeList.size() - 2, 0);
+				} else {
+					toggleSendSort(mBtnSort, mBtnSend);
+					InputMethodManager inputMgr = (InputMethodManager)
+							ShopDetailActivity.this.getSystemService(Context.INPUT_METHOD_SERVICE);
+					inputMgr.hideSoftInputFromWindow(mEdtComment.getWindowToken(), 0);
+				}
+			}
+		});
+		
+		mLayoutCommentHeader.setOnTouchListener(new OnTouchListener() {
+			@Override
+			public boolean onTouch(View v, MotionEvent event) {
+//				toggleSendSort(mBtnSort, mBtnSend);
+				mEdtComment.clearFocus();
+				return false;
+			}
+		});
+		
+		CyUtils.setHoverEffect(mBtnSort, false);
+		CyUtils.setHoverEffect(mBtnSend, false);
+	}
+	
+	private AnimatorSet mToggleSendSortAnimator;
+	private void toggleSendSort(View show, final View hide) {
+		if (mToggleSendSortAnimator != null)
+			mToggleSendSortAnimator.cancel();
+		mToggleSendSortAnimator = new AnimatorSet();
+		 
+		show.setVisibility(View.VISIBLE);
+		hide.setVisibility(View.VISIBLE);
+		ObjectAnimator showAnimator = ObjectAnimator.ofFloat(show, "alpha", 0, 1);
+		ObjectAnimator hideAnimator = ObjectAnimator.ofFloat(hide, "alpha", 1, 0);
+		mToggleSendSortAnimator.playTogether(showAnimator, hideAnimator);
+		mToggleSendSortAnimator.addListener(new AnimatorListener() {
+			
+			@Override
+			public void onAnimationEnd(Animator animation) {
+				hide.setVisibility(View.INVISIBLE);
+			}
+			
+			public void onAnimationCancel(Animator animation) {}
+			public void onAnimationStart(Animator animation) {}
+			public void onAnimationRepeat(Animator animation) {}
+		});
+		mToggleSendSortAnimator.start();
 	}
 
 	@Override
@@ -150,6 +221,32 @@ public class ShopDetailActivity extends FragmentActivity {
 	public void finish() {
 		super.finish();
 		overridePendingTransition(R.anim.alpha_in, R.anim.slide_out_up_detail);
+	}
+	
+	@Click(id = R.id.btnSend)
+	private void onSendClick(View v) {
+		
+	}
+	
+	@Click(id = R.id.btnSort)
+	private void onSortClick(View v) {
+		// Show dialog
+		AlertDialog.Builder builder = new AlertDialog.Builder(ShopDetailActivity.this);
+		builder.setTitle("Sắp xếp");
+		builder.setItems(COMMENT_SORT_TYPE, new DialogInterface.OnClickListener() {
+			@Override
+			public void onClick(DialogInterface dialog, int which) {
+				if (mSortComment != which) {
+					mSortComment = which;
+					mBtnSort.setBackgroundResource(COMMENT_RID_TYPE[mSortComment]);
+					
+					mAdapter.setCommentSort(mSortComment);
+				}
+			}
+		});
+		builder.setNegativeButton(R.string.Cancel, null);
+		builder.create().show();
+//		((GetComment) mLoader).setSort(type);
 	}
 
 	///////////////////////////////////////////////////////////////////////////
@@ -396,7 +493,7 @@ public class ShopDetailActivity extends FragmentActivity {
 		// 4: comment header pad
 		// 5: comment items
 
-		private List<Integer> mTypeList = new ArrayList<Integer>();
+		public List<Integer> mTypeList = new ArrayList<Integer>();
 		private ViewGroup mLayoutShopGallery;
 		private ViewGroup mLayoutInfo;
 		private ViewGroup mLayoutPromo;
@@ -446,6 +543,32 @@ public class ShopDetailActivity extends FragmentActivity {
 			setShopGalleryInfoBar(mLayoutShopGallery);
 			setInfo(mLayoutInfo);
 		}
+		
+		public void setCommentSort(int type) {
+			// 0: agree
+			// 1: time
+			
+			// Cancel loader
+			mLoader.cancel(true);
+			mLoader = mLoader.clone();
+			mLoader.setListener(this);
+			((GetComment) mLoader).setSort(type);
+			
+			// Clear comment item
+			mItemList.subList(mTypeList.size() - 1, mItemList.size()).clear();
+			
+			// Clear height list
+			for (int i = 0; i < mHeightList.size(); i++)
+				mHeightList.set(i, 0);
+			
+			// set page && is more && loading
+			mPageNum = 0;
+			mIsMore = true;
+			mLoading = false;
+			
+			notifyDataSetChanged();
+			loadMore();
+		}
 
 		private boolean hasPromo() {
 			return mShop.promotionType == 1 || mShop.promotionType == 2;
@@ -475,9 +598,10 @@ public class ShopDetailActivity extends FragmentActivity {
 
 			if (position >= mItemList.size()) {
 				View aniLayout = convertView.findViewById(R.id.layoutLoading);
-				if (mIsMore)
+				if (mIsMore) {
+					aniLayout.setVisibility(View.VISIBLE);
 					((AnimationDrawable) aniLayout.getBackground()).start();
-				else
+				} else
 					aniLayout.setVisibility(View.GONE);
 				LayoutParams param = convertView.getLayoutParams();
 				param.height = getCommentTailHeight();
@@ -626,7 +750,7 @@ public class ShopDetailActivity extends FragmentActivity {
 				height -= mHeightList.get(i);
 
 			height = Math.max(0, height);
-			mLog.d("get height=" + height);
+//			mLog.d("get height=" + height);
 			return height;
 		}
 	}
