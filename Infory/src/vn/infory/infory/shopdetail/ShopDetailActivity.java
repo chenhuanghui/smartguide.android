@@ -23,6 +23,7 @@ import vn.infory.infory.data.Promotion;
 import vn.infory.infory.data.PromotionTypeOne;
 import vn.infory.infory.data.PromotionTypeTwo;
 import vn.infory.infory.data.Settings;
+import vn.infory.infory.data.Settings.DataChangeListener;
 import vn.infory.infory.data.Shop;
 import vn.infory.infory.data.UserGallery;
 import vn.infory.infory.network.CyAsyncTask;
@@ -31,6 +32,7 @@ import vn.infory.infory.network.GetShopDetail;
 import vn.infory.infory.network.GetShopGallery;
 import vn.infory.infory.network.LikeComment;
 import vn.infory.infory.network.NetworkManager;
+import vn.infory.infory.network.PostComment;
 import vn.infory.infory.scancode.ScanCodeActivity;
 import android.animation.Animator;
 import android.animation.Animator.AnimatorListener;
@@ -49,6 +51,7 @@ import android.support.v4.app.FragmentActivity;
 import android.support.v4.view.ViewPager;
 import android.text.SpannableString;
 import android.text.style.ForegroundColorSpan;
+import android.view.KeyEvent;
 import android.view.MotionEvent;
 import android.view.View;
 import android.view.View.MeasureSpec;
@@ -57,6 +60,7 @@ import android.view.View.OnFocusChangeListener;
 import android.view.View.OnTouchListener;
 import android.view.ViewGroup;
 import android.view.ViewGroup.LayoutParams;
+import android.view.inputmethod.EditorInfo;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.AbsListView;
 import android.widget.EditText;
@@ -65,6 +69,7 @@ import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.ListView;
 import android.widget.TextView;
+import android.widget.TextView.OnEditorActionListener;
 
 import com.cycrix.androidannotation.AndroidAnnotationParser;
 import com.cycrix.androidannotation.Click;
@@ -103,6 +108,13 @@ public class ShopDetailActivity extends FragmentActivity {
 	@ViewById(id = R.id.imgAva)				private ImageView mImgAva;
 	@ViewById(id = R.id.layoutLoading)		private View mLayoutLoading;
 	@ViewById(id = R.id.layoutLoadingAni)	private View mLayoutLoadingAni;
+	
+	private DataChangeListener avaChangeListener = new DataChangeListener() {
+		@Override
+		public void onUserDataChange(Settings s) {
+			CyImageLoader.instance().showImageSmooth(s.avatar, mImgAva, mAvaSize, mTaskList);
+		}
+	};
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
@@ -150,6 +162,8 @@ public class ShopDetailActivity extends FragmentActivity {
 		CyImageLoader.instance().showImageSmooth(
 				Settings.instance().avatar, mImgAva, mAvaSize, mTaskList);
 		
+		Settings.instance().addListener(avaChangeListener);
+		
 		// Set sendbutton event
 		mEdtComment.setOnFocusChangeListener(new OnFocusChangeListener() {
 			@Override
@@ -163,6 +177,17 @@ public class ShopDetailActivity extends FragmentActivity {
 							ShopDetailActivity.this.getSystemService(Context.INPUT_METHOD_SERVICE);
 					inputMgr.hideSoftInputFromWindow(mEdtComment.getWindowToken(), 0);
 				}
+			}
+		});
+		
+		mEdtComment.setOnEditorActionListener(new OnEditorActionListener() {
+			@Override
+			public boolean onEditorAction(TextView v, int actionId, KeyEvent event) {
+				if (actionId == EditorInfo.IME_ACTION_SEND) {
+					onSendClick(v);
+					return true;
+				}
+				return false;
 			}
 		});
 		
@@ -214,6 +239,8 @@ public class ShopDetailActivity extends FragmentActivity {
 
 		for (CyAsyncTask task : mTaskList)
 			task.cancel(true);
+		
+		Settings.instance().removeListener(avaChangeListener);
 	}
 
 	public static void newInstance(Activity act, Shop s) {
@@ -236,7 +263,67 @@ public class ShopDetailActivity extends FragmentActivity {
 	
 	@Click(id = R.id.btnSend)
 	private void onSendClick(View v) {
+		// Check empty comment
+		final String strComment = mEdtComment.getText().toString().trim();
+		if (strComment.length() == 0)
+			return;
 		
+		// Post comment
+		Settings.checkLogin(this, new Runnable() {
+			@Override
+			public void run() {
+				postComment(strComment);
+			}
+		}, true);
+	}
+	
+	private void postComment(final String strComment) {
+		mEdtComment.setText("");
+		mEdtComment.clearFocus();
+		
+		PostComment task = new PostComment(this, mShop.idShop, strComment) {
+			@Override
+			protected void onCompleted(Object result2) throws Exception {
+				try {
+					JSONObject result = (JSONObject) result2;
+					int status = result.getInt("status");
+					String message = result.optString("message", "");
+					
+					switch (status) {
+					case 1:
+						// Add new comment
+						int idComment = result.getInt("idComment");
+						String time = result.getString("time");
+						mAdapter.addNewComment(strComment, idComment, time);
+						
+						// Update comment num
+						String numOfComment = result.optString("numOfComment", "");
+						if (numOfComment.length() != 0) {
+							mShop.numOfComment = numOfComment;
+							setShopGalleryInfoBar(mAdapter.mLayoutShopGallery);
+						}
+					default:
+						// Show message
+						if (message.length() > 0) {
+							AlertDialog.Builder builder = 
+									new AlertDialog.Builder(ShopDetailActivity.this);
+							builder.setMessage(message);
+							builder.create().show();
+						}
+					}
+				} catch (Exception e) {
+					onFail(e);
+				}
+			}
+			
+			@Override
+			protected void onFail(Exception e) {
+				CyUtils.showError("Gởi nhận xét thất bại!", e, ShopDetailActivity.this);
+			}
+		};
+		task.setTaskList(mTaskList);
+		task.setVisibleView(mLayoutLoading);
+		task.executeOnExecutor(NetworkManager.THREAD_POOL);
 	}
 	
 	@Click(id = R.id.btnSort)
@@ -292,6 +379,7 @@ public class ShopDetailActivity extends FragmentActivity {
 
 		((TextView) view.findViewById(R.id.txtLoveNum)).setText(mShop.numOfLove);
 		((TextView) view.findViewById(R.id.txtViewNum)).setText(mShop.numOfView);
+		((TextView) view.findViewById(R.id.txtCommentNum)).setText(mShop.numOfComment);
 	}
 
 	private void setInfo(ViewGroup view) {
@@ -505,7 +593,7 @@ public class ShopDetailActivity extends FragmentActivity {
 		// 5: comment items
 
 		public List<Integer> mTypeList = new ArrayList<Integer>();
-		private ViewGroup mLayoutShopGallery;
+		public ViewGroup mLayoutShopGallery;
 		private ViewGroup mLayoutInfo;
 		private ViewGroup mLayoutPromo;
 		private ArrayList<Integer> mHeightList = new ArrayList<Integer>();
@@ -828,6 +916,27 @@ public class ShopDetailActivity extends FragmentActivity {
 					likeComment.executeOnExecutor(NetworkManager.THREAD_POOL);
 				}
 			}, true);
+		}
+		
+		public void addNewComment(String strComment, int idComment, String time) {
+			// Make room for height list
+			mHeightList.add(mTypeList.size() - 1, 0);
+			
+			// Make new comment item
+			Comment item = new Comment();
+			item.agreeStatus 	= 0;
+			item.avatar 		= Settings.instance().avatar;
+			item.comment 		= strComment;
+			item.idComment 		= idComment;
+			item.numOfAgree 	= "0";
+			item.time			= time;
+			item.username		= Settings.instance().name;
+			
+			// Add new comment into itemList
+			mItemList.add(mTypeList.size() - 1, item);
+			
+			// Apply changes
+			notifyDataSetChanged();
 		}
 	}
 

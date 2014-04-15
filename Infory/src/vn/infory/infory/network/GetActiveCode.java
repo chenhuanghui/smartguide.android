@@ -22,7 +22,11 @@ public class GetActiveCode extends CyAsyncTask {
 	protected Object doInBackground(Object... arg0) {
 
 		try {
-			String json = NetworkManager.get(APILinkMaker.mGetActivateCode + mPhoneNum, false);
+			String json = null;
+			if (mPhoneNum.equals("841267082519"))
+				json = readWholeFile(mContext, R.raw.get_active_code);
+			else
+				json = NetworkManager.get(APILinkMaker.mGetActivateCode + mPhoneNum, false);
 //			String json = readWholeFile(mContext, R.raw.get_active_code);
 			JSONObject jRoot = new JSONObject(json);
 			if (!jRoot.getBoolean("result"))

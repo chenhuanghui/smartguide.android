@@ -67,6 +67,7 @@
                 android:background="@drawable/bg_typecomment_head"
                 android:gravity="top|left"
                 android:hint="Nhập nhận xét của bạn..."
+                android:imeOptions="actionSend"
                 android:lines="2"
                 android:paddingLeft="8dp"
                 android:paddingRight="8dp"
@@ -74,6 +75,7 @@
                 android:textColorHint="#C7C7C7"
                 android:textSize="14sp"
                 android:textStyle="italic" >
+
             </EditText>
 
             <RelativeLayout

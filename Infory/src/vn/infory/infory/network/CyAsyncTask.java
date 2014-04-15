@@ -37,6 +37,7 @@ public abstract class CyAsyncTask extends AsyncTask<Object, Void, Object> {
 	
 	public void setTaskList(List<CyAsyncTask> taskList) {
 		mInnerTaskList = taskList;
+		taskList.add(this);
 	}
 	
 	public CyAsyncTask setVisibleView(View... views) {
