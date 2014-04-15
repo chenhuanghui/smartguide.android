@@ -27,6 +27,7 @@ public class APILinkMaker {
 	public static final String mUserGallery			= mPrefix + "images/getUserGallery";
 	public static final String mShopGallery			= mPrefix + "images/getShopGallery";
 	public static final String mComment				= mPrefix + "comment/getShopComment";
+	public static final String mLikeComment			= mPrefix + "user/agreeComment";
 	
 	public static final String mScan				= mPrefix + "user/scanSGCode_v2";
 	

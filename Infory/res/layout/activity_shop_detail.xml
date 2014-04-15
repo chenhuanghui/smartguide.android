@@ -14,9 +14,8 @@
         android:listSelector="@drawable/dummy"
         android:scrollbars="none"
         tools:context=".ShopDetailActivity" >
-
     </ListView>
-    
+
     <vn.infory.infory.shopdetail.FullScreenLayout
         android:id="@+id/layoutCommentHeader"
         android:layout_width="wrap_content"
@@ -109,7 +108,7 @@
                     android:alpha="0"
                     android:background="@drawable/button_send"
                     android:visibility="invisible" />
-                
+
                 <ImageView
                     android:id="@+id/btnSort"
                     android:layout_width="wrap_content"
@@ -117,9 +116,25 @@
                     android:layout_alignBottom="@+id/btnSend"
                     android:layout_alignParentRight="true"
                     android:background="@drawable/button_topcomment" />
-
             </RelativeLayout>
         </RelativeLayout>
     </vn.infory.infory.shopdetail.FullScreenLayout>
+
+    <FrameLayout
+        android:id="@+id/layoutLoading"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:background="#80000000"
+        android:clickable="true"
+        android:visibility="invisible" >
+
+        <FrameLayout
+            android:id="@+id/layoutLoadingAni"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:background="@drawable/button_loading_big" >
+        </FrameLayout>
+    </FrameLayout>
 
 </FrameLayout>

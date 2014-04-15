@@ -7,6 +7,8 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.Locale;
 
+import org.json.JSONObject;
+
 import vn.infory.infory.CyImageLoader;
 import vn.infory.infory.CyLogger;
 import vn.infory.infory.CyUtils;
@@ -27,6 +29,7 @@ import vn.infory.infory.network.CyAsyncTask;
 import vn.infory.infory.network.GetComment;
 import vn.infory.infory.network.GetShopDetail;
 import vn.infory.infory.network.GetShopGallery;
+import vn.infory.infory.network.LikeComment;
 import vn.infory.infory.network.NetworkManager;
 import vn.infory.infory.scancode.ScanCodeActivity;
 import android.animation.Animator;
@@ -98,6 +101,8 @@ public class ShopDetailActivity extends FragmentActivity {
 	@ViewById(id = R.id.btnSend)			private ImageView mBtnSend;
 	@ViewById(id = R.id.edtComment) 		private EditText mEdtComment;
 	@ViewById(id = R.id.imgAva)				private ImageView mImgAva;
+	@ViewById(id = R.id.layoutLoading)		private View mLayoutLoading;
+	@ViewById(id = R.id.layoutLoadingAni)	private View mLayoutLoadingAni;
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
@@ -127,7 +132,6 @@ public class ShopDetailActivity extends FragmentActivity {
 		GetShopDetail task = new GetShopDetail(this, mShop, mShop.idShop) {
 			@Override
 			protected void onCompleted(Object result2) {
-				mTaskList.remove(this);
 				mAdapter.reset();
 			}
 
@@ -137,7 +141,7 @@ public class ShopDetailActivity extends FragmentActivity {
 				CyUtils.showError("Không thể lấy chi tiết cửa hàng", e, ShopDetailActivity.this);
 			}
 		};
-		mTaskList.add(task);
+		task.setTaskList(mTaskList);
 		task.executeOnExecutor(NetworkManager.THREAD_POOL);
 
 		FontsCollection.setFont(findViewById(android.R.id.content));
@@ -173,6 +177,7 @@ public class ShopDetailActivity extends FragmentActivity {
 		
 		CyUtils.setHoverEffect(mBtnSort, false);
 		CyUtils.setHoverEffect(mBtnSend, false);
+		((AnimationDrawable) mLayoutLoadingAni.getBackground()).start();
 	}
 	
 	private AnimatorSet mToggleSendSortAnimator;
@@ -490,7 +495,7 @@ public class ShopDetailActivity extends FragmentActivity {
 	// Adapter
 	///////////////////////////////////////////////////////////////////////////
 	
-	private class ShopDetailAdapter extends LazyLoadAdapter implements CommentLayout.MeasureListener {
+	private class ShopDetailAdapter extends LazyLoadAdapter implements CommentLayout.MeasureListener, OnClickListener {
 
 		// 0: cover + info bar
 		// 1: promotion
@@ -693,6 +698,8 @@ public class ShopDetailActivity extends FragmentActivity {
 					convertView.setTag(holder);
 
 					((CommentLayout) convertView).setListener(this);
+					holder.mBtnLike.setOnClickListener(this);
+					
 					break;
 				}
 				FontsCollection.setFont(convertView);
@@ -709,6 +716,11 @@ public class ShopDetailActivity extends FragmentActivity {
 						item.avatar, holder.mImgAva, mAvaSize, mTaskList);
 
 				((CommentLayout) convertView).setPos(position);
+				holder.mBtnLike.setTag(position);
+				if (item.agreeStatus == 1)
+					holder.mBtnLike.setBackgroundResource(R.drawable.button_agree);
+				else
+					holder.mBtnLike.setBackgroundResource(R.drawable.button_agree_hidden);
 			}
 
 			return convertView;
@@ -759,6 +771,64 @@ public class ShopDetailActivity extends FragmentActivity {
 //			mLog.d("get height=" + height);
 			return height;
 		}
+
+		@Override
+		public void onClick(final View v) {	// On like click
+			
+			Settings.checkLogin(ShopDetailActivity.this, new Runnable() {
+				@Override
+				public void run() {
+					int pos = (Integer) v.getTag();
+					final Comment item = (Comment) mItemList.get(pos);
+
+					CyAsyncTask likeComment = new LikeComment(
+							ShopDetailActivity.this, item.idComment, 1 - item.agreeStatus) {
+						@Override
+						protected void onCompleted(Object result2) throws Exception {
+
+							try {
+								JSONObject result = (JSONObject) result2;
+								int status = result.getInt("status");
+								String message = result.optString("message", "");
+
+								switch (status) {
+								case 1: {
+									int agreeStatus = result.getInt("agreeStatus");
+									String numOfAgree = result.getString("numOfAgree");
+//									int totalAgree = result.getInt("totalAgree");
+
+									// Update like button
+									item.agreeStatus = agreeStatus;
+									item.numOfAgree = numOfAgree;
+
+									notifyDataSetChanged();
+								}
+								default:
+									// Show message
+									if (message.length() > 0) {
+										AlertDialog.Builder builder = 
+												new AlertDialog.Builder(ShopDetailActivity.this);
+										builder.setMessage(message);
+										builder.create().show();
+									}
+								}
+
+							} catch (Exception e) {
+								onFail(e);
+							}
+						}
+
+						@Override
+						protected void onFail(Exception e) {
+							CyUtils.showError("Không thể kết nối máy chủ!", e, ShopDetailActivity.this);
+						}
+					};
+					likeComment.setTaskList(mTaskList);
+					likeComment.setVisibleView(mLayoutLoading);
+					likeComment.executeOnExecutor(NetworkManager.THREAD_POOL);
+				}
+			}, true);
+		}
 	}
 
 	private static class CommentHolder {
@@ -767,5 +837,6 @@ public class ShopDetailActivity extends FragmentActivity {
 		@ViewById(id = R.id.txtContent)		public TextView mTxtContent;
 		@ViewById(id = R.id.imgAva)			public ImageView mImgAva;
 		@ViewById(id = R.id.txtTime)		public TextView mTxtTime;
+		@ViewById(id = R.id.btnAgree)		public ImageButton mBtnLike;
 	}
 }

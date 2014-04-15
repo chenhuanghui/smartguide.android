@@ -3,6 +3,7 @@ package vn.infory.infory.network;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.util.ArrayList;
+import java.util.List;
 import java.util.concurrent.ThreadPoolExecutor;
 import java.util.concurrent.atomic.AtomicBoolean;
 
@@ -28,9 +29,14 @@ public abstract class CyAsyncTask extends AsyncTask<Object, Void, Object> {
 	protected Context mContext;
 	protected Exception mEx;
 	private Listener2 mListener;
+	protected List<CyAsyncTask> mInnerTaskList;
 	
 	public CyAsyncTask(Context c) {		
 		mContext = c;
+	}
+	
+	public void setTaskList(List<CyAsyncTask> taskList) {
+		mInnerTaskList = taskList;
 	}
 	
 	public CyAsyncTask setVisibleView(View... views) {
@@ -123,6 +129,9 @@ public abstract class CyAsyncTask extends AsyncTask<Object, Void, Object> {
 	 */
 	@Override
 	protected void onPostExecute(Object result) {
+		if (mInnerTaskList != null)
+			mInnerTaskList.remove(this);
+		
 		onCancelled();
 		
 		try {
