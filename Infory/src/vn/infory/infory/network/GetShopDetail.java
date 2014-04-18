@@ -6,6 +6,7 @@ import java.util.List;
 import org.apache.http.NameValuePair;
 import org.apache.http.message.BasicNameValuePair;
 
+import vn.infory.infory.R;
 import vn.infory.infory.data.Settings;
 import vn.infory.infory.data.Shop;
 import android.content.Context;
@@ -37,7 +38,7 @@ public class GetShopDetail extends CyAsyncTask {
 			pairs.add(new BasicNameValuePair("userLng", Float.toString(s.lng)));
 			
 			String json = NetworkManager.post(APILinkMaker.mShopDetail, pairs);
-//			String json = readWholeFile(mContext, R.raw.shop_detail_promo2);
+//			String json = readWholeFile(mContext, R.raw.shop_detail_promo1);
 			
 			JsonParser.parseObject(mShop, json);
 			

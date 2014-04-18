@@ -1,183 +1,56 @@
 {
-  "idShop": 13,
-  "shopName": "Buffet Panorama - Khách sạn Thời Đại Mới",
-  "shopType": 1,
-  "shopTypeDisplay": "Ẩm Thực",
-  "shopLat": 10.777061,
-  "shopLng": 106.683158,
-  "logo": "http://dev2.smartguide.vn/media/brand/10/8386-2013-10-16-18-35-07.jpeg",
-  "loveStatus": 1,
-  "numOfLove": "37",
-  "numOfView": "1.532",
-  "numOfComment": "10",
-  "address": "120 CMT8, P.7, Q.3, Tp.HCM, Hồ Chí Minh",
+  "idShop": 271,
+  "shopName": "Infory Việt Nam",
+  "shopType": 7,
+  "shopTypeDisplay": "Sản Phẩm",
+  "shopLat": 10.748968,
+  "shopLng": 106.6601043,
+  "logo": "https://api.infory.vn/media/brand/58/3780-2014-04-07-14-07-46.png",
+  "loveStatus": 0,
+  "numOfLove": "4",
+  "totalLove": 4,
+  "numOfView": "570",
+  "numOfComment": "0",
+  "totalComment": 0,
+  "address": "422 Võ Văn Kiệt, Quận 1, Hồ Chí Minh",
   "city": "Hồ Chí Minh",
-  "tel": "0839326169",
-  "displayTel": "0839326169",
+  "displayTel": "0866757231",
+  "tel": "0866757231",
   "shopGallery": [
     {
-      "cover": "http://dev2.smartguide.vn/media/shop/13/5957-2013-12-01-13-01-39.jpeg",
-      "image": "http://dev2.smartguide.vn/media/shop/13/5957-2013-12-01-13-01-39.jpeg"
+      "cover": "https://api.infory.vn/media/brand/58/3128-2014-04-08-15-24-51.jpeg",
+      "coverWidth": 1058,
+      "coverHeight": 980,
+      "image": "https://api.infory.vn/media/brand/58/3128-2014-04-08-15-24-51.jpeg",
+      "imageWidth": 1058,
+      "imageHeight": 980
     },
     {
-      "cover": "http://dev2.smartguide.vn/media/shop/13/8827-2013-12-01-13-01-39.jpeg",
-      "image": "http://dev2.smartguide.vn/media/shop/13/8827-2013-12-01-13-01-39.jpeg"
-    },
-    {
-      "cover": "http://dev2.smartguide.vn/media/shop/13/940-2013-12-01-13-01-39.jpeg",
-      "image": "http://dev2.smartguide.vn/media/shop/13/940-2013-12-01-13-01-39.jpeg"
-    },
-    {
-      "cover": "http://dev2.smartguide.vn/media/shop/13/4889-2013-12-01-13-01-39.jpeg",
-      "image": "http://dev2.smartguide.vn/media/shop/13/4889-2013-12-01-13-01-39.jpeg"
-    },
-    {
-      "cover": "http://dev2.smartguide.vn/media/shop/13/7134-2013-12-01-13-01-39.jpeg",
-      "image": "http://dev2.smartguide.vn/media/shop/13/7134-2013-12-01-13-01-39.jpeg"
-    },
-    {
-      "cover": "http://dev2.smartguide.vn/media/shop/13/6927-2013-12-01-13-01-39.jpeg",
-      "image": "http://dev2.smartguide.vn/media/shop/13/6927-2013-12-01-13-01-39.jpeg"
-    },
-    {
-      "cover": "http://dev2.smartguide.vn/media/shop/13/1305-2013-12-01-13-01-39.jpeg",
-      "image": "http://dev2.smartguide.vn/media/shop/13/1305-2013-12-01-13-01-39.jpeg"
-    },
-    {
-      "cover": "http://dev2.smartguide.vn/media/shop/13/5421-2013-12-01-13-01-39.jpeg",
-      "image": "http://dev2.smartguide.vn/media/shop/13/5421-2013-12-01-13-01-39.jpeg"
-    },
-    {
-      "cover": "http://dev2.smartguide.vn/media/shop/13/6724-2013-12-01-13-01-39.jpeg",
-      "image": "http://dev2.smartguide.vn/media/shop/13/6724-2013-12-01-13-01-39.jpeg"
-    },
-    {
-      "cover": "http://dev2.smartguide.vn/media/shop/13/1525-2013-12-01-13-01-39.jpeg",
-      "image": "http://dev2.smartguide.vn/media/shop/13/1525-2013-12-01-13-01-39.jpeg"
+      "cover": "https://api.infory.vn/media/brand/58/7107-2014-04-08-15-25-10.jpeg",
+      "coverWidth": 1058,
+      "coverHeight": 980,
+      "image": "https://api.infory.vn/media/brand/58/7107-2014-04-08-15-25-10.jpeg",
+      "imageWidth": 1058,
+      "imageHeight": 980
     }
   ],
   "userGallery": [],
-  "comments": [
-    {
-      "idComment": 1156,
-      "username": "Minh Phạm",
-      "comment": "gia.. cho e xin cai gia",
-      "avatar": "http://graph.facebook.com/100006087853474/picture?width=180&height=180",
-      "numOfAgree": "0",
-      "time": "04/12/2013 23:10",
-      "agreeStatus": 0
-    },
-    {
-      "idComment": 351,
-      "username": "Miguel",
-      "comment": "không hiểu j hết",
-      "avatar": "http://dev2.smartguide.vn//media/user/avatar/23d74e81c13a48dc17d084bc7d52f84e.jpeg",
-      "numOfAgree": "0",
-      "time": "18/11/2013 11:20",
-      "agreeStatus": 0
-    },
-    {
-      "idComment": 23,
-      "username": "PolicespktĐặng",
-      "comment": "ben khuyen mai co ma ban rainy",
-      "avatar": "http://dev2.smartguide.vn//media/user/avatar/3a24a79dcaa45f5546e3d0d61dbff520.jpeg",
-      "numOfAgree": "0",
-      "time": "04/11/2013 21:56",
-      "agreeStatus": 0
-    },
-    {
-      "idComment": 21,
-      "username": "Rainy",
-      "comment": "gia buffet bao nhieu vay cac ban",
-      "avatar": "http://dev2.smartguide.vn//media/user/avatar/9fbd05138624cf84f658a5fe280cf162.jpeg",
-      "numOfAgree": "0",
-      "time": "04/11/2013 13:56",
-      "agreeStatus": 0
-    },
-    {
-      "idComment": 6,
-      "username": "Kim Ánh",
-      "comment": "khung cảnh sang trọng, ấm cúng",
-      "avatar": "http://dev2.smartguide.vn//media/user/avatar/dfbc2f2c12bc1b20967410cd92b4736a.jpeg",
-      "numOfAgree": "0",
-      "time": "16/10/2013 16:16",
-      "agreeStatus": 0
-    },
-    {
-      "idComment": 14,
-      "username": "huy",
-      "comment": "Buffet ngon, neu duoc giam gia t7 va cn nua thi tuyet voi",
-      "avatar": "http://graph.facebook.com/100000257302707/picture?width=180&height=180",
-      "numOfAgree": "0",
-      "time": "19/10/2013 09:25",
-      "agreeStatus": 0
-    },
-    {
-      "idComment": 9,
-      "username": "Trần Giang Bảo Hùng",
-      "comment": "Ngoài món ăn ngon, không gian sang trọng, điểm thu hút là NHÂN VIÊN NỮ TRẺ ĐẸP chẹp...chẹp...",
-      "avatar": "http://graph.facebook.com/1836584301/picture?width=180&height=180",
-      "numOfAgree": "0",
-      "time": "16/10/2013 20:47",
-      "agreeStatus": 0
-    },
-    {
-      "idComment": 8,
-      "username": "thanhlan.nguyen",
-      "comment": "O day to chuc tiec lien hoan cuoi nam rat thich hop",
-      "avatar": "http://dev2.smartguide.vn/",
-      "numOfAgree": "0",
-      "time": "16/10/2013 19:08",
-      "agreeStatus": 0
-    },
-    {
-      "idComment": 7,
-      "username": "thanhlan.nguyen",
-      "comment": "minh an trua o day may lan. Mot lan an sinh nhat ban cung co quan. Noi chung thuc an ngon vua mieng, gia ca hop ly. Dac biet khong gian rong thoang",
-      "avatar": "http://dev2.smartguide.vn/",
-      "numOfAgree": "0",
-      "time": "16/10/2013 19:06",
-      "agreeStatus": 0
-    },
-    {
-      "idComment": 5,
-      "username": "Trung Hien Pham",
-      "comment": "buffet ngon, chat luong",
-      "avatar": "http://graph.facebook.com/100005049120606/picture?width=180&height=180",
-      "numOfAgree": "0",
-      "time": "15/10/2013 19:49",
-      "agreeStatus": 0
-    }
-  ],
-  "promotionType": 0,
-  "description": "Tọa lạc trên vị trí chiến lược trong khu vực trung tâm hành chánh, thương mại, mua sắm và giải trí tại thành phố Hồ Chí Minh.\n\nNhà hàng Panorama (thuộc khách sạn New Epoch): có khung cảnh ấm cúng, sang trọng ngắm nhìn toàn cảnh Sài Gòn về đêm. Với vị trí đắc địa tọa lạc tại trung tâm tài chính- thương mại, mua sắm và giải trí của TP.HCM, New Epoch là khách sạn quốc tế 3 sao hàng đầu tại TP.HCM, có nhiều dịch vụ đạt chuẩn như: piano bar, phòng họp, hội nghị, business center, spa, sauna, massage, giặt ủi, đánh giày, đặt vé máy bay, thu đổi ngoại tê, làm visa, hộ chiếu, sắp xếp tour, bãi đậu xe...\n\nKhu vực nước uống có sẵn: Các loại nước trái cây, Trà, Nước Ngọt, Nước Sâm. (Quý khách có nhu cầu sử dụng các loại nước uống khác như bia, rượu, vui lòng gọi và thanh toán thêm tại nhà hàng)\n\nThực đơn phong phú với  hơn 60 món: Soup, salad, Gỏi, hải sản, món nướng/ quay tại bàn, các món chiên, xào, cơm mì, rau, thịt bò, heo, gà vịt....\n\nĐầu bếp chuyên nghiệp, có nhiều năm kinh nghiệm trong việc chế biến và phục vụ tiệc buffet.\n\nNhân viên phục vụ nhiệt tình và chu đáo.\n\n",
+  "comments": [],
+  "promotionType": 2,
+  "description": "Tìm kiếm thông tin, tương tác và tận hưởng những ưu đãi, dịch vụ chăm sóc khách hàng tốt nhất từ chính doanh nghiệp.\n\nTính năng chính\n + Tìm được ngay cửa hàng, dịch vụ bạn cần với hệ thống gợi ý thông minh và dữ liệu hàng ngàn cửa hàng, sản phẩm, dịch vụ, …\n + Quét QR Code khám phá dịch vụ, ưu đãi đặc biệt từ các doanh nghiệp\n + Dễ dàng tìm đường đến cửa hàng, đặt bàn trước hay yêu cầu giao hàng tận nơi\n + Tương tác, phản hồi và đánh giá chất lượng sản phẩm, dịch vụ của doanh nghiệp",
   "promotionDetail": {
-    "duration": "19/1/2014",
     "text": "Quét thẻ và nhận quà từ nhân viên cửa hàng",
-    "money": "69k",
-    "hasSGP": 1,
-    "sgp": 69,
+    "note": "Sử dụng mã thẻ tại cửa hàng để nhận quà",
+    "duration": "30/04/2014",
     "voucherList": [
       {
-        "name": "BUFFET TRƯA (11G30 - 14G TỪ T2 ĐẾN T6): GIẢM NGAY 60.000Đ (GIÁ VÉ: 199.000Đ/NGƯỜI)",
+        "name": "ƯU ĐÃI TỔNG TRỊ GIÁ 15 TRIỆU VNĐ",
         "type": "A",
-        "isAfford": 1,
-        "sgp": 5
-      },
-      {
-        "name": "BUFFET TỐI (18G - 21G30 VÀO T7, CN): GIẢM NGAY 150.000Đ (GIÁ VÉ: 399.000Đ/NGƯỜI)",
-        "type": "B",
-        "isAfford": 0,
-        "sgp": 70
+        "condition": "Các đối tác tiên phong (kí hợp đồng trong vòng 7 ngày)",
+        "highlightKeywords": null,
+        "isAfford": 1
       }
     ]
   },
-  "promotionNews": {
-  "duration": "15/12/2013",
-    "image": "http://dev2.smartguide.vn/media/shop/31/3413-2013-11-04-12-51-00.jpeg",
-    "title": "Quán chuẩn bị đóng cửa",
-    "content": "Cà phê sân vườn Trung Du Xanh được thiết kế trên ý tưởng mơ ước đem một phần khung cảnh thiên nhiên của miền trung du cao nguyên đến với thành phố. Với mục đích tạo dựng nên khuôn viên sân vườn hoàn toàn mới, không và hoàn toàn không copy thiết kế của bất cứ quán cafe sân vườn nào khác trong thành phố Sài Gòn - một thành phố nổi tiếng với các quán cafe sân vườn đẹp.\n\nVà trên hết là tạo ra một không gian cà phê thật đặc biệt – một góc thiên nhiên thu nhỏ, còn mang nét hoang sơ cùng với tiện nghi của chốn thị thành hoà trộn vào nhau không ranh giới. Trung Du Xanh là nơi mà bạn có thể đắm mình trong hơi sương buổi sáng, nghe tiếng róc rách của thác nước, thoảng trong gió là hương vị cafe của vùng cao nguyên, nhẹ nhàng hơn là những bản nhạc trữ tình những buổi ban mai cuối tuần …trong khi đó, chiếc Ipad của bạn vẫn cần cù nhận email, điểm tin cho bạn suốt cả ngày lẫn đêm…Đối tác, hay bạn bè của bạn sẽ thốt lên: chỗ này hay đấy …!",
-    "imageWidth": 753,
-    "imageHeight": 362
-  }
+  "promotionNews": {}
 }

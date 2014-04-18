@@ -26,19 +26,6 @@
             android:paddingRight="12dp" >
 
             <TextView
-                android:id="@+id/txtShop"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:contentDescription="@string/sfu_normal"
-                android:shadowColor="#000000"
-                android:shadowDx="0"
-                android:shadowDy="2"
-                android:shadowRadius="5"
-                android:text="Cửa hàng"
-                android:textColor="#ffffff"
-                android:textSize="10sp" />
-
-            <TextView
                 android:id="@+id/txtShopName"
                 android:layout_width="wrap_content"
                 android:layout_height="match_parent"

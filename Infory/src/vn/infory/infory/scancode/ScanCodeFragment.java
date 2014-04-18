@@ -219,7 +219,7 @@ public class ScanCodeFragment extends Fragment {
 		View v = getActivity().getLayoutInflater().inflate(R.layout.scan_dlg, null);
 		
 		View layoutFlag = v.findViewById(R.id.layoutFlag);
-		TextView txtShop = (TextView) v.findViewById(R.id.txtShop);
+//		TextView txtShop = (TextView) v.findViewById(R.id.txtShop);
 		TextView txtShopName = (TextView) v.findViewById(R.id.txtShopName);
 		View btnClose = v.findViewById(R.id.btnClose);
 		TextView btnContinue = (TextView) v.findViewById(R.id.btnContinue);
@@ -259,7 +259,7 @@ public class ScanCodeFragment extends Fragment {
 		case -1:
 		case 0: {
 			layoutFlag.setBackgroundResource(R.drawable.background_greyflag_arlet);
-			txtShop.setVisibility(View.GONE);
+//			txtShop.setVisibility(View.GONE);
 			txtShopName.setVisibility(View.GONE);
 			
 			View childView = getActivity().getLayoutInflater()

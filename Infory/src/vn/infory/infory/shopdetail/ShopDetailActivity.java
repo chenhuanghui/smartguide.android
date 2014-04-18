@@ -352,6 +352,8 @@ public class ShopDetailActivity extends FragmentActivity {
 	///////////////////////////////////////////////////////////////////////////
 
 	private void setShopGalleryInfoBar(ViewGroup view) {
+		PagerIndicator indicator = (PagerIndicator) view.findViewById(R.id.pagerIndicator);
+		
 		// Download cover
 		mShop.normalize();
 		ViewPager pagerCover = (ViewPager) view.findViewById(R.id.pagerCover);
@@ -363,8 +365,10 @@ public class ShopDetailActivity extends FragmentActivity {
 		if (mShop.shopGallery.size() % LazyLoadAdapter.ITEM_PER_PAGE != 0
 				|| mShop.shopGallery.size() == 0)
 			shopGalleryadapter.mIsMore = false;
+		indicator.setOnPageChangeListener(shopGalleryadapter);
 		pagerCover.setAdapter(shopGalleryadapter);
-		pagerCover.setOnPageChangeListener(shopGalleryadapter);
+		indicator.setPager(pagerCover);
+		pagerCover.setOnPageChangeListener(indicator);
 
 		// Download logo
 		View layoutLogo = view.findViewById(R.id.layoutLogo); 
@@ -385,6 +389,7 @@ public class ShopDetailActivity extends FragmentActivity {
 	private void setInfo(ViewGroup view) {
 		TextView txtAddress = (TextView) view.findViewById(R.id.txtAddress);
 		TextView txtTel = (TextView) view.findViewById(R.id.txtTel);
+
 		txtAddress.setText(mShop.address);
 		if (mShop.displayTel == null)
 			txtTel.setText("");
@@ -416,6 +421,9 @@ public class ShopDetailActivity extends FragmentActivity {
 		mLstGallery.setAdapter(adapter);
 		mLstGallery.setOnScrollListener(adapter);
 		mLstGallery.setOnItemClickListener(adapter);
+		
+		
+		
 	}
 
 	private void setDataPromo1(ViewGroup view) {
