@@ -130,7 +130,7 @@
             </LinearLayout>
 
             <ImageButton
-                android:id="@+id/imageButton1"
+                android:id="@+id/btnLikeShop"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_centerVertical="true"
@@ -138,16 +138,20 @@
                 android:layout_marginRight="8dp"
                 android:layout_toLeftOf="@+id/linearLayout2"
                 android:background="#00000000"
+                android:contentDescription="btnLikeShop"
                 android:src="@drawable/button_love_hover" />
 
             <LinearLayout
+                android:id="@+id/layoutNumOfLike"
                 android:layout_width="wrap_content"
                 android:layout_height="match_parent"
                 android:layout_marginBottom="3dp"
                 android:layout_marginRight="8dp"
-                android:layout_toLeftOf="@+id/imageButton1"
+                android:layout_toLeftOf="@+id/btnLikeShop"
+                android:contentDescription="layoutNumOfLike"
                 android:gravity="center"
-                android:orientation="vertical" >
+                android:orientation="vertical"
+                android:paddingRight="8dp" >
 
                 <TextView
                     android:id="@+id/txtLoveNum"

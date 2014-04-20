@@ -31,6 +31,7 @@ import vn.infory.infory.network.GetComment;
 import vn.infory.infory.network.GetShopDetail;
 import vn.infory.infory.network.GetShopGallery;
 import vn.infory.infory.network.LikeComment;
+import vn.infory.infory.network.LikeShop;
 import vn.infory.infory.network.NetworkManager;
 import vn.infory.infory.network.PostComment;
 import vn.infory.infory.scancode.ScanCodeActivity;
@@ -68,6 +69,7 @@ import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.ListView;
+import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.TextView.OnEditorActionListener;
 
@@ -351,7 +353,7 @@ public class ShopDetailActivity extends FragmentActivity {
 	// Private methods
 	///////////////////////////////////////////////////////////////////////////
 
-	private void setShopGalleryInfoBar(ViewGroup view) {
+	private void setShopGalleryInfoBar(final ViewGroup view) {
 		PagerIndicator indicator = (PagerIndicator) view.findViewById(R.id.pagerIndicator);
 		
 		// Download cover
@@ -384,6 +386,93 @@ public class ShopDetailActivity extends FragmentActivity {
 		((TextView) view.findViewById(R.id.txtLoveNum)).setText(mShop.numOfLove);
 		((TextView) view.findViewById(R.id.txtViewNum)).setText(mShop.numOfView);
 		((TextView) view.findViewById(R.id.txtCommentNum)).setText(mShop.numOfComment);
+		
+		// Like button
+		setShopLikeStatus(view);
+		
+		ImageButton btnLike = (ImageButton) view.findViewById(R.id.btnLikeShop);
+		btnLike.setOnClickListener(new OnClickListener() {
+			@Override
+			public void onClick(View arg0) {
+				Settings.checkLogin(ShopDetailActivity.this, new Runnable() {
+					@Override
+					public void run() {
+						likeShop();
+					}
+				}, true);
+			}
+		});
+	}
+	
+	private void likeShop() {
+		CyAsyncTask task = new LikeShop(this, mShop.idShop, 1 - mShop.loveStatus) {
+			@Override
+			protected void onCompleted(Object result2) throws Exception {
+				try {
+					JSONObject result = (JSONObject) result2;
+					String message = result.optString("message", "");
+					switch (result.getInt("status")) {
+					case 1: { // Success
+						int loveStatus = result.getInt("loveStatus");
+						String numOfLove = result.getString("numOfLove");
+						int totalLove = result.getInt("totalLove");
+						
+						mShop.loveStatus = loveStatus;
+						mShop.numOfLove = numOfLove;
+						setShopLikeStatus(mAdapter.mLayoutShopGallery);
+					}
+						
+					default:	// Fail
+						if (message.length() != 0) {
+							AlertDialog.Builder builder = 
+									new AlertDialog.Builder(ShopDetailActivity.this);
+							builder.setMessage(message);
+							builder.create().show();
+						}
+					}
+				} catch (Exception e) {
+					onFail(e);
+				}
+			}
+			
+			@Override
+			protected void onFail(Exception e) {
+				CyUtils.showError("Thích cửa hàng thất bại!", e, ShopDetailActivity.this);
+			}
+		};
+		
+		task.setTaskList(mTaskList);
+		task.setVisibleView(mLayoutLoading);
+		task.executeOnExecutor(NetworkManager.THREAD_POOL);
+	}
+	
+	private void setShopLikeStatus(ViewGroup view) {
+		ImageButton btnLike = (ImageButton) view.findViewById(R.id.btnLikeShop);
+		ViewGroup layoutNumOfLike = (ViewGroup) view.findViewById(R.id.layoutNumOfLike);
+		TextView txtLoveNum = (TextView) view.findViewById(R.id.txtLoveNum);
+		TextView txtLoved = (TextView) view.findViewById(R.id.txtLoved);
+		switch (mShop.loveStatus) {
+		case 0: {
+			RelativeLayout.LayoutParams param = (RelativeLayout.LayoutParams) 
+				layoutNumOfLike.getLayoutParams();
+			param.addRule(RelativeLayout.LEFT_OF, R.id.btnLikeShop);
+			layoutNumOfLike.setLayoutParams(param);
+			btnLike.setImageResource(R.drawable.button_love_hover);
+			txtLoveNum.setTextColor(0xFF7C7C7C);
+			txtLoved.setTextColor(0xFF7C7C7C);
+			break;
+		}
+		case 1:
+			RelativeLayout.LayoutParams param = (RelativeLayout.LayoutParams) 
+			layoutNumOfLike.getLayoutParams();
+			param.addRule(RelativeLayout.LEFT_OF, R.id.linearLayout2);
+			layoutNumOfLike.setLayoutParams(param);
+			btnLike.setImageResource(R.drawable.button_loverelease);
+			txtLoveNum.setTextColor(0xFFFFFFFF);
+			txtLoved.setTextColor(0XFFFFFFFF);
+			break;
+		}
+		txtLoveNum.setText(mShop.numOfLove);
 	}
 
 	private void setInfo(ViewGroup view) {
@@ -421,9 +510,6 @@ public class ShopDetailActivity extends FragmentActivity {
 		mLstGallery.setAdapter(adapter);
 		mLstGallery.setOnScrollListener(adapter);
 		mLstGallery.setOnItemClickListener(adapter);
-		
-		
-		
 	}
 
 	private void setDataPromo1(ViewGroup view) {

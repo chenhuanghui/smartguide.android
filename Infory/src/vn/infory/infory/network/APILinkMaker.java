@@ -29,7 +29,7 @@ public class APILinkMaker {
 	public static final String mComment				= mPrefix + "comment/getShopComment";
 	public static final String mLikeComment			= mPrefix + "user/agreeComment";
 	public static final String mPostComment			= mPrefix + "comment/postShopComment";
-	
+	public static final String mLikeShop			= mPrefix + "user/loveShop";
 	
 	public static final String mScan				= mPrefix + "user/scanSGCode_v2";
 	
