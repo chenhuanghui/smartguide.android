@@ -110,6 +110,8 @@ implements AbsHListView.OnScrollListener, OnItemClickListener {
 		} else {
 			img.setTag(gal.thumbnail);
 			img.setScaleType(ScaleType.CENTER_CROP);
+			
+			if (gal.thumbnail != null) {
 			CyAsyncTask task = CyImageLoader.instance().loadImage(gal.thumbnail, new CyImageLoader.Listener() {
 				@Override
 				public void startLoad(int from) {
@@ -136,6 +138,9 @@ implements AbsHListView.OnScrollListener, OnItemClickListener {
 
 			if (task != null)
 				mTaskList.add(task);
+			} else {
+				img.setImageBitmap(gal.mBitmap);
+			}
 		}
 
 		return convertView;
@@ -232,7 +237,8 @@ implements AbsHListView.OnScrollListener, OnItemClickListener {
 		
 		List<PhotoGallery> itemList = new ArrayList<PhotoGallery>();
 		for (Object item : mItemList)
-			if (((PhotoGallery) item).getImage() != null)
+			if (((PhotoGallery) item).getImage() != null || 
+					((PhotoGallery) item).getBitmap() != null)
 				itemList.add((PhotoGallery) item);
 		
 		GalleryActivity.newInstance(mAct, mLoader.clone(), itemList, position - 1);

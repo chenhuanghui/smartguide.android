@@ -154,7 +154,7 @@
     </vn.infory.infory.RatioFrameLayout>
 
     <ImageButton
-        android:id="@+id/imageButton4"
+        android:id="@+id/btnPostPhoto"
         android:layout_width="match_parent"
         android:layout_height="45dp"
         android:layout_marginTop="10dp"

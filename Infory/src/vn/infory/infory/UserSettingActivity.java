@@ -205,6 +205,11 @@ ConnectionCallbacks, OnConnectionFailedListener{
 	private void onBackClick(View v) {
 		finish();
 	}
+	
+	@Click(id = R.id.txtPolicy)
+	private void onPolicyClick(View v) {
+		WebActivity.newInstance(this, "http://infory.vn/dieu-khoan-nguoi-dung.html");
+	}
 
 	@Override
 	public void finish() {
@@ -255,6 +260,7 @@ ConnectionCallbacks, OnConnectionFailedListener{
 				dlg.setTitle(makeVNDate(day, month, year-1900));
 			}
 		};
+		dlg.getDatePicker().setMaxDate(new Date().getTime());
 		dlg.setTitle(makeVNDate(d, m, y));
 		dlg.show();
 	}

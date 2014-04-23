@@ -124,7 +124,7 @@ public class MainActivity extends FragmentActivity {
 			
 			@Override
 			public void onTutorialClick() {
-				TutorialActivity.newInstance(MainActivity.this);
+				WebActivity.newInstance(MainActivity.this, "http://infory.vn/mobile/guide/");
 			}
 		});
 		Settings.instance().addListener(mSettingListener);

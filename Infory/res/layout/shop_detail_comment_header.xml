@@ -9,14 +9,6 @@
     android:paddingLeft="8dp"
     android:paddingRight="8dp" >
 
-        <FrameLayout
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:layout_below="@+id/relativeLayout2"
-            android:background="@drawable/bg_comment_list2" >
-
-        </FrameLayout>
-
         <RelativeLayout
             android:id="@+id/relativeLayout2"
             android:layout_width="match_parent"
@@ -95,5 +87,13 @@
                     android:src="@drawable/button_send" />
             </RelativeLayout>
         </RelativeLayout>
+
+        <FrameLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_alignParentLeft="true"
+            android:layout_below="@+id/relativeLayout2"
+            android:background="@drawable/bg_comment_list2" >
+        </FrameLayout>
 
 </vn.infory.infory.shopdetail.FullScreenLayout>

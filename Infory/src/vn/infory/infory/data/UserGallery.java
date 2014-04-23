@@ -1,5 +1,7 @@
 package vn.infory.infory.data;
 
+import android.graphics.Bitmap;
+
 import com.cycrix.jsonparser.JsonObject;
 import com.cycrix.jsonparser.JsonString;
 
@@ -11,6 +13,8 @@ public class UserGallery extends PhotoGallery {
 	@JsonString	public String description;
 	@JsonString	public String time;
 	
+	public Bitmap mBitmap;
+	
 	@Override
 	public String getThumb() {
 		return thumbnail;
@@ -19,5 +23,10 @@ public class UserGallery extends PhotoGallery {
 	@Override
 	public String getImage() {
 		return image;
+	}
+
+	@Override
+	public Bitmap getBitmap() {
+		return mBitmap;
 	}
 }

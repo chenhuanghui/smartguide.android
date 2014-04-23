@@ -1,5 +1,7 @@
 package vn.infory.infory.login;
 
+import java.util.Date;
+
 import vn.infory.infory.CyUtils;
 import vn.infory.infory.FontsCollection;
 import vn.infory.infory.R;
@@ -103,6 +105,7 @@ public class SelfCreate2Fragment extends Fragment {
 				dlg.setTitle(makeVNDate(day, month, year));
 			}
 		};
+		dlg.getDatePicker().setMaxDate(new Date().getTime());
 		dlg.setTitle(makeVNDate(d, m, y));
 		dlg.show();
 	}

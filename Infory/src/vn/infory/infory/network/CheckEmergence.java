@@ -1,14 +1,16 @@
 package vn.infory.infory.network;
 
+import java.net.URLEncoder;
+
 import org.json.JSONArray;
 import org.json.JSONObject;
 
+import vn.infory.infory.CyLogger;
 import vn.infory.infory.R;
 import vn.infory.infory.data.Settings;
-
 import android.app.AlertDialog;
-import android.app.Dialog;
 import android.app.AlertDialog.Builder;
+import android.app.Dialog;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.DialogInterface.OnClickListener;
@@ -21,6 +23,8 @@ import android.widget.TextView;
 
 public class CheckEmergence extends CyAsyncTask {
 
+	CyLogger mLog = new CyLogger("CycrixDebug", true);
+
 	public CheckEmergence(Context c) {
 		super(c);
 	}
@@ -29,25 +33,52 @@ public class CheckEmergence extends CyAsyncTask {
 	protected Object doInBackground(Object... arg0) {
 
 		try {
+			String deviceInfo = getDeviceName();
 			String url = APILinkMaker.mEmergency + "?access_token=" + Settings.instance().getAccessToken() 
 					+ "&version=android"+ Build.VERSION.RELEASE + "_" 
-					+ mContext.getPackageManager().getPackageInfo(mContext.getPackageName(), 0).versionName;;
-			String json = NetworkManager.get(url, false);
-//			String json = readWholeFile(mContext, R.raw.notification);
-			JSONObject jRoot = new JSONObject(json);
+					+ mContext.getPackageManager().getPackageInfo(mContext.getPackageName(), 0).versionName
+					+ "&deviceInfo=" + URLEncoder.encode(deviceInfo);
 			
+			mLog.d("deviceInfo: " + deviceInfo);
+			String json = NetworkManager.get(url, false);
+			//			String json = readWholeFile(mContext, R.raw.notification);
+			JSONObject jRoot = new JSONObject(json);
+
 			return jRoot;
 		} catch (Exception e) {
 			mEx = e;
 		}
-	
+
 		return super.doInBackground(arg0);
 	}
-	
+
+	public String getDeviceName() {
+		String manufacturer = Build.MANUFACTURER;
+		String model = Build.MODEL;
+		if (model.startsWith(manufacturer)) {
+			return capitalize(model);
+		} else {
+			return capitalize(manufacturer) + " " + model;
+		}
+	}
+
+
+	private String capitalize(String s) {
+		if (s == null || s.length() == 0) {
+			return "";
+		}
+		char first = s.charAt(0);
+		if (Character.isUpperCase(first)) {
+			return s;
+		} else {
+			return Character.toUpperCase(first) + s.substring(1);
+		}
+	} 
+
 	@Override
 	protected void onCompleted(Object result2) throws Exception {
 		super.onCompleted(result2);
-		
+
 		try {
 			final DialogInterface.OnClickListener onFailEvent = new DialogInterface.OnClickListener() {
 				@Override
@@ -55,9 +86,9 @@ public class CheckEmergence extends CyAsyncTask {
 					onFail(mEx);
 				}
 			};
-			
+
 			JSONObject result = (JSONObject) result2;
-			
+
 			switch(result.getInt("type")) {
 			case -1: {
 				AlertDialog.Builder builder = new AlertDialog.Builder(mContext);
@@ -70,7 +101,7 @@ public class CheckEmergence extends CyAsyncTask {
 			break;
 
 			case 0: 
-//				onCompleted();
+				//				onCompleted();
 				onSuccess();
 				break;
 
@@ -132,17 +163,17 @@ public class CheckEmergence extends CyAsyncTask {
 				((TextView)f.findViewById(android.R.id.message))
 				.setMovementMethod(LinkMovementMethod.getInstance());
 			}
-				break;
+			break;
 			}
 		} catch(Exception ex) {
 			onFail(ex);
 		}
 	}
-	
+
 	@Override
 	protected void onFail(final Exception e) {
 		super.onFail(e);
-		
+
 		AlertDialog.Builder builder = new Builder(mContext);
 		builder.setMessage("Không thể kết nối với máy chủ!");
 		builder.setPositiveButton("OK", new OnClickListener() {
@@ -153,7 +184,7 @@ public class CheckEmergence extends CyAsyncTask {
 		});
 		builder.create().show();
 	}
-	
+
 	protected void onSuccess() {}
 	protected void onFinalFail(Exception e) {}
 }

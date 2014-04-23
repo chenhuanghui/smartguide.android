@@ -39,6 +39,8 @@ public class GalleryAdapter extends LazyLoadAdapter {
 		
 		String path = ((PhotoGallery) getItem(position)).getThumb();
 		final ImageView img = (ImageView) convertView.findViewById(R.id.img);
+		
+		if (path != null) {
 		img.setTag(path);
 		CyImageLoader.instance().loadImage(path, new CyImageLoader.Listener() {
 			@Override
@@ -57,6 +59,9 @@ public class GalleryAdapter extends LazyLoadAdapter {
 					img.setImageBitmap(image);
 			}
 		}, imgSize, mAct);
+		} else {
+			img.setImageBitmap(((PhotoGallery) getItem(position)).getBitmap());
+		}
 		
 		img.setOnClickListener(new OnClickListener() {
 			

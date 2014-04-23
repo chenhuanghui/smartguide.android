@@ -30,6 +30,9 @@ public class APILinkMaker {
 	public static final String mLikeComment			= mPrefix + "user/agreeComment";
 	public static final String mPostComment			= mPrefix + "comment/postShopComment";
 	public static final String mLikeShop			= mPrefix + "user/loveShop";
+	public static final String mPostPhotoBinary		= mPrefix + "user/uploadUserGallery";
+	public static final String mPostPhotoDsc		= mPrefix + "user/postpicture";
+	
 	
 	public static final String mScan				= mPrefix + "user/scanSGCode_v2";
 	

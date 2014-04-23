@@ -35,6 +35,7 @@ import vn.infory.infory.network.LikeShop;
 import vn.infory.infory.network.NetworkManager;
 import vn.infory.infory.network.PostComment;
 import vn.infory.infory.scancode.ScanCodeActivity;
+import vn.infory.infory.shopdetail.PostPhotoActivity.Listener;
 import android.animation.Animator;
 import android.animation.Animator.AnimatorListener;
 import android.animation.AnimatorSet;
@@ -44,6 +45,7 @@ import android.app.AlertDialog;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.graphics.Bitmap;
 import android.graphics.Point;
 import android.graphics.drawable.AnimationDrawable;
 import android.net.Uri;
@@ -473,6 +475,7 @@ public class ShopDetailActivity extends FragmentActivity {
 			break;
 		}
 		txtLoveNum.setText(mShop.numOfLove);
+		
 	}
 
 	private void setInfo(ViewGroup view) {
@@ -495,6 +498,47 @@ public class ShopDetailActivity extends FragmentActivity {
 			CyImageLoader.instance().showImageSmooth(path, layoutMap, mMapSize, mTaskList);
 		}
 		
+		HListView mLstGallery = (HListView) view.findViewById(R.id.lstUserGallery);
+		ArrayList<UserGallery> itemList = new ArrayList<UserGallery>();
+		if (mShop.userGallery.size() > 0)
+			itemList.add(new UserGallery());
+		itemList.addAll(mShop.userGallery);
+		if (mShop.userGallery.size() % LazyLoadAdapter.ITEM_PER_PAGE != 0)
+			itemList.add(new UserGallery());
+		UserGalleryAdapter adapter = new UserGalleryAdapter(this, itemList, "" + mShop.idShop, mTaskList, view);
+		adapter.setPage(mShop.userGallery.size() / LazyLoadAdapter.ITEM_PER_PAGE);
+		if (mShop.userGallery.size() % LazyLoadAdapter.ITEM_PER_PAGE != 0) {
+			adapter.mIsMore = false;
+		}
+		mLstGallery.setAdapter(adapter);
+		mLstGallery.setOnScrollListener(adapter);
+		mLstGallery.setOnItemClickListener(adapter);
+		
+		view.findViewById(R.id.btnPostPhoto).setOnClickListener(new OnClickListener() {
+			@Override
+			public void onClick(View arg0) {
+				Settings.checkLogin(ShopDetailActivity.this, new Runnable() {
+					@Override
+					public void run() {
+						PostPhotoActivity.newInstance(ShopDetailActivity.this, 
+								mShop.idShop, new Listener() {
+							@Override
+							public void onFinish(Bitmap newBitmap) {
+								addNewUserImage(newBitmap);
+							}
+						});
+					}
+				}, true);
+			}
+		});
+	}
+	
+	private void addNewUserImage(Bitmap newBitmap) {
+		UserGallery newGal = new UserGallery();
+		newGal.mBitmap = newBitmap;
+		mShop.userGallery.add(0, newGal);
+		
+		View view = mAdapter.mLayoutInfo;
 		HListView mLstGallery = (HListView) view.findViewById(R.id.lstUserGallery);
 		ArrayList<UserGallery> itemList = new ArrayList<UserGallery>();
 		if (mShop.userGallery.size() > 0)
@@ -688,7 +732,7 @@ public class ShopDetailActivity extends FragmentActivity {
 
 		public List<Integer> mTypeList = new ArrayList<Integer>();
 		public ViewGroup mLayoutShopGallery;
-		private ViewGroup mLayoutInfo;
+		public ViewGroup mLayoutInfo;
 		private ViewGroup mLayoutPromo;
 		private ArrayList<Integer> mHeightList = new ArrayList<Integer>();
 		private int mCommentLstHeight;
@@ -864,6 +908,7 @@ public class ShopDetailActivity extends FragmentActivity {
 							startActivity(call);
 						}
 					});
+					CyUtils.setHoverEffect(mLayoutInfo.findViewById(R.id.btnPostPhoto), false);
 					setInfo(mLayoutInfo);
 					break;
 					

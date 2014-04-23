@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:background="@drawable/pattern_navigation_repeat" >
@@ -163,7 +163,17 @@
         android:id="@+id/btnUpdate"
         android:layout_width="wrap_content"
         android:layout_height="52dp"
-        android:layout_gravity="bottom"
+        android:layout_alignParentBottom="true"
         android:background="@drawable/button_update" />
 
-</FrameLayout>
+    <TextView
+        android:id="@+id/txtVersion"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentBottom="true"
+        android:layout_marginBottom="20dp"
+        android:layout_toRightOf="@+id/btnUpdate"
+        android:textColor="#33FFFFFF"
+        android:textSize="12sp" />
+
+</RelativeLayout>

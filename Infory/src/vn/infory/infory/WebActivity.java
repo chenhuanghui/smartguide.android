@@ -6,12 +6,19 @@ import android.os.Bundle;
 import android.webkit.WebView;
 import android.webkit.WebViewClient;
 
-public class TutorialActivity extends Activity {
+public class WebActivity extends Activity {
+	
+	private static String sUrl;
+	
+	private String mUrl;
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
+		mUrl = sUrl;
+		sUrl = null;
+		
 		super.onCreate(savedInstanceState);
-		setContentView(R.layout.activity_tutorial);
+		setContentView(R.layout.activity_web);
 		
 		WebView web = (WebView) findViewById(R.id.web);
 		
@@ -26,15 +33,15 @@ public class TutorialActivity extends Activity {
 	    });
 		vistaWeb.getSettings().setJavaScriptEnabled(true);
 		vistaWeb.getSettings().setJavaScriptCanOpenWindowsAutomatically(false);
-		web.loadUrl("http://infory.vn/mobile/guide/");
+		web.loadUrl(mUrl);
 	}
 	
-	public static void newInstance(Activity act) {
-		Intent intent = new Intent(act, TutorialActivity.class);
+	public static void newInstance(Activity act, String url) {
+		sUrl = url;
+		
+		Intent intent = new Intent(act, WebActivity.class);
 		act.startActivity(intent);
 		act.overridePendingTransition(R.anim.slide_in_down_detail, R.anim.alpha_out);
-		
-		
 	}
 	
 	@Override

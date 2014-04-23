@@ -53,7 +53,10 @@ public class GalleryFullAdapter extends LazyPagerAdapter {
 			((AnimationDrawable) loading.getBackground()).start();
 		} else {
 			PhotoGallery gal = (PhotoGallery) dataItem;
-			CyImageLoader.instance().showImage(mIsThumb ? gal.getThumb(): gal.getImage(),
+			if (gal.getBitmap() != null)
+				img.setImageBitmap(gal.getBitmap());
+			else
+				CyImageLoader.instance().showImage(mIsThumb ? gal.getThumb(): gal.getImage(),
 					img, ShopDetailActivity.mCoverSize);
 		}
 		return v;
@@ -65,8 +68,11 @@ public class GalleryFullAdapter extends LazyPagerAdapter {
 		loading.setVisibility(View.INVISIBLE);
 		((AnimationDrawable) loading.getBackground()).stop();
 
-		ShopGallery gal = (ShopGallery) dataItem;
+		PhotoGallery gal = (PhotoGallery) dataItem;
 		ImageView img = (ImageView) convertView.findViewById(R.id.img);
-		CyImageLoader.instance().showImage(gal.cover, img, ShopDetailActivity.mCoverSize);
+		if (gal.getImage() != null)
+			CyImageLoader.instance().showImage(gal.getImage(), img, ShopDetailActivity.mCoverSize);
+		else
+			img.setImageBitmap(gal.getBitmap());
 	}
 }

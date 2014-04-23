@@ -6,6 +6,7 @@ import com.cycrix.androidannotation.ViewById;
 
 import vn.infory.infory.CyUtils;
 import vn.infory.infory.R;
+import vn.infory.infory.WebActivity;
 import vn.infory.infory.FlashActivity.Listener;
 import android.app.Activity;
 import android.content.Intent;
@@ -90,5 +91,10 @@ public class UseImmediatelyActivity extends FragmentActivity {
 		finish();
 		mListener.onSuccess();
 		overridePendingTransition(R.anim.slide_in_right, R.anim.slide_out_left);
+	}
+	
+	@Click(id = R.id.txtPolicy)
+	private void onPolicyClick(View v) {
+		WebActivity.newInstance(this, "http://infory.vn/dieu-khoan-nguoi-dung.html");
 	}
 }

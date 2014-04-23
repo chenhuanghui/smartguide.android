@@ -54,5 +54,6 @@
     <string name="title_activity_map">MapActivity</string>
     <string name="title_activity_gallery">GalleryActivity</string>
     <string name="title_activity_gallery_full">GalleryFullActivity</string>
+    <string name="title_activity_post_photo">PostPhotoActivity</string>
 
 </resources>

@@ -37,6 +37,7 @@ public class SGSideMenu {
 	@ViewById(id = R.id.btnStore) 		private Button mBtnStore;
 	@ViewById(id = R.id.btnTutorial)	private Button mBtnTutorial;
 	@ViewById(id = R.id.btnUpdate)		private Button mBtnUpdate;
+	@ViewById(id = R.id.txtVersion)		private TextView mTxtVersion;
 	
 	
 	public SGSideMenu(Activity context) {
@@ -53,9 +54,13 @@ public class SGSideMenu {
 		
 		try {
 			AndroidAnnotationParser.parse(this, mMenu.getMenu());
+			mTxtVersion.setText(context.getPackageManager()
+					.getPackageInfo(context.getPackageName(), 0).versionName);
 		} catch (Exception e) { 
 			mCt.finish();
 		}
+		
+		
 	}
 	
 	public void setListener(Listener listener) {
