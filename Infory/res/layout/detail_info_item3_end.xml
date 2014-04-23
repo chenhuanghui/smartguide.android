@@ -10,8 +10,7 @@
     <ImageView
         android:id="@+id/imgImage"
         android:layout_width="64dp"
-        android:layout_height="64dp"
-        android:src="@drawable/ava" />
+        android:layout_height="64dp" />
 
     <TextView
         android:id="@+id/txtTitle"
