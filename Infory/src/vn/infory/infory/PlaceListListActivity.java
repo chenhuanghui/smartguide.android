@@ -31,6 +31,7 @@ import android.app.AlertDialog;
 import android.content.Context;
 import android.content.Intent;
 import android.graphics.Typeface;
+import android.graphics.drawable.AnimationDrawable;
 import android.os.Bundle;
 import android.text.Editable;
 import android.text.Spannable;
@@ -440,7 +441,7 @@ public class PlaceListListActivity extends Activity {
 						mTaskList.remove(this);
 
 						// Open shop
-						ShopDetailActivity.newInstance(PlaceListListActivity.this, (Shop) result);
+						ShopDetailActivity.newInstanceNoReload(PlaceListListActivity.this, (Shop) result);
 					}
 
 					@Override
@@ -492,15 +493,22 @@ public class PlaceListListActivity extends Activity {
 		public PlaceListAdapter() {
 			super(PlaceListListActivity.this, 
 					new GetPlaceListList(PlaceListListActivity.this, 0), 
-					R.layout.place_list_list_item_loading, 
+					R.layout.shop_list_loading, 
 					2, new ArrayList<PlaceList>());
 		}
 
 		@Override
 		public View getView(int position, View convertView, ViewGroup parent) {
 			convertView = super.getView(position, convertView, parent);
-			if (position >= mItemList.size())
+			if (position >= mItemList.size()) {
+				View loading = convertView.findViewById(R.id.layoutLoading);
+				if (loading != null) {
+					AnimationDrawable frameAnimation = 
+							(AnimationDrawable) loading.getBackground();
+					frameAnimation.start();
+				}
 				return convertView;
+			}
 
 			int type = getItemViewType(position);
 			if (convertView == null) {

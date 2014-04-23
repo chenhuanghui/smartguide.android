@@ -19,6 +19,7 @@ import android.app.Activity;
 import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.Point;
+import android.graphics.drawable.AnimationDrawable;
 import android.os.Bundle;
 import android.text.Html;
 import android.text.method.LinkMovementMethod;
@@ -49,7 +50,8 @@ public class ShopDetailInfo extends Activity {
 	@ViewById(id = R.id.txtIntroHeader)	private TextView mTxtIntroHeader;
 	@ViewById(id = R.id.txtIntroContent)private TextView mTxtIntroContent;
 	@ViewById(id = R.id.txtReadmore)	private TextView mTxtReadmore;
-	@ViewById(id = R.id.prgLoading)		private ProgressBar mPrgLoading;
+	@ViewById(id = R.id.layoutLoading)	private View mLayoutLoading;
+	@ViewById(id = R.id.layoutLoadingAni)private View mLayoutLoadingAni;
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
@@ -71,14 +73,14 @@ public class ShopDetailInfo extends Activity {
 			@Override
 			protected void onCompleted(Object result2) {
 				List<DetailInfoBlock> result = (List<DetailInfoBlock>) result2;
-				mLayoutRootContent.removeView(mPrgLoading);				
+				mLayoutRootContent.removeView(mLayoutLoading);				
 				setShopInfoData(result);
 			};
 			
 			@Override
 			protected void onFail(Exception e) {
 				CyUtils.showError("Không thể lấy thông tin chi tiết", e, ShopDetailInfo.this);
-				mLayoutRootContent.removeView(mPrgLoading);
+				mLayoutRootContent.removeView(mLayoutLoading);
 			}
 		}.executeOnExecutor(NetworkManager.THREAD_POOL);
 		
@@ -98,6 +100,8 @@ public class ShopDetailInfo extends Activity {
 					mTxtReadmore.setVisibility(View.GONE);
 			}
 		});
+		
+		((AnimationDrawable) mLayoutLoadingAni.getBackground()).start();
 	}
 	
 	@Override

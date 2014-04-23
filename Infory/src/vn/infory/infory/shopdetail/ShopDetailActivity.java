@@ -82,6 +82,7 @@ import com.cycrix.androidannotation.ViewById;
 public class ShopDetailActivity extends FragmentActivity {
 
 	private static Shop sShop;
+	private static boolean sNoReload;
 	private static final String[] COMMENT_SORT_TYPE = new String[] {
 		"Thích nhiều nhất", "Mới nhất"};
 	private static final int[] COMMENT_RID_TYPE = new int[] {
@@ -122,6 +123,9 @@ public class ShopDetailActivity extends FragmentActivity {
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
+		boolean noReload = sNoReload; 
+		sNoReload = false;
+		
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.activity_shop_detail);
 
@@ -145,20 +149,22 @@ public class ShopDetailActivity extends FragmentActivity {
 		mLst.setOnScrollListener(mAdapter);
 
 		// Get ShopDetail
-		GetShopDetail task = new GetShopDetail(this, mShop, mShop.idShop) {
-			@Override
-			protected void onCompleted(Object result2) {
-				mAdapter.reset();
-			}
+		if (!noReload) {
+			GetShopDetail task = new GetShopDetail(this, mShop, mShop.idShop) {
+				@Override
+				protected void onCompleted(Object result2) {
+					mAdapter.reset();
+				}
 
-			@Override
-			protected void onFail(Exception e) {
-				mTaskList.remove(this);
-				CyUtils.showError("Không thể lấy chi tiết cửa hàng", e, ShopDetailActivity.this);
-			}
-		};
-		task.setTaskList(mTaskList);
-		task.executeOnExecutor(NetworkManager.THREAD_POOL);
+				@Override
+				protected void onFail(Exception e) {
+					mTaskList.remove(this);
+					CyUtils.showError("Không thể lấy chi tiết cửa hàng", e, ShopDetailActivity.this);
+				}
+			};
+			task.setTaskList(mTaskList);
+			task.executeOnExecutor(NetworkManager.THREAD_POOL);
+		}
 
 		FontsCollection.setFont(findViewById(android.R.id.content));
 		
@@ -249,6 +255,15 @@ public class ShopDetailActivity extends FragmentActivity {
 
 	public static void newInstance(Activity act, Shop s) {
 		sShop = s;
+		sNoReload = false;
+		Intent intent = new Intent(act, ShopDetailActivity.class);
+		act.startActivity(intent);
+		act.overridePendingTransition(R.anim.slide_in_down_detail, R.anim.alpha_out);
+	}
+	
+	public static void newInstanceNoReload(Activity act, Shop s) {
+		sShop = s;
+		sNoReload = true;
 		Intent intent = new Intent(act, ShopDetailActivity.class);
 		act.startActivity(intent);
 		act.overridePendingTransition(R.anim.slide_in_down_detail, R.anim.alpha_out);

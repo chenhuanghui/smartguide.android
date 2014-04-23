@@ -5,7 +5,6 @@ import java.util.List;
 
 import vn.infory.infory.CyUtils;
 import vn.infory.infory.FontsCollection;
-import vn.infory.infory.MainActivity;
 import vn.infory.infory.PlaceListListActivity;
 import vn.infory.infory.R;
 import vn.infory.infory.data.PlaceList;
@@ -23,8 +22,8 @@ import android.support.v4.app.Fragment;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.AbsListView.OnScrollListener;
 import android.widget.AbsListView;
+import android.widget.AbsListView.OnScrollListener;
 import android.widget.ListView;
 
 import com.cycrix.androidannotation.AndroidAnnotationParser;

@@ -29,6 +29,7 @@ public class GetShopDetailInfo extends CyAsyncTask {
 
 	@Override
 	protected Object doInBackground(Object... arg0) {
+		
 
 		try {
 			List<NameValuePair> pairs = new ArrayList<NameValuePair>();
