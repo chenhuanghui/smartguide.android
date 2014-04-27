@@ -11,10 +11,6 @@ import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
-import com.cycrix.jsonparser.JsonArray.FailBehavior;
-
-
-
 public class JsonParser {
 
 	public static void parseObject(Object obj, String json) throws Exception {
@@ -170,7 +166,7 @@ public class JsonParser {
 
 				boolean opt = arrayAnno.optional();
 				boolean ignore = arrayAnno.ignore(); 
-				FailBehavior onFail = arrayAnno.onFail();
+				int onFail = arrayAnno.onFail();
 				// Parse json
 				JSONArray jSubArr = null;
 				if (opt)
@@ -203,7 +199,7 @@ public class JsonParser {
 		}
 	}
 
-	public static <T> void parseArray(List<T> list, Class<? extends T> type, JSONArray jArr, FailBehavior onFail) throws Exception {
+	public static <T> void parseArray(List<T> list, Class<? extends T> type, JSONArray jArr, int onFail) throws Exception {
 		list.clear();
 
 		for (int i = 0; i < jArr.length(); i++) {
@@ -234,11 +230,11 @@ public class JsonParser {
 			} catch (JSONException e) {
 				e.printStackTrace();
 				switch (onFail) {
-				case Throw:
+				case JsonArray.FAIL_BEHAVIOR_THROW:
 					throw new JSONException(e.getMessage() + " ShopName=" + shopName + " ShopId=" + shopId);
-				case Break:
+				case JsonArray.FAIL_BEHAVIOR_BREAK:
 					return;
-				case Pass:
+				case JsonArray.FAIL_BEHAVIOR_PASS:
 					break;
 				}
 			}

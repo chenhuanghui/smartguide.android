@@ -11,7 +11,7 @@ import vn.infory.infory.data.Settings;
 import vn.infory.infory.data.ShopGallery;
 import android.content.Context;
 
-import com.cycrix.jsonparser.JsonArray.FailBehavior;
+import com.cycrix.jsonparser.JsonArray;
 import com.cycrix.jsonparser.JsonParser;
 
 public class GetShopGallery extends CyAsyncTask {
@@ -56,7 +56,7 @@ public class GetShopGallery extends CyAsyncTask {
 			if (json.equalsIgnoreCase("null"))
 				json = "[]";
 			ArrayList<ShopGallery> gallery = new ArrayList<ShopGallery>();
-			JsonParser.parseArray(gallery, ShopGallery.class, new JSONArray(json), FailBehavior.Throw);
+			JsonParser.parseArray(gallery, ShopGallery.class, new JSONArray(json), JsonArray.FAIL_BEHAVIOR_THROW);
 			
 			return gallery;
 		} catch (Exception e) {

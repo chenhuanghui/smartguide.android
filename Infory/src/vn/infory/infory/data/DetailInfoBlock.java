@@ -7,7 +7,7 @@ import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
-import com.cycrix.jsonparser.JsonArray.FailBehavior;
+import com.cycrix.jsonparser.JsonArray;
 import com.cycrix.jsonparser.JsonCustom;
 import com.cycrix.jsonparser.JsonInt;
 import com.cycrix.jsonparser.JsonObject;
@@ -25,16 +25,16 @@ public class DetailInfoBlock {
 		JSONArray jItemArr = jObj.getJSONArray("items");
 		switch (jObj.getInt("type")) {
 		case 1:
-			JsonParser.parseArray(items, DetailInfoItem1.class, jItemArr, FailBehavior.Throw);
+			JsonParser.parseArray(items, DetailInfoItem1.class, jItemArr, JsonArray.FAIL_BEHAVIOR_THROW);
 			break;
 		case 2:
-			JsonParser.parseArray(items, DetailInfoItem2.class, jItemArr, FailBehavior.Throw);
+			JsonParser.parseArray(items, DetailInfoItem2.class, jItemArr, JsonArray.FAIL_BEHAVIOR_THROW);
 			break;
 		case 3:
-			JsonParser.parseArray(items, DetailInfoItem3.class, jItemArr, FailBehavior.Throw);
+			JsonParser.parseArray(items, DetailInfoItem3.class, jItemArr, JsonArray.FAIL_BEHAVIOR_THROW);
 			break;
 		case 4:
-			JsonParser.parseArray(items, DetailInfoItem4.class, jItemArr, FailBehavior.Throw);
+			JsonParser.parseArray(items, DetailInfoItem4.class, jItemArr, JsonArray.FAIL_BEHAVIOR_THROW);
 			break;
 		}
 	}

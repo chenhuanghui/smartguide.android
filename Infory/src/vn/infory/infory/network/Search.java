@@ -11,7 +11,7 @@ import vn.infory.infory.data.Settings;
 import vn.infory.infory.data.Shop;
 import android.content.Context;
 
-import com.cycrix.jsonparser.JsonArray.FailBehavior;
+import com.cycrix.jsonparser.JsonArray;
 import com.cycrix.jsonparser.JsonParser;
 
 public class Search extends CyAsyncTask {
@@ -74,7 +74,7 @@ public class Search extends CyAsyncTask {
 				json = "[]";
 			ArrayList<Shop> shopList = new ArrayList<Shop>();
 			JsonParser.parseArray(shopList, Shop.class, 
-					new JSONArray(json), FailBehavior.Throw);
+					new JSONArray(json), JsonArray.FAIL_BEHAVIOR_THROW);
 			
 			for (Shop shop : shopList)
 				shop.hasDistance = hasLatLng;

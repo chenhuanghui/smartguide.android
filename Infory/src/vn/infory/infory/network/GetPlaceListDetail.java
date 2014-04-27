@@ -13,7 +13,7 @@ import vn.infory.infory.data.Settings;
 import vn.infory.infory.data.Shop;
 import android.content.Context;
 
-import com.cycrix.jsonparser.JsonArray.FailBehavior;
+import com.cycrix.jsonparser.JsonArray;
 import com.cycrix.jsonparser.JsonParser;
 
 public class GetPlaceListDetail extends CyAsyncTask {
@@ -52,7 +52,7 @@ public class GetPlaceListDetail extends CyAsyncTask {
 			
 			ArrayList<Shop> shopList = new ArrayList<Shop>();
 			if (!jRoot.getString("shops").equalsIgnoreCase("null"))
-				JsonParser.parseArray(shopList, Shop.class, jRoot.getJSONArray("shops"), FailBehavior.Throw);
+				JsonParser.parseArray(shopList, Shop.class, jRoot.getJSONArray("shops"), JsonArray.FAIL_BEHAVIOR_THROW);
 			
 			for (Shop shop : shopList)
 				shop.hasDistance = hasLatLng;

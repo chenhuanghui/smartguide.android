@@ -12,8 +12,8 @@ import vn.infory.infory.data.Settings;
 import vn.infory.infory.data.Shop;
 import android.content.Context;
 
+import com.cycrix.jsonparser.JsonArray;
 import com.cycrix.jsonparser.JsonParser;
-import com.cycrix.jsonparser.JsonArray.FailBehavior;
 
 public class GetAvaList extends CyAsyncTask {
 
@@ -33,7 +33,7 @@ public class GetAvaList extends CyAsyncTask {
 			if (json.equalsIgnoreCase("null"))
 				json = "[]";
 			ArrayList<String> avaList = new ArrayList<String>();
-			JsonParser.parseArray(avaList, String.class, new JSONArray(json), FailBehavior.Throw);
+			JsonParser.parseArray(avaList, String.class, new JSONArray(json), JsonArray.FAIL_BEHAVIOR_THROW);
 			
 			return avaList;
 		} catch (Exception e) {

@@ -13,7 +13,7 @@ import vn.infory.infory.data.Settings;
 import vn.infory.infory.data.Shop;
 import android.content.Context;
 
-import com.cycrix.jsonparser.JsonArray.FailBehavior;
+import com.cycrix.jsonparser.JsonArray;
 import com.cycrix.jsonparser.JsonParser;
 
 public class GetShopDetailInfo extends CyAsyncTask {
@@ -43,7 +43,7 @@ public class GetShopDetailInfo extends CyAsyncTask {
 			
 			JSONArray jArr = new JSONArray(json);
 			List<DetailInfoBlock> detailBlockList = new ArrayList<DetailInfoBlock>();
-			JsonParser.parseArray(detailBlockList, DetailInfoBlock.class, jArr, FailBehavior.Throw);
+			JsonParser.parseArray(detailBlockList, DetailInfoBlock.class, jArr, JsonArray.FAIL_BEHAVIOR_THROW);
 			
 			super.doInBackground(arg0);
 			return detailBlockList;

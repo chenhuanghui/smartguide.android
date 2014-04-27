@@ -11,7 +11,7 @@ import vn.infory.infory.data.Settings;
 import vn.infory.infory.data.home.PromoItem;
 import android.content.Context;
 
-import com.cycrix.jsonparser.JsonArray.FailBehavior;
+import com.cycrix.jsonparser.JsonArray;
 import com.cycrix.jsonparser.JsonParser;
 
 public class GetPromotion extends CyAsyncTask {
@@ -54,7 +54,7 @@ public class GetPromotion extends CyAsyncTask {
 			
 			JSONArray jArr = new JSONArray(json);
 			ArrayList<PromoItem> promoItemList = new ArrayList<PromoItem>();
-			JsonParser.parseArray(promoItemList, PromoItem.class, jArr, FailBehavior.Throw);
+			JsonParser.parseArray(promoItemList, PromoItem.class, jArr, JsonArray.FAIL_BEHAVIOR_THROW);
 			
 			return promoItemList;
 		} catch (Exception e) {

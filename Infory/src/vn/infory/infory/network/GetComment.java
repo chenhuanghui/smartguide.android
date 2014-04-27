@@ -13,7 +13,7 @@ import vn.infory.infory.data.Settings;
 import vn.infory.infory.data.ShopGallery;
 import android.content.Context;
 
-import com.cycrix.jsonparser.JsonArray.FailBehavior;
+import com.cycrix.jsonparser.JsonArray;
 import com.cycrix.jsonparser.JsonParser;
 
 public class GetComment extends CyAsyncTask {
@@ -65,7 +65,7 @@ public class GetComment extends CyAsyncTask {
 			if (json.equalsIgnoreCase("null"))
 				json = "[]";
 			ArrayList<Comment> commentList = new ArrayList<Comment>();
-			JsonParser.parseArray(commentList, Comment.class, new JSONArray(json), FailBehavior.Throw);
+			JsonParser.parseArray(commentList, Comment.class, new JSONArray(json), JsonArray.FAIL_BEHAVIOR_THROW);
 			
 			return commentList;
 		} catch (Exception e) {

@@ -5,7 +5,7 @@ import java.util.ArrayList;
 
 import org.json.JSONObject;
 
-import com.cycrix.jsonparser.JsonArray.FailBehavior;
+import com.cycrix.jsonparser.JsonArray;
 import com.cycrix.jsonparser.JsonParser;
 
 import vn.infory.infory.CyUtils;
@@ -46,7 +46,7 @@ public class AutoComplete extends CyAsyncTask {
 			
 			ArrayList<AutoCompleteItem> items = new ArrayList<AutoCompleteItem>();
 			JsonParser.parseArray(items, AutoCompleteItem.class, 
-					root.getJSONObject("hits").getJSONArray("hits"), FailBehavior.Throw);
+					root.getJSONObject("hits").getJSONArray("hits"), JsonArray.FAIL_BEHAVIOR_THROW);
 			super.doInBackground(arg0);
 			return items;
 		} catch (Exception e) {

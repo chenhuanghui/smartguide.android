@@ -64,7 +64,7 @@ public class FlashActivity extends Activity {
 			protected void onSuccess() {
 				getProfile();
 			}
-		}.execute(NetworkManager.THREAD_POOL);
+		}.executeOnExecutor(NetworkManager.THREAD_POOL);
 	}
 	
 	@Override

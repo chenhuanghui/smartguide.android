@@ -12,8 +12,8 @@ import vn.infory.infory.data.PlaceList;
 import vn.infory.infory.data.Settings;
 import vn.infory.infory.data.Shop;
 
+import com.cycrix.jsonparser.JsonArray;
 import com.cycrix.jsonparser.JsonParser;
-import com.cycrix.jsonparser.JsonArray.FailBehavior;
 
 import android.content.Context;
 
@@ -55,7 +55,7 @@ public class GetPlaceListList extends CyAsyncTask {
 			if (json.equalsIgnoreCase("null"))
 				json = "[]";
 			ArrayList<PlaceList> placeListList = new ArrayList<PlaceList>();
-			JsonParser.parseArray(placeListList, PlaceList.class, new JSONArray(json), FailBehavior.Throw);
+			JsonParser.parseArray(placeListList, PlaceList.class, new JSONArray(json), JsonArray.FAIL_BEHAVIOR_THROW);
 			
 			return placeListList;
 		} catch (Exception e) {

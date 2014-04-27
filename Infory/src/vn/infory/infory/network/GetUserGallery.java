@@ -12,7 +12,7 @@ import vn.infory.infory.data.Shop;
 import vn.infory.infory.data.UserGallery;
 import android.content.Context;
 
-import com.cycrix.jsonparser.JsonArray.FailBehavior;
+import com.cycrix.jsonparser.JsonArray;
 import com.cycrix.jsonparser.JsonParser;
 
 public class GetUserGallery extends CyAsyncTask {
@@ -57,7 +57,7 @@ public class GetUserGallery extends CyAsyncTask {
 			if (json.equalsIgnoreCase("null"))
 				json = "[]";
 			ArrayList<UserGallery> gallery = new ArrayList<UserGallery>();
-			JsonParser.parseArray(gallery, UserGallery.class, new JSONArray(json), FailBehavior.Throw);
+			JsonParser.parseArray(gallery, UserGallery.class, new JSONArray(json), JsonArray.FAIL_BEHAVIOR_THROW);
 			
 			return gallery;
 		} catch (Exception e) {

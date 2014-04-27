@@ -230,12 +230,14 @@ public class SGShopListLayout extends FrameLayout {
 	@Override
 	protected void onDraw(Canvas canvas) {
 		
-		if (mScroller.computeScrollOffset())
-			invalidate();
-
-		mLst.setTranslationY(mScroller.getCurrY());
-		mPad.setTranslationY(mScroller.getCurrY() + mPadOffset);
-		mMapHolder.setTranslationY(mMapOffset - mScroller.getCurrY() * mMapOffset / mHeaderHeight);
+		if (!isInEditMode()) {
+			if (mScroller.computeScrollOffset())
+				invalidate();
+	
+			mLst.setTranslationY(mScroller.getCurrY());
+			mPad.setTranslationY(mScroller.getCurrY() + mPadOffset);
+			mMapHolder.setTranslationY(mMapOffset - mScroller.getCurrY() * mMapOffset / mHeaderHeight);
+		}
 		
 		super.onDraw(canvas);
 	}
@@ -273,10 +275,6 @@ public class SGShopListLayout extends FrameLayout {
 	public void setMapHolder(View holder) {
 		mMapHolder = holder;
 	}
-	
-//	public void setFirstItemHeight(int height) {
-//		mFirstItemHeight = height;
-//	}
 	
 	public float magnitude(float x, float y) {
 		return (float) Math.sqrt(x*x + y*y);
