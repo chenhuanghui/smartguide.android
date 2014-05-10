@@ -39,7 +39,7 @@ import android.net.NetworkInfo;
 public final class NetworkManager {
 
 	public static ThreadPoolExecutor THREAD_POOL;
-
+	
 	public static final String mHostName 	= "https://api.infory.vn";
 //	public static final String mHostName 	= "http://dev2.smartguide.vn";
 //	public static final String mHostName 	= "http://125.253.122.44/";
