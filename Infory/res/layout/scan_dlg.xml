@@ -24,7 +24,7 @@
             android:paddingBottom="30dp"
             android:paddingLeft="12dp"
             android:paddingRight="12dp" >
-
+			
             <TextView
                 android:id="@+id/txtShopName"
                 android:layout_width="wrap_content"
@@ -35,21 +35,25 @@
                 android:shadowDy="2"
                 android:shadowRadius="5"
                 android:text="SmartGuide"
+                android:gravity="center"
                 android:textColor="#ffffff"
                 android:textSize="14sp" />
 
         </LinearLayout>
-
-        <FrameLayout
-            android:id="@+id/layoutContentHolder"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
+		
+        <ScrollView
+            android:layout_height="match_parent"
+            android:layout_width="match_parent"	 
             android:layout_above="@+id/btnContinue"
-            android:layout_below="@+id/layoutFlag"
-            android:layout_centerHorizontal="true" >
-
-        </FrameLayout>
-
+	        android:layout_below="@+id/layoutFlag"
+	        android:layout_centerHorizontal="true">
+	        <FrameLayout
+	            android:id="@+id/layoutContentHolder"
+	            android:layout_width="wrap_content"
+	            android:layout_height="wrap_content" >
+	
+	        </FrameLayout>
+		</ScrollView>
         <Button
             android:id="@+id/btnClose"
             android:layout_width="wrap_content"
