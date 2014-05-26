@@ -4,13 +4,16 @@ import java.util.ArrayList;
 
 import vn.infory.infory.FlashActivity.Listener;
 import vn.infory.infory.login.LoginActivity;
-
 import android.app.Activity;
 import android.app.AlertDialog;
 import android.app.AlertDialog.Builder;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.SharedPreferences;
+import android.location.Location;
+import android.location.LocationListener;
+import android.location.LocationManager;
+import android.os.Bundle;
 
 public class Settings {
 
@@ -46,8 +49,8 @@ public class Settings {
 
 //	public float lat = 10.759765f;
 //	public float lng = 106.692842f;
-	public float lat = -1;
-	public float lng = -1;
+	public static float lat = -1;
+	public static float lng = -1;
 	public String P;
 
 	public static void init(Context context) {
@@ -220,4 +223,37 @@ public class Settings {
 	public interface DataChangeListener {
 		public void onUserDataChange(Settings s);
 	}
+	
+	public static void getLocation(Context context){
+		LocationManager locationManager = (LocationManager) context.getSystemService(Context.LOCATION_SERVICE);
+		LocationListener locationListener = new LocationListener() {
+			@Override
+			public void onLocationChanged(Location location) {
+				lat = (float)location.getLatitude();
+				lng = (float)location.getLongitude();
+			}
+
+			@Override
+			public void onProviderDisabled(String provider) {
+
+			}
+
+			@Override
+			public void onProviderEnabled(String provider) {
+				
+			}
+
+			@Override
+			public void onStatusChanged(String provider, int status,
+					Bundle extras) {
+				// TODO Auto-generated method stub
+				
+			}  
+		};
+
+		// Register the listener with the Location Manager to receive location updates
+		locationManager.requestLocationUpdates(LocationManager.NETWORK_PROVIDER, 5 * 60 * 1000, 0, locationListener);
+		//locationManager.requestLocationUpdates(LocationManager.GPS_PROVIDER, 0, 0, locationListener);
+	}
+
 }

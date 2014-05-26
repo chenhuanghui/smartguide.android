@@ -61,6 +61,7 @@ public class MainActivity extends FragmentActivity {
 
 		try {
 			Settings.init(this);
+			Settings.getLocation(this);
 			NetworkManager.init();
 			CyImageLoader.initInstance(this);
 			FontsCollection.init(this);

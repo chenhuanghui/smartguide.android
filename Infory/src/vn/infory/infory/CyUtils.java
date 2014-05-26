@@ -13,7 +13,7 @@ import android.view.View.OnTouchListener;
 import android.widget.Toast;
 
 public class CyUtils {
-	public static final boolean isDebug = true;
+	public static final boolean isDebug = false;
 	public static final String DOB_FORMAT = "dd/MM/yyyy";
 
 	public static void showError(String message, Exception e, Context ct) {
