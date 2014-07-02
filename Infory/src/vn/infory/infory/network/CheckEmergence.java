@@ -34,7 +34,7 @@ public class CheckEmergence extends CyAsyncTask {
 
 		try {
 			String deviceInfo = getDeviceName();
-			String url = APILinkMaker.mEmergency + "?access_token=" + Settings.instance().getAccessToken() 
+			String url = APILinkMaker.mEmergency + "?accessToken=" + Settings.instance().getAccessToken() 
 					+ "&version=android"+ Build.VERSION.RELEASE + "_" 
 					+ mContext.getPackageManager().getPackageInfo(mContext.getPackageName(), 0).versionName
 					+ "&deviceInfo=" + URLEncoder.encode(deviceInfo);

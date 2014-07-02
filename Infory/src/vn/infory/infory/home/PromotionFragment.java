@@ -107,7 +107,7 @@ public class PromotionFragment extends Fragment implements HomeListener {
 				mTaskList.remove(this);
 				
 				ArrayList<Shop> result = (ArrayList<Shop>) result2;
-				ShopListActivity.newInstance(getActivity(), shopId, result, 0);
+				ShopListActivity.newInstance(getActivity(), shopId, new ArrayList<Shop>(), 0);
 			}
 
 			@Override
