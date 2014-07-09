@@ -11,22 +11,27 @@ import vn.infory.infory.CyUtils;
 import vn.infory.infory.FontsCollection;
 import vn.infory.infory.R;
 import vn.infory.infory.data.Settings;
-import vn.infory.infory.login.LoginActivity.BackListener;
+import vn.infory.infory.login.InforyLoginActivity.BackListener;
 import vn.infory.infory.network.CheckActiveCode;
 import vn.infory.infory.network.CyAsyncTask;
 import vn.infory.infory.network.GetActiveCode;
 import vn.infory.infory.network.NetworkManager;
 import android.app.AlertDialog;
 import android.app.Dialog;
+import android.app.FragmentManager;
 import android.content.Context;
 import android.content.DialogInterface;
+import android.content.SharedPreferences.Editor;
 import android.graphics.Typeface;
 import android.os.Bundle;
+import android.preference.PreferenceManager;
 import android.support.v4.app.Fragment;
+import android.support.v4.app.FragmentTransaction;
 import android.telephony.PhoneNumberUtils;
 import android.text.SpannableString;
 import android.text.style.ForegroundColorSpan;
 import android.text.style.StyleSpan;
+import android.util.Log;
 import android.view.Gravity;
 import android.view.KeyEvent;
 import android.view.LayoutInflater;
@@ -38,6 +43,7 @@ import android.view.inputmethod.InputMethodManager;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageButton;
+import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.TextView.OnEditorActionListener;
 
@@ -48,7 +54,7 @@ import com.cycrix.androidannotation.ViewById;
 public class TelephoneFragment extends Fragment implements BackListener {
 
 	// GUI elements
-	@ViewById(id = R.id.btnBack)				private ImageButton mBtnBack;
+//	@ViewById(id = R.id.btnBack)				private ImageButton mBtnBack;
 	@ViewById(id = R.id.btnSend)				private Button mBtnSend;
 	@ViewById(id = R.id.edtTelNum)				private EditText mEdtTelephone;
 	@ViewById(id = R.id.txtMesTop)				private TextView mTxtMesTop;
@@ -100,7 +106,7 @@ public class TelephoneFragment extends Fragment implements BackListener {
 	
 	@Override
 	public void onBackPress() {
-		onBackClick(null);
+//		onBackClick(null);
 	}
 	
 	@Override
@@ -138,10 +144,10 @@ public class TelephoneFragment extends Fragment implements BackListener {
 	// Private methods
 	///////////////////////////////////////////////////////////////////////////
 	
-	@Click(id = R.id.btnBack)
+	/*@Click(id = R.id.btnBack)
 	private void onBackClick(View v) {
 		mListener.onBackPress();
-	}
+	}*/
 
 	@Click(id = R.id.btnSend)
 	private void onSendClick(View v) {
@@ -246,6 +252,25 @@ public class TelephoneFragment extends Fragment implements BackListener {
 				mTaskList.remove(this);
 				
 				mjProfile = result;
+				saveProfile(result);
+				
+				Editor e = PreferenceManager.getDefaultSharedPreferences(getActivity()).edit();
+				e.putString("accessToken", mjProfile.optString("accessToken"));
+				e.putString("refreshToken", mjProfile.optString("refreshToken"));
+				e.putString("activeCode", mActiveCode);
+				e.commit();
+				
+				/*android.support.v4.app.FragmentManager fm = getFragmentManager();
+				FragmentTransaction ft = fm.beginTransaction();
+				
+				ft.add(R.id.fragLoginRegisterType, new RegisterTypeFragment());
+				ft.commit();*/
+//				RegisterTypeFragment fragment = (RegisterTypeFragment) getFragmentManager().findFragmentByTag("android:switcher:"+R.id.fragLoginRegisterType+":0");
+//				View v = fragment.getView();
+				
+//				txt.setText("CCCC");
+//				fragment.onFinishLogin();
+				
 				mListener.onSuccess();
 			}
 
@@ -255,6 +280,7 @@ public class TelephoneFragment extends Fragment implements BackListener {
 				
 				mjProfile = result;
 				saveProfile(result);
+				
 				mListener.onLoginSuccess(result);
 			}
 
@@ -268,7 +294,7 @@ public class TelephoneFragment extends Fragment implements BackListener {
 			@Override
 			protected void onFail(Exception e) {
 				mTaskList.remove(this);
-				
+				Log.e("YOUR_APP_LOG_TAG", "I got an error", e);
 				mTxtMesBot.setText("Xác thực thất bại");
 				CyUtils.showError("Xác thực thất bại", e, getActivity());
 			}

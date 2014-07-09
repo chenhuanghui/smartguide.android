@@ -5,7 +5,7 @@ import vn.infory.infory.NonSlidePager;
 import vn.infory.infory.PagerSlidingTabStrip;
 import vn.infory.infory.R;
 import vn.infory.infory.PagerSlidingTabStrip.OnTabClickListener;
-import vn.infory.infory.login.LoginActivity.BackListener;
+import vn.infory.infory.login.InforyLoginActivity.BackListener;
 import vn.infory.infory.network.UpdateProfile;
 import android.content.Context;
 import android.os.Bundle;

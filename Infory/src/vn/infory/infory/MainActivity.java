@@ -2,9 +2,17 @@ package vn.infory.infory;
 
 import java.util.Locale;
 
+import org.json.JSONObject;
+
 import vn.infory.infory.data.Settings;
 import vn.infory.infory.home.HomeFragment;
 import vn.infory.infory.home.PromotionFragment;
+import vn.infory.infory.login.InforyLoginActivity;
+import vn.infory.infory.login.RegisterFragment;
+import vn.infory.infory.login.RegisterTypeActivity;
+import vn.infory.infory.login.RegisterTypeFragment;
+import vn.infory.infory.login.TelephoneFragment;
+import vn.infory.infory.login.InforyLoginActivity.BackListener;
 import vn.infory.infory.network.NetworkManager;
 import vn.infory.infory.scancode.ScanCodeActivity;
 import android.animation.Animator;
@@ -12,14 +20,21 @@ import android.animation.AnimatorSet;
 import android.animation.ObjectAnimator;
 import android.app.AlertDialog;
 import android.app.AlertDialog.Builder;
+import android.content.Intent;
 import android.content.res.Configuration;
 import android.os.Bundle;
+import android.preference.PreferenceManager;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentActivity;
 import android.support.v4.app.FragmentManager;
+import android.support.v4.app.FragmentTransaction;
+import android.support.v4.app.FragmentPagerAdapter;
+import android.support.v4.view.PagerAdapter;
+import android.support.v4.view.ViewPager;
 import android.view.View;
 import android.widget.AbsListView;
 import android.widget.AbsListView.OnScrollListener;
+import android.widget.Toast;
 
 import com.cycrix.androidannotation.AndroidAnnotationParser;
 import com.cycrix.androidannotation.Click;
@@ -27,7 +42,7 @@ import com.cycrix.androidannotation.ViewById;
 
 public class MainActivity extends FragmentActivity {
 
-//	@ViewById(id = R.id.pager)				private ViewPager mPager;
+	@ViewById(id = R.id.pager)				private ViewPager mPager;
 	@ViewById(id = R.id.layoutScanCode)		private View mLayoutScanCode;
 	@ViewById(id = R.id.imgScanCode)		private View mImgScanCode;
 	@ViewById(id = R.id.imgScanCodeSmall)	private View mImgScanCodeSmall;
@@ -37,7 +52,8 @@ public class MainActivity extends FragmentActivity {
 	private PromotionFragment mFragPromo;
 //	private StoreFragment mFragStore;
 	private Fragment mFragActive;
-	
+	private RegisterTypeFragment mFragRegisterType;
+		
 	private Settings.DataChangeListener mSettingListener = 
 			new Settings.DataChangeListener() {
 		@Override
@@ -57,11 +73,12 @@ public class MainActivity extends FragmentActivity {
 	            getBaseContext().getResources().getDisplayMetrics()); 
 		
 		super.onCreate(savedInstanceState);
+		
 		setContentView(R.layout.activity_main);
 
 		try {
 			Settings.init(this);
-			Settings.getLocation(this);
+//			Settings.getLocation(this);
 			NetworkManager.init();
 			CyImageLoader.initInstance(this);
 			FontsCollection.init(this);
@@ -69,6 +86,25 @@ public class MainActivity extends FragmentActivity {
 		} catch (Exception e) {
 			finish();
 		}
+		
+		String last_activity = PreferenceManager.getDefaultSharedPreferences(this).getString("last_activity", "");
+		Toast.makeText(getApplicationContext(), "Main activity: " + last_activity, Toast.LENGTH_LONG).show();
+		if(last_activity.equals("RegisterTypeFragment"))
+		{	
+			Intent intent = new Intent(this, InforyLoginActivity.class);
+			startActivity(intent);
+			
+			/*FragmentTransaction ft = getSupportFragmentManager().beginTransaction();
+			RegisterTypeFragment fb = new RegisterTypeFragment();
+			ft.replace(R.layout.activity_login, fb);
+			ft.commit();
+			
+			ViewPager mViewPager = new ViewPager(this);
+			mViewPager.setId(R.layout.login_register_type);
+			setContentView(mViewPager);*/
+		}
+		
+		
 		
 		mAnimationHeight = CyUtils.dpToPx(24, this);
 		
@@ -176,7 +212,7 @@ public class MainActivity extends FragmentActivity {
 		
 		
 	}
-	
+
 	@Override
 		protected void onDestroy() {
 			super.onDestroy();

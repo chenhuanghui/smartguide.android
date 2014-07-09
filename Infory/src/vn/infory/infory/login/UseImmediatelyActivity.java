@@ -82,7 +82,7 @@ public class UseImmediatelyActivity extends FragmentActivity {
 	
 	@Click(id = R.id.btnLogin)
 	private void onLoginClick(View v) {
-		LoginActivity.newInstance(this, mListener);
+		InforyLoginActivity.newInstance(this, mListener);
 		overridePendingTransition(R.anim.slide_in_bottom, R.anim.slide_out_top);
 	}
 	

@@ -3,18 +3,26 @@ package vn.infory.infory.home;
 import java.util.ArrayList;
 import java.util.List;
 
+import vn.infory.infory.CyImageLoader;
 import vn.infory.infory.FontsCollection;
 import vn.infory.infory.MainActivity;
 import vn.infory.infory.PlaceListListActivity;
 import vn.infory.infory.R;
+import vn.infory.infory.SGSideMenu;
 import vn.infory.infory.data.PlaceList;
+import vn.infory.infory.data.Settings;
 import vn.infory.infory.data.Shop;
 import vn.infory.infory.data.home.HomeItem_ShopItem;
 import vn.infory.infory.data.home.PromoItem;
 import vn.infory.infory.network.CyAsyncTask;
 import vn.infory.infory.shopdetail.ShopDetailActivity;
 import vn.infory.infory.shoplist.ShopListActivity;
+import android.app.Activity;
+import android.content.SharedPreferences.Editor;
+import android.graphics.Bitmap;
+import android.graphics.Point;
 import android.os.Bundle;
+import android.preference.PreferenceManager;
 import android.support.v4.app.Fragment;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -22,6 +30,7 @@ import android.view.ViewGroup;
 import android.widget.AbsListView;
 import android.widget.AbsListView.OnScrollListener;
 import android.widget.ListView;
+import android.widget.Toast;
 
 import com.cycrix.androidannotation.AndroidAnnotationParser;
 import com.cycrix.androidannotation.Click;
@@ -72,11 +81,35 @@ public class HomeFragment extends Fragment implements HomeListener {
 	}
 
 	@Override
+	public void onResume() {
+		// TODO Auto-generated method stub
+		Editor e = PreferenceManager.getDefaultSharedPreferences(getActivity()).edit();
+		e.putString("last_activity", getClass().getSimpleName());
+		e.commit();
+		
+		super.onResume();
+	}
+
+	@Override
 	public void onDestroy() {
+		Editor e = PreferenceManager.getDefaultSharedPreferences(getActivity()).edit();
+		e.putString("last_activity", getClass().getSimpleName());
+		e.commit();
+		
 		for (CyAsyncTask task : mTaskList)
 			task.cancel(true);
 
 		super.onDestroy();
+	}
+	
+	@Override
+	public void onPause() {
+		// TODO Auto-generated method stub
+		Editor e = PreferenceManager.getDefaultSharedPreferences(getActivity()).edit();
+		e.putString("last_activity", getClass().getSimpleName());
+		e.commit();
+		
+		super.onPause();
 	}
 
 	@Click(id = R.id.edtSearch)

@@ -5,11 +5,11 @@
     android:background="@drawable/background_login"
     tools:context=".FlashActivity" >
 
-    <ImageView
+    <!-- <ImageView
         android:id="@+id/imageView1"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_gravity="center"
-        android:src="@drawable/logo" />
+        android:src="@drawable/logo" /> -->
 
 </FrameLayout>

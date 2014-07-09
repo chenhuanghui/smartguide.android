@@ -3,7 +3,7 @@ package vn.infory.infory.data;
 import java.util.ArrayList;
 
 import vn.infory.infory.FlashActivity.Listener;
-import vn.infory.infory.login.LoginActivity;
+import vn.infory.infory.login.InforyLoginActivity;
 import android.app.Activity;
 import android.app.AlertDialog;
 import android.app.AlertDialog.Builder;
@@ -194,7 +194,7 @@ public class Settings {
 						listener = new Listener();
 					}
 
-					LoginActivity.newInstance(act, listener);
+					InforyLoginActivity.newInstance(act, listener);
 				}
 			});
 			builder.setNegativeButton("Hủy", null);

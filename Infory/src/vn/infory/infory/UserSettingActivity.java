@@ -10,6 +10,8 @@ import java.util.Locale;
 
 import org.json.JSONObject;
 
+import vn.infory.infory.FlashActivity.Listener;
+import vn.infory.infory.login.InforyLoginActivity;
 import vn.infory.infory.data.Profile;
 import vn.infory.infory.data.Settings;
 import vn.infory.infory.login.AvaDialogActivity;
@@ -62,6 +64,9 @@ public class UserSettingActivity extends Activity implements
 ConnectionCallbacks, OnConnectionFailedListener{
 	
 	public static final int REQUEST_CODE_RESOLVE_ERR = 9000;
+	
+	private static Listener sListener;
+	private Listener mListener;
 
 	// GUI
 	@ViewById(id = R.id.imgAva)				private ImageView mImgAva;
@@ -91,6 +96,9 @@ ConnectionCallbacks, OnConnectionFailedListener{
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
+		mListener = sListener;
+		sListener = null;
+		
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.activity_user_setting);
 
@@ -323,6 +331,8 @@ ConnectionCallbacks, OnConnectionFailedListener{
 		Settings.instance().logout();
 		
 		getProfileFromServer();
+		InforyLoginActivity.newInstance(this, mListener);
+		overridePendingTransition(R.anim.slide_in_bottom, R.anim.slide_out_top);
 	}
 
 	private void uploadAva() {

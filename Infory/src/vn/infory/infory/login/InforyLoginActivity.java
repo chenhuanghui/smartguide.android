@@ -10,6 +10,7 @@ import vn.infory.infory.R;
 import vn.infory.infory.FlashActivity.Listener;
 import vn.infory.infory.data.Profile;
 import vn.infory.infory.data.Settings;
+import vn.infory.infory.home.HomeFragment;
 import vn.infory.infory.network.CyAsyncTask;
 import vn.infory.infory.network.GetProfile;
 import vn.infory.infory.network.NetworkManager;
@@ -22,11 +23,15 @@ import android.content.Intent;
 import android.content.IntentSender.SendIntentException;
 import android.graphics.drawable.AnimationDrawable;
 import android.os.Bundle;
+import android.preference.PreferenceManager;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentActivity;
 import android.support.v4.app.FragmentPagerAdapter;
 import android.support.v4.view.ViewPager;
+import android.util.Log;
 import android.view.View;
+import android.widget.TextView;
+import android.widget.Toast;
 
 import com.cycrix.androidannotation.AndroidAnnotationParser;
 import com.cycrix.androidannotation.ViewById;
@@ -46,7 +51,7 @@ import com.google.android.gms.plus.PlusClient;
 import com.google.android.gms.plus.PlusClient.OnAccessRevokedListener;
 import com.google.android.gms.plus.model.people.Person;
 
-public class LoginActivity extends FragmentActivity implements 
+public class InforyLoginActivity extends FragmentActivity implements 
 ConnectionCallbacks, OnConnectionFailedListener {
 	
 	public static final int REQUEST_CODE_RESOLVE_ERR = 9000;
@@ -131,7 +136,8 @@ ConnectionCallbacks, OnConnectionFailedListener {
 				case 1: {
 					RegisterTypeFragment frag = new RegisterTypeFragment();
 					mBackFragArr[1] = frag;
-					mActiveFrag = frag;
+					mActiveFrag = frag;									
+					
 					frag.setListener(new RegisterTypeFragment.Listener() {
 
 						@Override
@@ -146,14 +152,22 @@ ConnectionCallbacks, OnConnectionFailedListener {
 
 						@Override
 						public void onGooglePlusClick() {
-							LoginActivity.this.onGooglePlusClick();
+							InforyLoginActivity.this.onGooglePlusClick();
 						}
 						
 						@Override
 						public void onFacebookClick() {
 							callback = callback2;
 						}
+
+						@Override
+						public void onButtonContinueClick() {
+							// TODO Auto-generated method stub
+							finish();
+							mListener.onSuccess();
+						}
 					});
+					
 					return frag;
 				}
 				case 2: {
@@ -169,7 +183,7 @@ ConnectionCallbacks, OnConnectionFailedListener {
 
 						@Override
 						public void onRegisterClick(Object[] result1, int[] result2) {
-							LoginActivity.this.onRegisterClick(result1, result2);
+							InforyLoginActivity.this.onRegisterClick(result1, result2);
 						}
 					});
 					return frag;
@@ -184,6 +198,23 @@ ConnectionCallbacks, OnConnectionFailedListener {
 			}
 		};
 		mPager.setAdapter(mAdapter);
+		
+		String last_activity = PreferenceManager.getDefaultSharedPreferences(this).getString("last_activity", "");
+//		Toast.makeText(getApplicationContext(), "Login activity: " +  last_activity, Toast.LENGTH_LONG).show();
+		//View tiếp theo là HomeFragment, nếu kill app thì cứ mở lại RegisterTypeFragment
+		Settings s = Settings.instance();
+		if(last_activity.equals("HomeFragment") && !s.getAccessToken().equals("abc"))
+		{
+			mPager.setCurrentItem(1);
+			finish();
+			
+			int mPrePos = 0;
+			if (mBackFragArr[mPrePos] instanceof TelephoneFragment)
+				((TelephoneFragment) mBackFragArr[mPrePos]).hideSoftKeyboard();
+			else if (mBackFragArr[mPrePos] instanceof RegisterFragment)
+				((RegisterFragment) mBackFragArr[mPrePos]).hideSoftKeyboard();
+		}
+		
 		mPager.setOnPageChangeListener(new ViewPager.SimpleOnPageChangeListener() {
 			
 			private int mPrePos = 0;
@@ -194,7 +225,8 @@ ConnectionCallbacks, OnConnectionFailedListener {
 				case 0: 
 					((TelephoneFragment) mBackFragArr[0]).reset();
 					break;
-				case 1: 
+				case 1:
+					((RegisterTypeFragment) mBackFragArr[1]).onFinishLogin();
 					if (mBackFragArr[mPrePos] instanceof TelephoneFragment)
 						((TelephoneFragment) mBackFragArr[mPrePos]).hideSoftKeyboard();
 					else if (mBackFragArr[mPrePos] instanceof RegisterFragment)
@@ -231,8 +263,8 @@ ConnectionCallbacks, OnConnectionFailedListener {
 	public static void newInstance(Activity act, Listener listener) {
 		sListener = listener;
 		sFromUseImmediate = act instanceof UseImmediatelyActivity;
-			
-		Intent intent = new Intent(act, LoginActivity.class);
+		
+		Intent intent = new Intent(act, InforyLoginActivity.class);
 		act.startActivity(intent);
 	}
 	
@@ -256,7 +288,7 @@ ConnectionCallbacks, OnConnectionFailedListener {
 
 	@Override
 	public void onBackPressed() {
-		mBackFragArr[mPager.getCurrentItem()].onBackPress();
+//		mBackFragArr[mPager.getCurrentItem()].onBackPress();
 	}
 
 	///////////////////////////////////////////////////////////////////////////
@@ -273,7 +305,7 @@ ConnectionCallbacks, OnConnectionFailedListener {
 		int year = result2[2];
 		int sex = result2[3];
 
-		UpdateProfile updateProfileTask = new UpdateProfile(LoginActivity.this, 
+		UpdateProfile updateProfileTask = new UpdateProfile(InforyLoginActivity.this, 
 				getTempAccessToken(), username, avaUrl, day, month, year, sex, 0) {
 			@Override
 			protected void onCompleted(Object result2) throws Exception {
@@ -287,7 +319,7 @@ ConnectionCallbacks, OnConnectionFailedListener {
 					else
 						getProfileFromServer();
 				} else {
-					CyUtils.showError(result.getString("message"), null, LoginActivity.this);
+					CyUtils.showError(result.getString("message"), null, InforyLoginActivity.this);
 				}
 			}
 
@@ -295,7 +327,7 @@ ConnectionCallbacks, OnConnectionFailedListener {
 			protected void onFail(Exception e) {
 				mTaskList.remove(this);
 
-				CyUtils.showError("Cập nhật thông tin thất bại", mEx, LoginActivity.this);
+				CyUtils.showError("Cập nhật thông tin thất bại", mEx, InforyLoginActivity.this);
 			}
 		};
 
@@ -317,7 +349,7 @@ ConnectionCallbacks, OnConnectionFailedListener {
 			protected void onFail(Exception e) {
 				mTaskList.remove(this);
 
-				CyUtils.showError("Tải lên ảnh đại diện thất bại", mEx, LoginActivity.this);
+				CyUtils.showError("Tải lên ảnh đại diện thất bại", mEx, InforyLoginActivity.this);
 			}
 		};
 		mTaskList.add(uploadAvaTask);
@@ -326,8 +358,15 @@ ConnectionCallbacks, OnConnectionFailedListener {
 	}
 
 	private void getProfileFromServer() {
-		TelephoneFragment teleFrag = (TelephoneFragment) mBackFragArr[0];
-		GetProfile getProfileTask = new GetProfile(this, teleFrag.getProfile().optString("accessToken")) {
+		String accessToken = PreferenceManager.getDefaultSharedPreferences(this).getString("accessToken", "");
+		if(accessToken.length() == 0)
+		{
+			TelephoneFragment teleFrag = (TelephoneFragment) mBackFragArr[0];
+			JSONObject jProfile = teleFrag.getProfile();
+			accessToken = jProfile.optString("accessToken");
+		}	
+//		Toast.makeText(getApplicationContext(), accessToken, Toast.LENGTH_LONG).show();
+		GetProfile getProfileTask = new GetProfile(this, accessToken) {
 			@Override
 			protected void onCompleted(Object result2) {
 				mTaskList.remove(this);
@@ -342,7 +381,7 @@ ConnectionCallbacks, OnConnectionFailedListener {
 			protected void onFail(Exception e) {
 				mTaskList.remove(this);
 
-				CyUtils.showError("Lấy thông tin thất bại", mEx, LoginActivity.this);
+				CyUtils.showError("Lấy thông tin thất bại", mEx, InforyLoginActivity.this);
 			}
 		};
 		mTaskList.add(getProfileTask);
@@ -353,13 +392,27 @@ ConnectionCallbacks, OnConnectionFailedListener {
 	private void saveSetting(Profile profile) {
 		Settings s = Settings.instance();
 		//		JSONObject jProfile = result.optJSONObject("userProfile");
-		TelephoneFragment teleFrag = (TelephoneFragment) mBackFragArr[0];
-		JSONObject jProfile = teleFrag.getProfile();
+		String accessToken = PreferenceManager.getDefaultSharedPreferences(this).getString("accessToken", "");
+		String activeCode = PreferenceManager.getDefaultSharedPreferences(this).getString("activeCode", "");
+		String refreshToken = PreferenceManager.getDefaultSharedPreferences(this).getString("refreshToken", "");
+		
+		if(accessToken.length() == 0)
+		{
+			TelephoneFragment teleFrag = (TelephoneFragment) mBackFragArr[0];
+			JSONObject jProfile = teleFrag.getProfile();
+			
+			accessToken = jProfile.optString("accessToken");
+			refreshToken = jProfile.optString("refreshToken");
+			activeCode = teleFrag.getActiveCode();
+		}		
 
-		s.setAccessToken(
+		/*s.setAccessToken(
 				jProfile.optString("accessToken"), 
 				jProfile.optString("refreshToken"));
-		s.activateID= teleFrag.getActiveCode();
+		s.activateID= teleFrag.getActiveCode();*/
+		
+		s.setAccessToken(accessToken,refreshToken);
+		s.activateID= activeCode;
 
 		s.phoneNumber= profile.phone;
 		s.avatar 	= profile.avatar;
@@ -375,9 +428,18 @@ ConnectionCallbacks, OnConnectionFailedListener {
 	}
 	
 	private String getTempAccessToken() {
-		TelephoneFragment teleFrag = (TelephoneFragment) mBackFragArr[0];
-		JSONObject jProfile = teleFrag.getProfile();
-		return jProfile.optString("accessToken");
+		String accessToken = PreferenceManager.getDefaultSharedPreferences(this).getString("accessToken", "");
+//		Toast.makeText(getApplicationContext(), "Register type fragment: " +  last_activity, Toast.LENGTH_LONG).show();
+		if(accessToken.length() > 1)
+		{
+			return accessToken;
+		}
+		else
+		{
+			TelephoneFragment teleFrag = (TelephoneFragment) mBackFragArr[0];
+			JSONObject jProfile = teleFrag.getProfile();
+			return jProfile.optString("accessToken");
+		}		
 	}
 
 	///////////////////////////////////////////////////////////////////////////
@@ -442,21 +504,21 @@ ConnectionCallbacks, OnConnectionFailedListener {
 
 	private void uploadSocialProfile(String profile, String accessToken, int type) {
 		UploadSocialProfile uploadTask = new UploadSocialProfile(
-				LoginActivity.this, getTempAccessToken(), profile, accessToken, type) {
+				InforyLoginActivity.this, getTempAccessToken(), profile, accessToken, type) {
 			@Override
 			protected void onCompleted(Object result2) throws Exception {
 				mTaskList.remove(this);
 
-				JSONObject result = (JSONObject) result2;
-
+				JSONObject result = (JSONObject) result2;				
 				if (result.getInt("status") == 1) {
 					Profile p = new Profile();
 					JsonParser.parseObject(p, result.getJSONObject("profile"));
+//					Toast.makeText(getApplicationContext(), "Result: " +  result.getJSONObject("profile"), Toast.LENGTH_LONG).show();
 					saveSetting(p);
 					finish();
 					mListener.onSuccess();
 				} else {
-					CyUtils.showError(result.getString("message"), null, LoginActivity.this);
+					CyUtils.showError(result.getString("message"), null, InforyLoginActivity.this);
 				}
 			}
 
@@ -464,7 +526,7 @@ ConnectionCallbacks, OnConnectionFailedListener {
 			protected void onFail(Exception e) {
 				mTaskList.remove(this);
 
-				CyUtils.showError("Cập nhật thông tin thất bại!", mEx, LoginActivity.this);
+//				CyUtils.showError("Cập nhật thông tin thất bại!", mEx, InforyLoginActivity.this);
 			}
 		};
 		mTaskList.add(uploadTask);
@@ -573,11 +635,6 @@ ConnectionCallbacks, OnConnectionFailedListener {
 			task.cancel(true);
 	}
 
-	@Override
-	public void onSaveInstanceState(Bundle outState) {
-		super.onSaveInstanceState(outState);
-		mUiHelper.onSaveInstanceState(outState);
-	}
 
 	///////////////////////////////////////////////////////////////////////////
 	// Listener

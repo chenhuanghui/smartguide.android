@@ -8,6 +8,7 @@ import org.apache.http.message.BasicNameValuePair;
 import org.json.JSONObject;
 
 import android.content.Context;
+import android.util.Log;
 
 public class CheckActiveCode extends CyAsyncTask {
 
@@ -52,18 +53,19 @@ public class CheckActiveCode extends CyAsyncTask {
 		try {
 			JSONObject result = (JSONObject) result2;
 			if (result.getInt("status") != 0) {
-				if (result.getJSONObject("userProfile").getString("name").length() == 0) {
+				/*if (result.getJSONObject("userProfile").getString("name").length() == 0) {
 					// first time
 					onSuccessFirstTime(result);
 				} else {
 					// Success
 					onSuccess(result);
-				}
+				}*/
+				onSuccessFirstTime(result);
 			} else {
 				// Reject
 				onReject(result);
 			}
-		} catch (Exception e) {
+		} catch (Exception e) {			
 			onFail(e);
 		}
 	}
