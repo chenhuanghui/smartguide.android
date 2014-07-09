@@ -200,13 +200,13 @@ ConnectionCallbacks, OnConnectionFailedListener {
 		mPager.setAdapter(mAdapter);
 		
 		String last_activity = PreferenceManager.getDefaultSharedPreferences(this).getString("last_activity", "");
-//		Toast.makeText(getApplicationContext(), "Login activity: " +  last_activity, Toast.LENGTH_LONG).show();
+		
 		//View tiếp theo là HomeFragment, nếu kill app thì cứ mở lại RegisterTypeFragment
 		Settings s = Settings.instance();
+//		Toast.makeText(getApplicationContext(), "Login activity: " + last_activity + "\n" +  s.getAccessToken(), Toast.LENGTH_LONG).show();
 		if(last_activity.equals("HomeFragment") && !s.getAccessToken().equals("abc"))
 		{
 			mPager.setCurrentItem(1);
-			finish();
 			
 			int mPrePos = 0;
 			if (mBackFragArr[mPrePos] instanceof TelephoneFragment)

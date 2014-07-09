@@ -12,6 +12,7 @@ import org.json.JSONObject;
 
 import vn.infory.infory.FlashActivity.Listener;
 import vn.infory.infory.login.InforyLoginActivity;
+import vn.infory.infory.login.UseImmediatelyActivity;
 import vn.infory.infory.data.Profile;
 import vn.infory.infory.data.Settings;
 import vn.infory.infory.login.AvaDialogActivity;
@@ -28,10 +29,12 @@ import android.app.DatePickerDialog;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.IntentSender.SendIntentException;
+import android.content.SharedPreferences.Editor;
 import android.graphics.Bitmap;
 import android.graphics.Point;
 import android.graphics.drawable.AnimationDrawable;
 import android.os.Bundle;
+import android.preference.PreferenceManager;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.widget.DatePicker;
@@ -331,7 +334,14 @@ ConnectionCallbacks, OnConnectionFailedListener{
 		Settings.instance().logout();
 		
 		getProfileFromServer();
-		InforyLoginActivity.newInstance(this, mListener);
+//		InforyLoginActivity.newInstance(this, mListener);
+		
+		/*Editor e = PreferenceManager.getDefaultSharedPreferences(this).edit();
+		e.putString("last_activity", "RegisterTypeFragment");
+		e.commit();*/
+		
+		UseImmediatelyActivity.newInstance(this, mListener);
+		
 		overridePendingTransition(R.anim.slide_in_bottom, R.anim.slide_out_top);
 	}
 

@@ -4,6 +4,7 @@ import java.util.Locale;
 
 import org.json.JSONObject;
 
+import vn.infory.infory.FlashActivity.Listener;
 import vn.infory.infory.data.Settings;
 import vn.infory.infory.home.HomeFragment;
 import vn.infory.infory.home.PromotionFragment;
@@ -18,6 +19,7 @@ import vn.infory.infory.scancode.ScanCodeActivity;
 import android.animation.Animator;
 import android.animation.AnimatorSet;
 import android.animation.ObjectAnimator;
+import android.app.Activity;
 import android.app.AlertDialog;
 import android.app.AlertDialog.Builder;
 import android.content.Intent;
@@ -47,6 +49,8 @@ public class MainActivity extends FragmentActivity {
 	@ViewById(id = R.id.imgScanCode)		private View mImgScanCode;
 	@ViewById(id = R.id.imgScanCodeSmall)	private View mImgScanCodeSmall;
 
+	private static Listener sListener;
+	
 	private SGSideMenu mMenu;
 	private HomeFragment mFragHome;
 	private PromotionFragment mFragPromo;
@@ -75,6 +79,8 @@ public class MainActivity extends FragmentActivity {
 		super.onCreate(savedInstanceState);
 		
 		setContentView(R.layout.activity_main);
+		
+		sListener = null;
 
 		try {
 			Settings.init(this);
@@ -88,11 +94,11 @@ public class MainActivity extends FragmentActivity {
 		}
 		
 		String last_activity = PreferenceManager.getDefaultSharedPreferences(this).getString("last_activity", "");
-		Toast.makeText(getApplicationContext(), "Main activity: " + last_activity, Toast.LENGTH_LONG).show();
+//		Toast.makeText(getApplicationContext(), "Main activity: " + last_activity, Toast.LENGTH_SHORT).show();
 		if(last_activity.equals("RegisterTypeFragment"))
 		{	
-			Intent intent = new Intent(this, InforyLoginActivity.class);
-			startActivity(intent);
+//			Toast.makeText(getApplicationContext(), "Main activity: chuyển qua LoginActivity", Toast.LENGTH_LONG).show();
+			InforyLoginActivity.newInstance(this, sListener);
 			
 			/*FragmentTransaction ft = getSupportFragmentManager().beginTransaction();
 			RegisterTypeFragment fb = new RegisterTypeFragment();
@@ -228,6 +234,12 @@ public class MainActivity extends FragmentActivity {
 				ScanCodeActivity.newInstance(MainActivity.this);		
 			}
 		}, true);
+	}
+	
+	public static void newInstance(Activity act, Listener listener) {
+		sListener = listener;
+		Intent intent = new Intent(act, MainActivity.class);
+		act.startActivity(intent);
 	}
 	
 	///////////////////////////////////////////////////////////////////////////
