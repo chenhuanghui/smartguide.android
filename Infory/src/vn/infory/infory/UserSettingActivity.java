@@ -181,7 +181,7 @@ ConnectionCallbacks, OnConnectionFailedListener{
 		mPlusClient = new PlusClient.Builder(this, this, this)
 		//        .setActions("http://schemas.google.com/AddActivity")
 		//				.setScopes(Scopes.PLUS_LOGIN)  // recommended login scope for social features
-		.setScopes(Scopes.PLUS_PROFILE)       // alternative basic login scope
+		.setScopes(Scopes.PLUS_ME)       // alternative basic login scope
 		.build();
 		
 		AnimationDrawable frameAnimation = (AnimationDrawable) 
