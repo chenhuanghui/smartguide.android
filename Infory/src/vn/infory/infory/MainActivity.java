@@ -10,7 +10,6 @@ import vn.infory.infory.home.HomeFragment;
 import vn.infory.infory.home.PromotionFragment;
 import vn.infory.infory.login.InforyLoginActivity;
 import vn.infory.infory.login.RegisterFragment;
-import vn.infory.infory.login.RegisterTypeActivity;
 import vn.infory.infory.login.RegisterTypeFragment;
 import vn.infory.infory.login.TelephoneFragment;
 import vn.infory.infory.login.InforyLoginActivity.BackListener;
