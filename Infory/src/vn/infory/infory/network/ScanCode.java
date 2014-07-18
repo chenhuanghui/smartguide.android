@@ -5,6 +5,8 @@ import java.util.List;
 
 import org.apache.http.NameValuePair;
 import org.apache.http.message.BasicNameValuePair;
+import org.json.JSONArray;
+import org.json.JSONObject;
 
 import vn.infory.infory.data.ScanResponse;
 import vn.infory.infory.data.Settings;
@@ -37,8 +39,10 @@ public class ScanCode extends CyAsyncTask {
 			String json = NetworkManager.post(APILinkMaker.mScan, pairs);
 //			String json = readWholeFile(mContext, R.raw.scan_1);
 			
-			ScanResponse scanResponse = new ScanResponse();
-			JsonParser.parseObject(scanResponse, json);
+//			ScanResponse scanResponse = new ScanResponse();
+//			JSONObject scanResponse = new JSONObject(json);
+			JSONArray scanResponse = new JSONArray(json);
+//			JsonParser.parseObject(scanResponse, json);
 			
 //			Thread.sleep(3000);
 			

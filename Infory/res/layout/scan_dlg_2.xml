@@ -1,0 +1,119 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical" >
+
+    <FrameLayout
+        android:layout_width="match_parent"
+        android:layout_height="48dp"
+        android:background="#383735" >
+        
+        <ImageButton
+            android:id="@+id/btnBack"
+            android:layout_width="48dp"
+            android:layout_height="match_parent"
+            android:layout_centerVertical="true"
+            android:background="#00000000"
+            android:src="@drawable/button_backarrow" />
+    </FrameLayout>
+    
+    <!-- <FrameLayout
+        android:id="@+id/scanDLGLayoutLoading"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:background="#80000000"
+        android:clickable="true"
+        android:visibility="invisible" >
+
+        <FrameLayout
+            android:id="@+id/scanDLGLayoutLoadingAnimation"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:background="@drawable/button_loading_big" >
+        </FrameLayout>
+    </FrameLayout> -->
+
+    <ScrollView
+        android:id="@+id/scrollView1"
+        android:layout_width="match_parent"
+        android:layout_height="fill_parent" 
+        android:fillViewport="true">
+
+       <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:orientation="vertical" 
+            android:background="#ffffff">
+
+           <LinearLayout
+               android:id="@+id/linearLayoutScanDLG2"
+               android:layout_width="match_parent"
+               android:layout_height="wrap_content"
+               android:background="#EBEBEB"
+               android:gravity="center_horizontal"
+               android:orientation="vertical" >
+           </LinearLayout>
+
+           <LinearLayout
+               android:layout_width="match_parent"
+               android:layout_height="wrap_content"
+               android:gravity="center"
+               android:orientation="vertical" >
+
+               <TextView
+                   android:id="@+id/textView2"
+                   android:layout_width="wrap_content"
+                   android:layout_height="wrap_content"
+                   android:paddingBottom="5dp"
+                   android:paddingTop="5dp"
+                   android:text="Có thể bạn thích"
+                   android:textAppearance="?android:attr/textAppearanceMedium" />
+           </LinearLayout>
+
+           <LinearLayout
+               android:id="@+id/linearLayoutRelated"
+               android:layout_width="match_parent"
+               android:layout_height="match_parent"
+               android:orientation="vertical" >               
+
+               <android.support.v4.view.ViewPager
+                   xmlns:android="http://schemas.android.com/apk/res/android"
+                   android:id="@+id/testpager1"
+                   android:layout_width="match_parent"
+                   android:layout_height="300dp" >
+
+                   <android.support.v4.view.PagerTitleStrip
+                       android:id="@+id/pager_title_strip1"
+                       android:layout_width="match_parent"
+                       android:layout_height="wrap_content"
+                       android:layout_gravity="top"
+                       android:background="#33b5e5"
+                       android:paddingBottom="4dp"
+                       android:paddingTop="4dp"
+                       android:textColor="#fff" >
+                   </android.support.v4.view.PagerTitleStrip>
+               </android.support.v4.view.ViewPager>
+           </LinearLayout>
+
+<!--             <FrameLayout
+                android:id="@+id/scanDLGLayoutLoading"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:background="#80000000"
+                android:clickable="true"
+                android:visibility="invisible" >
+
+                <FrameLayout
+                    android:id="@+id/scanDLGLayoutLoadingAnimation"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center"
+                    android:background="@drawable/button_loading_big" >
+                </FrameLayout>
+            </FrameLayout> -->
+
+        </LinearLayout>
+    </ScrollView>
+</LinearLayout>

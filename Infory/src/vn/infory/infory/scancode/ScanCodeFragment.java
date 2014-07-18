@@ -1,8 +1,14 @@
 package vn.infory.infory.scancode;
 
+import java.net.URI;
+import java.net.URL;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.json.JSONArray;
+import org.json.JSONObject;
+
+import vn.infory.infory.CyImageLoader;
 import vn.infory.infory.CyUtils;
 import vn.infory.infory.FontsCollection;
 import vn.infory.infory.R;
@@ -13,7 +19,12 @@ import vn.infory.infory.network.NetworkManager;
 import vn.infory.infory.network.ScanCode;
 import vn.infory.infory.shopdetail.ShopDetailActivity;
 import android.app.Dialog;
+import android.content.Intent;
 import android.content.pm.PackageManager;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
+import android.graphics.Color;
+import android.graphics.Point;
 import android.graphics.drawable.AnimationDrawable;
 import android.hardware.Camera;
 import android.hardware.Camera.CameraInfo;
@@ -21,6 +32,8 @@ import android.hardware.Camera.Parameters;
 import android.hardware.Camera.PreviewCallback;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
+import android.util.Log;
+import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.View.OnClickListener;
@@ -28,7 +41,10 @@ import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.FrameLayout;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
+import android.widget.LinearLayout.LayoutParams;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.cycrix.androidannotation.AndroidAnnotationParser;
 import com.cycrix.androidannotation.Click;
@@ -49,6 +65,7 @@ public class ScanCodeFragment extends Fragment {
     private CameraPreview mPreview;
     
 	// GUI
+//    @ViewById(id = R.id.llScanDLG2)			private LinearLayout mLLScanDLG2;
     @ViewById(id = R.id.layoutCameraHolder)	private FrameLayout mLayoutCamHolder;
 	@ViewById(id = R.id.btnFlash)			private Button mBtnFlash;
 	@ViewById(id = R.id.layoutLoading)		private View mLayoutLoading;
@@ -90,34 +107,15 @@ public class ScanCodeFragment extends Fragment {
 			}
 
 			String mQRCode = rs.getText();
-			isCanScan = false;
 			
-			// Call scan code api
-			ScanCode scanCodeTask = new ScanCode(getActivity(), mQRCode) {
-				@Override
-				protected void onCompleted(Object result2) throws Exception {
-					mTaskList.remove(this);
-					
-					ScanResponse response = (ScanResponse) result2;
-					processScanResponse(response);
-				}
-				
-				@Override
-				protected void onFail(Exception e) {
-					mTaskList.remove(this);
-					
-					ScanResponse response = new ScanResponse();
-					response.status = -1;
-					response.message = "Mất kết nối!";
-					processScanResponse(response);
-				}
-			};
-			mTaskList.add(scanCodeTask);
-			scanCodeTask.setVisibleView(mLayoutLoading);
-			scanCodeTask.executeOnExecutor(NetworkManager.THREAD_POOL);
+			ScanCodeResultActivity.newInstance(getActivity(), mQRCode);
+			
+			/*isCanScan = false;
+			
+			
 			AnimationDrawable frameAnimation = (AnimationDrawable) 
 					mLayoutLoadingAnimation.getBackground();
-			frameAnimation.start();
+			frameAnimation.start();*/
 		}
 	};
 	
@@ -133,7 +131,8 @@ public class ScanCodeFragment extends Fragment {
 			return;
 		}
 		
-		if (!getActivity().getPackageManager().hasSystemFeature(PackageManager.FEATURE_CAMERA)) {
+		if (!getActivity().getPackageManager().hasSystemFeature(PackageManager.FEATURE_CAMERA) && 
+				!getActivity().getPackageManager().hasSystemFeature(PackageManager.FEATURE_CAMERA_FRONT)) {
 			CyUtils.showError("Thiết bị không hỗ trợ camera", null, getActivity());
 			return;
 		}
@@ -214,7 +213,7 @@ public class ScanCodeFragment extends Fragment {
 	
 	private void processScanResponse(final ScanResponse response) {
 		
-		final Dialog dlg = new Dialog(getActivity(),
+		/*final Dialog dlg = new Dialog(getActivity(),
 				android.R.style.Theme_Translucent_NoTitleBar);
 		View v = getActivity().getLayoutInflater().inflate(R.layout.scan_dlg, null);
 		
@@ -255,9 +254,10 @@ public class ScanCodeFragment extends Fragment {
 		}
 		
 		
-		switch (response.status) {
+		switch (0) {
 		case -1:
 		case 0: {
+			Toast.makeText(getActivity(), "0", Toast.LENGTH_LONG).show();
 			layoutFlag.setBackgroundResource(R.drawable.background_greyflag_arlet);
 //			txtShop.setVisibility(View.GONE);
 			txtShopName.setVisibility(View.GONE);
@@ -276,6 +276,7 @@ public class ScanCodeFragment extends Fragment {
 		}
 		
 		case 1: {
+			Toast.makeText(getActivity(), "1", Toast.LENGTH_LONG).show();
 			layoutFlag.setBackgroundResource(R.drawable.background_flag_arlet);
 			txtShopName.setText(response.shopName);
 			
@@ -290,6 +291,7 @@ public class ScanCodeFragment extends Fragment {
 		}
 		
 		case 2: {
+			Toast.makeText(getActivity(), "2", Toast.LENGTH_LONG).show();
 			layoutFlag.setBackgroundResource(R.drawable.background_flag_arlet);
 			txtShopName.setText(response.shopName);
 			
@@ -305,6 +307,7 @@ public class ScanCodeFragment extends Fragment {
 		}
 		
 		case 3: {
+			Toast.makeText(getActivity(), "3", Toast.LENGTH_LONG).show();
 			layoutFlag.setBackgroundResource(R.drawable.background_flag_arlet);
 			txtShopName.setText(response.shopName);
 			
@@ -324,6 +327,7 @@ public class ScanCodeFragment extends Fragment {
 		}
 		
 		case 4: {
+			Toast.makeText(getActivity(), "4", Toast.LENGTH_LONG).show();
 			layoutFlag.setBackgroundResource(R.drawable.background_flag_arlet);
 			txtShopName.setText(response.shopName);
 			
@@ -340,10 +344,7 @@ public class ScanCodeFragment extends Fragment {
 			break;
 		}
 		
-		}
+		}*/
 		
-		FontsCollection.setFont(v);
-		dlg.setContentView(v);
-		dlg.show();
 	}
 }
