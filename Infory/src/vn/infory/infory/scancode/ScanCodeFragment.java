@@ -17,6 +17,7 @@ import vn.infory.infory.data.Shop;
 import vn.infory.infory.network.CyAsyncTask;
 import vn.infory.infory.network.NetworkManager;
 import vn.infory.infory.network.ScanCode;
+import vn.infory.infory.scancode.ScanCodeResultActivity.ScanCodeRelatedPagerAdapter;
 import vn.infory.infory.shopdetail.ShopDetailActivity;
 import android.app.Dialog;
 import android.content.Intent;
@@ -32,6 +33,7 @@ import android.hardware.Camera.Parameters;
 import android.hardware.Camera.PreviewCallback;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
+import android.support.v4.view.ViewPager;
 import android.util.Log;
 import android.view.Gravity;
 import android.view.LayoutInflater;
@@ -107,15 +109,29 @@ public class ScanCodeFragment extends Fragment {
 			}
 
 			String mQRCode = rs.getText();
+			isCanScan = false;
 			
-			ScanCodeResultActivity.newInstance(getActivity(), mQRCode);
-			
-			/*isCanScan = false;
-			
-			
+			// Call scan code api
+			ScanCode scanCodeTask = new ScanCode(getActivity(), mQRCode) {
+				@Override
+				protected void onCompleted(Object result2) throws Exception {
+					mTaskList.remove(this);
+					ScanCodeResultActivity.newInstance(getActivity(), result2);
+				}
+				
+				@Override
+				protected void onFail(Exception e) {
+					mTaskList.remove(this);
+					
+				}
+			};		
+
+			mTaskList.add(scanCodeTask);
+			scanCodeTask.setVisibleView(mLayoutLoading);
+			scanCodeTask.executeOnExecutor(NetworkManager.THREAD_POOL);
 			AnimationDrawable frameAnimation = (AnimationDrawable) 
 					mLayoutLoadingAnimation.getBackground();
-			frameAnimation.start();*/
+			frameAnimation.start();
 		}
 	};
 	
