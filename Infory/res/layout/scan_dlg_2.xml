@@ -35,7 +35,7 @@
         </FrameLayout>
     </FrameLayout> -->
 
-    <ScrollView
+    <vn.infory.infory.scancode.InforyCustomScrollView
         android:id="@+id/scrollView1"
         android:layout_width="match_parent"
         android:layout_height="fill_parent" 
@@ -115,5 +115,5 @@
             </FrameLayout> -->
 
         </LinearLayout>
-    </ScrollView>
+    </vn.infory.infory.scancode.InforyCustomScrollView>
 </LinearLayout>
