@@ -18,6 +18,7 @@ import com.cycrix.androidannotation.ViewById;
 
 import android.app.Activity;
 import android.content.Intent;
+import android.content.res.Resources;
 import android.content.res.Resources.NotFoundException;
 import android.graphics.Bitmap;
 import android.graphics.Color;
@@ -39,6 +40,7 @@ import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
+import android.widget.ListView;
 import android.widget.TextView;
 import android.widget.Toast;
 import android.widget.LinearLayout.LayoutParams;
@@ -246,14 +248,50 @@ public class ScanCodeResultActivity extends FragmentActivity{
     public static class ScanCodeRelatedFragment extends Fragment {
 
         public static final String ARG_OBJECT = "object";
+        
+        ListView list;
+    	ScanCodeRelatedListViewAdapter adapter;
+    	public ScanCodeResultActivity CustomListView = null;
+    	public ArrayList<ListModel> CustomListViewValuesArr = new ArrayList<ListModel>();
+    	
+    	public void setListData()
+        {
+             
+            for (int i = 0; i < 11; i++) {
+                 
+                final ListModel sched = new ListModel();
+                     
+                  /******* Firstly take data in model object ******/
+                   sched.setName("Company "+i);
+                   sched.setContent("image"+i);
+                    
+                /******** Take Model Object in ArrayList **********/
+                CustomListViewValuesArr.add( sched );
+            }             
+        }
 
         @Override
         public View onCreateView(LayoutInflater inflater, ViewGroup container,
                 Bundle savedInstanceState) {
             View rootView = inflater.inflate(R.layout.scan_code_related_shop_fragment, container, false);
             Bundle args = getArguments();
-            ((TextView) rootView.findViewById(android.R.id.text1)).setText(
-                    Integer.toString(args.getInt(ARG_OBJECT)));
+
+            if(args.getInt(ARG_OBJECT) == 1){
+            	CustomListView = (ScanCodeResultActivity) getActivity();
+                setListData();
+                
+                Resources res =getResources();
+                list = ( ListView )rootView.findViewById( R.id.lstRelated );  // List defined in XML ( See Below )
+                 
+                /**************** Create Custom Adapter *********/
+                adapter=new ScanCodeRelatedListViewAdapter( CustomListView, CustomListViewValuesArr,res );
+                list.setAdapter( adapter );
+            }
+            else{
+            	((TextView) rootView.findViewById(android.R.id.text1)).setText(
+                        Integer.toString(args.getInt(ARG_OBJECT)));
+            }
+            
             return rootView;
         }
     }

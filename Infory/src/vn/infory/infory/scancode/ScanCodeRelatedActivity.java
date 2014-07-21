@@ -1,8 +1,11 @@
 package vn.infory.infory.scancode;
 
+import java.util.ArrayList;
+
 import vn.infory.infory.R;
 import android.app.ActionBar;
 import android.content.Intent;
+import android.content.res.Resources;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentActivity;
@@ -15,6 +18,7 @@ import android.view.LayoutInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ListView;
 import android.widget.TextView;
 
 public class ScanCodeRelatedActivity extends FragmentActivity {
@@ -22,6 +26,7 @@ public class ScanCodeRelatedActivity extends FragmentActivity {
 	ScanCodeRelatedPagerAdapter mScanCodeRelatedPagerAdapter;
 	
 	ViewPager mViewPager;
+	
 	
 	public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -34,12 +39,8 @@ public class ScanCodeRelatedActivity extends FragmentActivity {
         // getSupportFragmentManager.
         mScanCodeRelatedPagerAdapter = new ScanCodeRelatedPagerAdapter(getSupportFragmentManager());
 
-               
+        
     }
-	
-	
-	
-	
 
 	@Override
 	protected void onStart() {
@@ -123,14 +124,50 @@ public class ScanCodeRelatedActivity extends FragmentActivity {
     public static class ScanCodeRelatedFragment extends Fragment {
 
         public static final String ARG_OBJECT = "object";
+        
+        ListView list;
+    	ScanCodeRelatedListViewAdapter adapter;
+    	public ScanCodeRelatedActivity CustomListView = null;
+    	public ArrayList<ListModel> CustomListViewValuesArr = new ArrayList<ListModel>();
+    	
+    	public void setListData()
+        {
+             
+            for (int i = 0; i < 11; i++) {
+                 
+                final ListModel sched = new ListModel();
+                     
+                  /******* Firstly take data in model object ******/
+                   sched.setName("Company "+i);
+                   sched.setContent("image"+i);
+                    
+                /******** Take Model Object in ArrayList **********/
+                CustomListViewValuesArr.add( sched );
+            }             
+        }
 
         @Override
         public View onCreateView(LayoutInflater inflater, ViewGroup container,
                 Bundle savedInstanceState) {
             View rootView = inflater.inflate(R.layout.scan_code_related_shop_fragment, container, false);
             Bundle args = getArguments();
-            ((TextView) rootView.findViewById(android.R.id.text1)).setText(
-                    Integer.toString(args.getInt(ARG_OBJECT)));
+            
+            if(args.getInt(ARG_OBJECT) == 1){
+            	CustomListView = (ScanCodeRelatedActivity) getActivity();
+                setListData();
+                
+                Resources res =getResources();
+                list = ( ListView )rootView.findViewById( R.id.lstRelated );  // List defined in XML ( See Below )
+                 
+                /**************** Create Custom Adapter *********/
+                adapter=new ScanCodeRelatedListViewAdapter( CustomListView, CustomListViewValuesArr,res );
+                list.setAdapter( adapter );
+            }
+            else{
+            	((TextView) rootView.findViewById(android.R.id.text1)).setText(
+                        Integer.toString(args.getInt(ARG_OBJECT)));
+            }
+            
             return rootView;
         }
     }
