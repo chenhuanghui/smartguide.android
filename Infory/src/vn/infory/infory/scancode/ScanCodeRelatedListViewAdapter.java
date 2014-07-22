@@ -2,11 +2,16 @@ package vn.infory.infory.scancode;
 
 import java.util.ArrayList;
 
+import vn.infory.infory.CyImageLoader;
 import vn.infory.infory.R;
+import vn.infory.infory.SGSideMenu;
+import vn.infory.infory.network.CyAsyncTask;
 
 import android.app.Activity;
 import android.content.Context;
 import android.content.res.Resources;
+import android.graphics.Bitmap;
+import android.graphics.Point;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -15,6 +20,7 @@ import android.view.ViewGroup;
 import android.widget.BaseAdapter;
 import android.widget.ImageView;
 import android.widget.TextView;
+import android.widget.Toast;
 
 public class ScanCodeRelatedListViewAdapter extends BaseAdapter implements OnClickListener{
 	
@@ -62,7 +68,7 @@ public class ScanCodeRelatedListViewAdapter extends BaseAdapter implements OnCli
 	public View getView(int position, View convertView, ViewGroup parent) {
 		// TODO Auto-generated method stub
 		View vi = convertView;
-		ViewHolder holder;
+		final ViewHolder holder;
 		
 		if(convertView == null){
 			/****** Inflate tabitem.xml file for each row ( Defined below ) *******/
@@ -89,10 +95,14 @@ public class ScanCodeRelatedListViewAdapter extends BaseAdapter implements OnCli
 			/************  Set Model values in Holder elements ***********/
 			holder.name.setText(tempValues.getName());
 			holder.content.setText(tempValues.getDescription());
-//			holder.image.setImageResource(
-//					res.getIdentifier(name, defType, defPackage));
 			
-//			vi.setOnClickListener(new OnIte)
+			CyImageLoader.instance().loadImage(tempValues.getLogo(), new CyImageLoader.Listener() {
+				@Override
+				public void loadFinish(int from, Bitmap image, String url, CyAsyncTask task) {
+					holder.image.setImageBitmap(SGSideMenu.getCroppedBitmap(image));
+				}
+			}, new Point(), new Activity());
+			
 		}
 		return vi;
 	}

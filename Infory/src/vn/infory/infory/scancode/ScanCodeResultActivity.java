@@ -294,6 +294,7 @@ public class ScanCodeResultActivity extends FragmentActivity{
 				                /******* Firstly take data in model object ******/
 				                related_shop_model.setName(related_shop_obj.optString("shopName"));
 				                related_shop_model.setDescription(related_shop_obj.optString("description"));
+				                related_shop_model.setLogo(related_shop_obj.optString("logo"));
 				                    
 				                /******** Take Model Object in ArrayList **********/
 				                arrListModelRelatedShops.add( related_shop_model );
