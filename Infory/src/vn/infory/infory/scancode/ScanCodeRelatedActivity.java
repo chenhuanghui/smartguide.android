@@ -128,18 +128,18 @@ public class ScanCodeRelatedActivity extends FragmentActivity {
         ListView list;
     	ScanCodeRelatedListViewAdapter adapter;
     	public ScanCodeRelatedActivity CustomListView = null;
-    	public ArrayList<ListModel> CustomListViewValuesArr = new ArrayList<ListModel>();
+    	public ArrayList<ListModelRelatedShops> CustomListViewValuesArr = new ArrayList<ListModelRelatedShops>();
     	
     	public void setListData()
         {
              
             for (int i = 0; i < 11; i++) {
                  
-                final ListModel sched = new ListModel();
+                final ListModelRelatedShops sched = new ListModelRelatedShops();
                      
                   /******* Firstly take data in model object ******/
                    sched.setName("Company "+i);
-                   sched.setContent("image"+i);
+                   sched.setDescription("image"+i);
                     
                 /******** Take Model Object in ArrayList **********/
                 CustomListViewValuesArr.add( sched );

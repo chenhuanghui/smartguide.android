@@ -22,7 +22,7 @@ public class ScanCodeRelatedListViewAdapter extends BaseAdapter implements OnCli
 	private ArrayList data;
 	private static LayoutInflater inflater = null;
 	public Resources res;
-	ListModel tempValues = null;
+	ListModelRelatedShops tempValues = null;
 	
 	public ScanCodeRelatedListViewAdapter(Activity a, ArrayList d, Resources resLocal){
 		activity = a;
@@ -84,11 +84,11 @@ public class ScanCodeRelatedListViewAdapter extends BaseAdapter implements OnCli
 		if(data.size() > 0){
 			/***** Get each Model object from Arraylist ********/
 			tempValues = null;
-			tempValues = (ListModel)data.get(position);
+			tempValues = (ListModelRelatedShops)data.get(position);
 			
 			/************  Set Model values in Holder elements ***********/
 			holder.name.setText(tempValues.getName());
-			holder.content.setText(tempValues.getContent());
+			holder.content.setText(tempValues.getDescription());
 //			holder.image.setImageResource(
 //					res.getIdentifier(name, defType, defPackage));
 			

@@ -6,6 +6,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import org.json.JSONArray;
+import org.json.JSONException;
 import org.json.JSONObject;
 
 import vn.infory.infory.CyImageLoader;
@@ -17,11 +18,13 @@ import vn.infory.infory.data.Shop;
 import vn.infory.infory.network.CyAsyncTask;
 import vn.infory.infory.network.NetworkManager;
 import vn.infory.infory.network.ScanCode;
+import vn.infory.infory.network.ScanCodeRelated;
 import vn.infory.infory.scancode.ScanCodeResultActivity.ScanCodeRelatedPagerAdapter;
 import vn.infory.infory.shopdetail.ShopDetailActivity;
 import android.app.Dialog;
 import android.content.Intent;
 import android.content.pm.PackageManager;
+import android.content.res.Resources.NotFoundException;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.Color;
@@ -61,6 +64,8 @@ public class ScanCodeFragment extends Fragment {
 	// Data
 	private QRCodeReader mQRCodeReader = new QRCodeReader();
 	private boolean isCanScan = true;
+	private Integer scanCodeTaskStatus = 0;
+	private Object objScanCode;
 	private List<CyAsyncTask> mTaskList = new ArrayList<CyAsyncTask>();
 	
 	private Camera mCamera;
@@ -108,28 +113,63 @@ public class ScanCodeFragment extends Fragment {
 				return;
 			}
 
-			String mQRCode = rs.getText();
-			isCanScan = false;
+			final String mQRCode = rs.getText();
+			isCanScan = false;	
 			
 			// Call scan code api
 			ScanCode scanCodeTask = new ScanCode(getActivity(), mQRCode) {
 				@Override
-				protected void onCompleted(Object result2) throws Exception {
+				protected void onCompleted(final Object result2) throws Exception {
 					mTaskList.remove(this);
-					ScanCodeResultActivity.newInstance(getActivity(), result2);
+					
+					objScanCode = result2;
+					scanCodeTaskStatus = 1; //Finished										
 				}
 				
 				@Override
 				protected void onFail(Exception e) {
 					mTaskList.remove(this);
-					
 				}
 			};		
 
-			mTaskList.add(scanCodeTask);
-			scanCodeTask.setVisibleView(mLayoutLoading);
+			mTaskList.add(scanCodeTask);			
 			scanCodeTask.executeOnExecutor(NetworkManager.THREAD_POOL);
-			AnimationDrawable frameAnimation = (AnimationDrawable) 
+			
+			
+			//Call API get related
+    		ScanCodeRelated scanCodeRelatedTask = new ScanCodeRelated(getActivity(), mQRCode, 0, 0)
+    		{
+				@Override
+				protected void onCompleted(Object result3) throws Exception {
+					mTaskList.remove(this);		
+					
+					//Wait for task 1
+					while( scanCodeTaskStatus == 0 )
+			        {
+			            try 
+			            {
+			                Thread.sleep(100);
+			            } 
+			            catch (InterruptedException e) 
+			            {
+			                e.printStackTrace();
+			            }
+			        }
+					
+					ScanCodeResultActivity.newInstance(getActivity(), objScanCode, result3, mQRCode);
+				}
+
+				@Override
+				protected void onFail(Exception e) {
+					mTaskList.remove(this);
+				}
+    		};    
+    		
+    		mTaskList.add(scanCodeRelatedTask);
+    		scanCodeTask.setVisibleView(mLayoutLoading);
+    		scanCodeRelatedTask.executeOnExecutor(NetworkManager.THREAD_POOL);
+			
+    		AnimationDrawable frameAnimation = (AnimationDrawable) 
 					mLayoutLoadingAnimation.getBackground();
 			frameAnimation.start();
 		}

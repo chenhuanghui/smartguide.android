@@ -34,7 +34,9 @@ public class APILinkMaker {
 	public static final String mPostPhotoDsc		= mPrefix + "user/postpicture";
 	
 	
-	public static final String mScan				= mPrefix + "user/scanSGCode_v2";
+//	public static final String mScan				= mPrefix + "user/scanSGCode_v2";
+	public static final String mScan				= mPrefix + "qrcode/decode";
+	public static final String mRelated				= mPrefix + "qrcode/getRelated";
 	
 	public static final String mAutoComplete		= NetworkManager.mHostName + ":9200/data/_search";
 	

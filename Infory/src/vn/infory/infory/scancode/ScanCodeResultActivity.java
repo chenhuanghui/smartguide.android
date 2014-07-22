@@ -13,6 +13,7 @@ import vn.infory.infory.R;
 import vn.infory.infory.network.CyAsyncTask;
 import vn.infory.infory.network.NetworkManager;
 import vn.infory.infory.network.ScanCode;
+import vn.infory.infory.network.ScanCodeRelated;
 
 import com.cycrix.androidannotation.ViewById;
 
@@ -49,7 +50,9 @@ public class ScanCodeResultActivity extends FragmentActivity{
 		
 	private List<CyAsyncTask> mTaskList = new ArrayList<CyAsyncTask>();
 	
-	private static Object	mObj;
+	private static Object mScanCodeResult;
+	public static Object mScanCodeRelated;
+	public static String mQRCode;
 	
 	ScanCodeRelatedPagerAdapter mScanCodeRelatedPagerAdapter;	
 	ViewPager mViewPager;
@@ -59,7 +62,7 @@ public class ScanCodeResultActivity extends FragmentActivity{
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.scan_dlg_2);
         
-		JSONArray jArr = (JSONArray) mObj;
+		JSONArray jArr = (JSONArray) mScanCodeResult;
 		
 		LinearLayout linearLayout = (LinearLayout) findViewById(R.id.linearLayoutScanDLG2);
 		for (int i = 0; i < jArr.length(); i++) 
@@ -225,7 +228,7 @@ public class ScanCodeResultActivity extends FragmentActivity{
         public Fragment getItem(int i) {
             Fragment fragment = new ScanCodeRelatedFragment();
             Bundle args = new Bundle();
-            args.putInt(ScanCodeRelatedFragment.ARG_OBJECT, i + 1); // Our object is just an integer :-P
+            args.putInt(ScanCodeRelatedFragment.ARG_OBJECT, i); // Our object is just an integer :-P
             fragment.setArguments(args);
             return fragment;
         }
@@ -233,12 +236,26 @@ public class ScanCodeResultActivity extends FragmentActivity{
         @Override
         public int getCount() {
             // For this contrived example, we have a 100-object collection.
-            return 100;
+            return 3;
         }
 
         @Override
         public CharSequence getPageTitle(int position) {
-            return "OBJECT " + (position + 1);
+        	String title = "";
+        	switch (position) {
+			case 0:
+				title = "Địa điểm";
+				break;
+
+			case 1:
+				title = "Ưu đãi";
+				break;
+				
+			case 2:
+				title = "Danh sách";
+				break;
+			}
+            return title;
         }
     }
     
@@ -252,22 +269,45 @@ public class ScanCodeResultActivity extends FragmentActivity{
         ListView list;
     	ScanCodeRelatedListViewAdapter adapter;
     	public ScanCodeResultActivity CustomListView = null;
-    	public ArrayList<ListModel> CustomListViewValuesArr = new ArrayList<ListModel>();
+    	public ArrayList<ListModelRelatedShops> arrListModelRelatedShops = new ArrayList<ListModelRelatedShops>();
+    	private List<CyAsyncTask> mTaskList = new ArrayList<CyAsyncTask>();
+    	
+    	private Integer current_position;
     	
     	public void setListData()
         {
-             
-            for (int i = 0; i < 11; i++) {
-                 
-                final ListModel sched = new ListModel();
-                     
-                  /******* Firstly take data in model object ******/
-                   sched.setName("Company "+i);
-                   sched.setContent("image"+i);
-                    
-                /******** Take Model Object in ArrayList **********/
-                CustomListViewValuesArr.add( sched );
-            }             
+    		JSONArray jArr = (JSONArray) mScanCodeRelated;
+			for (int i = 0; i < jArr.length(); i++) 
+			{						
+				try {
+					if(jArr.getJSONObject(i) instanceof JSONObject)
+					{
+						JSONObject jItem = jArr.getJSONObject(i);							
+						
+						if(jItem.has("relatedShops"))
+						{
+							JSONArray jArrRelatedShops = jItem.getJSONArray("relatedShops");
+							for(int j = 0; j < jArrRelatedShops.length(); j++){
+								JSONObject related_shop_obj = jArrRelatedShops.getJSONObject(j);
+								final ListModelRelatedShops related_shop_model = new ListModelRelatedShops();
+			                     
+				                /******* Firstly take data in model object ******/
+				                related_shop_model.setName(related_shop_obj.optString("shopName"));
+				                related_shop_model.setDescription(related_shop_obj.optString("description"));
+				                    
+				                /******** Take Model Object in ArrayList **********/
+				                arrListModelRelatedShops.add( related_shop_model );
+							}
+						}	
+					}
+				} catch (NotFoundException e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				} catch (JSONException e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				}	
+			}
         }
 
         @Override
@@ -275,29 +315,36 @@ public class ScanCodeResultActivity extends FragmentActivity{
                 Bundle savedInstanceState) {
             View rootView = inflater.inflate(R.layout.scan_code_related_shop_fragment, container, false);
             Bundle args = getArguments();
-
-            if(args.getInt(ARG_OBJECT) == 1){
-            	CustomListView = (ScanCodeResultActivity) getActivity();
-                setListData();
-                
-                Resources res =getResources();
-                list = ( ListView )rootView.findViewById( R.id.lstRelated );  // List defined in XML ( See Below )
-                 
-                /**************** Create Custom Adapter *********/
-                adapter=new ScanCodeRelatedListViewAdapter( CustomListView, CustomListViewValuesArr,res );
+            
+            Resources res =getResources();            
+            CustomListView = (ScanCodeResultActivity) getActivity(); 
+            list = ( ListView )rootView.findViewById( R.id.lstRelated );  // List defined in XML ( See Below )
+            
+            setListData();       
+            
+            switch (args.getInt(ARG_OBJECT)) {
+			case 0: //Related shops  
+				adapter=new ScanCodeRelatedListViewAdapter( CustomListView, arrListModelRelatedShops,res );
                 list.setAdapter( adapter );
-            }
-            else{
-            	((TextView) rootView.findViewById(android.R.id.text1)).setText(
-                        Integer.toString(args.getInt(ARG_OBJECT)));
-            }
+				break;
+
+			case 1: //Related promotions  
+				
+				break;
+				
+			case 2: //Related placelists  
+				
+				break;
+			}
             
             return rootView;
         }
     }
 	
-	public static void newInstance(Activity act, Object obj) {
-		mObj = obj;
+	public static void newInstance(Activity act, Object objScanCode, Object objScanCodeRelated, String code) {
+		mScanCodeResult = objScanCode;
+		mScanCodeRelated = objScanCodeRelated;
+		mQRCode = code;
 		
 		Intent intent = new Intent(act, ScanCodeResultActivity.class);
 		act.startActivity(intent);
