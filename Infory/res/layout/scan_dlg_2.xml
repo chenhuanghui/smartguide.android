@@ -62,17 +62,17 @@
                android:gravity="center"
                android:orientation="vertical" >
 
-               <TextView
+               <!-- <TextView
                    android:id="@+id/textView2"
                    android:layout_width="wrap_content"
                    android:layout_height="wrap_content"
                    android:paddingBottom="5dp"
                    android:paddingTop="5dp"
                    android:text="Có thể bạn thích"
-                   android:textAppearance="?android:attr/textAppearanceMedium" />
+                   android:textAppearance="?android:attr/textAppearanceMedium" /> -->
            </LinearLayout>
 
-           <LinearLayout
+          <!--  <LinearLayout
                android:id="@+id/linearLayoutRelated"
                android:layout_width="match_parent"
                android:layout_height="match_parent"
@@ -95,7 +95,7 @@
                        android:textColor="#fff" >
                    </android.support.v4.view.PagerTitleStrip>
                </android.support.v4.view.ViewPager>
-           </LinearLayout>
+           </LinearLayout> -->
 
 <!--             <FrameLayout
                 android:id="@+id/scanDLGLayoutLoading"

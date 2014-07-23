@@ -157,7 +157,8 @@ public class ScanCodeRelatedActivity extends FragmentActivity {
                 setListData();
                 
                 Resources res =getResources();
-                list = ( ListView )rootView.findViewById( R.id.lstRelated );  // List defined in XML ( See Below )
+//                list = ( ListView )rootView.findViewById( R.id.lstRelated );  // List defined in XML ( See Below )
+                list = new ListView(getActivity());
                  
                 /**************** Create Custom Adapter *********/
                 adapter=new ScanCodeRelatedListViewAdapter( CustomListView, CustomListViewValuesArr,res );

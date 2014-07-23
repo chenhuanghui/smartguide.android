@@ -20,15 +20,13 @@ import android.view.ViewGroup;
 import android.widget.BaseAdapter;
 import android.widget.ImageView;
 import android.widget.TextView;
-import android.widget.Toast;
 
 public class ScanCodeRelatedListViewAdapter extends BaseAdapter implements OnClickListener{
 	
 	private Activity activity;
 	private ArrayList data;
 	private static LayoutInflater inflater = null;
-	public Resources res;
-	ListModelRelatedShops tempValues = null;
+	public Resources res;	
 	
 	public ScanCodeRelatedListViewAdapter(Activity a, ArrayList d, Resources resLocal){
 		activity = a;
@@ -88,21 +86,43 @@ public class ScanCodeRelatedListViewAdapter extends BaseAdapter implements OnCli
 		}
 		
 		if(data.size() > 0){
-			/***** Get each Model object from Arraylist ********/
-			tempValues = null;
-			tempValues = (ListModelRelatedShops)data.get(position);
 			
-			/************  Set Model values in Holder elements ***********/
-			holder.name.setText(tempValues.getName());
-			holder.content.setText(tempValues.getDescription());
-			
-			CyImageLoader.instance().loadImage(tempValues.getLogo(), new CyImageLoader.Listener() {
-				@Override
-				public void loadFinish(int from, Bitmap image, String url, CyAsyncTask task) {
-					holder.image.setImageBitmap(SGSideMenu.getCroppedBitmap(image));
-				}
-			}, new Point(), new Activity());
-			
+			if(position == 1)
+			{
+				ListModelRelatedPromotions tempValues = null;
+				/***** Get each Model object from Arraylist ********/
+				tempValues = null;
+				tempValues = (ListModelRelatedPromotions)data.get(position);
+				
+				/************  Set Model values in Holder elements ***********/
+				holder.name.setText(tempValues.getName());
+				holder.content.setText(tempValues.getDescription());
+				
+				CyImageLoader.instance().loadImage(tempValues.getLogo(), new CyImageLoader.Listener() {
+					@Override
+					public void loadFinish(int from, Bitmap image, String url, CyAsyncTask task) {
+						holder.image.setImageBitmap(SGSideMenu.getCroppedBitmap(image));
+					}
+				}, new Point(), new Activity());
+			}
+			else
+			{
+				ListModelRelatedShops tempValues = null;
+				/***** Get each Model object from Arraylist ********/
+				tempValues = null;
+				tempValues = (ListModelRelatedShops)data.get(position);
+				
+				/************  Set Model values in Holder elements ***********/
+				holder.name.setText(tempValues.getName());
+				holder.content.setText(tempValues.getDescription());
+				
+				CyImageLoader.instance().loadImage(tempValues.getLogo(), new CyImageLoader.Listener() {
+					@Override
+					public void loadFinish(int from, Bitmap image, String url, CyAsyncTask task) {
+						holder.image.setImageBitmap(SGSideMenu.getCroppedBitmap(image));
+					}
+				}, new Point(), new Activity());
+			}
 		}
 		return vi;
 	}

@@ -4,18 +4,9 @@
     android:layout_height="match_parent"
     android:orientation="vertical" >
     
-    <ListView
-        android:id="@+id/lstRelatedShops"
+	<ListView
+        android:id="@+id/lstRelatedPromotions"
         android:layout_width="match_parent"
         android:layout_height="wrap_content" >
     </ListView>
-    
-	<!-- <TextView
-    android:id="@android:id/text1"
-    android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    android:gravity="center"
-    android:textSize="128sp"
-    android:padding="32dp" /> -->	
-	
 </LinearLayout>

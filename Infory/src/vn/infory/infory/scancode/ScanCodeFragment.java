@@ -19,7 +19,6 @@ import vn.infory.infory.network.CyAsyncTask;
 import vn.infory.infory.network.NetworkManager;
 import vn.infory.infory.network.ScanCode;
 import vn.infory.infory.network.ScanCodeRelated;
-import vn.infory.infory.scancode.ScanCodeResultActivity.ScanCodeRelatedPagerAdapter;
 import vn.infory.infory.shopdetail.ShopDetailActivity;
 import android.app.Dialog;
 import android.content.Intent;
@@ -122,8 +121,10 @@ public class ScanCodeFragment extends Fragment {
 				protected void onCompleted(final Object result2) throws Exception {
 					mTaskList.remove(this);
 					
-					objScanCode = result2;
-					scanCodeTaskStatus = 1; //Finished										
+					/*objScanCode = result2;
+					scanCodeTaskStatus = 1;*/ //Finished
+					
+					ScanCodeResultActivity.newInstance(getActivity(), result2, mQRCode);
 				}
 				
 				@Override
@@ -132,12 +133,17 @@ public class ScanCodeFragment extends Fragment {
 				}
 			};		
 
-			mTaskList.add(scanCodeTask);			
-			scanCodeTask.executeOnExecutor(NetworkManager.THREAD_POOL);
+			mTaskList.add(scanCodeTask);
+    		scanCodeTask.setVisibleView(mLayoutLoading);
+    		scanCodeTask.executeOnExecutor(NetworkManager.THREAD_POOL);
+			
+    		AnimationDrawable frameAnimation = (AnimationDrawable) 
+					mLayoutLoadingAnimation.getBackground();
+			frameAnimation.start();
 			
 			
 			//Call API get related
-    		ScanCodeRelated scanCodeRelatedTask = new ScanCodeRelated(getActivity(), mQRCode, 0, 0)
+    		/*ScanCodeRelated scanCodeRelatedTask = new ScanCodeRelated(getActivity(), mQRCode, 0, 0)
     		{
 				@Override
 				protected void onCompleted(Object result3) throws Exception {
@@ -171,7 +177,7 @@ public class ScanCodeFragment extends Fragment {
 			
     		AnimationDrawable frameAnimation = (AnimationDrawable) 
 					mLayoutLoadingAnimation.getBackground();
-			frameAnimation.start();
+			frameAnimation.start();*/
 		}
 	};
 	

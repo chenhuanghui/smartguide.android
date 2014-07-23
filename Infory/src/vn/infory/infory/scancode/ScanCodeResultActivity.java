@@ -54,8 +54,8 @@ public class ScanCodeResultActivity extends FragmentActivity{
 	public static Object mScanCodeRelated;
 	public static String mQRCode;
 	
-	ScanCodeRelatedPagerAdapter mScanCodeRelatedPagerAdapter;	
-	ViewPager mViewPager;
+//	ScanCodeRelatedPagerAdapter mScanCodeRelatedPagerAdapter;	
+//	ViewPager mViewPager;
 		
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
@@ -195,9 +195,9 @@ public class ScanCodeResultActivity extends FragmentActivity{
 			}	
 		}
 		
-		mScanCodeRelatedPagerAdapter = new ScanCodeRelatedPagerAdapter(getSupportFragmentManager());
+		/*mScanCodeRelatedPagerAdapter = new ScanCodeRelatedPagerAdapter(getSupportFragmentManager());
 		mViewPager = (ViewPager) findViewById(R.id.testpager1);
-        mViewPager.setAdapter(mScanCodeRelatedPagerAdapter);
+        mViewPager.setAdapter(mScanCodeRelatedPagerAdapter);*/
 		
         
         /*mViewPager.setOnTouchListener(new View.OnTouchListener() {
@@ -209,15 +209,11 @@ public class ScanCodeResultActivity extends FragmentActivity{
         });*/
 	}
 	
-	@Override
+	/*@Override
     public boolean onOptionsItemSelected(MenuItem item) {        
         return super.onOptionsItemSelected(item);
     }
 	
-	/**
-     * A {@link android.support.v4.app.FragmentStatePagerAdapter} that returns a fragment
-     * representing an object in the collection.
-     */
     public static class ScanCodeRelatedPagerAdapter extends FragmentStatePagerAdapter {
 
         public ScanCodeRelatedPagerAdapter(FragmentManager fm) {
@@ -225,17 +221,48 @@ public class ScanCodeResultActivity extends FragmentActivity{
         }
 
         @Override
-        public Fragment getItem(int i) {
-            Fragment fragment = new ScanCodeRelatedFragment();
+        public Fragment getItem(int position) {            
             Bundle args = new Bundle();
-            args.putInt(ScanCodeRelatedFragment.ARG_OBJECT, i); // Our object is just an integer :-P
-            fragment.setArguments(args);
+            
+            setListData();
+            Fragment fragment = null;
+            
+            if(position == 1)
+            {            	
+                fragment = new ScanCodeRelatedPromotionsFragment();
+    			args.putInt(ScanCodeRelatedPromotionsFragment.ARG_OBJECT, position);	
+    			fragment.setArguments(args);
+            }            
+            else
+            {
+            	fragment = new ScanCodeRelatedShopsFragment();
+    			args.putInt(ScanCodeRelatedShopsFragment.ARG_OBJECT, position);	
+    			fragment.setArguments(args);
+            }
+			
+//            switch (position) {
+//			case 0:
+//				fragment = new ScanCodeRelatedShopsFragment();
+//				args.putInt(ScanCodeRelatedShopsFragment.ARG_OBJECT, position);	
+//				fragment.setArguments(args);
+//				break;
+//
+//			case 1:
+//				fragment = new ScanCodeRelatedShopsFragment();
+//				args.putInt(ScanCodeRelatedShopsFragment.ARG_OBJECT, position);	
+//				fragment.setArguments(args);
+//				break;
+//			case 2:
+//				fragment = new ScanCodeRelatedShopsFragment();
+//				args.putInt(ScanCodeRelatedShopsFragment.ARG_OBJECT, position);
+//				fragment.setArguments(args);
+//				break;
+//			}            
             return fragment;
         }
 
         @Override
         public int getCount() {
-            // For this contrived example, we have a 100-object collection.
             return 3;
         }
 
@@ -259,92 +286,117 @@ public class ScanCodeResultActivity extends FragmentActivity{
         }
     }
     
-    /**
-     * A dummy fragment representing a section of the app, but that simply displays dummy text.
-     */
-    public static class ScanCodeRelatedFragment extends Fragment {
-
-        public static final String ARG_OBJECT = "object";
-        
-        ListView list;
-    	ScanCodeRelatedListViewAdapter adapter;
-    	public ScanCodeResultActivity CustomListView = null;
-    	public ArrayList<ListModelRelatedShops> arrListModelRelatedShops = new ArrayList<ListModelRelatedShops>();
-    	private List<CyAsyncTask> mTaskList = new ArrayList<CyAsyncTask>();
-    	
-    	private Integer current_position;
-    	
-    	public void setListData()
-        {
-    		JSONArray jArr = (JSONArray) mScanCodeRelated;
-			for (int i = 0; i < jArr.length(); i++) 
-			{						
-				try {
-					if(jArr.getJSONObject(i) instanceof JSONObject)
+    private static ArrayList<ListModelRelatedShops> arrListModelRelatedShops = new ArrayList<ListModelRelatedShops>();
+    private static ArrayList<ListModelRelatedPromotions> arrListModelRelatedPromotions = new ArrayList<ListModelRelatedPromotions>();
+	
+    public static void setListData()
+    {
+		JSONArray jArr = (JSONArray) mScanCodeRelated;
+		for (int i = 0; i < jArr.length(); i++) 
+		{						
+			try {
+				if(jArr.getJSONObject(i) instanceof JSONObject)
+				{
+					JSONObject jItem = jArr.getJSONObject(i);							
+					
+					if(jItem.has("relatedShops"))
 					{
-						JSONObject jItem = jArr.getJSONObject(i);							
-						
-						if(jItem.has("relatedShops"))
-						{
-							JSONArray jArrRelatedShops = jItem.getJSONArray("relatedShops");
-							for(int j = 0; j < jArrRelatedShops.length(); j++){
-								JSONObject related_shop_obj = jArrRelatedShops.getJSONObject(j);
-								final ListModelRelatedShops related_shop_model = new ListModelRelatedShops();
-			                     
-				                /******* Firstly take data in model object ******/
-				                related_shop_model.setName(related_shop_obj.optString("shopName"));
-				                related_shop_model.setDescription(related_shop_obj.optString("description"));
-				                related_shop_model.setLogo(related_shop_obj.optString("logo"));
-				                    
-				                /******** Take Model Object in ArrayList **********/
-				                arrListModelRelatedShops.add( related_shop_model );
-							}
-						}	
+						JSONArray jArrRelatedShops = jItem.getJSONArray("relatedShops");
+						for(int j = 0; j < jArrRelatedShops.length(); j++){
+							JSONObject related_shop_obj = jArrRelatedShops.getJSONObject(j);
+							final ListModelRelatedShops related_shop_model = new ListModelRelatedShops();
+		                     
+			                related_shop_model.setName(related_shop_obj.optString("shopName"));
+			                related_shop_model.setDescription(related_shop_obj.optString("description"));
+			                related_shop_model.setLogo(related_shop_obj.optString("logo"));
+			                    
+			                arrListModelRelatedShops.add( related_shop_model );
+						}
 					}
-				} catch (NotFoundException e) {
-					// TODO Auto-generated catch block
-					e.printStackTrace();
-				} catch (JSONException e) {
-					// TODO Auto-generated catch block
-					e.printStackTrace();
-				}	
-			}
-        }
+					
+					if(jItem.has("relatedPromotions")){
+						JSONArray jArrRelatedPromotions = jItem.getJSONArray("relatedPromotions");
+						for(int j = 0; j < jArrRelatedPromotions.length(); j++){
+							JSONObject related_promotion_obj = jArrRelatedPromotions.getJSONObject(j);
+							final ListModelRelatedPromotions related_promotion_model = new ListModelRelatedPromotions();
+		                     
+							related_promotion_model.setName(related_promotion_obj.optString("promotionName"));
+							related_promotion_model.setDescription(related_promotion_obj.optString("description"));
+							related_promotion_model.setLogo(related_promotion_obj.optString("logo"));
+			                    
+							arrListModelRelatedPromotions.add( related_promotion_model );
+						}
+					}
+				}					
+			} catch (NotFoundException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			} catch (JSONException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}	
+		}
+    }
+    
+    
+    public static class ScanCodeRelatedShopsFragment extends Fragment {
+
+        public static final String ARG_OBJECT = "object";        
+            	
+    	public ScanCodeResultActivity CustomListView = null;
 
         @Override
         public View onCreateView(LayoutInflater inflater, ViewGroup container,
-                Bundle savedInstanceState) {
-            View rootView = inflater.inflate(R.layout.scan_code_related_shop_fragment, container, false);
+                Bundle savedInstanceState) {            
             Bundle args = getArguments();
             
+            View rootView = inflater.inflate(R.layout.scan_code_related_shop_fragment, container, false);
+            
             Resources res =getResources();            
-            CustomListView = (ScanCodeResultActivity) getActivity(); 
-            list = ( ListView )rootView.findViewById( R.id.lstRelated );  // List defined in XML ( See Below )
+            CustomListView = (ScanCodeResultActivity) getActivity();  
             
-            setListData();       
-            
-            switch (args.getInt(ARG_OBJECT)) {
-			case 0: //Related shops  
-				adapter=new ScanCodeRelatedListViewAdapter( CustomListView, arrListModelRelatedShops,res );
-                list.setAdapter( adapter );
-				break;
-
-			case 1: //Related promotions  
-				
-				break;
-				
-			case 2: //Related placelists  
-				
-				break;
-			}
+            if(args.getInt(ARG_OBJECT) == 0)
+            {
+            	ScanCodeRelatedListViewAdapter adapter_related_shops = new ScanCodeRelatedListViewAdapter(CustomListView, arrListModelRelatedShops,res);
+    			ListView list_related_shop = (ListView)rootView.findViewById(R.id.lstRelatedShops);
+    			
+    			list_related_shop.setAdapter(adapter_related_shops);
+            }
             
             return rootView;
         }
     }
+    
+    public static class ScanCodeRelatedPromotionsFragment extends Fragment {
+
+        public static final String ARG_OBJECT = "object";        
+            	
+    	public ScanCodeResultActivity CustomListView = null;
+
+        @Override
+        public View onCreateView(LayoutInflater inflater, ViewGroup container,
+                Bundle savedInstanceState) {            
+            Bundle args = getArguments();
+            
+            View rootView = inflater.inflate(R.layout.scan_code_related_promotion_fragment, container, false);
+            
+            Resources res = getResources();            
+            CustomListView = (ScanCodeResultActivity) getActivity(); 
+            
+            if(args.getInt(ARG_OBJECT) == 1)
+            {
+            	ScanCodeRelatedListViewAdapter adapter_related_promotions = new ScanCodeRelatedListViewAdapter(CustomListView, arrListModelRelatedPromotions,res);
+    			ListView list_related_promotions = (ListView)rootView.findViewById(R.id.lstRelatedPromotions);
+    			
+    			list_related_promotions.setAdapter(adapter_related_promotions); 
+            }
+                       
+            return rootView;
+        }
+    }*/
 	
-	public static void newInstance(Activity act, Object objScanCode, Object objScanCodeRelated, String code) {
+	public static void newInstance(Activity act, Object objScanCode, String code) {
 		mScanCodeResult = objScanCode;
-		mScanCodeRelated = objScanCodeRelated;
 		mQRCode = code;
 		
 		Intent intent = new Intent(act, ScanCodeResultActivity.class);
