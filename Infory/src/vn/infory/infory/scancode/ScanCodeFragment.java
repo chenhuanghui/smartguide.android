@@ -125,6 +125,7 @@ public class ScanCodeFragment extends Fragment {
 					scanCodeTaskStatus = 1;*/ //Finished
 					
 					ScanCodeResultActivity.newInstance(getActivity(), result2, mQRCode);
+					getActivity().finish();
 				}
 				
 				@Override

@@ -8,14 +8,23 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 import vn.infory.infory.CyImageLoader;
+import vn.infory.infory.CyUtils;
 import vn.infory.infory.FontsCollection;
 import vn.infory.infory.R;
+import vn.infory.infory.data.Shop;
+import vn.infory.infory.login.InforyLoginActivity.BackListener;
+import vn.infory.infory.login.RegisterTypeFragment.Listener;
 import vn.infory.infory.network.CyAsyncTask;
+import vn.infory.infory.network.GetShopDetail;
+import vn.infory.infory.network.GetShopDetail2;
 import vn.infory.infory.network.NetworkManager;
 import vn.infory.infory.network.ScanCode;
 import vn.infory.infory.network.ScanCodeRelated;
+import vn.infory.infory.shopdetail.ShopDetailActivity;
 
+import com.cycrix.androidannotation.Click;
 import com.cycrix.androidannotation.ViewById;
+import com.facebook.widget.LoginButton;
 
 import android.app.Activity;
 import android.content.Intent;
@@ -37,8 +46,10 @@ import android.view.LayoutInflater;
 import android.view.MenuItem;
 import android.view.MotionEvent;
 import android.view.View;
+import android.view.View.OnClickListener;
 import android.view.ViewGroup;
 import android.widget.Button;
+import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.ListView;
@@ -47,8 +58,12 @@ import android.widget.Toast;
 import android.widget.LinearLayout.LayoutParams;
 
 public class ScanCodeResultActivity extends FragmentActivity{
-		
+	
 	private List<CyAsyncTask> mTaskList = new ArrayList<CyAsyncTask>();
+	
+	private Listener mListener;
+	
+	public Activity mAct;
 	
 	private static Object mScanCodeResult;
 	public static Object mScanCodeRelated;
@@ -62,6 +77,8 @@ public class ScanCodeResultActivity extends FragmentActivity{
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.scan_dlg_2);
         
+		mAct = this;
+		
 		JSONArray jArr = (JSONArray) mScanCodeResult;
 		
 		LinearLayout linearLayout = (LinearLayout) findViewById(R.id.linearLayoutScanDLG2);
@@ -142,9 +159,9 @@ public class ScanCodeResultActivity extends FragmentActivity{
 							{
 								for (int j = 0; j < jArrButton.length(); j++) 
 								{
-									JSONObject jItemButton = jArrButton.getJSONObject(j);
+									final JSONObject jItemButton = jArrButton.getJSONObject(j);
 									
-									Button btn = new Button(getApplicationContext());
+									final Button btn = new Button(getApplicationContext());
 									btn.setText(jItemButton.optString("actionTitle"));
 																				
 									switch (jItemButton.optInt("color")) 
@@ -168,7 +185,43 @@ public class ScanCodeResultActivity extends FragmentActivity{
 									btn.setPadding(50, 20, 50, 20);
 									btn.setGravity(Gravity.CENTER);
 									
-									linearLayout.addView(btn);
+									linearLayout.addView(btn);								
+									
+									btn.setOnClickListener(new View.OnClickListener() {
+										@Override
+										public void onClick(View v) {
+											// TODO Auto-generated method stub
+											switch (jItemButton.optInt("actionType")) {
+											case 1:																								
+												GetShopDetail2 task = new GetShopDetail2(getApplicationContext(), jItemButton.optInt("idShop")) {
+													@Override
+													protected void onCompleted(Object result2) {
+														mTaskList.remove(this);
+														
+														JSONObject jShop = (JSONObject) result2;
+														
+														Shop shop = new Shop();
+														shop.idShop	= jShop.optInt("idShop");
+														shop.shopName	= jShop.optString("shopName");
+														shop.numOfView = jShop.optString("numOfView");
+														shop.logo		= jShop.optString("logo");
+														
+														ShopDetailActivity.newInstance(mAct, shop);
+													}
+
+													@Override
+													protected void onFail(Exception e) {
+														mTaskList.remove(this);
+														Log.e("Lỗi","Lỗi",e);
+														CyUtils.showError("Lỗi", e, ScanCodeResultActivity.this);
+													}
+												};
+												task.setTaskList(mTaskList);
+												task.executeOnExecutor(NetworkManager.THREAD_POOL);
+												break;
+											}
+										}
+									});
 								}
 							}
 						}
@@ -207,6 +260,16 @@ public class ScanCodeResultActivity extends FragmentActivity{
                 return false;
             }
         });*/
+		
+		ImageButton mBtnBack = (ImageButton) findViewById(R.id.btnBack);
+		mBtnBack.setOnClickListener(new View.OnClickListener() {			
+			@Override
+			public void onClick(View v) {
+				// TODO Auto-generated method stub
+				Toast.makeText(getApplicationContext(), "Back", Toast.LENGTH_LONG).show();
+				finish();
+			}
+		});
 	}
 	
 	/*@Override
@@ -402,19 +465,5 @@ public class ScanCodeResultActivity extends FragmentActivity{
 		Intent intent = new Intent(act, ScanCodeResultActivity.class);
 		act.startActivity(intent);
 		act.overridePendingTransition(android.R.anim.fade_in, android.R.anim.fade_out);
-	}
-	
-	@Override
-	public void finish() {
-		super.finish();
-		overridePendingTransition(android.R.anim.fade_in, android.R.anim.fade_out);
-	}
-
-	///////////////////////////////////////////////////////////////////////////
-	// Listener
-	///////////////////////////////////////////////////////////////////////////
-		
-	public interface BackListener {
-		public void onBackPress();
-	}
+	}	
 }
