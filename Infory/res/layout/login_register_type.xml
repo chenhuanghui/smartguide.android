@@ -57,7 +57,7 @@
                 <LinearLayout
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:background="#80111111"
+                    android:background="#70111111"
                     android:gravity="center"
                     android:orientation="vertical" >
 
@@ -88,13 +88,14 @@
                         android:background="#00000000"
                         android:contentDescription="@string/sfu_normal"
                         android:text="Tiếp tục sử dụng tài khoản ... để đăng nhập"
-                        android:textColor="#a3a3a3"
+                        android:textColor="#F5FAF5"
                         android:textSize="14sp" />
 
                     <TextView
                         android:id="@+id/txtOr"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
+                        android:textColor="#F5FAF5"
                         android:text="hoặc"
                         android:layout_marginTop="8dp"
                         android:textAppearance="?android:attr/textAppearanceSmall" />

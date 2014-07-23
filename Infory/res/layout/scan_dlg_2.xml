@@ -2,7 +2,7 @@
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:orientation="vertical" >
+    android:orientation="vertical">
 
     <FrameLayout
         android:layout_width="match_parent"
@@ -45,7 +45,7 @@
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:orientation="vertical" 
-            android:background="#ffffff">
+            android:background="#EBEBEB">
 
            <LinearLayout
                android:id="@+id/linearLayoutScanDLG2"
@@ -57,20 +57,76 @@
            </LinearLayout>
 
            <LinearLayout
+               android:id="@+id/linearLayoutLineComment"
+               android:layout_width="match_parent"
+               android:layout_height="wrap_content"
+               android:orientation="vertical"
+               android:gravity="center" 
+               android:visibility="gone">
+
+               <ImageView
+                   android:paddingTop="20dp"
+                   android:paddingBottom="20dp"
+                   android:id="@+id/imageView1"
+                   android:layout_width="wrap_content"
+                   android:layout_height="wrap_content"
+                   android:src="@drawable/line_comment" />
+
+           </LinearLayout>
+
+           <RelativeLayout
+               android:id="@+id/relativeLayoutShare"
+               android:layout_width="match_parent"
+               android:layout_height="wrap_content" 
+               android:gravity="center_vertical"
+               android:layout_marginBottom="20dp"
+               android:visibility="gone">
+
+               <ImageButton
+                   android:id="@+id/btnShareFb"
+                   android:layout_width="wrap_content"
+                   android:layout_height="wrap_content"
+                   android:layout_alignParentRight="true"
+                   android:layout_centerVertical="true"
+                   android:layout_marginRight="102dp"
+                   android:background="@drawable/fb" />
+
+               <ImageButton
+                   android:id="@+id/btnShareGoogle"
+                   android:layout_width="wrap_content"
+                   android:layout_height="wrap_content"
+                   android:layout_alignParentRight="true"
+                   android:layout_alignTop="@+id/btnShareFb"
+                   android:layout_marginRight="40dp"
+                   android:background="@drawable/gg" />
+
+               <TextView
+                   android:id="@+id/textView1"
+                   android:layout_width="wrap_content"
+                   android:layout_height="wrap_content"
+                   android:layout_alignParentLeft="true"
+                   android:layout_centerVertical="true"
+                   android:layout_marginLeft="19dp"
+                   android:text="Chia sẻ"
+                   android:textAppearance="?android:attr/textAppearanceMedium" />
+
+           </RelativeLayout>
+
+           <!-- <LinearLayout
                android:layout_width="match_parent"
                android:layout_height="wrap_content"
                android:gravity="center"
                android:orientation="vertical" >
 
-               <!-- <TextView
+               <TextView
                    android:id="@+id/textView2"
                    android:layout_width="wrap_content"
                    android:layout_height="wrap_content"
                    android:paddingBottom="5dp"
                    android:paddingTop="5dp"
                    android:text="Có thể bạn thích"
-                   android:textAppearance="?android:attr/textAppearanceMedium" /> -->
-           </LinearLayout>
+                   android:textAppearance="?android:attr/textAppearanceMedium" />
+           </LinearLayout> -->
 
           <!--  <LinearLayout
                android:id="@+id/linearLayoutRelated"
@@ -112,7 +168,7 @@
                     android:layout_gravity="center"
                     android:background="@drawable/button_loading_big" >
                 </FrameLayout>
-            </FrameLayout> -->
+            </FrameLayout> -->          
 
         </LinearLayout>
     </vn.infory.infory.scancode.InforyCustomScrollView>

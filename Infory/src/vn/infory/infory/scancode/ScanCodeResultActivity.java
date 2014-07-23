@@ -11,6 +11,7 @@ import vn.infory.infory.CyImageLoader;
 import vn.infory.infory.CyUtils;
 import vn.infory.infory.FontsCollection;
 import vn.infory.infory.R;
+import vn.infory.infory.WebActivity;
 import vn.infory.infory.data.Shop;
 import vn.infory.infory.login.InforyLoginActivity.BackListener;
 import vn.infory.infory.login.RegisterTypeFragment.Listener;
@@ -21,12 +22,14 @@ import vn.infory.infory.network.NetworkManager;
 import vn.infory.infory.network.ScanCode;
 import vn.infory.infory.network.ScanCodeRelated;
 import vn.infory.infory.shopdetail.ShopDetailActivity;
+import vn.infory.infory.shoplist.ShopListActivity;
 
 import com.cycrix.androidannotation.Click;
 import com.cycrix.androidannotation.ViewById;
 import com.facebook.widget.LoginButton;
 
 import android.app.Activity;
+import android.content.Context;
 import android.content.Intent;
 import android.content.res.Resources;
 import android.content.res.Resources.NotFoundException;
@@ -41,6 +44,7 @@ import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentStatePagerAdapter;
 import android.support.v4.view.ViewPager;
 import android.util.Log;
+import android.view.Display;
 import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.MenuItem;
@@ -48,11 +52,14 @@ import android.view.MotionEvent;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.view.ViewGroup;
+import android.view.WindowManager;
+import android.webkit.WebView;
 import android.widget.Button;
 import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.ListView;
+import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 import android.widget.LinearLayout.LayoutParams;
@@ -93,7 +100,7 @@ public class ScanCodeResultActivity extends FragmentActivity{
 					{
 						TextView txtHeader = new TextView(getApplicationContext());
 						txtHeader.setText(jItem.optString("header"));
-						txtHeader.setTextSize(20);
+						txtHeader.setTextSize(28);
 						txtHeader.setTextColor(Color.BLACK);
 						txtHeader.setGravity(Gravity.CENTER);
 						txtHeader.setPadding(50, 0, 50, 0);
@@ -109,8 +116,14 @@ public class ScanCodeResultActivity extends FragmentActivity{
 						
 						txtBigText.setTextSize(16);
 						txtBigText.setTextColor(Color.BLACK);
-						txtBigText.setPadding(50, 20, 50, 0);
+						txtBigText.setPadding(50, 20, 50, 0);						
 						linearLayout.addView(txtBigText);
+						
+						/*String html_text = "<html><head></head><body style=\"text-align:justify;background-color:#EBEBEB;padding-left: 20px;padding-right: 20px;\">"+ jItem.optString("bigText") +"</body></html>";
+						WebView wv = new WebView(getApplicationContext());
+						wv.setVerticalScrollBarEnabled(false);
+						wv.loadData(html_text, "text/html; charset=UTF-8", null);
+						linearLayout.addView(wv);*/
 					}
 					
 					if(jItem.has("image"))
@@ -121,7 +134,24 @@ public class ScanCodeResultActivity extends FragmentActivity{
 							final ImageView imgView = new ImageView(getApplicationContext());
 							
 							//Set image width and height
-							imgView.setLayoutParams(new LinearLayout.LayoutParams(jImage.optInt("width"),jImage.optInt("height")));
+							WindowManager wm = (WindowManager) getApplicationContext().getSystemService(Context.WINDOW_SERVICE);
+							Display display = wm.getDefaultDisplay();
+							Point size = new Point();
+							display.getSize(size);
+							int width = size.x;
+							int height = size.y;
+														
+							if(jImage.optInt("width") > width) //Nếu hình trên server > màn hình thì scale lại
+							{
+								height = (int) width*jImage.optInt("height")/jImage.optInt("width");
+							}
+							else
+							{
+								width = jImage.optInt("width");
+								height = jImage.optInt("height");
+							}
+														
+							imgView.setLayoutParams(new LinearLayout.LayoutParams(width,height));
 							
 							CyImageLoader.instance().loadImage(jImage.optString("url"), new CyImageLoader.Listener(){
 								@Override
@@ -146,6 +176,12 @@ public class ScanCodeResultActivity extends FragmentActivity{
 						txtSmallText.setTextColor(Color.GRAY);
 						txtSmallText.setPadding(50, 20, 50, 0);
 						linearLayout.addView(txtSmallText);
+						
+						/*String html_small_text = "<html><head></head><body style=\"text-align:justify; font-size:14px; color:gray;background-color:#EBEBEB;padding-left: 20px;padding-right: 20px;\">"+ jItem.optString("smallText") +"</body></html>";
+						WebView wv_small_text = new WebView(getApplicationContext());
+						wv_small_text.setVerticalScrollBarEnabled(false);
+						wv_small_text.loadData(html_small_text, "text/html; charset=UTF-8", null);
+						*/
 					}
 					
 					
@@ -192,7 +228,7 @@ public class ScanCodeResultActivity extends FragmentActivity{
 										public void onClick(View v) {
 											// TODO Auto-generated method stub
 											switch (jItemButton.optInt("actionType")) {
-											case 1:																								
+											case 1: //Shop user																					
 												GetShopDetail2 task = new GetShopDetail2(getApplicationContext(), jItemButton.optInt("idShop")) {
 													@Override
 													protected void onCompleted(Object result2) {
@@ -219,6 +255,14 @@ public class ScanCodeResultActivity extends FragmentActivity{
 												task.setTaskList(mTaskList);
 												task.executeOnExecutor(NetworkManager.THREAD_POOL);
 												break;
+												
+											case 2: //Shop list
+												ShopListActivity.newInstance(mAct, "11252, 17375, 17376, 38844", new ArrayList<Shop>());
+												break;
+
+											case 3: //popup url (tutorial,...)
+												WebActivity.newInstance(mAct, "http://infory.vn/dieu-khoan-nguoi-dung.html");
+												break;
 											}
 										}
 									});
@@ -229,6 +273,15 @@ public class ScanCodeResultActivity extends FragmentActivity{
 						{
 							
 						}
+					}
+					
+					if(jItem.has("linkToShare"))
+					{
+						LinearLayout llLineComment = (LinearLayout) findViewById(R.id.linearLayoutLineComment);
+						llLineComment.setVisibility(View.VISIBLE);
+						
+						RelativeLayout rlShare = (RelativeLayout) findViewById(R.id.relativeLayoutShare);
+						rlShare.setVisibility(View.VISIBLE);
 					}
 				}
 				else if (jArr.getJSONArray(i) instanceof JSONArray) 
@@ -266,7 +319,6 @@ public class ScanCodeResultActivity extends FragmentActivity{
 			@Override
 			public void onClick(View v) {
 				// TODO Auto-generated method stub
-				Toast.makeText(getApplicationContext(), "Back", Toast.LENGTH_LONG).show();
 				finish();
 			}
 		});
