@@ -29,6 +29,7 @@ import com.cycrix.androidannotation.ViewById;
 import com.facebook.UiLifecycleHelper;
 import com.facebook.widget.FacebookDialog;
 import com.facebook.widget.LoginButton;
+import com.google.android.gms.plus.PlusShare;
 
 import android.app.Activity;
 import android.content.Context;
@@ -39,6 +40,7 @@ import android.graphics.Bitmap;
 import android.graphics.Color;
 import android.graphics.Point;
 import android.graphics.drawable.AnimationDrawable;
+import android.net.Uri;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentActivity;
@@ -110,7 +112,7 @@ public class ScanCodeResultActivity extends FragmentActivity{
 						txtHeader.setTextSize(28);
 						txtHeader.setTextColor(Color.BLACK);
 						txtHeader.setGravity(Gravity.CENTER);
-						txtHeader.setPadding(50, 0, 50, 0);
+						txtHeader.setPadding(50, 0, 50, 20);
 						linearLayout.addView(txtHeader);
 					}
 					
@@ -123,7 +125,7 @@ public class ScanCodeResultActivity extends FragmentActivity{
 						
 						txtBigText.setTextSize(16);
 						txtBigText.setTextColor(Color.BLACK);
-						txtBigText.setPadding(50, 20, 50, 0);						
+						txtBigText.setPadding(50, 0, 50, 20);						
 						linearLayout.addView(txtBigText);
 						
 						/*String html_text = "<html><head></head><body style=\"text-align:justify;background-color:#EBEBEB;padding-left: 20px;padding-right: 20px;\">"+ jItem.optString("bigText") +"</body></html>";
@@ -170,7 +172,7 @@ public class ScanCodeResultActivity extends FragmentActivity{
 								}
 								
 							}, new Point(), getApplicationContext());
-							imgView.setPadding(0, 20, 0, 0);
+							imgView.setPadding(0, 0, 0, 20);
 							linearLayout.addView(imgView);
 						}
 					}
@@ -181,7 +183,7 @@ public class ScanCodeResultActivity extends FragmentActivity{
 						txtSmallText.setText(jItem.optString("smallText"));
 						txtSmallText.setTextSize(14);
 						txtSmallText.setTextColor(Color.GRAY);
-						txtSmallText.setPadding(50, 20, 50, 0);
+						txtSmallText.setPadding(50, 0, 50, 20);
 						linearLayout.addView(txtSmallText);
 						
 						/*String html_small_text = "<html><head></head><body style=\"text-align:justify; font-size:14px; color:gray;background-color:#EBEBEB;padding-left: 20px;padding-right: 20px;\">"+ jItem.optString("smallText") +"</body></html>";
@@ -222,10 +224,10 @@ public class ScanCodeResultActivity extends FragmentActivity{
 									        LayoutParams.WRAP_CONTENT,      
 									        LayoutParams.WRAP_CONTENT
 									);
-									params.setMargins(0, 20, 0, 50);
+									params.setMargins(0, 0, 0, 50);
 									btn.setLayoutParams(params);
 									
-									btn.setPadding(50, 20, 50, 20);
+									btn.setPadding(50, 0, 50, 0);
 									btn.setGravity(Gravity.CENTER);
 									
 									linearLayout.addView(btn);								
@@ -296,12 +298,26 @@ public class ScanCodeResultActivity extends FragmentActivity{
 							@Override
 							public void onClick(View v) {
 								// TODO Auto-generated method stub
-								Toast.makeText(getApplicationContext(), "Share", Toast.LENGTH_LONG).show();
-								
 								FacebookDialog shareDialog = new FacebookDialog.ShareDialogBuilder(mAct)
-						        .setLink("https://developers.facebook.com/android")
-						        .build();
+																		        .setLink("https://developers.facebook.com/android")
+																		        .build();
 								uiHelper.trackPendingDialogCall(shareDialog.present());
+							}
+						});
+						
+						ImageButton imgBtnShareGG = (ImageButton) findViewById(R.id.btnShareGoogle);
+						imgBtnShareGG.setOnClickListener(new View.OnClickListener() {
+							
+							@Override
+							public void onClick(View v) {
+								// TODO Auto-generated method stub
+								Intent shareIntent = new PlusShare.Builder(mAct)
+														          .setType("text/plain")
+														          .setText("")
+														          .setContentUrl(Uri.parse("https://developers.google.com/+/"))
+														          .getIntent();
+
+						      startActivityForResult(shareIntent, 0);
 							}
 						});
 					}
