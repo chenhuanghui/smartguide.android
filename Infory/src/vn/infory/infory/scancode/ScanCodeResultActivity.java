@@ -12,10 +12,13 @@ import vn.infory.infory.CyUtils;
 import vn.infory.infory.FontsCollection;
 import vn.infory.infory.R;
 import vn.infory.infory.WebActivity;
+import vn.infory.infory.data.PlaceList;
 import vn.infory.infory.data.Shop;
 import vn.infory.infory.login.InforyLoginActivity.BackListener;
 import vn.infory.infory.login.RegisterTypeFragment.Listener;
 import vn.infory.infory.network.CyAsyncTask;
+import vn.infory.infory.network.GetPlaceList;
+import vn.infory.infory.network.GetPlaceListDetail;
 import vn.infory.infory.network.GetShopDetail;
 import vn.infory.infory.network.GetShopDetail2;
 import vn.infory.infory.network.NetworkManager;
@@ -59,6 +62,7 @@ import android.view.ViewGroup;
 import android.view.WindowManager;
 import android.webkit.WebView;
 import android.widget.Button;
+import android.widget.HorizontalScrollView;
 import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
@@ -191,17 +195,27 @@ public class ScanCodeResultActivity extends FragmentActivity{
 						wv_small_text.setVerticalScrollBarEnabled(false);
 						wv_small_text.loadData(html_small_text, "text/html; charset=UTF-8", null);
 						*/
-					}
-					
-					
+					}		
 					
 					if(jItem.has("buttons"))
-					{
+					{						
 						if(jItem.optJSONArray("buttons") instanceof JSONArray)
 						{
 							JSONArray jArrButton = jItem.optJSONArray("buttons");
+							
 							if(jArrButton.length() > 0)
 							{
+								LinearLayout btnLayout = new LinearLayout(getApplicationContext());
+								btnLayout.setOrientation(LinearLayout.HORIZONTAL);
+								btnLayout.setGravity(Gravity.CENTER);
+								
+								LayoutParams params = new LayoutParams(
+								        LayoutParams.WRAP_CONTENT,      
+								        LayoutParams.WRAP_CONTENT
+								);
+								params.setMargins(0, 0, 0, 20);
+								btnLayout.setLayoutParams(params);
+								
 								for (int j = 0; j < jArrButton.length(); j++) 
 								{
 									final JSONObject jItemButton = jArrButton.getJSONObject(j);
@@ -218,19 +232,10 @@ public class ScanCodeResultActivity extends FragmentActivity{
 										default:
 											btn.setBackgroundDrawable(getResources().getDrawable(R.drawable.bg_viewer_button));
 											break;
-									}
+									}						
 									
-									LayoutParams params = new LayoutParams(
-									        LayoutParams.WRAP_CONTENT,      
-									        LayoutParams.WRAP_CONTENT
-									);
-									params.setMargins(0, 0, 0, 50);
-									btn.setLayoutParams(params);
-									
-									btn.setPadding(50, 0, 50, 0);
-									btn.setGravity(Gravity.CENTER);
-									
-									linearLayout.addView(btn);								
+									btn.setPadding(50, 0, 50, 0);									
+									btnLayout.addView(btn);																
 									
 									btn.setOnClickListener(new View.OnClickListener() {
 										@Override
@@ -266,16 +271,47 @@ public class ScanCodeResultActivity extends FragmentActivity{
 												break;
 												
 											case 2: //Shop list
-												ShopListActivity.newInstance(mAct, "11252, 17375, 17376, 38844", new ArrayList<Shop>());
+												if(jItemButton.has("idPlacelist"))
+												{
+													GetPlaceListDetail place_list_task = new GetPlaceListDetail(getApplicationContext(), jItemButton.optInt("idPlacelist"), 0){
+
+														@Override
+														protected void onCompleted(Object result) throws Exception {
+															// TODO Auto-generated method stub
+															mTaskList.remove(this);
+															
+															Object[] placelist = (Object[]) result;
+															ShopListActivity.newInstance(mAct, (PlaceList)placelist[0], new ArrayList<Shop>());
+														}
+
+														@Override
+														protected void onFail(
+																Exception e) {
+															mTaskList.remove(this);
+														}														
+													};	
+													
+													mTaskList.add(place_list_task);
+													place_list_task.executeOnExecutor(NetworkManager.THREAD_POOL);
+												}												
+												else if(jItemButton.has("keywords"))
+												{
+													ShopListActivity.newInstance(mAct, jItemButton.optString("keywords"), new ArrayList<Shop>());
+												}
+												else if(jItemButton.has("idShops"))
+												{
+													ShopListActivity.newInstance(mAct, jItemButton.optString("idShops"), new ArrayList<Shop>(),0);
+												}												
 												break;
 
 											case 3: //popup url (tutorial,...)
-												WebActivity.newInstance(mAct, "http://infory.vn/dieu-khoan-nguoi-dung.html");
+												WebActivity.newInstance(mAct, jItemButton.optString("url"));
 												break;
 											}
 										}
 									});
 								}
+								linearLayout.addView(btnLayout);	
 							}
 						}
 						else if (jItem.optJSONObject("buttons") instanceof JSONObject) 
