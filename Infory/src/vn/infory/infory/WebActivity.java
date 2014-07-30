@@ -2,7 +2,9 @@ package vn.infory.infory;
 
 import android.app.Activity;
 import android.content.Intent;
+import android.net.Uri;
 import android.os.Bundle;
+import android.util.Log;
 import android.webkit.WebView;
 import android.webkit.WebViewClient;
 
@@ -15,6 +17,8 @@ public class WebActivity extends Activity {
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		mUrl = sUrl;
+		/*Uri uri = Uri.parse(mUrl);
+		mUrl = mUrl.toString();*/
 		sUrl = null;
 		
 		super.onCreate(savedInstanceState);
@@ -27,6 +31,8 @@ public class WebActivity extends Activity {
 		web.setWebViewClient(new WebViewClient() {
 	        @Override
 	        public boolean shouldOverrideUrlLoading(WebView view, String url) {
+	        	super.shouldOverrideUrlLoading(view, url);
+	        	
 	            view.loadUrl(url);
 	            return false;
 	        }

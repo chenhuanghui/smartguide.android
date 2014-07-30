@@ -29,14 +29,24 @@ import vn.infory.infory.shoplist.ShopListActivity;
 
 import com.cycrix.androidannotation.Click;
 import com.cycrix.androidannotation.ViewById;
+import com.facebook.FacebookException;
+import com.facebook.FacebookOperationCanceledException;
+import com.facebook.Session;
+import com.facebook.SessionLoginBehavior;
+import com.facebook.SessionState;
+import com.facebook.Session.StatusCallback;
 import com.facebook.UiLifecycleHelper;
 import com.facebook.widget.FacebookDialog;
 import com.facebook.widget.LoginButton;
+import com.facebook.widget.WebDialog;
+import com.facebook.widget.WebDialog.OnCompleteListener;
 import com.google.android.gms.plus.PlusShare;
 
 import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
+import android.content.pm.ApplicationInfo;
+import android.content.pm.PackageManager;
 import android.content.res.Resources;
 import android.content.res.Resources.NotFoundException;
 import android.graphics.Bitmap;
@@ -97,7 +107,7 @@ public class ScanCodeResultActivity extends FragmentActivity{
 		uiHelper = new UiLifecycleHelper(this, null);
 	    uiHelper.onCreate(savedInstanceState);
         
-		mAct = this;
+		mAct = this;	
 		
 		JSONArray jArr = (JSONArray) mScanCodeResult;
 		
@@ -107,7 +117,7 @@ public class ScanCodeResultActivity extends FragmentActivity{
 			try {
 				if(jArr.getJSONObject(i) instanceof JSONObject)
 				{
-					JSONObject jItem = jArr.getJSONObject(i);							
+					final JSONObject jItem = jArr.getJSONObject(i);							
 					
 					if(jItem.has("header"))
 					{
@@ -334,10 +344,41 @@ public class ScanCodeResultActivity extends FragmentActivity{
 							@Override
 							public void onClick(View v) {
 								// TODO Auto-generated method stub
-								FacebookDialog shareDialog = new FacebookDialog.ShareDialogBuilder(mAct)
-																		        .setLink("https://developers.facebook.com/android")
-																		        .build();
-								uiHelper.trackPendingDialogCall(shareDialog.present());
+								/*try{
+								    ApplicationInfo info = getPackageManager().
+								            getApplicationInfo("com.facebook.katana", 0 );
+								} catch( PackageManager.NameNotFoundException e ){
+									Toast.makeText(getApplicationContext(), "Vui lòng cài đặt Facebook trước khi chia sẻ", Toast.LENGTH_LONG).show();
+								    return;
+								}*/
+								
+								if(FacebookDialog.canPresentShareDialog(getApplicationContext(), 
+							            FacebookDialog.ShareDialogFeature.SHARE_DIALOG)) {
+									FacebookDialog shareDialog = new FacebookDialog.ShareDialogBuilder(mAct)
+																			        .setLink(jItem.optString("linkToShare"))
+																			        .build();
+									uiHelper.trackPendingDialogCall(shareDialog.present());
+								}
+								else
+								{			
+									Session session = new Session(mAct);
+									Session.OpenRequest request = new Session.OpenRequest(mAct);
+									request.setCallback(new Session.StatusCallback() {
+
+										@Override
+										public void call(Session session,
+												SessionState state,
+												Exception exception) {
+											// TODO Auto-generated method stub	
+											if(session.isOpened())
+												publishFeedDialog(session,jItem.optString("linkToShare"));
+										}});
+									request.setLoginBehavior(SessionLoginBehavior.SUPPRESS_SSO); // <-- this is the important line
+									session.openForRead(request);
+									Session.setActiveSession(session);
+									
+										
+								}
 							}
 						});
 						
@@ -350,7 +391,7 @@ public class ScanCodeResultActivity extends FragmentActivity{
 								Intent shareIntent = new PlusShare.Builder(mAct)
 														          .setType("text/plain")
 														          .setText("")
-														          .setContentUrl(Uri.parse("https://developers.google.com/+/"))
+														          .setContentUrl(Uri.parse(jItem.optString("linkToShare")))
 														          .getIntent();
 
 						      startActivityForResult(shareIntent, 0);
@@ -633,4 +674,51 @@ public class ScanCodeResultActivity extends FragmentActivity{
 		act.startActivity(intent);
 		act.overridePendingTransition(android.R.anim.fade_in, android.R.anim.fade_out);
 	}	
+	
+	private void publishFeedDialog(Session session,String link) {
+		if (Session.getActiveSession() != null || Session.getActiveSession().isOpened()) {
+			Bundle params = new Bundle();
+		    params.putString("link", link);
+
+		    WebDialog feedDialog = (
+		        new WebDialog.FeedDialogBuilder(mAct,
+		            session,
+		            params))
+		        .setOnCompleteListener(new OnCompleteListener() {
+
+		            @Override
+		            public void onComplete(Bundle values,
+		                FacebookException error) {
+		                if (error == null) {
+		                    // When the story is posted, echo the success
+		                    // and the post Id.
+		                    /*final String postId = values.getString("post_id");
+		                    if (postId != null) {
+		                        Toast.makeText(mAct,"Chia sẻ thành công!",Toast.LENGTH_SHORT).show();
+		                    }*/ 
+		                    /*else {
+		                        // User clicked the Cancel button
+		                        Toast.makeText(getApplicationContext(), 
+		                            "Publish cancelled", 
+		                            Toast.LENGTH_SHORT).show();
+		                    }*/
+		                } 
+		                /*else if (error instanceof FacebookOperationCanceledException) {
+		                    // User clicked the "x" button
+		                    Toast.makeText(mAct, 
+		                        "Publish cancelled", 
+		                        Toast.LENGTH_SHORT).show();
+		                } */
+		                else {
+		                    // Generic, ex: network error
+		                    Toast.makeText(mAct, 
+		                        "Chia sẻ thất bại! Vui lòng thử lại", 
+		                        Toast.LENGTH_SHORT).show();
+		                }
+		            }
+		        })
+		        .build();
+		    feedDialog.show();			
+		}	    
+	}
 }
