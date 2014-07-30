@@ -52,6 +52,7 @@ import android.content.res.Resources.NotFoundException;
 import android.graphics.Bitmap;
 import android.graphics.Color;
 import android.graphics.Point;
+import android.graphics.Typeface;
 import android.graphics.drawable.AnimationDrawable;
 import android.net.Uri;
 import android.os.Bundle;
@@ -109,7 +110,7 @@ public class ScanCodeResultActivity extends FragmentActivity{
         
 		mAct = this;	
 		
-		JSONArray jArr = (JSONArray) mScanCodeResult;
+		JSONArray jArr = (JSONArray) mScanCodeResult;	
 		
 		LinearLayout linearLayout = (LinearLayout) findViewById(R.id.linearLayoutScanDLG2);
 		for (int i = 0; i < jArr.length(); i++) 
@@ -127,6 +128,9 @@ public class ScanCodeResultActivity extends FragmentActivity{
 						txtHeader.setTextColor(Color.BLACK);
 						txtHeader.setGravity(Gravity.CENTER);
 						txtHeader.setPadding(50, 0, 50, 20);
+						
+						FontsCollection.setFontForTextView(txtHeader, "sfufuturabook");
+						   
 						linearLayout.addView(txtHeader);
 					}
 					
@@ -139,7 +143,10 @@ public class ScanCodeResultActivity extends FragmentActivity{
 						
 						txtBigText.setTextSize(16);
 						txtBigText.setTextColor(Color.BLACK);
-						txtBigText.setPadding(50, 0, 50, 20);						
+						txtBigText.setPadding(50, 0, 50, 20);	
+						
+						FontsCollection.setFontForTextView(txtBigText, "sfufuturabook");
+						
 						linearLayout.addView(txtBigText);
 						
 						/*String html_text = "<html><head></head><body style=\"text-align:justify;background-color:#EBEBEB;padding-left: 20px;padding-right: 20px;\">"+ jItem.optString("bigText") +"</body></html>";
@@ -198,6 +205,9 @@ public class ScanCodeResultActivity extends FragmentActivity{
 						txtSmallText.setTextSize(14);
 						txtSmallText.setTextColor(Color.GRAY);
 						txtSmallText.setPadding(50, 0, 50, 20);
+						
+						FontsCollection.setFontForTextView(txtSmallText, "sfufuturabook");
+						
 						linearLayout.addView(txtSmallText);
 						
 						/*String html_small_text = "<html><head></head><body style=\"text-align:justify; font-size:14px; color:gray;background-color:#EBEBEB;padding-left: 20px;padding-right: 20px;\">"+ jItem.optString("smallText") +"</body></html>";
@@ -232,6 +242,8 @@ public class ScanCodeResultActivity extends FragmentActivity{
 									
 									final Button btn = new Button(getApplicationContext());
 									btn.setText(jItemButton.optString("actionTitle"));
+									
+									FontsCollection.setFontForButton(btn, "sfufuturabook");
 																				
 									switch (jItemButton.optInt("color")) 
 									{
@@ -337,6 +349,9 @@ public class ScanCodeResultActivity extends FragmentActivity{
 						
 						RelativeLayout rlShare = (RelativeLayout) findViewById(R.id.relativeLayoutShare);
 						rlShare.setVisibility(View.VISIBLE);
+						
+						TextView txtShare = (TextView)findViewById(R.id.txtShare);
+						FontsCollection.setFontForTextView(txtShare, "sfufuturabook");
 						
 						ImageButton imgBtnShareFB = (ImageButton) findViewById(R.id.btnShareFb);
 						imgBtnShareFB.setOnClickListener(new View.OnClickListener() {
