@@ -82,6 +82,17 @@
                     </FrameLayout>
 
                     <Button
+			            android:id="@+id/btnContinue"
+			            android:layout_width="wrap_content"
+			            android:layout_height="wrap_content"
+			            android:background="#00000000"
+			            android:contentDescription="@string/sfu_normal"
+			            android:drawableRight="@drawable/icon_arrow_notification"
+			            android:text="Sử dụng ... để đăng nhập "
+			            android:textColor="#a3a3a3"
+			            android:textSize="14sp" />
+                    
+                    <!-- <Button
                         android:id="@+id/btnContinue"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
@@ -91,7 +102,7 @@
                         android:textSize="14sp"
                         android:paddingLeft="10dp"
                         android:paddingRight="10dp"
-                        android:background="@drawable/button_buy_android" />
+                        android:background="@drawable/button_buy_android" /> -->
 
                     <TextView
                         android:id="@+id/txtOr"

@@ -24,6 +24,10 @@ import android.graphics.Point;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
 import android.support.v4.app.Fragment;
+import android.text.Spannable;
+import android.text.SpannableString;
+import android.text.style.ForegroundColorSpan;
+import android.text.style.StyleSpan;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -31,16 +35,19 @@ import android.widget.FrameLayout;
 import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.TextView;
+import android.widget.TextView.BufferType;
 import android.widget.Toast;
 
 import android.graphics.Bitmap;
 import android.graphics.Bitmap.Config;
 import android.graphics.Canvas;
+import android.graphics.Color;
 import android.graphics.Paint;
 import android.graphics.Point;
 import android.graphics.PorterDuff.Mode;
 import android.graphics.PorterDuffXfermode;
 import android.graphics.Rect;
+import android.graphics.Typeface;
 
 public class RegisterTypeFragment extends Fragment implements BackListener {
 	
@@ -142,12 +149,26 @@ public class RegisterTypeFragment extends Fragment implements BackListener {
 		}
 		else
 		{			
+			FontsCollection.setFontForTextView(mTxtOr, "sfufuturabook");
 			mBtnContinue.setVisibility(View.VISIBLE);
 			mImgAva.setVisibility(View.VISIBLE);
 			mFrameAva.setVisibility(View.VISIBLE);
 			mTxtOr.setVisibility(View.VISIBLE);
 			
-			mBtnContinue.setText("Tiếp tục sử dụng tài khoản " + s.name + " để đăng nhập");
+			/*String text = "Sử dụng " + s.name + " để đăng nhập";
+			mBtnContinue.setText(text, BufferType.SPANNABLE);
+			Spannable span = (Spannable)mBtnContinue.getText();
+			int start = 8;
+			int end = text.indexOf(" để");
+			span.setSpan(new ForegroundColorSpan(0x33CCFF), start, end, Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);*/
+			
+			mBtnContinue.setText("Sử dụng ");
+			Spannable WordToSpan = new SpannableString(s.name); 
+			WordToSpan.setSpan(new ForegroundColorSpan(Color.CYAN), 0, WordToSpan.length(), Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);
+			mBtnContinue.append(WordToSpan);
+			
+			mBtnContinue.append(" để tiếp tục");
+			
 			CyImageLoader.instance().loadImage(s.avatar, new CyImageLoader.Listener() {
 				@Override
 				public void loadFinish(int from, Bitmap image, String url, CyAsyncTask task) {
@@ -183,7 +204,31 @@ public class RegisterTypeFragment extends Fragment implements BackListener {
 				mFrameAva.setVisibility(View.VISIBLE);
 				mTxtOr.setVisibility(View.VISIBLE);
 				
-				mBtnContinue.setText("Tiếp tục sử dụng tài khoản " + s.name + " để đăng nhập");
+				/*String text = "Sử dụng " + s.name + " để đăng nhập";
+				mBtnContinue.setText(text, BufferType.SPANNABLE);
+				Spannable span = (Spannable)mBtnContinue.getText();
+				int start = 8;
+				int end = text.indexOf(" để");
+				span.setSpan(new ForegroundColorSpan(0x33CCFF), start, end, Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);*/
+				
+				Spannable WordToSpan = new SpannableString("Sử dụng "); 
+				WordToSpan.setSpan(new ForegroundColorSpan(Color.WHITE), 0, WordToSpan.length(), Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);
+				
+				mBtnContinue.setText(WordToSpan);
+				
+				WordToSpan = new SpannableString(s.name); 
+				WordToSpan.setSpan(new ForegroundColorSpan(Color.CYAN), 0, WordToSpan.length(), Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);
+				WordToSpan.setSpan(new StyleSpan(Typeface.BOLD), 0, WordToSpan.length(), 0);
+				mBtnContinue.append(WordToSpan);
+				
+				WordToSpan = new SpannableString(" để tiếp tục"); 
+				WordToSpan.setSpan(new ForegroundColorSpan(Color.WHITE), 0, WordToSpan.length(), Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);
+				mBtnContinue.append(WordToSpan);
+				
+				FontsCollection.setFontForTextView(mBtnContinue, "sfufuturabook");
+				
+				
+				
 				CyImageLoader.instance().loadImage(s.avatar, new CyImageLoader.Listener() {
 					@Override
 					public void loadFinish(int from, Bitmap image, String url, CyAsyncTask task) {
