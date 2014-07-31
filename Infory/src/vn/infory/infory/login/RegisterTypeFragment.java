@@ -34,7 +34,9 @@ import android.view.ViewGroup;
 import android.widget.FrameLayout;
 import android.widget.ImageButton;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.TextView;
+import android.widget.LinearLayout.LayoutParams;
 import android.widget.TextView.BufferType;
 import android.widget.Toast;
 
@@ -56,14 +58,16 @@ public class RegisterTypeFragment extends Fragment implements BackListener {
 	
 	private Activity mCt;
 	
+	public Settings s = Settings.instance();
+	
 	// GUI
-	@ViewById(id = R.id.btnContinue)	private TextView mBtnContinue;
-	@ViewById(id = R.id.imgAva)			private ImageView mImgAva;
-	@ViewById(id = R.id.frameAva)		private FrameLayout mFrameAva;
-	@ViewById(id = R.id.txtOr)			private TextView mTxtOr;
-	@ViewById(id = R.id.btnFacebook)	private ImageButton mBtnFacebook;
-	@ViewById(id = R.id.btnGooglePlus)	private ImageButton mBtnGooglePlus;
-	@ViewById(id = R.id.fbBtn) 			private LoginButton mFacebookButton;
+	@ViewById(id = R.id.btnContinue)			private TextView mBtnContinue;
+	@ViewById(id = R.id.imgAva)					private ImageView mImgAva;
+	@ViewById(id = R.id.frameAva)				private FrameLayout mFrameAva;
+	@ViewById(id = R.id.txtOr)					private TextView mTxtOr;
+	@ViewById(id = R.id.btnFacebook)			private ImageButton mBtnFacebook;
+	@ViewById(id = R.id.btnGooglePlus)			private ImageButton mBtnGooglePlus;
+	@ViewById(id = R.id.fbBtn) 					private LoginButton mFacebookButton;
 
 	
 	//Chuyển frame layout trong fragment
@@ -74,7 +78,7 @@ public class RegisterTypeFragment extends Fragment implements BackListener {
 	public View onCreateView(LayoutInflater inflater, ViewGroup container,
 			Bundle savedInstanceState) {
 		final View myInflatedView = inflater.inflate(R.layout.login_register_type, container, false);
-
+		
 		return myInflatedView;
 	}
 		
@@ -127,6 +131,12 @@ public class RegisterTypeFragment extends Fragment implements BackListener {
 		// TODO Auto-generated method stub
 		mListener.onButtonContinueClick();
 	}
+	
+	@Click(id = R.id.frameAva)
+	private void onFrameAvatarContinueClick(View v) {
+		// TODO Auto-generated method stub
+		mListener.onButtonContinueClick();
+	}
 
 	@Override
 	public void onBackPress() {
@@ -136,12 +146,11 @@ public class RegisterTypeFragment extends Fragment implements BackListener {
 	
 	
 	public void onFinishLogin()
-	{
-		Settings s = Settings.instance();
+	{		
 		mCt = new Activity();
 				
 		if(s.name.equals(""))
-		{	
+		{				
 			mBtnContinue.setVisibility(View.GONE);
 			mImgAva.setVisibility(View.GONE);
 			mFrameAva.setVisibility(View.GONE);
@@ -155,19 +164,21 @@ public class RegisterTypeFragment extends Fragment implements BackListener {
 			mFrameAva.setVisibility(View.VISIBLE);
 			mTxtOr.setVisibility(View.VISIBLE);
 			
-			/*String text = "Sử dụng " + s.name + " để đăng nhập";
-			mBtnContinue.setText(text, BufferType.SPANNABLE);
-			Spannable span = (Spannable)mBtnContinue.getText();
-			int start = 8;
-			int end = text.indexOf(" để");
-			span.setSpan(new ForegroundColorSpan(0x33CCFF), start, end, Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);*/
+			Spannable WordToSpan = new SpannableString("Sử dụng "); 
+			WordToSpan.setSpan(new ForegroundColorSpan(Color.WHITE), 0, WordToSpan.length(), Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);
 			
-			mBtnContinue.setText("Sử dụng ");
-			Spannable WordToSpan = new SpannableString(s.name); 
+			mBtnContinue.setText(WordToSpan);
+			
+			WordToSpan = new SpannableString(s.name); 
 			WordToSpan.setSpan(new ForegroundColorSpan(Color.CYAN), 0, WordToSpan.length(), Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);
+			WordToSpan.setSpan(new StyleSpan(Typeface.BOLD), 0, WordToSpan.length(), 0);
 			mBtnContinue.append(WordToSpan);
 			
-			mBtnContinue.append(" để tiếp tục");
+			WordToSpan = new SpannableString(" để tiếp tục "); 
+			WordToSpan.setSpan(new ForegroundColorSpan(Color.WHITE), 0, WordToSpan.length(), Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);
+			mBtnContinue.append(WordToSpan);
+			
+			FontsCollection.setFontForTextView(mBtnContinue, "sfufuturabook");
 			
 			CyImageLoader.instance().loadImage(s.avatar, new CyImageLoader.Listener() {
 				@Override
@@ -204,13 +215,6 @@ public class RegisterTypeFragment extends Fragment implements BackListener {
 				mFrameAva.setVisibility(View.VISIBLE);
 				mTxtOr.setVisibility(View.VISIBLE);
 				
-				/*String text = "Sử dụng " + s.name + " để đăng nhập";
-				mBtnContinue.setText(text, BufferType.SPANNABLE);
-				Spannable span = (Spannable)mBtnContinue.getText();
-				int start = 8;
-				int end = text.indexOf(" để");
-				span.setSpan(new ForegroundColorSpan(0x33CCFF), start, end, Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);*/
-				
 				Spannable WordToSpan = new SpannableString("Sử dụng "); 
 				WordToSpan.setSpan(new ForegroundColorSpan(Color.WHITE), 0, WordToSpan.length(), Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);
 				
@@ -221,7 +225,7 @@ public class RegisterTypeFragment extends Fragment implements BackListener {
 				WordToSpan.setSpan(new StyleSpan(Typeface.BOLD), 0, WordToSpan.length(), 0);
 				mBtnContinue.append(WordToSpan);
 				
-				WordToSpan = new SpannableString(" để tiếp tục"); 
+				WordToSpan = new SpannableString(" để tiếp tục "); 
 				WordToSpan.setSpan(new ForegroundColorSpan(Color.WHITE), 0, WordToSpan.length(), Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);
 				mBtnContinue.append(WordToSpan);
 				
