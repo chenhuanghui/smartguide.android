@@ -288,7 +288,7 @@ ConnectionCallbacks, OnConnectionFailedListener {
 
 	@Override
 	public void onBackPressed() {
-//		mBackFragArr[mPager.getCurrentItem()].onBackPress();
+		mBackFragArr[mPager.getCurrentItem()].onBackPress();
 	}
 
 	///////////////////////////////////////////////////////////////////////////

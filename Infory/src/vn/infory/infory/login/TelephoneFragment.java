@@ -45,6 +45,7 @@ import android.widget.EditText;
 import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.TextView;
+import android.widget.Toast;
 import android.widget.TextView.OnEditorActionListener;
 
 import com.cycrix.androidannotation.AndroidAnnotationParser;
@@ -54,7 +55,7 @@ import com.cycrix.androidannotation.ViewById;
 public class TelephoneFragment extends Fragment implements BackListener {
 
 	// GUI elements
-//	@ViewById(id = R.id.btnBack)				private ImageButton mBtnBack;
+	@ViewById(id = R.id.btnBack)				private ImageButton mBtnBack;
 	@ViewById(id = R.id.btnSend)				private Button mBtnSend;
 	@ViewById(id = R.id.edtTelNum)				private EditText mEdtTelephone;
 	@ViewById(id = R.id.txtMesTop)				private TextView mTxtMesTop;
@@ -106,9 +107,11 @@ public class TelephoneFragment extends Fragment implements BackListener {
 	
 	@Override
 	public void onBackPress() {
-//		onBackClick(null);
+		if(mTimer != null)
+			mTimer.cancel();
+		onBackClick(null);
 	}
-	
+
 	@Override
 	public void onResume() {
 		super.onResume();
@@ -144,10 +147,12 @@ public class TelephoneFragment extends Fragment implements BackListener {
 	// Private methods
 	///////////////////////////////////////////////////////////////////////////
 	
-	/*@Click(id = R.id.btnBack)
+	@Click(id = R.id.btnBack)
 	private void onBackClick(View v) {
+		if(mTimer != null)
+			mTimer.cancel();
 		mListener.onBackPress();
-	}*/
+	}
 
 	@Click(id = R.id.btnSend)
 	private void onSendClick(View v) {
