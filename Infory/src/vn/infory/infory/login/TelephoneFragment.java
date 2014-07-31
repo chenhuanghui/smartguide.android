@@ -260,6 +260,7 @@ public class TelephoneFragment extends Fragment implements BackListener {
 				saveProfile(result);
 				
 				Editor e = PreferenceManager.getDefaultSharedPreferences(getActivity()).edit();
+				
 				e.putString("accessToken", mjProfile.optString("accessToken"));
 				e.putString("refreshToken", mjProfile.optString("refreshToken"));
 				e.putString("activeCode", mActiveCode);
@@ -281,9 +282,8 @@ public class TelephoneFragment extends Fragment implements BackListener {
 
 			@Override
 			protected void onSuccess(JSONObject result) {
-				mTaskList.remove(this);
-				
-				mjProfile = result;
+				mTaskList.remove(this);				
+				mjProfile = result;				
 				saveProfile(result);
 				
 				mListener.onLoginSuccess(result);
@@ -320,7 +320,7 @@ public class TelephoneFragment extends Fragment implements BackListener {
 	private void saveProfile(JSONObject result) {
 		Settings s = Settings.instance();
 		JSONObject jProfile = result.optJSONObject("userProfile");
-
+		
 		s.setAccessToken(result.optString("accessToken"), result.optString("refreshToken"));
 		s.activateID= mActiveCode;
 		
@@ -329,7 +329,7 @@ public class TelephoneFragment extends Fragment implements BackListener {
 		s.avatar 	= jProfile.optString("avatar");
 		s.name 		= jProfile.optString("name");
 		s.userID	= jProfile.optString("idUser");
-		s.gender	= jProfile.optInt("sex", -1);
+		s.gender	= jProfile.optInt("gender");
 		s.cover		= jProfile.optString("cover");
 		s.dob		= jProfile.optString("dob");
 		s.socialType= jProfile.optInt("socialType", 0);
@@ -403,7 +403,13 @@ public class TelephoneFragment extends Fragment implements BackListener {
 		if (phone.charAt(0) == '0')
 			phone = phone.substring(1);
 		
-		if (phone.length() < 9 || phone.length() > 10)
+		if(phone.charAt(0) != '1' && phone.charAt(0) != '9')
+			return false;
+		
+		if (phone.charAt(0) == '9' && phone.length() != 9)
+			return false;
+		
+		if (phone.charAt(0) == '1' && phone.length() != 10)
 			return false;
 		
 		for (int i = 0; i < phone.length(); i++) {

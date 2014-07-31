@@ -77,7 +77,8 @@
                 android:textColor="#FD4744"
                 android:textColorHint="#C8C8C8"
                 android:textCursorDrawable="@null"
-                android:textSize="18sp" >
+                android:textSize="18sp"
+                android:maxLength="12" >
 
                 <requestFocus />
             </EditText>
