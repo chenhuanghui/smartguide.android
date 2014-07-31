@@ -249,7 +249,7 @@
             android:gravity="center_vertical" >
 
             <LinearLayout
-                android:id="@+id/layoutDot"
+                android:id="@+id/layoutDot1"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_centerHorizontal="true"
@@ -262,7 +262,7 @@
                 android:id="@+id/imgLeft"
                 android:layout_width="14dp"
                 android:layout_height="wrap_content"
-                android:layout_alignLeft="@+id/layoutDot"
+                android:layout_alignLeft="@+id/layoutDot1"
                 android:layout_centerHorizontal="true"
                 android:layout_marginLeft="14dp"
                 android:src="@drawable/button_arrow_left" />
@@ -271,7 +271,7 @@
                 android:id="@+id/imgRight"
                 android:layout_width="14dp"
                 android:layout_height="wrap_content"
-                android:layout_alignRight="@+id/layoutDot"
+                android:layout_alignRight="@+id/layoutDot1"
                 android:layout_marginRight="14dp"
                 android:src="@drawable/button_arrow_right" />
             
@@ -279,7 +279,7 @@
                 android:id="@+id/imgPointer"
                 android:layout_width="14dp"
                 android:layout_height="wrap_content"
-                android:layout_alignLeft="@+id/layoutDot"
+                android:layout_alignLeft="@+id/layoutDot1"
                 android:layout_centerHorizontal="true"
                 android:layout_marginLeft="14dp"
                 android:layout_centerVertical="true"
