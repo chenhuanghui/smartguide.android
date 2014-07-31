@@ -222,7 +222,7 @@
             android:layout_height="wrap_content"
             android:layout_above="@+id/txtShopType"
             android:layout_alignLeft="@+id/txtShopType"
-            android:layout_toLeftOf="@+id/btnInfo"
+            android:layout_toLeftOf="@+id/linearlayoutBtnInfo"
             android:contentDescription="@string/sfu_heavy"
             android:shadowColor="#000000"
             android:shadowDx="0"
@@ -232,16 +232,31 @@
             android:textColor="#ECECEC"
             android:textStyle="bold" />
 
-        <ImageButton
-            android:id="@+id/btnInfo"
+        <LinearLayout
+            android:id="@+id/linearlayoutBtnInfo"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_above="@+id/relativeLayout1"
             android:layout_alignParentRight="true"
+            android:layout_above="@+id/relativeLayout1" >
+            
+            <!-- <ImageButton
+            android:id="@+id/btnInfo"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"                       
             android:layout_marginBottom="6dp"
             android:layout_marginRight="8dp"
             android:background="#00000000"
-            android:src="@drawable/button_info" />
+            android:src="@drawable/button_info" /> -->
+
+            <ImageView
+                android:id="@+id/imageView1"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="6dp"
+            	android:layout_marginRight="8dp"
+                android:src="@drawable/button_info" />
+
+        </LinearLayout>
 
         <vn.infory.infory.shopdetail.PagerIndicator
             android:id="@+id/pagerIndicator"

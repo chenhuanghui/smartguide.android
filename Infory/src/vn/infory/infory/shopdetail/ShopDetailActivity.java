@@ -867,7 +867,7 @@ public class ShopDetailActivity extends FragmentActivity {
 				case 0: // shop gallery + info bar
 					convertView = mInflater.inflate(R.layout.shop_detail_1, parent, false);
 					mLayoutShopGallery = (ViewGroup) convertView;
-					mLayoutShopGallery.findViewById(R.id.btnInfo)
+					mLayoutShopGallery.findViewById(R.id.linearlayoutBtnInfo)
 					.setOnClickListener(new OnClickListener() {
 						@Override
 						public void onClick(View arg0) {
