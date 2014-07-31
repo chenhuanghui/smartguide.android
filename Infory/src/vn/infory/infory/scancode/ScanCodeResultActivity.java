@@ -129,7 +129,7 @@ public class ScanCodeResultActivity extends FragmentActivity{
 						txtHeader.setGravity(Gravity.CENTER);
 						txtHeader.setPadding(50, 0, 50, 20);
 						
-						FontsCollection.setFontForTextView(txtHeader, "sfufuturabook");
+//						FontsCollection.setFontForTextView(txtHeader, "sfufuturabook");
 						   
 						linearLayout.addView(txtHeader);
 					}
@@ -145,7 +145,7 @@ public class ScanCodeResultActivity extends FragmentActivity{
 						txtBigText.setTextColor(Color.BLACK);
 						txtBigText.setPadding(50, 0, 50, 20);	
 						
-						FontsCollection.setFontForTextView(txtBigText, "sfufuturabook");
+//						FontsCollection.setFontForTextView(txtBigText, "sfufuturabook");
 						
 						linearLayout.addView(txtBigText);
 						
@@ -206,7 +206,7 @@ public class ScanCodeResultActivity extends FragmentActivity{
 						txtSmallText.setTextColor(Color.GRAY);
 						txtSmallText.setPadding(50, 0, 50, 20);
 						
-						FontsCollection.setFontForTextView(txtSmallText, "sfufuturabook");
+//						FontsCollection.setFontForTextView(txtSmallText, "sfufuturabook");
 						
 						linearLayout.addView(txtSmallText);
 						
@@ -243,7 +243,7 @@ public class ScanCodeResultActivity extends FragmentActivity{
 									final Button btn = new Button(getApplicationContext());
 									btn.setText(jItemButton.optString("actionTitle"));
 									
-									FontsCollection.setFontForButton(btn, "sfufuturabook");
+//									FontsCollection.setFontForButton(btn, "sfufuturabook");
 																				
 									switch (jItemButton.optInt("color")) 
 									{
@@ -351,7 +351,7 @@ public class ScanCodeResultActivity extends FragmentActivity{
 						rlShare.setVisibility(View.VISIBLE);
 						
 						TextView txtShare = (TextView)findViewById(R.id.txtShare);
-						FontsCollection.setFontForTextView(txtShare, "sfufuturabook");
+//						FontsCollection.setFontForTextView(txtShare, "sfufuturabook");
 						
 						ImageButton imgBtnShareFB = (ImageButton) findViewById(R.id.btnShareFb);
 						imgBtnShareFB.setOnClickListener(new View.OnClickListener() {

@@ -72,12 +72,12 @@ public class HomeFragment extends Fragment implements HomeListener {
 	}
 
 	public void onFinishInit() {
-		FontsCollection.setFont(getView());
+//		FontsCollection.setFont(getView());
 		mAdapter = new HomeAdapter(getActivity(), this);
 		mLayoutMain.setAdapter(mAdapter);
 		mLayoutMain.setOnScrollListener(mAdapter);
 		mAdapter.setOnScrollListener(mScrollListener);
-		FontsCollection.setFont(getView());
+//		FontsCollection.setFont(getView());
 	}
 
 	@Override

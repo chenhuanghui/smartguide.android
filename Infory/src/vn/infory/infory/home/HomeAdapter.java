@@ -137,7 +137,7 @@ public class HomeAdapter extends LazyLoadAdapter {
 				break;
 			}
 			
-			FontsCollection.setFont(convertView);
+//			FontsCollection.setFont(convertView);
 		}
 		
 		HomeItemUpdater updater = mUpdaterArr[item.type];

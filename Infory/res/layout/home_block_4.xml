@@ -60,6 +60,7 @@
                     android:layout_marginTop="-2dp"
                     android:contentDescription="@string/sfu_normal"
                     android:text="SmartGuide"
+                    android:textStyle="bold"
                     android:textColor="#707070" />
 
             </RelativeLayout>

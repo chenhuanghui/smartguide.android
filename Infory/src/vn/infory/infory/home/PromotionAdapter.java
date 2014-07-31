@@ -57,7 +57,7 @@ implements OnClickListener {
 		
 		if (convertView == null) {
 			convertView = mInflater.inflate(R.layout.home_block_4, parent, false);
-			FontsCollection.setFont(convertView);
+//			FontsCollection.setFont(convertView);
 			CyUtils.setHoverEffect(convertView.findViewById(R.id.btnGoto), false);
 		}
 		
