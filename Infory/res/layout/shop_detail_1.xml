@@ -65,7 +65,7 @@
                         android:layout_height="wrap_content"
                         android:contentDescription="@string/sfu_normal"
                         android:singleLine="true"
-                        android:text="Lượt xem"
+                        android:text="Lượt xem "
                         android:textColor="#6B6B6B"
                         android:textStyle="italic" />
                 </LinearLayout>
@@ -223,13 +223,12 @@
             android:layout_above="@+id/txtShopType"
             android:layout_alignLeft="@+id/txtShopType"
             android:layout_toLeftOf="@+id/btnInfo"
-            android:contentDescription="@string/sfu_bold"
+            android:contentDescription="@string/sfu_heavy"
             android:shadowColor="#000000"
             android:shadowDx="0"
             android:shadowDy="3"
             android:shadowRadius="1"
             android:text="Shop Name"
-            android:textSize="20sp"
             android:textColor="#ECECEC"
             android:textStyle="bold" />
 

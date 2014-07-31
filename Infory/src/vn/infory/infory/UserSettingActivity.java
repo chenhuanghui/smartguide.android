@@ -113,7 +113,7 @@ ConnectionCallbacks, OnConnectionFailedListener{
 			return;
 		}
 
-//		FontsCollection.setFont(findViewById(android.R.id.content));
+		FontsCollection.setFont(findViewById(android.R.id.content));
 
 		Settings s = Settings.instance();
 		mUserName	= s.name;

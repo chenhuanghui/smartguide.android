@@ -166,7 +166,7 @@ public class ShopDetailActivity extends FragmentActivity {
 			task.executeOnExecutor(NetworkManager.THREAD_POOL);
 		}
 
-//		FontsCollection.setFont(findViewById(android.R.id.content));
+		FontsCollection.setFont(findViewById(android.R.id.content));
 		
 		// Load ava
 		CyImageLoader.instance().showImageSmooth(
@@ -944,7 +944,7 @@ public class ShopDetailActivity extends FragmentActivity {
 					
 					break;
 				}
-//				FontsCollection.setFont(convertView);
+				FontsCollection.setFont(convertView);
 			}
 
 			if (type == 5) {

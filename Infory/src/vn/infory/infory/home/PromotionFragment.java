@@ -75,7 +75,7 @@ public class PromotionFragment extends Fragment implements HomeListener {
 		mLayoutMain.setAdapter(mAdapter);
 		mLayoutMain.setOnScrollListener(mAdapter);
 		mAdapter.setOnScrollListener(mScrollListener);
-//		FontsCollection.setFont(getView());
+		FontsCollection.setFont(getView());
 	}
 
 	@Click(id = R.id.edtSearch)
