@@ -45,6 +45,20 @@ public class HomeItemUpdater_ShopItem extends HomeItemUpdater {
 		txtDate.setText(itemShop.date);
 		btnGoto.setText(itemShop.goto_);
 		
+		txtName.setOnClickListener(new OnClickListener() {
+			@Override
+			public void onClick(View v) {
+				caller.onShopItemClick(itemShop.idShop, itemShop);
+			}
+		});
+		
+		imgLogo.setOnClickListener(new OnClickListener() {
+			@Override
+			public void onClick(View v) {
+				caller.onShopItemClick(itemShop.idShop, itemShop);
+			}
+		});
+		
 		btnGoto.setOnClickListener(new OnClickListener() {
 			@Override
 			public void onClick(View v) {
