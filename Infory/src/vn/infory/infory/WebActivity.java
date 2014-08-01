@@ -7,6 +7,7 @@ import android.os.Bundle;
 import android.util.Log;
 import android.webkit.WebView;
 import android.webkit.WebViewClient;
+import android.widget.Toast;
 
 public class WebActivity extends Activity {
 	
@@ -26,19 +27,19 @@ public class WebActivity extends Activity {
 		
 		WebView web = (WebView) findViewById(R.id.web);
 		
-		
-		WebView vistaWeb = web;
+		web.getSettings().setJavaScriptEnabled(true);
+		web.getSettings().setJavaScriptCanOpenWindowsAutomatically(false);
+		web.getSettings().setUseWideViewPort(true); 
+		Toast.makeText(getApplicationContext(), "mUrl: "+mUrl, Toast.LENGTH_LONG).show();
 		web.setWebViewClient(new WebViewClient() {
 	        @Override
-	        public boolean shouldOverrideUrlLoading(WebView view, String url) {
-	        	super.shouldOverrideUrlLoading(view, url);
-	        	
+	        public boolean shouldOverrideUrlLoading(WebView view, String url) {		
+	        	Toast.makeText(getApplicationContext(), "Override: "+url, Toast.LENGTH_LONG).show();
 	            view.loadUrl(url);
 	            return false;
 	        }
 	    });
-		vistaWeb.getSettings().setJavaScriptEnabled(true);
-		vistaWeb.getSettings().setJavaScriptCanOpenWindowsAutomatically(false);
+		
 		web.loadUrl(mUrl);
 	}
 	

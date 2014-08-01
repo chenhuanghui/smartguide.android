@@ -26,6 +26,7 @@ import vn.infory.infory.network.ScanCodeRelated;
 import vn.infory.infory.shopdetail.ShopDetailActivity;
 import vn.infory.infory.shoplist.ShopListActivity;
 import android.app.Dialog;
+import android.content.Context;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.content.res.Resources.NotFoundException;
@@ -40,6 +41,7 @@ import android.hardware.Camera.Parameters;
 import android.hardware.Camera.PreviewCallback;
 import android.net.Uri;
 import android.os.Bundle;
+import android.os.Vibrator;
 import android.support.v4.app.Fragment;
 import android.support.v4.view.ViewPager;
 import android.util.Log;
@@ -119,6 +121,15 @@ public class ScanCodeFragment extends Fragment {
 			}
 
 			final String mQRCode = rs.getText();
+			
+			try {
+				Vibrator v = (Vibrator) getActivity().getSystemService(Context.VIBRATOR_SERVICE);
+				 // Vibrate for 500 milliseconds
+				v.vibrate(300);
+			} catch (Exception e) {
+				// TODO: handle exception
+			}
+			
 			isCanScan = false;	
 			
 			String prefix = "http://page.infory.vn/";
@@ -278,7 +289,10 @@ public class ScanCodeFragment extends Fragment {
 				}
 				else
 				{
-					WebActivity.newInstance(getActivity(), mQRCode);
+					String newQRCode = mQRCode;
+					if(mQRCode.toLowerCase().startsWith("www."))
+						newQRCode = mQRCode.replace("www.", "http://");
+					WebActivity.newInstance(getActivity(), newQRCode);
 					getActivity().finish();
 				}				
 			}
