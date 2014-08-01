@@ -170,11 +170,19 @@ public class ScanCodeResultActivity extends FragmentActivity{
 						if(jItem.optJSONObject("image") instanceof JSONObject)
 						{									
 							JSONObject jImage = jItem.optJSONObject("image");
-							final ImageView imgView = new ImageView(getApplicationContext());
+														
+							final FrameLayout frameImg = new FrameLayout(getApplicationContext());
 										
 							int[] scaled_width_height = getScaledSize(jImage.optInt("width"), jImage.optInt("height"));
-														
-							imgView.setLayoutParams(new FrameLayout.LayoutParams(scaled_width_height[0],scaled_width_height[1]));
+										
+							LayoutParams params = new LayoutParams(
+									scaled_width_height[0],
+									scaled_width_height[1]
+							);
+							params.setMargins(0, 0, 0, 20);
+							frameImg.setLayoutParams(params);
+							
+							final ImageView imgView = new ImageView(getApplicationContext());	
 							
 							CyImageLoader.instance().loadImage(jImage.optString("url"), new CyImageLoader.Listener(){
 								@Override
@@ -186,8 +194,9 @@ public class ScanCodeResultActivity extends FragmentActivity{
 								}
 								
 							}, new Point(), getApplicationContext());
-							imgView.setPadding(0, 0, 0, 20);
-							linearLayout.addView(imgView);
+							
+							frameImg.addView(imgView);
+							linearLayout.addView(frameImg);
 						}
 					}
 					
@@ -202,8 +211,13 @@ public class ScanCodeResultActivity extends FragmentActivity{
 							
 							int[] scaled_width_height = getScaledSize(jVideo.optInt("width"), jVideo.optInt("height"));
 							
-							FrameLayout.LayoutParams frameLayoutParams = new FrameLayout.LayoutParams(scaled_width_height[0],scaled_width_height[1],Gravity.CENTER);							
-							frameVideo.setLayoutParams(frameLayoutParams);
+							LayoutParams params = new LayoutParams(
+									scaled_width_height[0],
+									scaled_width_height[1]
+							);
+							params.setMargins(0, 0, 0, 20);
+//							FrameLayout.LayoutParams frameLayoutParams = new FrameLayout.LayoutParams(scaled_width_height[0],scaled_width_height[1],Gravity.CENTER);							
+							frameVideo.setLayoutParams(params);
 							
 							final ImageView thumb = new ImageView(getApplicationContext());							
 							
@@ -236,8 +250,7 @@ public class ScanCodeResultActivity extends FragmentActivity{
 
 							video.setVideoURI(Uri.parse(jVideo.optString("url")));
 							
-							FrameLayout.LayoutParams videoFrameLayoutParams = new FrameLayout.LayoutParams(scaled_width_height[0],scaled_width_height[1]);
-							video.setLayoutParams(videoFrameLayoutParams);
+							video.setLayoutParams(params);
 							video.setVisibility(View.GONE);							
 							linearLayout.addView(video);
 							
