@@ -1,5 +1,7 @@
 package vn.infory.infory.scancode;
 
+import java.io.IOException;
+import java.lang.reflect.Array;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -42,6 +44,7 @@ import com.facebook.widget.WebDialog;
 import com.facebook.widget.WebDialog.OnCompleteListener;
 import com.google.android.gms.plus.PlusShare;
 
+import android.R.array;
 import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
@@ -54,7 +57,10 @@ import android.graphics.Color;
 import android.graphics.Point;
 import android.graphics.Typeface;
 import android.graphics.drawable.AnimationDrawable;
+import android.media.AudioManager;
+import android.media.MediaPlayer;
 import android.net.Uri;
+import android.opengl.Visibility;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentActivity;
@@ -73,15 +79,18 @@ import android.view.ViewGroup;
 import android.view.WindowManager;
 import android.webkit.WebView;
 import android.widget.Button;
+import android.widget.FrameLayout;
 import android.widget.HorizontalScrollView;
 import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.ListView;
+import android.widget.MediaController;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 import android.widget.LinearLayout.LayoutParams;
+import android.widget.VideoView;
 
 public class ScanCodeResultActivity extends FragmentActivity{
 	
@@ -112,7 +121,7 @@ public class ScanCodeResultActivity extends FragmentActivity{
 		
 		JSONArray jArr = (JSONArray) mScanCodeResult;	
 		
-		LinearLayout linearLayout = (LinearLayout) findViewById(R.id.linearLayoutScanDLG2);
+		final LinearLayout linearLayout = (LinearLayout) findViewById(R.id.linearLayoutScanDLG2);
 		for (int i = 0; i < jArr.length(); i++) 
 		{						
 			try {
@@ -162,26 +171,10 @@ public class ScanCodeResultActivity extends FragmentActivity{
 						{									
 							JSONObject jImage = jItem.optJSONObject("image");
 							final ImageView imgView = new ImageView(getApplicationContext());
-							
-							//Set image width and height
-							WindowManager wm = (WindowManager) getApplicationContext().getSystemService(Context.WINDOW_SERVICE);
-							Display display = wm.getDefaultDisplay();
-							Point size = new Point();
-							display.getSize(size);
-							int width = size.x;
-							int height = size.y;
+										
+							int[] scaled_width_height = getScaledSize(jImage.optInt("width"), jImage.optInt("height"));
 														
-							if(jImage.optInt("width") > width) //Nếu hình trên server > màn hình thì scale lại
-							{
-								height = (int) width*jImage.optInt("height")/jImage.optInt("width");
-							}
-							else
-							{
-								width = jImage.optInt("width");
-								height = jImage.optInt("height");
-							}
-														
-							imgView.setLayoutParams(new LinearLayout.LayoutParams(width,height));
+							imgView.setLayoutParams(new FrameLayout.LayoutParams(scaled_width_height[0],scaled_width_height[1]));
 							
 							CyImageLoader.instance().loadImage(jImage.optString("url"), new CyImageLoader.Listener(){
 								@Override
@@ -195,6 +188,70 @@ public class ScanCodeResultActivity extends FragmentActivity{
 							}, new Point(), getApplicationContext());
 							imgView.setPadding(0, 0, 0, 20);
 							linearLayout.addView(imgView);
+						}
+					}
+					
+					if(jItem.has("video"))
+					{
+						if(jItem.optJSONObject("video") instanceof JSONObject)
+						{
+							
+							final JSONObject jVideo = jItem.optJSONObject("video");
+							
+							final FrameLayout frameVideo = new FrameLayout(getApplicationContext());
+							
+							int[] scaled_width_height = getScaledSize(jVideo.optInt("width"), jVideo.optInt("height"));
+							
+							FrameLayout.LayoutParams frameLayoutParams = new FrameLayout.LayoutParams(scaled_width_height[0],scaled_width_height[1],Gravity.CENTER);							
+							frameVideo.setLayoutParams(frameLayoutParams);
+							
+							final ImageView thumb = new ImageView(getApplicationContext());							
+							
+							CyImageLoader.instance().loadImage(jVideo.optString("thumbnail"), new CyImageLoader.Listener(){
+								@Override
+								public void loadFinish(int from,
+										Bitmap image, String url,
+										CyAsyncTask task) {
+									// TODO Auto-generated method stub
+									thumb.setImageBitmap(image);
+																								
+									ImageView playButton = new ImageView(getApplicationContext());
+									
+									FrameLayout.LayoutParams playButtonParams = new FrameLayout.LayoutParams(LayoutParams.WRAP_CONTENT,LayoutParams.WRAP_CONTENT,Gravity.CENTER);
+									
+									playButton.setImageResource(R.drawable.play_icon);	
+									playButton.setLayoutParams(playButtonParams);
+									
+									frameVideo.addView(playButton);										
+								}								
+							}, new Point(), getApplicationContext());
+							
+							frameVideo.addView(thumb);		
+							linearLayout.addView(frameVideo);
+							
+							final VideoView video = new VideoView(this);
+							MediaController mediaController = new MediaController(this);
+							mediaController.setAnchorView(video);
+							video.setMediaController(mediaController);
+
+							video.setVideoURI(Uri.parse(jVideo.optString("url")));
+							
+							FrameLayout.LayoutParams videoFrameLayoutParams = new FrameLayout.LayoutParams(scaled_width_height[0],scaled_width_height[1]);
+							video.setLayoutParams(videoFrameLayoutParams);
+							video.setVisibility(View.GONE);							
+							linearLayout.addView(video);
+							
+							frameVideo.setOnClickListener(new View.OnClickListener() {								
+								@Override
+								public void onClick(View v) {
+									// TODO Auto-generated method stub
+									frameVideo.setVisibility(View.GONE);
+									
+									video.setVisibility(View.VISIBLE);
+									video.start();
+								}
+							});				
+							
 						}
 					}
 
@@ -735,5 +792,28 @@ public class ScanCodeResultActivity extends FragmentActivity{
 		        .build();
 		    feedDialog.show();			
 		}	    
+	}
+	
+	public int[] getScaledSize(int server_width, int server_height) {
+				
+		//Set image width and height
+		WindowManager wm = (WindowManager) getApplicationContext().getSystemService(Context.WINDOW_SERVICE);
+		Display display = wm.getDefaultDisplay();
+		Point size = new Point();
+		display.getSize(size);
+		int width = size.x;
+		int height = size.y;
+									
+		if(server_width > width) //Nếu hình trên server > màn hình thì scale lại
+		{
+			height = (int) width*server_height/server_width;
+		}
+		else
+		{
+			width = server_width;
+			height = server_height;
+		}
+		int[] data = {width,height};
+		return data;
 	}
 }
