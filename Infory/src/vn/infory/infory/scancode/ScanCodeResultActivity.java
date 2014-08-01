@@ -172,6 +172,17 @@ public class ScanCodeResultActivity extends FragmentActivity{
 							JSONObject jImage = jItem.optJSONObject("image");
 														
 							final FrameLayout frameImg = new FrameLayout(getApplicationContext());
+							
+							FrameLayout frameLoading = new FrameLayout(getApplicationContext());
+							
+							FrameLayout.LayoutParams loadingParams = new FrameLayout.LayoutParams(LayoutParams.WRAP_CONTENT,LayoutParams.WRAP_CONTENT,Gravity.CENTER);													
+							frameLoading.setLayoutParams(loadingParams);
+							
+							frameLoading.setBackgroundResource(R.drawable.button_loading_big);	
+							final AnimationDrawable frameAnimation = (AnimationDrawable) 
+									frameLoading.getBackground();
+							frameAnimation.start();
+							frameImg.addView(frameLoading);
 										
 							int[] scaled_width_height = getScaledSize(jImage.optInt("width"), jImage.optInt("height"));
 										
@@ -190,6 +201,7 @@ public class ScanCodeResultActivity extends FragmentActivity{
 										Bitmap image, String url,
 										CyAsyncTask task) {
 									// TODO Auto-generated method stub
+									frameAnimation.start();
 									imgView.setImageBitmap(image);
 								}
 								
@@ -209,6 +221,17 @@ public class ScanCodeResultActivity extends FragmentActivity{
 							
 							final FrameLayout frameVideo = new FrameLayout(getApplicationContext());
 							
+							FrameLayout frameLoading = new FrameLayout(getApplicationContext());
+							
+							FrameLayout.LayoutParams loadingParams = new FrameLayout.LayoutParams(LayoutParams.WRAP_CONTENT,LayoutParams.WRAP_CONTENT,Gravity.CENTER);													
+							frameLoading.setLayoutParams(loadingParams);
+							
+							frameLoading.setBackgroundResource(R.drawable.button_loading_big);	
+							final AnimationDrawable frameAnimation = (AnimationDrawable) 
+									frameLoading.getBackground();
+							frameAnimation.start();
+							frameVideo.addView(frameLoading);
+							
 							int[] scaled_width_height = getScaledSize(jVideo.optInt("width"), jVideo.optInt("height"));
 							
 							LayoutParams params = new LayoutParams(
@@ -219,28 +242,31 @@ public class ScanCodeResultActivity extends FragmentActivity{
 //							FrameLayout.LayoutParams frameLayoutParams = new FrameLayout.LayoutParams(scaled_width_height[0],scaled_width_height[1],Gravity.CENTER);							
 							frameVideo.setLayoutParams(params);
 							
-							final ImageView thumb = new ImageView(getApplicationContext());							
+							final ImageView thumb = new ImageView(getApplicationContext());		
+							final ImageView playButton = new ImageView(getApplicationContext());
 							
-							CyImageLoader.instance().loadImage(jVideo.optString("thumbnail"), new CyImageLoader.Listener(){
+							CyImageLoader.instance().loadImage(jVideo.optString("thumbnail"), new CyImageLoader.Listener(){								
 								@Override
 								public void loadFinish(int from,
 										Bitmap image, String url,
 										CyAsyncTask task) {
 									// TODO Auto-generated method stub
-									thumb.setImageBitmap(image);
-																								
-									ImageView playButton = new ImageView(getApplicationContext());
+									
+									frameAnimation.stop();									
+									thumb.setImageBitmap(image);	
+									frameVideo.addView(thumb);
 									
 									FrameLayout.LayoutParams playButtonParams = new FrameLayout.LayoutParams(LayoutParams.WRAP_CONTENT,LayoutParams.WRAP_CONTENT,Gravity.CENTER);
 									
 									playButton.setImageResource(R.drawable.play_icon);	
 									playButton.setLayoutParams(playButtonParams);
 									
-									frameVideo.addView(playButton);										
+									frameVideo.addView(playButton);
+									playButton.bringToFront();
+									frameVideo.requestLayout();									
 								}								
-							}, new Point(), getApplicationContext());
+							}, new Point(), getApplicationContext());	
 							
-							frameVideo.addView(thumb);		
 							linearLayout.addView(frameVideo);
 							
 							final VideoView video = new VideoView(this);
@@ -258,7 +284,7 @@ public class ScanCodeResultActivity extends FragmentActivity{
 								@Override
 								public void onClick(View v) {
 									// TODO Auto-generated method stub
-									frameVideo.setVisibility(View.GONE);
+									linearLayout.removeView(frameVideo);
 									
 									video.setVisibility(View.VISIBLE);
 									video.start();
