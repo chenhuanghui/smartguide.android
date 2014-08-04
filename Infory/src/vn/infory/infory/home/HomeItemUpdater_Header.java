@@ -35,8 +35,7 @@ public class HomeItemUpdater_Header extends HomeItemUpdater{
 		
 		TextView txtHeaderContent = (TextView) view.findViewById(R.id.txtHeaderContent);
 		RelativeLayout relativeLayoutHeader = (RelativeLayout) view.findViewById(R.id.relativeLayoutHeader);
-		final FrameLayout mLayoutLoading = (FrameLayout) view.findViewById(R.id.layoutLoading);
-		final FrameLayout mLayoutLoadingAni = (FrameLayout) view.findViewById(R.id.layoutLoadingAni);
+		
 		
 		txtHeaderContent.setText(itemHeader.title);	
 		
@@ -46,48 +45,11 @@ public class HomeItemUpdater_Header extends HomeItemUpdater{
 			public void onClick(View v) {
 				// TODO Auto-generated method stub
 				if(itemHeader.idPlacelist != 0)
-				{
-					/*mLayoutLoading.setVisibility(View.VISIBLE);
-					
-		    		AnimationDrawable frameAnimation = (AnimationDrawable) 
-		    				mLayoutLoadingAni.getBackground();
-		    		frameAnimation.start();*/
-		    		
-					try {
-						int id_placelist = itemHeader.idPlacelist;
-						
-						GetPlaceListDetail place_list_task = new GetPlaceListDetail(caller.getActivity(), id_placelist, 0){
-
-							@Override
-							protected void onCompleted(Object result) throws Exception {
-								// TODO Auto-generated method stub
-								mTaskList.remove(this);
-								
-								Object[] placelist = (Object[]) result;
-								ShopListActivity.newInstance(caller.getActivity(), (PlaceList)placelist[0], new ArrayList<Shop>());
-							}
-
-							@Override
-							protected void onFail(
-									Exception e) {
-								mTaskList.remove(this);
-							}														
-						};	
-						
-						mTaskList.add(place_list_task);
-						place_list_task.executeOnExecutor(NetworkManager.THREAD_POOL);
-					} catch (Exception e) {
-						// TODO: handle exception
-					}				
+				{		    		
+					LoadingActivity.newInstance(caller.getActivity(), itemHeader);			
 				}
 				else if(itemHeader.idShops != "")
-				{
-					/*mLayoutLoading.setVisibility(View.VISIBLE);
-					
-		    		AnimationDrawable frameAnimation = (AnimationDrawable) 
-		    				mLayoutLoadingAni.getBackground();
-		    		frameAnimation.start();*/
-		    		
+				{		    		
 					String id_shops = itemHeader.idShops;
 					ShopListActivity.newInstance(caller.getActivity(), id_shops, new ArrayList<Shop>(),0);
 				}
