@@ -269,7 +269,7 @@ public class ScanCodeResultActivity extends FragmentActivity{
 							
 							linearLayout.addView(frameVideo);
 							
-							final VideoView video = new VideoView(this);
+							/*final VideoView video = new VideoView(this);
 							MediaController mediaController = new MediaController(this);
 							mediaController.setAnchorView(video);
 							video.setMediaController(mediaController);
@@ -278,16 +278,21 @@ public class ScanCodeResultActivity extends FragmentActivity{
 							
 							video.setLayoutParams(params);
 							video.setVisibility(View.GONE);							
-							linearLayout.addView(video);
+							linearLayout.addView(video);*/
 							
-							frameVideo.setOnClickListener(new View.OnClickListener() {								
+							playButton.setOnClickListener(new View.OnClickListener() {								
 								@Override
 								public void onClick(View v) {
 									// TODO Auto-generated method stub
-									linearLayout.removeView(frameVideo);
+									/*linearLayout.removeView(frameVideo);
 									
 									video.setVisibility(View.VISIBLE);
-									video.start();
+									video.start();*/
+									
+									Intent intent = new Intent(android.content.Intent.ACTION_VIEW);
+									Uri data = Uri.parse(jVideo.optString("url"));
+									intent.setData(data);
+									startActivity(intent);
 								}
 							});				
 							
