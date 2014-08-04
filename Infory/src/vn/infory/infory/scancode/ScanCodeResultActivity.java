@@ -208,10 +208,7 @@ public class ScanCodeResultActivity extends FragmentActivity{
 										Bitmap image, String url,
 										CyAsyncTask task) {
 									// TODO Auto-generated method stub
-									frameAnimation.start();
-									
-									image = getRoundedCornerBitmap(image, 1000);
-									
+									frameAnimation.stop();	
 									imgView.setImageBitmap(image);
 								}
 								
