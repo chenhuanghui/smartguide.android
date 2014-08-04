@@ -8,9 +8,11 @@ import org.apache.http.message.BasicNameValuePair;
 import org.json.JSONArray;
 import org.json.JSONObject;
 
+import vn.infory.infory.CyLogger;
 import vn.infory.infory.data.Settings;
 import vn.infory.infory.data.home.HomeItem;
 import vn.infory.infory.data.home.HomeItem_BranchPromoInfo;
+import vn.infory.infory.data.home.HomeItem_Header;
 import vn.infory.infory.data.home.HomeItem_ImageList;
 import vn.infory.infory.data.home.HomeItem_PlaceListList;
 import vn.infory.infory.data.home.HomeItem_ShopItem;
@@ -25,6 +27,8 @@ public class GetHome extends CyAsyncTask {
 
 	// Data
 	private int mPage;
+	
+	CyLogger mLog = new CyLogger("CycrixDebug", true);
 
 	public GetHome(Context c, int page) {
 		super(c);
@@ -94,12 +98,28 @@ public class GetHome extends CyAsyncTask {
 					homeItem = new HomeItem_ShopItem();
 					break;
 				case 9:
-					homeItem = new HomeItem_ImageList();
+					if(jHomeItem.has("title"))
+						homeItem = new HomeItem_Header();
+					else
+						homeItem = new HomeItem_ImageList();
+//					homeItem = new HomeItem_Header();
 					break;
 				}
 
 				if (homeItem != null) {
 					JsonParser.parseObject(homeItem, jHomeItem);
+					if(type == 9)
+					{
+						if(jHomeItem.has("title"))
+						{						
+							homeItem.type = 9;
+						}
+						else
+						{
+							homeItem.type = 2;
+						}
+					}											
+					mLog.d("deviceInfo: " + homeItem.toString() + " Type: "+homeItem.type);
 					homeItemList.add(homeItem);
 				}
 			}
