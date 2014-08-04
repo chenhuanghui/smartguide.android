@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    android:id="@+id/RelativeLayout1"
+    android:id="@+id/relativeLayoutHeader"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:layout_gravity="center_horizontal" 
@@ -17,5 +17,23 @@
         android:textColor="#ffffff"
         android:textSize="12sp"
         android:textStyle="bold|italic" />
+    
+    <FrameLayout
+        android:id="@+id/layoutLoading"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:background="#80000000"
+        android:clickable="true"
+        android:visibility="invisible" >
+
+        <FrameLayout
+            android:id="@+id/layoutLoadingAni"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:background="@drawable/button_loading_big" >
+        </FrameLayout>
+
+    </FrameLayout>
 
 </RelativeLayout>
