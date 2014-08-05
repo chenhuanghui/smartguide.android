@@ -84,7 +84,8 @@ public class HomeFragment extends Fragment implements HomeListener {
 	public void onResume() {
 		// TODO Auto-generated method stub
 		Editor e = PreferenceManager.getDefaultSharedPreferences(getActivity()).edit();
-		e.putString("last_activity", getClass().getSimpleName());
+		e.putString("last_activity", getClass().getSimpleName());		
+		e.putString("use_immediately_activity", "0");
 		e.commit();
 		
 		super.onResume();

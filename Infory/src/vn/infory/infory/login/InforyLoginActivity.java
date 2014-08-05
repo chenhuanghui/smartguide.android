@@ -21,6 +21,7 @@ import android.app.Activity;
 import android.app.AlertDialog;
 import android.content.Intent;
 import android.content.IntentSender.SendIntentException;
+import android.content.SharedPreferences.Editor;
 import android.graphics.drawable.AnimationDrawable;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
@@ -82,6 +83,10 @@ ConnectionCallbacks, OnConnectionFailedListener {
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
+		
+		String use_immediately_activity = PreferenceManager.getDefaultSharedPreferences(this).getString("use_immediately_activity", "");
+		if(use_immediately_activity.equals("1"))
+			finish();
 		
 		mListener = sListener;
 		sListener = null;
@@ -610,7 +615,7 @@ ConnectionCallbacks, OnConnectionFailedListener {
 	
 	@Override
 	public void onStop() {
-		super.onStop();
+		super.onStop();		
 		mPlusClient.disconnect();
 	}
 
@@ -624,7 +629,6 @@ ConnectionCallbacks, OnConnectionFailedListener {
 	public void onPause() {
 		super.onPause();
 		mUiHelper.onPause();
-		finish();
 	}
 
 	@Override
