@@ -18,6 +18,7 @@ import vn.infory.infory.data.home.HomeItem_ShopList;
 import vn.infory.infory.data.home.HomeItem_StoreItem;
 import vn.infory.infory.data.home.HomeItem_StoreList;
 import android.content.Context;
+import android.util.Log;
 
 import com.cycrix.jsonparser.JsonParser;
 
@@ -58,6 +59,7 @@ public class GetHome extends CyAsyncTask {
 			String json = NetworkManager.post(APILinkMaker.mHome, pairs);
 //			String json = readWholeFile(mContext, R.raw.home);
 
+			Log.d("Get Home: ", "json response: " + json);
 			if (json.equalsIgnoreCase("null"))
 				json = "[]";
 

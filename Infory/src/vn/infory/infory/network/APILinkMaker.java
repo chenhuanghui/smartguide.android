@@ -33,6 +33,9 @@ public class APILinkMaker {
 	public static final String mPostPhotoBinary		= mPrefix + "user/uploadUserGallery";
 	public static final String mPostPhotoDsc		= mPrefix + "user/postpicture";
 	
+
+	public static final String mGetMessageCount		= mPrefix + "user/message/count";
+	
 	
 	public static final String mScan				= mPrefix + "user/scanSGCode_v2";
 	

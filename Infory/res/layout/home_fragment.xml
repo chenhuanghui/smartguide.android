@@ -20,7 +20,6 @@
         android:paddingRight="8dp"
         android:paddingTop="8dp"
         android:requiresFadingEdge="vertical" >
-
     </ListView>
 
     <RelativeLayout
@@ -41,15 +40,14 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_centerVertical="true"
-            android:layout_marginLeft="48dp"
-            android:layout_marginRight="48dp"
+            android:layout_toLeftOf="@+id/relaImageNotify"
+            android:layout_toRightOf="@+id/btnSideMenu"
             android:background="@drawable/button_search_home"
             android:contentDescription="@string/sfu_normal"
             android:gravity="center_vertical"
             android:paddingLeft="32dp"
             android:text="Tìm kiếm địa điểm"
             android:textColor="#474948" >
-
         </TextView>
 
         <ImageView
@@ -60,6 +58,38 @@
             android:scaleType="center"
             android:src="@drawable/icon_search"
             tools:ignore="ContentDescription" />
+
+        <RelativeLayout
+            android:id="@+id/relaImageNotify"
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent"
+            android:layout_alignParentRight="true"
+            android:layout_centerVertical="true" >
+
+            <ImageButton
+                android:id="@+id/imageNotification"
+                android:layout_width="48dp"
+                android:layout_height="48dp"
+                android:layout_centerInParent="true"
+                android:background="#00000000"
+                android:src="@drawable/icon_notification"
+                tools:ignore="ContentDescription" />
+
+            <TextView
+                android:id="@+id/txtCounter"
+                android:layout_width="30dp"
+                android:layout_height="30dp"
+                android:layout_alignRight="@+id/imageNotification"
+                android:layout_alignTop="@+id/imageNotification"
+                android:layout_marginRight="-5dp"
+                android:layout_marginTop="-1dp"
+                android:background="@drawable/bg_counter"
+                android:contentDescription="@string/sfu_normal"
+                android:gravity="center"
+                android:textColor="#ffffff"
+                android:visibility="gone"
+                tools:ignore="ContentDescription" />
+        </RelativeLayout>
     </RelativeLayout>
 
     <FrameLayout
@@ -75,7 +105,6 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_gravity="center" />
-
     </FrameLayout>
 
 </RelativeLayout>
