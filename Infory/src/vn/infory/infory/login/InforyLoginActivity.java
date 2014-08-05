@@ -624,6 +624,7 @@ ConnectionCallbacks, OnConnectionFailedListener {
 	public void onPause() {
 		super.onPause();
 		mUiHelper.onPause();
+		finish();
 	}
 
 	@Override
