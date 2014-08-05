@@ -23,7 +23,7 @@ import android.widget.FrameLayout;
 
 public class LoadingActivity extends Activity{
 	
-	private static HomeItem_Header mItem;
+	private static int mPlacelist_id;
 	private List<CyAsyncTask> mTaskList = new ArrayList<CyAsyncTask>();
 
 	@Override
@@ -40,9 +40,8 @@ public class LoadingActivity extends Activity{
 		
 		final Activity mAct = this;
 		try {
-			int id_placelist = mItem.idPlacelist;
 			
-			GetPlaceListDetail place_list_task = new GetPlaceListDetail(mAct, id_placelist, 0){
+			GetPlaceListDetail place_list_task = new GetPlaceListDetail(mAct, mPlacelist_id, 0){
 
 				@Override
 				protected void onCompleted(Object result) throws Exception {
@@ -68,8 +67,8 @@ public class LoadingActivity extends Activity{
 		}	
 	}
 
-	public static void newInstance(Activity act, HomeItem_Header item) {
-		mItem = item;
+	public static void newInstance(Activity act, int placelist_id) {
+		mPlacelist_id = placelist_id;
 		
 		Intent intent = new Intent(act, LoadingActivity.class);
 		act.startActivity(intent);
