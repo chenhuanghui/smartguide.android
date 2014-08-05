@@ -19,6 +19,7 @@ import vn.infory.infory.login.AvaDialogActivity;
 import vn.infory.infory.network.CyAsyncTask;
 import vn.infory.infory.network.GetProfile;
 import vn.infory.infory.network.NetworkManager;
+import vn.infory.infory.network.UpdateDeviceInfo;
 import vn.infory.infory.network.UpdateProfile;
 import vn.infory.infory.network.UploadAva;
 import vn.infory.infory.network.UploadSocialProfile;
@@ -331,6 +332,12 @@ ConnectionCallbacks, OnConnectionFailedListener{
 	
 	@Click(id = R.id.btnLogout)
 	private void onLogoutClick(View v) {
+		
+		//Update device info
+		CyAsyncTask taskUpdateDeviceInfo = new UpdateDeviceInfo(this, 0);
+		mTaskList.add(taskUpdateDeviceInfo);
+		taskUpdateDeviceInfo.executeOnExecutor(NetworkManager.THREAD_POOL);
+		
 		Settings.instance().logout();
 		
 		getProfileFromServer();

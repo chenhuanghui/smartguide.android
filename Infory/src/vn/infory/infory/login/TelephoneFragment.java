@@ -16,6 +16,7 @@ import vn.infory.infory.network.CheckActiveCode;
 import vn.infory.infory.network.CyAsyncTask;
 import vn.infory.infory.network.GetActiveCode;
 import vn.infory.infory.network.NetworkManager;
+import vn.infory.infory.network.UpdateDeviceInfo;
 import android.app.AlertDialog;
 import android.app.Dialog;
 import android.app.FragmentManager;
@@ -258,6 +259,11 @@ public class TelephoneFragment extends Fragment implements BackListener {
 				
 				mjProfile = result;
 				saveProfile(result);
+				
+				//Update Device Info
+				CyAsyncTask taskUpdateDeviceInfo = new UpdateDeviceInfo(getActivity(), 1);
+				mTaskList.add(taskUpdateDeviceInfo);
+				taskUpdateDeviceInfo.executeOnExecutor(NetworkManager.THREAD_POOL);
 				
 				Editor e = PreferenceManager.getDefaultSharedPreferences(getActivity()).edit();
 				

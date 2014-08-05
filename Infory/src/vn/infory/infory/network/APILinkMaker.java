@@ -8,6 +8,7 @@ public class APILinkMaker {
 	public static final String mCheckActivateCode 	= NetworkManager.mHostName + "/user/check_v2";
 	public static final String mEmergency 			= NetworkManager.mHostName + "/notification_v2";
 	
+	public static final String mUpdateDeviceInfo 	= mPrefix + "user/updateDeviceInfo";
 	public static final String mUpdateProfile	 	= mPrefix + "user/updateProfile";
 	public static final String mUploadSocialProfile	= mPrefix + "user/uploadSocialProfile";
 	public static final String mUploadAva		 	= mPrefix + "user/uploadAvatar";
