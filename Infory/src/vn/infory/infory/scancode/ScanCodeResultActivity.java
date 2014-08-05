@@ -16,6 +16,7 @@ import vn.infory.infory.R;
 import vn.infory.infory.WebActivity;
 import vn.infory.infory.data.PlaceList;
 import vn.infory.infory.data.Shop;
+import vn.infory.infory.home.LoadingActivity;
 import vn.infory.infory.login.InforyLoginActivity.BackListener;
 import vn.infory.infory.login.RegisterTypeFragment.Listener;
 import vn.infory.infory.network.CyAsyncTask;
@@ -403,26 +404,7 @@ public class ScanCodeResultActivity extends FragmentActivity{
 											case 2: //Shop list
 												if(jItemButton.has("idPlacelist"))
 												{
-													GetPlaceListDetail place_list_task = new GetPlaceListDetail(getApplicationContext(), jItemButton.optInt("idPlacelist"), 0){
-
-														@Override
-														protected void onCompleted(Object result) throws Exception {
-															// TODO Auto-generated method stub
-															mTaskList.remove(this);
-															
-															Object[] placelist = (Object[]) result;
-															ShopListActivity.newInstance(mAct, (PlaceList)placelist[0], new ArrayList<Shop>());
-														}
-
-														@Override
-														protected void onFail(
-																Exception e) {
-															mTaskList.remove(this);
-														}														
-													};	
-													
-													mTaskList.add(place_list_task);
-													place_list_task.executeOnExecutor(NetworkManager.THREAD_POOL);
+													LoadingActivity.newInstance(mAct, jItemButton.optInt("idPlacelist"));													
 												}												
 												else if(jItemButton.has("keywords"))
 												{

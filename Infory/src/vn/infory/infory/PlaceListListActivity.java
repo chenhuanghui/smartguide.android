@@ -50,9 +50,11 @@ import android.widget.AdapterView;
 import android.widget.AdapterView.OnItemClickListener;
 import android.widget.BaseAdapter;
 import android.widget.EditText;
+import android.widget.FrameLayout;
 import android.widget.ImageView;
 import android.widget.ListView;
 import android.widget.TextView;
+import android.widget.Toast;
 import android.widget.TextView.OnEditorActionListener;
 
 import com.cycrix.androidannotation.AndroidAnnotationParser;
@@ -452,6 +454,13 @@ public class PlaceListListActivity extends Activity {
 					}
 				};
 				getShopDetailTask.setVisibleView(mLayoutLoading);
+				
+				FrameLayout mLayoutLoadingAni = (FrameLayout) findViewById(R.id.HomeFragmentLayoutLoadingAni);
+				
+				AnimationDrawable frameAnimation = (AnimationDrawable) 
+						mLayoutLoadingAni.getBackground();
+				frameAnimation.start();
+				
 				mTaskList.add(getShopDetailTask);
 				getShopDetailTask.executeOnExecutor(NetworkManager.THREAD_POOL);
 
