@@ -30,11 +30,9 @@ public class WebActivity extends Activity {
 		web.getSettings().setJavaScriptEnabled(true);
 		web.getSettings().setJavaScriptCanOpenWindowsAutomatically(false);
 		web.getSettings().setUseWideViewPort(true); 
-		Toast.makeText(getApplicationContext(), "mUrl: "+mUrl, Toast.LENGTH_LONG).show();
 		web.setWebViewClient(new WebViewClient() {
 	        @Override
 	        public boolean shouldOverrideUrlLoading(WebView view, String url) {		
-	        	Toast.makeText(getApplicationContext(), "Override: "+url, Toast.LENGTH_LONG).show();
 	            view.loadUrl(url);
 	            return false;
 	        }
