@@ -17,12 +17,14 @@ import vn.infory.infory.network.GetShopList;
 import vn.infory.infory.network.NetworkManager;
 import vn.infory.infory.shopdetail.ShopDetailActivity;
 import vn.infory.infory.shoplist.ShopListActivity;
+import android.graphics.drawable.AnimationDrawable;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AbsListView;
+import android.widget.FrameLayout;
 import android.widget.AbsListView.OnScrollListener;
 import android.widget.ListView;
 
@@ -44,6 +46,7 @@ public class PromotionFragment extends Fragment implements HomeListener {
 	// GUI
 	@ViewById(id = R.id.lstMain)			private ListView mLayoutMain;
 	@ViewById(id = R.id.layoutLoading)		private View mLayoutLoading;
+	@ViewById(id = R.id.HomeFragmentLayoutLoadingAni)		private View mLayoutLoadingAni;
 
 	@Override
 	public View onCreateView(LayoutInflater inflater, ViewGroup container,
@@ -120,6 +123,10 @@ public class PromotionFragment extends Fragment implements HomeListener {
 		mTaskList.add(getShopListTask);
 		getShopListTask.setVisibleView(mLayoutLoading);
 		getShopListTask.executeOnExecutor(NetworkManager.THREAD_POOL);
+				
+		AnimationDrawable frameAnimation = (AnimationDrawable) 
+				mLayoutLoadingAni.getBackground();
+		frameAnimation.start();
 	}
 
 	@Override

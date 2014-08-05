@@ -76,6 +76,7 @@ public class PlaceListListActivity extends Activity {
 	@ViewById(id = R.id.edtSearch)		private EditText mEdtSearch;
 	@ViewById(id = R.id.lst)			private ListView mLst;
 	@ViewById(id = R.id.layoutLoading)	private View mLayoutLoading;
+	@ViewById(id = R.id.activityPlacelistLayoutLoadingAni)	private View mLayoutLoadingAni;
 
 	///////////////////////////////////////////////////////////////////////////
 	// Override methods
@@ -453,16 +454,13 @@ public class PlaceListListActivity extends Activity {
 						CyUtils.showError("Không thể lấy chi tiết cửa hàng", e, PlaceListListActivity.this);
 					}
 				};
-				getShopDetailTask.setVisibleView(mLayoutLoading);
-				
-				FrameLayout mLayoutLoadingAni = (FrameLayout) findViewById(R.id.HomeFragmentLayoutLoadingAni);
+				getShopDetailTask.setVisibleView(mLayoutLoading);				
+				mTaskList.add(getShopDetailTask);
+				getShopDetailTask.executeOnExecutor(NetworkManager.THREAD_POOL);
 				
 				AnimationDrawable frameAnimation = (AnimationDrawable) 
 						mLayoutLoadingAni.getBackground();
 				frameAnimation.start();
-				
-				mTaskList.add(getShopDetailTask);
-				getShopDetailTask.executeOnExecutor(NetworkManager.THREAD_POOL);
 
 			} else if (item._type.equalsIgnoreCase("placelist")) {
 
@@ -489,6 +487,10 @@ public class PlaceListListActivity extends Activity {
 				getPlacelistDetail.setVisibleView(mLayoutLoading);
 				mTaskList.add(getPlacelistDetail);
 				getPlacelistDetail.executeOnExecutor(NetworkManager.THREAD_POOL);
+				
+				AnimationDrawable frameAnimation = (AnimationDrawable) 
+						mLayoutLoadingAni.getBackground();
+				frameAnimation.start();
 			}
 		}
 	}
