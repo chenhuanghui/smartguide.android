@@ -81,6 +81,7 @@
                 android:typeface="serif" />
 
             <LinearLayout
+                android:id="@+id/linearLayoutIntroContent"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:background="@drawable/frame_detail_info_footer"
