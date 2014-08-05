@@ -23,7 +23,7 @@ public class GetActiveCode extends CyAsyncTask {
 
 		try {
 			String json = null;
-			if (mPhoneNum.equals("841267082519"))
+			if (mPhoneNum.equals("84906860881"))
 				json = readWholeFile(mContext, R.raw.get_active_code);
 			else
 				json = NetworkManager.get(APILinkMaker.mGetActivateCode + mPhoneNum, false);
