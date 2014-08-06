@@ -1,0 +1,128 @@
+[
+    {
+        "idShop": 23,
+        "promotionType": 2,
+        "shopName": "GLORIA JEAN'S COFFEES BITEXCO",
+        "shopType": 2,
+        "address": "Tầng 4 Food Creative TTTM Icon 68, Tòa nhà tài chính Bitexco - 2 Hải Triều, Q.1 , Hồ Chí Minh",
+        "description": "Gloria Jean's Coffees là thương hiệu cà phê nổi tiếng trên thế giới, đang được đông đảo giới trẻ Việ",
+        "shopLat": 10.772396,
+        "shopLng": 106.704404,
+        "loveStatus": 0,
+        "numOfLove": "10",
+        "numOfView": "720",
+        "numOfComment": "2",
+        "distance": "1.89 Km",
+        "shopTypeDisplay": "Cafe & Bar",
+        "logo": "http://125.253.122.44//media/brand/14/1472-2013-10-31-20-07-38.jpeg",
+        "shopGalleryFirst": {
+            "cover": "http://125.253.122.44/media/cache/my_thumb/media/shop/23/2685-2013-10-28-18-26-25.jpeg",
+            "image": "http://125.253.122.44/media/shop/23/2685-2013-10-28-18-26-25.jpeg"
+        }
+    },
+    {
+        "idShop": 13,
+        "promotionType": 2,
+        "shopName": "BUFFET PANORAMA - KHÁCH SẠN THỜI ĐẠI MỚI",
+        "shopType": 1,
+        "address": "120 CMT8, P.7, Q.3, Tp.HCM, Hồ Chí Minh",
+        "description": "Tọa lạc trên vị trí chiến lược trong khu vực trung tâm hành chánh, thương mại, mua sắm và giải trí t",
+        "shopLat": 10.777061,
+        "shopLng": 106.683158,
+        "loveStatus": 1,
+        "numOfLove": "37",
+        "numOfView": "1532",
+        "numOfComment": "10",
+        "distance": "2.19 Km",
+        "shopTypeDisplay": "Ẩm Thực",
+        "logo": "http://125.253.122.44/media/brand/10/8386-2013-10-16-18-35-07.jpeg",
+        "shopGalleryFirst": {
+            "cover": "http://125.253.122.44/media/cache/my_thumb/media/shop/13/5957-2013-12-01-13-01-39.jpeg",
+            "image": "http://125.253.122.44/media/shop/13/5957-2013-12-01-13-01-39.jpeg"
+        }
+    },
+    {
+        "idShop": 1,
+        "promotionType": 0,
+        "shopName": "ARLON COFFEE",
+        "shopType": 2,
+        "address": "423 Sư Vạn Hạnh, P.12, Q.10",
+        "description": "Bạn đang tìm kiếm một địa chỉ lý tưởng để gặp gỡ, thư giãn, trò chuyện cùng bạn bè? Bạn đang tìm một",
+        "shopLat": 10.772486,
+        "shopLng": 106.669195,
+        "loveStatus": 1,
+        "numOfLove": "11",
+        "numOfView": "780",
+        "numOfComment": "2",
+        "distance": "2.94 Km",
+        "shopTypeDisplay": "Cafe & Bar",
+        "logo": "http://125.253.122.44/media/brand/1/5295-2013-10-11-12-48-55.jpeg",
+        "shopGalleryFirst": {
+            "cover": "http://125.253.122.44/media/cache/my_thumb/media/shop/1/4561-2013-12-01-13-16-46.jpeg",
+            "image": "http://125.253.122.44/media/shop/1/4561-2013-12-01-13-16-46.jpeg"
+        }
+    },
+    {
+        "idShop": 18,
+        "promotionType": 0,
+        "shopName": "GIRLIE - QUANG TRUNG",
+        "shopType": 5,
+        "address": "242 Quang Trung, Phường 10, Quận Gò Vấp, Hồ Chí Minh",
+        "description": "Với phong cách từ trẻ trung,năng động đến sang trọng,quý phái. Girlie hân hạnh phục vụ phái đẹp ở mọ",
+        "shopLat": 10.788381,
+        "shopLng": 106.676918,
+        "loveStatus": 0,
+        "numOfLove": "11",
+        "numOfView": "567",
+        "numOfComment": "0",
+        "distance": "3.63 Km",
+        "shopTypeDisplay": "Thời Trang",
+        "logo": "http://125.253.122.44/media/brand/13/7058-2013-10-14-14-27-45.jpeg",
+        "shopGalleryFirst": {
+            "cover": "http://125.253.122.44/media/cache/my_thumb/media/shop/18/6693-2013-10-15-00-34-45.jpeg",
+            "image": "http://125.253.122.44/media/shop/18/6693-2013-10-15-00-34-45.jpeg"
+        }
+    },
+    {
+        "idShop": 5,
+        "promotionType": 1,
+        "shopName": "DUYÊN TRANG SPA",
+        "shopType": 3,
+        "address": "Số 6 Hồ Bá Kiện , Phường 15, Quận 10, Hồ Chí Minh",
+        "description": "Đối với Phụ nữ làn da là một tài sản vô cùng quý giá, nó tôn vinh vẻ đẹp và sự quý phái. Một làn da ",
+        "shopLat": 10.780929,
+        "shopLng": 106.669318,
+        "loveStatus": 0,
+        "numOfLove": "5",
+        "numOfView": "301",
+        "numOfComment": "0",
+        "distance": "3.48 Km",
+        "shopTypeDisplay": "Làm Đẹp",
+        "logo": "http://125.253.122.44/media/brand/2/4540-2013-10-12-09-05-51.jpeg",
+        "shopGalleryFirst": {
+            "cover": "http://125.253.122.44/media/cache/my_thumb/media/shop/5/5799-2013-12-01-14-04-30.jpeg",
+            "image": "http://125.253.122.44/media/shop/5/5799-2013-12-01-14-04-30.jpeg"
+        }
+    },
+    {
+        "idShop": 6,
+        "promotionType": 1,
+        "shopName": "PHA LÊ COFFEE",
+        "shopType": 2,
+        "address": "A8 Trường Sơn - Cư xá BẮC HẢI, Phường 15, Quận 10, Hồ Chí Minh",
+        "description": "Tọa lạc tại địa chỉ A8 – Đường Trường Sơn – P.15 – Q.10 – Tp.Hồ Chí Minh, đây là nơi khá nhộn nhịp v",
+        "shopLat": 10.785498,
+        "shopLng": 106.663287,
+        "loveStatus": 0,
+        "numOfLove": "8",
+        "numOfView": "273",
+        "numOfComment": "1",
+        "distance": "4.31 Km",
+        "shopTypeDisplay": "Cafe & Bar",
+        "logo": "http://125.253.122.44/media/brand/3/7919-2013-10-12-10-09-18.jpeg",
+        "shopGalleryFirst": {
+            "cover": "http://125.253.122.44/media/cache/my_thumb/media/shop/6/5932-2013-12-01-13-43-08.jpeg",
+            "image": "http://125.253.122.44/media/shop/6/5932-2013-12-01-13-43-08.jpeg"
+        }
+    }
+]

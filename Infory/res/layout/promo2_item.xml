@@ -1,0 +1,93 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:background="@drawable/bg_promo"
+    android:orientation="vertical" >
+
+    <LinearLayout
+        android:id="@+id/linearLayout1"
+        android:layout_width="42dp"
+        android:layout_height="wrap_content"
+        android:layout_centerVertical="true"
+        android:gravity="center_horizontal"
+        android:orientation="vertical" >
+
+        <TextView
+            android:id="@+id/txtType"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="A"
+            android:textColor="#7c7c7c"
+            android:textStyle="bold|italic" />
+
+        <TextView
+            android:id="@+id/textView2"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="-4dp"
+            android:text="Loại"
+            android:textColor="#7c7c7c"
+            android:textSize="7sp"
+            android:textStyle="bold|italic" />
+
+    </LinearLayout>
+
+    <FrameLayout
+        android:id="@+id/layoutFlag"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentRight="true"
+        android:layout_alignParentTop="true"
+        android:background="@drawable/icon_flag_gift">
+
+    </FrameLayout>
+
+    <LinearLayout
+        android:id="@+id/linearLayout2"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_centerVertical="true"
+        android:layout_toLeftOf="@+id/layoutFlag"
+        android:layout_toRightOf="@+id/linearLayout1"
+        android:gravity="center"
+        android:padding="8dp"
+        android:orientation="vertical" >
+
+        <TextView
+            android:id="@+id/txtName"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:contentDescription="@string/sfu_normal"
+            android:gravity="center_horizontal"
+            android:text="TẶNG MỘT PHẦN NƯỚC TẶNG MỘT PHẦN NƯỚC"
+            android:textColor="#476CD7"
+            android:typeface="serif" />
+
+        <TextView
+            android:id="@+id/txtCondition"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="9dp"
+            android:contentDescription="@string/sfu_normal"
+            android:gravity="center_horizontal"
+            android:textColor="#7C7C7C"
+            android:textSize="11sp"
+            android:textStyle="bold" />
+
+    </LinearLayout>
+    
+    <FrameLayout
+        android:layout_width="1px"
+        android:layout_height="match_parent"
+        android:layout_alignBottom="@+id/linearLayout2"
+        android:layout_alignTop="@+id/linearLayout2"
+        android:layout_centerVertical="true"
+        android:layout_marginBottom="6dp"
+        android:layout_marginTop="6dp"
+        android:layout_toRightOf="@+id/linearLayout1"
+        android:background="#7c7c7c" >
+
+    </FrameLayout>
+
+</RelativeLayout>

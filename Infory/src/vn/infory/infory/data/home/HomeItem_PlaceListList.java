@@ -1,0 +1,14 @@
+package vn.infory.infory.data.home;
+
+import java.util.ArrayList;
+
+import vn.infory.infory.data.PlaceList;
+
+import com.cycrix.jsonparser.JsonArray;
+import com.cycrix.jsonparser.JsonObject;
+
+@JsonObject
+public class HomeItem_PlaceListList extends HomeItem {
+	@JsonArray(ignore = true)	public ArrayList<String> images = new ArrayList<String>();
+	@JsonArray					public ArrayList<PlaceList> placelists = new ArrayList<PlaceList>();
+}

@@ -1,0 +1,99 @@
+<?xml version="1.0" encoding="utf-8"?>
+<vn.infory.infory.shopdetail.FullScreenLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/relativeLayout2"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:animateLayoutChanges="true"
+    android:background="#EBEBEB"
+    android:orientation="vertical"
+    android:paddingLeft="8dp"
+    android:paddingRight="8dp" >
+
+        <RelativeLayout
+            android:id="@+id/relativeLayout2"
+            android:layout_width="match_parent"
+            android:layout_height="130dp"
+            android:orientation="vertical" >
+
+            <FrameLayout
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:layout_marginTop="70dp"
+                android:background="@drawable/bg_comment_list1" >
+
+            </FrameLayout>
+
+            <TextView
+                android:id="@+id/textView2"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="4dp"
+                android:contentDescription="@string/sfu_normal"
+                android:drawableLeft="@drawable/icon_dottitle"
+                android:text=" Mọi người nói về địa điểm"
+                android:textColor="#737373" />
+
+            <EditText
+                android:id="@+id/editText1"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_above="@+id/relativeLayout1"
+                android:layout_below="@+id/textView2"
+                android:layout_marginLeft="11dp"
+                android:layout_marginRight="11dp"
+                android:background="@drawable/bg_typecomment_head"
+                android:gravity="top|left"
+                android:hint="Nhập nhận xét của bạn..."
+                android:lines="2"
+                android:paddingLeft="8dp"
+                android:paddingRight="8dp"
+                android:textColor="#000000"
+                android:textColorHint="#C7C7C7"
+                android:textSize="14sp"
+                android:textStyle="italic" >
+
+            </EditText>
+
+            <RelativeLayout
+                android:id="@+id/relativeLayout1"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_alignParentBottom="true"
+                android:layout_marginLeft="11dp"
+                android:layout_marginRight="11dp"
+                android:background="@drawable/bg_comment"
+                android:paddingLeft="4dp" >
+
+                <FrameLayout
+                    android:layout_width="49dp"
+                    android:layout_height="49dp"
+                    android:layout_centerInParent="true"
+                    android:foreground="@drawable/frame_avacomment"
+                    android:padding="6dp" >
+
+                    <ImageView
+                        android:id="@+id/imgAva"
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent"
+                        android:scaleType="centerCrop" />
+                </FrameLayout>
+
+                <ImageButton
+                    android:id="@+id/btnSend"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_alignParentRight="true"
+                    android:background="#00000000"
+                    android:src="@drawable/button_send" />
+            </RelativeLayout>
+        </RelativeLayout>
+
+        <FrameLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_alignParentLeft="true"
+            android:layout_below="@+id/relativeLayout2"
+            android:background="@drawable/bg_comment_list2" >
+        </FrameLayout>
+
+</vn.infory.infory.shopdetail.FullScreenLayout>

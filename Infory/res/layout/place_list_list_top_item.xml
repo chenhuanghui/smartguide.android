@@ -1,0 +1,53 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:background="#EBEBEB" >
+
+    <ImageView
+        android:id="@+id/imgIcon"
+        android:layout_width="58dp"
+        android:layout_height="82dp"
+        android:gravity="center"
+        android:paddingBottom="10dp"
+        android:paddingLeft="4dp"
+        android:scaleType="fitXY"
+        android:textColor="#FFFFFF"
+        android:textStyle="bold" />
+
+    <TextView
+        android:id="@+id/txtName"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentTop="true"
+        android:layout_marginLeft="8dp"
+        android:layout_toRightOf="@+id/imgIcon"
+        android:contentDescription="@string/sfu_normal"
+        android:text="TextView"
+        android:textColor="#5B5B5B" />
+
+    <TextView
+        android:id="@+id/txtContent"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignLeft="@+id/txtName"
+        android:layout_below="@+id/txtName"
+        android:contentDescription="@string/sfu_normal"
+        android:ellipsize="end"
+        android:lineSpacingExtra="-2dp"
+        android:lines="4"
+        android:text="Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua."
+        android:textColor="#969696"
+        android:textSize="12sp" />
+
+    <FrameLayout
+        android:id="@+id/layoutLine"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/txtContent"
+        android:layout_marginTop="8dp"
+        android:background="@drawable/line_shopdetail_repeat" >
+
+    </FrameLayout>
+
+</RelativeLayout>

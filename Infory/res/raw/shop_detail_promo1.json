@@ -1,0 +1,56 @@
+{
+  "idShop": 271,
+  "shopName": "Infory Việt Nam",
+  "shopType": 7,
+  "shopTypeDisplay": "Sản Phẩm",
+  "shopLat": 10.748968,
+  "shopLng": 106.6601043,
+  "logo": "https://api.infory.vn/media/brand/58/3780-2014-04-07-14-07-46.png",
+  "loveStatus": 0,
+  "numOfLove": "4",
+  "totalLove": 4,
+  "numOfView": "570",
+  "numOfComment": "0",
+  "totalComment": 0,
+  "address": "422 Võ Văn Kiệt, Quận 1, Hồ Chí Minh",
+  "city": "Hồ Chí Minh",
+  "displayTel": "0866757231",
+  "tel": "0866757231",
+  "shopGallery": [
+    {
+      "cover": "https://api.infory.vn/media/brand/58/3128-2014-04-08-15-24-51.jpeg",
+      "coverWidth": 1058,
+      "coverHeight": 980,
+      "image": "https://api.infory.vn/media/brand/58/3128-2014-04-08-15-24-51.jpeg",
+      "imageWidth": 1058,
+      "imageHeight": 980
+    },
+    {
+      "cover": "https://api.infory.vn/media/brand/58/7107-2014-04-08-15-25-10.jpeg",
+      "coverWidth": 1058,
+      "coverHeight": 980,
+      "image": "https://api.infory.vn/media/brand/58/7107-2014-04-08-15-25-10.jpeg",
+      "imageWidth": 1058,
+      "imageHeight": 980
+    }
+  ],
+  "userGallery": [],
+  "comments": [],
+  "promotionType": 2,
+  "description": "Tìm kiếm thông tin, tương tác và tận hưởng những ưu đãi, dịch vụ chăm sóc khách hàng tốt nhất từ chính doanh nghiệp.\n\nTính năng chính\n + Tìm được ngay cửa hàng, dịch vụ bạn cần với hệ thống gợi ý thông minh và dữ liệu hàng ngàn cửa hàng, sản phẩm, dịch vụ, …\n + Quét QR Code khám phá dịch vụ, ưu đãi đặc biệt từ các doanh nghiệp\n + Dễ dàng tìm đường đến cửa hàng, đặt bàn trước hay yêu cầu giao hàng tận nơi\n + Tương tác, phản hồi và đánh giá chất lượng sản phẩm, dịch vụ của doanh nghiệp",
+  "promotionDetail": {
+    "text": "Quét thẻ và nhận quà từ nhân viên cửa hàng",
+    "note": "Sử dụng mã thẻ tại cửa hàng để nhận quà",
+    "duration": "30/04/2014",
+    "voucherList": [
+      {
+        "name": "ƯU ĐÃI TỔNG TRỊ GIÁ 15 TRIỆU VNĐ",
+        "type": "A",
+        "condition": "Các đối tác tiên phong (kí hợp đồng trong vòng 7 ngày)",
+        "highlightKeywords": null,
+        "isAfford": 1
+      }
+    ]
+  },
+  "promotionNews": {}
+}

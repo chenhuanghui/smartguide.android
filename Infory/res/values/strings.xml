@@ -1,0 +1,59 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+    <string name="app_id">642818172421223</string>
+    <string name="app_name">Infory</string>
+    <string name="action_settings">Settings</string>
+    <string name="hello_world">Hello world!</string>
+    <string name="title_activity_category">CategoryActivity</string>
+    <string name="title_activity_shop_list">ShopListActivity</string>
+    <string name="title_activity_shop_detail">ShopDetailActivity</string>
+    <string name="title_activity_notification">NotificationActivity</string>
+    <string name="title_activity_inner_list_view">InnerListViewActivity</string>
+
+    <!-- Fonts -->
+
+    <string name="sfu_normal">font:sfufuturabook</string>
+    <string name="sfu_heavy">font:sfufuturaheavy</string>
+    <string name="sfu_bold">font:sfufuturabold</string>
+    <string name="sfu_extra">font:sfufuturaextrabold</string>
+    <string name="sfu_italic">font:sfufuturaoblique</string>
+
+    <!-- Multi Language -->
+
+    <string name="OK">OK</string>
+    <string name="Cancel">Cancel</string>
+
+    <!-- Shop list -->
+
+    <string-array name="sortby">
+        <item>&#160;Distance</item>
+        <item>&#160;Views</item>
+        <item>&#160;Loves</item>
+        <item>&#160;Default</item>
+    </string-array>
+
+    <string name="sortby_title">Sort by</string>
+
+    <!-- Store -->
+
+    <string name="store_shop_newest">Newest</string>
+    <string name="store_shop_top_sellers">Top Sellers</string>
+    <string name="store_menu_newest">Newest</string>
+    <string name="store_menu_top_sellers">Top Sellers</string>
+    <string name="title_activity_place_list_list">PlaceListListActivity</string>
+    <string name="title_activity_shop_detail_info">ShopDetailInfo</string>
+    <string name="title_activity_flash">FlashActivity</string>
+    <string name="title_activity_login">LoginActivity</string>
+    <string name="title_activity_ava_dialog">AvaDialogActivity</string>
+    <string name="tao_tai_khoan_moi"><u>Tạo Tài Khoản Mới</u></string>
+    <string name="title_activity_scan_code">ScanCodeActivity</string>
+    <string name="title_activity_tutorial">TutorialActivity</string>
+    <string name="title_activity_user_setting">UserSettingActivity</string>
+    <string name="title_activity_use_immediately">UseImmediatelyActivity</string>
+    <string name="title_activity_map">MapActivity</string>
+    <string name="title_activity_gallery">GalleryActivity</string>
+    <string name="title_activity_gallery_full">GalleryFullActivity</string>
+    <string name="title_activity_post_photo">PostPhotoActivity</string>
+
+</resources>

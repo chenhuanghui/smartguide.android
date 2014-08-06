@@ -1,0 +1,74 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:gravity="center_horizontal"
+    android:orientation="vertical" >
+
+    <TextView
+        android:id="@+id/txtMess"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:contentDescription="@string/sfu_normal"
+        android:gravity="center_horizontal"
+        android:shadowColor="#ffffff"
+        android:shadowDx="0"
+        android:shadowDy="2"
+        android:shadowRadius="2"
+        android:text="Bạn nhận được quà"
+        android:textColor="#555555" />
+    
+    <TextView
+        android:id="@+id/txtType"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="5dp"
+        android:contentDescription="@string/sfu_normal"
+        android:gravity="center_horizontal"
+        android:shadowColor="#ffffff"
+        android:shadowDx="0"
+        android:shadowDy="2"
+        android:shadowRadius="2"
+        android:text="Loại A"
+        android:textColor="#555555"
+        android:textSize="18sp" />
+    
+    <TextView
+        android:id="@+id/txtGiftName"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Giảm 5% cho thức uống"
+        android:shadowColor="#ffffff"
+        android:shadowDx="0"
+        android:shadowDy="2"
+        android:shadowRadius="2"
+        android:contentDescription="@string/sfu_normal"
+        android:gravity="center_horizontal"
+        android:textColor="#555555" />
+    
+    <TextView
+        android:id="@+id/txtSGP"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:contentDescription="@string/sfu_normal"
+        android:shadowColor="#ffffff"
+        android:shadowDx="0"
+        android:shadowDy="2"
+        android:shadowRadius="2"
+        android:text="-5"
+        android:textColor="#555555"
+        android:textSize="50sp" />
+    
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="-12dp"
+        android:contentDescription="@string/sfu_normal"
+        android:shadowColor="#ffffff"
+        android:shadowDx="0"
+        android:shadowDy="2"
+        android:shadowRadius="2"
+        android:text="SGP"
+        android:textColor="#555555" />
+
+</LinearLayout>

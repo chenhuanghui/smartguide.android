@@ -1,0 +1,24 @@
+<resources>
+    
+    <string name="OK">Đồng ý</string>
+    <string name="Cancel">Hủy</string>
+
+    <!-- Shop list -->
+    
+    <string-array name="sortby">
+        <item>&#160;Khoảng cách</item>
+        <item>&#160;Lượt xem</item>
+        <item>&#160;Lượt love</item>
+        <item>&#160;Mặc định</item>
+    </string-array>
+    <string name="sortby_title">Sắp xếp theo</string>
+    
+    <!-- Store -->
+    
+    <string name="store_shop_newest">Newest</string>
+    <string name="store_shop_top_sellers">Top Sellers</string>
+    
+    <string name="store_menu_newest">Newest</string>
+    <string name="store_menu_top_sellers">Top Sellers</string>
+
+</resources>

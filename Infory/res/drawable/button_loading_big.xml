@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="utf-8"?>
+<animation-list xmlns:android="http://schemas.android.com/apk/res/android" >
+    <item android:drawable="@drawable/button_loading_big_00" android:duration="50" />
+    <item android:drawable="@drawable/button_loading_big_01" android:duration="50" />
+    <item android:drawable="@drawable/button_loading_big_02" android:duration="50" />
+    <item android:drawable="@drawable/button_loading_big_03" android:duration="50" />
+    <item android:drawable="@drawable/button_loading_big_04" android:duration="50" />
+    <item android:drawable="@drawable/button_loading_big_05" android:duration="50" />
+    <item android:drawable="@drawable/button_loading_big_06" android:duration="50" />
+    <item android:drawable="@drawable/button_loading_big_07" android:duration="50" />
+    <item android:drawable="@drawable/button_loading_big_08" android:duration="50" />
+    <item android:drawable="@drawable/button_loading_big_09" android:duration="50" />
+    <item android:drawable="@drawable/button_loading_big_10" android:duration="50" />
+    <item android:drawable="@drawable/button_loading_big_11" android:duration="50" />	
+    <item android:drawable="@drawable/button_loading_big_12" android:duration="50" />
+    <item android:drawable="@drawable/button_loading_big_13" android:duration="50" />
+    <item android:drawable="@drawable/button_loading_big_14" android:duration="50" />
+
+</animation-list>

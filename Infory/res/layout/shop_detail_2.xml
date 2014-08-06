@@ -1,0 +1,171 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/layoutShopDetail2"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:animateLayoutChanges="true"
+    android:background="#EBEBEB"
+    android:orientation="vertical"
+    android:paddingLeft="8dp"
+    android:paddingRight="8dp" >
+
+    <FrameLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="@drawable/line_shopdetail_repeat" >
+    </FrameLayout>
+
+    <TextView
+        android:id="@+id/textView1"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="4dp"
+        android:contentDescription="@string/sfu_normal"
+        android:drawableLeft="@drawable/icon_dottitle"
+        android:text=" Thông tin địa điểm"
+        android:textColor="#737373" />
+
+    <vn.infory.infory.RatioFrameLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:contentDescription="ratio:3.4" >
+
+        <FrameLayout
+            android:id="@+id/layoutMap"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_margin="1dp" >
+        </FrameLayout>
+
+        <FrameLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:background="@drawable/frame_map" >
+        </FrameLayout>
+
+        <ImageView
+            android:id="@+id/btnMapPreview"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:src="@drawable/icon_address" />
+    </vn.infory.infory.RatioFrameLayout>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="@drawable/frame_address"
+        android:gravity="center"
+        android:minHeight="42dp"
+        android:orientation="vertical"
+        android:paddingLeft="8dp"
+        android:paddingRight="8dp" >
+
+        <TextView
+            android:id="@+id/txtAddress"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:contentDescription="@string/sfu_normal"
+            android:gravity="center_horizontal"
+            android:textColor="#737373" />
+    </LinearLayout>
+
+    <FrameLayout
+        android:id="@+id/layoutTel"
+        android:layout_width="match_parent"
+        android:layout_height="45dp"
+        android:layout_marginTop="8dp"
+        android:background="@drawable/button_call" >
+
+        <TextView
+            android:id="@+id/txtTel"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:contentDescription="@string/sfu_normal"
+            android:drawableLeft="@drawable/icon_call"
+            android:gravity="center"
+            android:textColor="#737373"
+            android:textSize="16sp" />
+    </FrameLayout>
+
+    <FrameLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="10dp"
+        android:background="@drawable/line_shopdetail_repeat" >
+    </FrameLayout>
+
+    <TextView
+        android:id="@+id/TextView01"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="4dp"
+        android:contentDescription="@string/sfu_normal"
+        android:drawableLeft="@drawable/icon_dottitle"
+        android:text=" Hình ảnh từ khách hàng"
+        android:textColor="#737373" />
+
+    <vn.infory.infory.RatioFrameLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:contentDescription="ratio:3" >
+
+        <it.sephiroth.android.library.widget.HListView
+            android:id="@+id/lstUserGallery"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent" >
+        </it.sephiroth.android.library.widget.HListView>
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:orientation="horizontal"
+            android:weightSum="3" >
+
+            <ImageView
+                android:id="@+id/imgUserGalleryLeft"
+                android:layout_width="0dp"
+                android:layout_height="match_parent"
+                android:layout_weight="1"
+                android:scaleType="center"
+                android:src="@drawable/icon_arrowleft_photo" />
+
+            <FrameLayout
+                android:layout_width="0dp"
+                android:layout_height="match_parent"
+                android:layout_weight="1" />
+
+            <ImageView
+                android:id="@+id/imgUserGalleryRight"
+                android:layout_width="0dp"
+                android:layout_height="match_parent"
+                android:layout_weight="1"
+                android:scaleType="center"
+                android:src="@drawable/icon_arrowright_photo" />
+        </LinearLayout>
+
+        <ImageView
+            android:id="@+id/imgGallaryOverlay"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:scaleType="fitXY"
+            android:src="@drawable/frame_photo" />
+    </vn.infory.infory.RatioFrameLayout>
+
+    <ImageButton
+        android:id="@+id/btnPostPhoto"
+        android:layout_width="match_parent"
+        android:layout_height="45dp"
+        android:layout_marginTop="10dp"
+        android:background="@drawable/button_buy_android"
+        android:src="@drawable/text_addphoto" />
+
+    <FrameLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="10dp"
+        android:background="@drawable/line_shopdetail_repeat" >
+    </FrameLayout>
+
+</LinearLayout>
