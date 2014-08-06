@@ -19,8 +19,10 @@ import vn.infory.infory.network.CyAsyncTask;
 import vn.infory.infory.network.NetworkManager;
 import vn.infory.infory.network.CyAsyncTask.Listener2;
 import vn.infory.infory.network.GetCounterMessage;
+import vn.infory.infory.notification.NotificationActivity;
 import vn.infory.infory.shopdetail.ShopDetailActivity;
 import vn.infory.infory.shoplist.ShopListActivity;
+import android.content.Intent;
 import android.content.SharedPreferences.Editor;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
@@ -139,7 +141,9 @@ public class HomeFragment extends Fragment implements HomeListener, Listener2 {
 	
 	@Click(id = R.id.imageNotification)
 	private void onNotificationClick(View v) {
-		// TODO do something in here
+		Intent intent = new Intent(getActivity(), NotificationActivity.class);
+		getActivity().startActivity(intent);
+		getActivity().overridePendingTransition(android.R.anim.fade_in, android.R.anim.fade_out);
 	}
 
 	public void setListener(Listener listener, OnScrollListener scrollListener) {

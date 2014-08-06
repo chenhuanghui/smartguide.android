@@ -1,4 +1,16 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
     <color name="background_tab_pressed">#6633B5E5</color>
+    
+    <color name="dark_slate_gray">#2F4F4F</color>
+    <color name="gray_2">#AFAFAF</color>
+    <color name="gray_1">#C0C0C0</color>
+    
+    <color name="white">#ffffff</color>
+    <color name="black">#000000</color>
+    
+    <color name="text_color_read_message">#808080</color>
+    <color name="background_view_unread_message">#3fa7fc</color>
+    <color name="background_view_read_message">#919191</color>
+    <color name="background_read_message">#cccccc</color>
 </resources>
