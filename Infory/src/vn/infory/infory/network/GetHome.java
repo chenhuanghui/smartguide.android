@@ -63,7 +63,7 @@ public class GetHome extends CyAsyncTask {
 			String json = NetworkManager.post(APILinkMaker.mHome, pairs);
 //			String json = readWholeFile(mContext, R.raw.home);
 
-			Log.d("Get Home: ", "json response: " + json);
+//			Log.d("Get Home: ", "json response: " + json);
 			if (json.equalsIgnoreCase("null"))
 				json = "[]";
 
@@ -121,7 +121,7 @@ public class GetHome extends CyAsyncTask {
 							homeItem.type = 2;
 						}
 					}											
-					mLog.d("deviceInfo: " + homeItem.toString() + " Type: "+homeItem.type);
+//					mLog.d("deviceInfo: " + homeItem.toString() + " Type: "+homeItem.type);
 					homeItemList.add(homeItem);
 				}
 			}
