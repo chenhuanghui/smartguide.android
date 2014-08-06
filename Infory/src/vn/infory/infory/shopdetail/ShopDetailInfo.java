@@ -116,7 +116,17 @@ public class ShopDetailInfo extends Activity {
 	}
 	
 	@Click(id = R.id.txtReadmore)
-	private void onReadmoreClick(View v) {
+	private void onTxtReadmoreClick(View v) {
+		readMore(v);
+	}
+	
+	@Click(id = R.id.linearLayoutIntroContent)
+	private void onLLIntroContentClick(View v) {
+		readMore(v);
+	}
+	
+	private void readMore(View v)
+	{
 		if (mTxtReadmore.getText().toString().equals("Xem thêm")) {
 			mTxtReadmore.setText("Ẩn");
 			mTxtIntroContent.setMaxLines(Integer.MAX_VALUE);

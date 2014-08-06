@@ -28,23 +28,17 @@
         <FrameLayout
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:layout_below="@+id/relativeLayout2"
             android:background="@drawable/bg_comment_list2" >
         </FrameLayout>
 
         <RelativeLayout
             android:id="@+id/relativeLayout2"
+            android:layout_below="@+id/textView2"
             android:layout_width="match_parent"
-            android:layout_height="130dp"
-            android:background="#EBEBEB"
+            android:layout_height="wrap_content"
+            android:background="#EBEBEB"                         
+            android:paddingTop="5dp"
             android:orientation="vertical" >
-
-            <FrameLayout
-                android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:layout_marginTop="70dp"
-                android:background="@drawable/bg_comment_list1" >
-            </FrameLayout>
 
             <TextView
                 android:id="@+id/textView2"
@@ -60,7 +54,6 @@
                 android:id="@+id/edtComment"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_above="@+id/relativeLayout1"
                 android:layout_below="@+id/textView2"
                 android:layout_marginLeft="11dp"
                 android:layout_marginRight="11dp"
@@ -68,7 +61,8 @@
                 android:gravity="top|left"
                 android:hint="Nhập nhận xét của bạn..."
                 android:imeOptions="actionSend"
-                android:lines="2"
+                android:minLines="2"
+                android:maxLines="10"
                 android:paddingLeft="8dp"
                 android:paddingRight="8dp"
                 android:textColor="#000000"
@@ -78,48 +72,56 @@
 
             </EditText>
 
-            <RelativeLayout
-                android:id="@+id/relativeLayout1"
+            <FrameLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_alignParentBottom="true"
-                android:layout_marginLeft="11dp"
-                android:layout_marginRight="11dp"
-                android:background="@drawable/bg_comment"
-                android:paddingLeft="4dp" >
+                android:layout_below="@+id/edtComment"
+                android:background="@drawable/bg_comment_list1" >
 
-                <FrameLayout
-                    android:layout_width="49dp"
-                    android:layout_height="49dp"
-                    android:layout_centerInParent="true"
-                    android:foreground="@drawable/frame_avacomment"
-                    android:padding="6dp" >
+                <RelativeLayout
+                    android:id="@+id/relativeLayout1"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginLeft="11dp"
+                    android:layout_marginRight="11dp"
+                    android:background="@drawable/bg_comment"
+                    android:paddingLeft="4dp" >
+
+                    <FrameLayout
+                        android:layout_width="49dp"
+                        android:layout_height="49dp"
+                        android:layout_centerInParent="true"
+                        android:foreground="@drawable/frame_avacomment"
+                        android:padding="6dp" >
+
+                        <ImageView
+                            android:id="@+id/imgAva"
+                            android:layout_width="match_parent"
+                            android:layout_height="match_parent"
+                            android:scaleType="centerCrop" />
+                    </FrameLayout>
 
                     <ImageView
-                        android:id="@+id/imgAva"
-                        android:layout_width="match_parent"
-                        android:layout_height="match_parent"
-                        android:scaleType="centerCrop" />
-                </FrameLayout>
+                        android:id="@+id/btnSend"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_alignParentRight="true"
+                        android:alpha="0"
+                        android:background="@drawable/button_send"
+                        android:visibility="invisible" />
 
-                <ImageView
-                    android:id="@+id/btnSend"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_alignParentRight="true"
-                    android:alpha="0"
-                    android:background="@drawable/button_send"
-                    android:visibility="invisible" />
+                    <ImageView
+                        android:id="@+id/btnSort"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_alignBottom="@+id/btnSend"
+                        android:layout_alignParentRight="true"
+                        android:background="@drawable/button_topcomment" />
+                </RelativeLayout>
 
-                <ImageView
-                    android:id="@+id/btnSort"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_alignBottom="@+id/btnSend"
-                    android:layout_alignParentRight="true"
-                    android:background="@drawable/button_topcomment" />
-            </RelativeLayout>
+            </FrameLayout>
         </RelativeLayout>
+
     </vn.infory.infory.shopdetail.FullScreenLayout>
 
     <FrameLayout

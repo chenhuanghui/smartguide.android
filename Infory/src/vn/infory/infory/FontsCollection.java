@@ -7,6 +7,7 @@ import android.graphics.Typeface;
 import android.text.GetChars;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Button;
 import android.widget.TextView;
 
 public class FontsCollection {
@@ -68,5 +69,15 @@ public class FontsCollection {
 			if (font != null)
 				txt.setTypeface(font, defaultStyle);
 		}
+	}
+	
+	public static void setFontForTextView(TextView txt, String fontName) {
+		Typeface type = FontsCollection.getFont(fontName); 
+		txt.setTypeface(type);
+	}
+	
+	public static void setFontForButton(Button btn, String fontName) {
+		Typeface type = FontsCollection.getFont(fontName); 
+		btn.setTypeface(type);
 	}
 }

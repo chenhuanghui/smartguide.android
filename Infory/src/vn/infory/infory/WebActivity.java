@@ -2,9 +2,12 @@ package vn.infory.infory;
 
 import android.app.Activity;
 import android.content.Intent;
+import android.net.Uri;
 import android.os.Bundle;
+import android.util.Log;
 import android.webkit.WebView;
 import android.webkit.WebViewClient;
+import android.widget.Toast;
 
 public class WebActivity extends Activity {
 	
@@ -15,6 +18,8 @@ public class WebActivity extends Activity {
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		mUrl = sUrl;
+		/*Uri uri = Uri.parse(mUrl);
+		mUrl = mUrl.toString();*/
 		sUrl = null;
 		
 		super.onCreate(savedInstanceState);
@@ -22,17 +27,17 @@ public class WebActivity extends Activity {
 		
 		WebView web = (WebView) findViewById(R.id.web);
 		
-		
-		WebView vistaWeb = web;
+		web.getSettings().setJavaScriptEnabled(true);
+		web.getSettings().setJavaScriptCanOpenWindowsAutomatically(false);
+		web.getSettings().setUseWideViewPort(true); 
 		web.setWebViewClient(new WebViewClient() {
 	        @Override
-	        public boolean shouldOverrideUrlLoading(WebView view, String url) {
+	        public boolean shouldOverrideUrlLoading(WebView view, String url) {		
 	            view.loadUrl(url);
 	            return false;
 	        }
 	    });
-		vistaWeb.getSettings().setJavaScriptEnabled(true);
-		vistaWeb.getSettings().setJavaScriptCanOpenWindowsAutomatically(false);
+		
 		web.loadUrl(mUrl);
 	}
 	

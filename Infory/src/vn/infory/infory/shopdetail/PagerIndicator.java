@@ -29,7 +29,7 @@ public class PagerIndicator extends RelativeLayout implements OnPageChangeListen
 	private int mCurrent = 0;
 	private int mDotWidth;
 	
-	@ViewById(id = R.id.layoutDot)		private ViewGroup mLayoutDot;
+	@ViewById(id = R.id.layoutDot1)		private ViewGroup mLayoutDot;
 	@ViewById(id = R.id.imgLeft)		private View mImgLeft;
 	@ViewById(id = R.id.imgRight)		private View mImgRight;
 	@ViewById(id = R.id.imgPointer)		private View mImgPointer;

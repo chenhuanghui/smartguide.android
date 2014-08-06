@@ -15,6 +15,7 @@ import vn.infory.infory.login.TelephoneFragment;
 import vn.infory.infory.login.InforyLoginActivity.BackListener;
 import vn.infory.infory.network.NetworkManager;
 import vn.infory.infory.scancode.ScanCodeActivity;
+import vn.infory.infory.scancode.ScanCodeRelatedActivity;
 import android.animation.Animator;
 import android.animation.AnimatorSet;
 import android.animation.ObjectAnimator;
@@ -83,7 +84,7 @@ public class MainActivity extends FragmentActivity {
 
 		try {
 			Settings.init(this);
-//			Settings.getLocation(this);
+			Settings.getLocation(this);
 			NetworkManager.init();
 			CyImageLoader.initInstance(this);
 			FontsCollection.init(this);
@@ -91,6 +92,9 @@ public class MainActivity extends FragmentActivity {
 		} catch (Exception e) {
 			finish();
 		}
+		
+		/*Intent intent = new Intent(this, ScanCodeRelatedActivity.class);
+		startActivity(intent);*/
 		
 		String last_activity = PreferenceManager.getDefaultSharedPreferences(this).getString("last_activity", "");
 //		Toast.makeText(getApplicationContext(), "Main activity: " + last_activity, Toast.LENGTH_SHORT).show();

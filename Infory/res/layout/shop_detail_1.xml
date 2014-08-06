@@ -56,7 +56,7 @@
                         android:id="@+id/txtViewNum"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:text="0"
+                        android:text="0 "
                         android:textColor="#6B6B6B"
                         android:textStyle="italic|bold" />
 
@@ -65,7 +65,7 @@
                         android:layout_height="wrap_content"
                         android:contentDescription="@string/sfu_normal"
                         android:singleLine="true"
-                        android:text=" Lượt xem"
+                        android:text="Lượt xem "
                         android:textColor="#6B6B6B"
                         android:textStyle="italic" />
                 </LinearLayout>
@@ -80,7 +80,7 @@
                         android:id="@+id/txtCommentNum"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:text="0"
+                        android:text="0 "
                         android:textColor="#6B6B6B"
                         android:textStyle="italic|bold" />
 
@@ -89,7 +89,7 @@
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:contentDescription="@string/sfu_normal"
-                        android:text=" Nhận xét"
+                        android:text="Nhận xét "
                         android:textColor="#6B6B6B"
                         android:textStyle="italic" />
                 </LinearLayout>
@@ -157,7 +157,7 @@
                     android:id="@+id/txtLoveNum"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="0"
+                    android:text="0 "
                     android:textColor="#7C7C7C"
                     android:textStyle="bold|italic" />
 
@@ -213,6 +213,7 @@
             android:shadowDy="3"
             android:shadowRadius="1"
             android:textColor="#ECECEC"
+            android:text="Shop Type"
             android:textStyle="italic" />
 
         <TextView
@@ -221,24 +222,41 @@
             android:layout_height="wrap_content"
             android:layout_above="@+id/txtShopType"
             android:layout_alignLeft="@+id/txtShopType"
-            android:layout_toLeftOf="@+id/btnInfo"
-            android:contentDescription="@string/sfu_bold"
+            android:layout_toLeftOf="@+id/linearlayoutBtnInfo"
+            android:contentDescription="@string/sfu_heavy"
             android:shadowColor="#000000"
             android:shadowDx="0"
             android:shadowDy="3"
             android:shadowRadius="1"
-            android:textColor="#ECECEC" />
+            android:text="Shop Name"
+            android:textColor="#ECECEC"
+            android:textStyle="bold" />
 
-        <ImageButton
-            android:id="@+id/btnInfo"
+        <LinearLayout
+            android:id="@+id/linearlayoutBtnInfo"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_above="@+id/relativeLayout1"
             android:layout_alignParentRight="true"
+            android:layout_above="@+id/relativeLayout1" >
+            
+            <!-- <ImageButton
+            android:id="@+id/btnInfo"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"                       
             android:layout_marginBottom="6dp"
             android:layout_marginRight="8dp"
             android:background="#00000000"
-            android:src="@drawable/button_info" />
+            android:src="@drawable/button_info" /> -->
+
+            <ImageView
+                android:id="@+id/imageView1"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="6dp"
+            	android:layout_marginRight="8dp"
+                android:src="@drawable/button_info" />
+
+        </LinearLayout>
 
         <vn.infory.infory.shopdetail.PagerIndicator
             android:id="@+id/pagerIndicator"
@@ -249,7 +267,7 @@
             android:gravity="center_vertical" >
 
             <LinearLayout
-                android:id="@+id/layoutDot"
+                android:id="@+id/layoutDot1"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_centerHorizontal="true"
@@ -262,7 +280,7 @@
                 android:id="@+id/imgLeft"
                 android:layout_width="14dp"
                 android:layout_height="wrap_content"
-                android:layout_alignLeft="@+id/layoutDot"
+                android:layout_alignLeft="@+id/layoutDot1"
                 android:layout_centerHorizontal="true"
                 android:layout_marginLeft="14dp"
                 android:src="@drawable/button_arrow_left" />
@@ -271,7 +289,7 @@
                 android:id="@+id/imgRight"
                 android:layout_width="14dp"
                 android:layout_height="wrap_content"
-                android:layout_alignRight="@+id/layoutDot"
+                android:layout_alignRight="@+id/layoutDot1"
                 android:layout_marginRight="14dp"
                 android:src="@drawable/button_arrow_right" />
             
@@ -279,7 +297,7 @@
                 android:id="@+id/imgPointer"
                 android:layout_width="14dp"
                 android:layout_height="wrap_content"
-                android:layout_alignLeft="@+id/layoutDot"
+                android:layout_alignLeft="@+id/layoutDot1"
                 android:layout_centerHorizontal="true"
                 android:layout_marginLeft="14dp"
                 android:layout_centerVertical="true"

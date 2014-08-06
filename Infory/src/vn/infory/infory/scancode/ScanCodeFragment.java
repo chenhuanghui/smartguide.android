@@ -1,26 +1,51 @@
 package vn.infory.infory.scancode;
 
+import java.net.URI;
+import java.net.URL;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.json.JSONArray;
+import org.json.JSONException;
+import org.json.JSONObject;
+
+import vn.infory.infory.CyImageLoader;
 import vn.infory.infory.CyUtils;
 import vn.infory.infory.FontsCollection;
 import vn.infory.infory.R;
+import vn.infory.infory.WebActivity;
+import vn.infory.infory.data.PlaceList;
 import vn.infory.infory.data.ScanResponse;
 import vn.infory.infory.data.Shop;
 import vn.infory.infory.network.CyAsyncTask;
+import vn.infory.infory.network.GetPlaceListDetail;
+import vn.infory.infory.network.GetShopDetail2;
 import vn.infory.infory.network.NetworkManager;
 import vn.infory.infory.network.ScanCode;
+import vn.infory.infory.network.ScanCodeRelated;
 import vn.infory.infory.shopdetail.ShopDetailActivity;
+import vn.infory.infory.shoplist.ShopListActivity;
 import android.app.Dialog;
+import android.content.Context;
+import android.content.Intent;
 import android.content.pm.PackageManager;
+import android.content.res.Resources.NotFoundException;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
+import android.graphics.Color;
+import android.graphics.Point;
 import android.graphics.drawable.AnimationDrawable;
 import android.hardware.Camera;
 import android.hardware.Camera.CameraInfo;
 import android.hardware.Camera.Parameters;
 import android.hardware.Camera.PreviewCallback;
+import android.net.Uri;
 import android.os.Bundle;
+import android.os.Vibrator;
 import android.support.v4.app.Fragment;
+import android.support.v4.view.ViewPager;
+import android.util.Log;
+import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.View.OnClickListener;
@@ -28,7 +53,10 @@ import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.FrameLayout;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
+import android.widget.LinearLayout.LayoutParams;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.cycrix.androidannotation.AndroidAnnotationParser;
 import com.cycrix.androidannotation.Click;
@@ -43,12 +71,15 @@ public class ScanCodeFragment extends Fragment {
 	// Data
 	private QRCodeReader mQRCodeReader = new QRCodeReader();
 	private boolean isCanScan = true;
+	private Integer scanCodeTaskStatus = 0;
+	private Object objScanCode;
 	private List<CyAsyncTask> mTaskList = new ArrayList<CyAsyncTask>();
 	
 	private Camera mCamera;
     private CameraPreview mPreview;
     
 	// GUI
+//    @ViewById(id = R.id.llScanDLG2)			private LinearLayout mLLScanDLG2;
     @ViewById(id = R.id.layoutCameraHolder)	private FrameLayout mLayoutCamHolder;
 	@ViewById(id = R.id.btnFlash)			private Button mBtnFlash;
 	@ViewById(id = R.id.layoutLoading)		private View mLayoutLoading;
@@ -89,35 +120,248 @@ public class ScanCodeFragment extends Fragment {
 				return;
 			}
 
-			String mQRCode = rs.getText();
-			isCanScan = false;
+			final String mQRCode = rs.getText();
 			
-			// Call scan code api
-			ScanCode scanCodeTask = new ScanCode(getActivity(), mQRCode) {
-				@Override
-				protected void onCompleted(Object result2) throws Exception {
-					mTaskList.remove(this);
+			try {
+				Vibrator v = (Vibrator) getActivity().getSystemService(Context.VIBRATOR_SERVICE);
+				 // Vibrate for 500 milliseconds
+				v.vibrate(300);
+			} catch (Exception e) {
+				// TODO: handle exception
+			}
+			
+			isCanScan = false;	
+			
+			String prefix = "http://page.infory.vn/";
+			String ssl_prefix = "https://page.infory.vn/";
+			String www_prefix = "www.page.infory.vn/";			
+			
+			if(mQRCode.toLowerCase().contains("?infory=true") || 
+					mQRCode.toLowerCase().contains("&infory=true"))
+			{
+				// Call scan code api
+				ScanCode scanCodeTask = new ScanCode(getActivity(), mQRCode) {
+					@Override
+					protected void onCompleted(final Object result2) throws Exception {
+						mTaskList.remove(this);
+						
+						/*objScanCode = result2;
+						scanCodeTaskStatus = 1;*/ //Finished
+						
+						ScanCodeResultActivity.newInstance(getActivity(), result2, mQRCode);
+						getActivity().finish();
+					}
 					
-					ScanResponse response = (ScanResponse) result2;
-					processScanResponse(response);
-				}
+					@Override
+					protected void onFail(Exception e) {
+						mTaskList.remove(this);
+					}
+				};		
+
+				mTaskList.add(scanCodeTask);
+	    		scanCodeTask.setVisibleView(mLayoutLoading);
+	    		scanCodeTask.executeOnExecutor(NetworkManager.THREAD_POOL);
 				
+	    		AnimationDrawable frameAnimation = (AnimationDrawable) 
+						mLayoutLoadingAnimation.getBackground();
+				frameAnimation.start();
+			}
+			else if(mQRCode.toLowerCase().startsWith("http://") ||
+					mQRCode.toLowerCase().startsWith("https://") ||
+					mQRCode.toLowerCase().startsWith("www.")) //Open webview
+			{
+				if(mQRCode.toLowerCase().startsWith("http://page.infory.vn/") ||
+						mQRCode.toLowerCase().startsWith("https://page.infory.vn/") ||
+						mQRCode.toLowerCase().startsWith("www.page.infory.vn/")||
+						mQRCode.toLowerCase().startsWith("http://www.page.infory.vn/") ||
+						mQRCode.toLowerCase().startsWith("https://www.page.infory.vn/"))
+				{
+					if(mQRCode.toLowerCase().startsWith(prefix + "shop/") ||
+						mQRCode.toLowerCase().startsWith(ssl_prefix + "shop/") ||
+						mQRCode.toLowerCase().startsWith(www_prefix + "shop/"))
+					{					
+						try
+						{
+							int shop_id = Integer.parseInt(mQRCode.substring(mQRCode.lastIndexOf("shop/")+5));
+							
+							GetShopDetail2 task = new GetShopDetail2(getActivity(), shop_id) {
+								@Override
+								protected void onCompleted(Object result2) {
+									mTaskList.remove(this);
+									
+									JSONObject jShop = (JSONObject) result2;
+									
+									Shop shop = new Shop();
+									shop.idShop	= jShop.optInt("idShop");
+									shop.shopName	= jShop.optString("shopName");
+									shop.numOfView = jShop.optString("numOfView");
+									shop.logo		= jShop.optString("logo");
+									
+									ShopDetailActivity.newInstance(getActivity(), shop);
+									getActivity().finish();
+								}
+
+								@Override
+								protected void onFail(Exception e) {
+									mTaskList.remove(this);
+								}
+							};
+							task.setTaskList(mTaskList);
+							task.executeOnExecutor(NetworkManager.THREAD_POOL);
+						}
+						catch(Exception e)
+						{
+						}						
+					}
+					else if(mQRCode.toLowerCase().startsWith(prefix + "shops?idshops=") ||
+							mQRCode.toLowerCase().startsWith(ssl_prefix + "shops?idshops=")||
+							mQRCode.toLowerCase().startsWith(www_prefix + "shops?idshops="))
+					{
+						String id_shops = mQRCode.substring(mQRCode.lastIndexOf("shops?idshops=")+14);
+						ShopListActivity.newInstance(getActivity(), id_shops, new ArrayList<Shop>(),0);
+						getActivity().finish();
+					}
+					else if(mQRCode.toLowerCase().startsWith(prefix + "placelist/") ||
+							mQRCode.toLowerCase().startsWith(ssl_prefix + "placelist/")||
+							mQRCode.toLowerCase().startsWith(www_prefix + "placelist/"))
+					{
+						try {
+							int id_placelist = Integer.parseInt(mQRCode.substring(mQRCode.lastIndexOf("placelist/")+10));
+							
+							GetPlaceListDetail place_list_task = new GetPlaceListDetail(getActivity(), id_placelist, 0){
+
+								@Override
+								protected void onCompleted(Object result) throws Exception {
+									// TODO Auto-generated method stub
+									mTaskList.remove(this);
+									
+									Object[] placelist = (Object[]) result;
+									ShopListActivity.newInstance(getActivity(), (PlaceList)placelist[0], new ArrayList<Shop>());
+									getActivity().finish();
+								}
+
+								@Override
+								protected void onFail(
+										Exception e) {
+									mTaskList.remove(this);
+								}														
+							};	
+							
+							mTaskList.add(place_list_task);
+							place_list_task.executeOnExecutor(NetworkManager.THREAD_POOL);
+						} catch (Exception e) {
+							// TODO: handle exception
+						}						
+					}	
+					else if(mQRCode.toLowerCase().startsWith(prefix + "qrcode/") ||
+							mQRCode.toLowerCase().startsWith(ssl_prefix + "qrcode/") ||
+							mQRCode.toLowerCase().startsWith(www_prefix + "qrcode/"))
+					{
+						String qrcode = mQRCode.substring(mQRCode.lastIndexOf("qrcode/")+7);
+						
+						// Call scan code api
+						ScanCode scanCodeTask = new ScanCode(getActivity(), qrcode) {
+							@Override
+							protected void onCompleted(final Object result2) throws Exception {
+								mTaskList.remove(this);
+								
+								/*objScanCode = result2;
+								scanCodeTaskStatus = 1;*/ //Finished
+								
+								ScanCodeResultActivity.newInstance(getActivity(), result2, mQRCode);
+								getActivity().finish();
+							}
+							
+							@Override
+							protected void onFail(Exception e) {
+								mTaskList.remove(this);
+							}
+						};		
+
+						mTaskList.add(scanCodeTask);
+			    		scanCodeTask.setVisibleView(mLayoutLoading);
+			    		scanCodeTask.executeOnExecutor(NetworkManager.THREAD_POOL);
+						
+			    		AnimationDrawable frameAnimation = (AnimationDrawable) 
+								mLayoutLoadingAnimation.getBackground();
+						frameAnimation.start();
+					}
+				}
+				else
+				{
+					String newQRCode = mQRCode;
+					if(mQRCode.toLowerCase().startsWith("www."))
+						newQRCode = mQRCode.replace("www.", "http://");
+					WebActivity.newInstance(getActivity(), newQRCode);
+					getActivity().finish();
+				}				
+			}
+			else
+			{
+				// Call scan code api
+				ScanCode scanCodeTask = new ScanCode(getActivity(), mQRCode) {
+					@Override
+					protected void onCompleted(final Object result2) throws Exception {
+						mTaskList.remove(this);
+						
+						/*objScanCode = result2;
+						scanCodeTaskStatus = 1;*/ //Finished
+						
+						ScanCodeResultActivity.newInstance(getActivity(), result2, mQRCode);
+						getActivity().finish();
+					}
+					
+					@Override
+					protected void onFail(Exception e) {
+						mTaskList.remove(this);
+					}
+				};		
+
+				mTaskList.add(scanCodeTask);
+	    		scanCodeTask.setVisibleView(mLayoutLoading);
+	    		scanCodeTask.executeOnExecutor(NetworkManager.THREAD_POOL);
+				
+	    		AnimationDrawable frameAnimation = (AnimationDrawable) 
+						mLayoutLoadingAnimation.getBackground();
+				frameAnimation.start();
+			}
+			
+			//Call API get related
+    		/*ScanCodeRelated scanCodeRelatedTask = new ScanCodeRelated(getActivity(), mQRCode, 0, 0)
+    		{
+				@Override
+				protected void onCompleted(Object result3) throws Exception {
+					mTaskList.remove(this);		
+					
+					//Wait for task 1
+					while( scanCodeTaskStatus == 0 )
+			        {
+			            try 
+			            {
+			                Thread.sleep(100);
+			            } 
+			            catch (InterruptedException e) 
+			            {
+			                e.printStackTrace();
+			            }
+			        }
+					
+					ScanCodeResultActivity.newInstance(getActivity(), objScanCode, result3, mQRCode);
+				}
+
 				@Override
 				protected void onFail(Exception e) {
 					mTaskList.remove(this);
-					
-					ScanResponse response = new ScanResponse();
-					response.status = -1;
-					response.message = "Mất kết nối!";
-					processScanResponse(response);
 				}
-			};
-			mTaskList.add(scanCodeTask);
-			scanCodeTask.setVisibleView(mLayoutLoading);
-			scanCodeTask.executeOnExecutor(NetworkManager.THREAD_POOL);
-			AnimationDrawable frameAnimation = (AnimationDrawable) 
+    		};    
+    		
+    		mTaskList.add(scanCodeRelatedTask);
+    		scanCodeTask.setVisibleView(mLayoutLoading);
+    		scanCodeRelatedTask.executeOnExecutor(NetworkManager.THREAD_POOL);
+			
+    		AnimationDrawable frameAnimation = (AnimationDrawable) 
 					mLayoutLoadingAnimation.getBackground();
-			frameAnimation.start();
+			frameAnimation.start();*/
 		}
 	};
 	
@@ -133,7 +377,8 @@ public class ScanCodeFragment extends Fragment {
 			return;
 		}
 		
-		if (!getActivity().getPackageManager().hasSystemFeature(PackageManager.FEATURE_CAMERA)) {
+		if (!getActivity().getPackageManager().hasSystemFeature(PackageManager.FEATURE_CAMERA) && 
+				!getActivity().getPackageManager().hasSystemFeature(PackageManager.FEATURE_CAMERA_FRONT)) {
 			CyUtils.showError("Thiết bị không hỗ trợ camera", null, getActivity());
 			return;
 		}
@@ -214,7 +459,7 @@ public class ScanCodeFragment extends Fragment {
 	
 	private void processScanResponse(final ScanResponse response) {
 		
-		final Dialog dlg = new Dialog(getActivity(),
+		/*final Dialog dlg = new Dialog(getActivity(),
 				android.R.style.Theme_Translucent_NoTitleBar);
 		View v = getActivity().getLayoutInflater().inflate(R.layout.scan_dlg, null);
 		
@@ -255,9 +500,10 @@ public class ScanCodeFragment extends Fragment {
 		}
 		
 		
-		switch (response.status) {
+		switch (0) {
 		case -1:
 		case 0: {
+			Toast.makeText(getActivity(), "0", Toast.LENGTH_LONG).show();
 			layoutFlag.setBackgroundResource(R.drawable.background_greyflag_arlet);
 //			txtShop.setVisibility(View.GONE);
 			txtShopName.setVisibility(View.GONE);
@@ -276,6 +522,7 @@ public class ScanCodeFragment extends Fragment {
 		}
 		
 		case 1: {
+			Toast.makeText(getActivity(), "1", Toast.LENGTH_LONG).show();
 			layoutFlag.setBackgroundResource(R.drawable.background_flag_arlet);
 			txtShopName.setText(response.shopName);
 			
@@ -290,6 +537,7 @@ public class ScanCodeFragment extends Fragment {
 		}
 		
 		case 2: {
+			Toast.makeText(getActivity(), "2", Toast.LENGTH_LONG).show();
 			layoutFlag.setBackgroundResource(R.drawable.background_flag_arlet);
 			txtShopName.setText(response.shopName);
 			
@@ -305,6 +553,7 @@ public class ScanCodeFragment extends Fragment {
 		}
 		
 		case 3: {
+			Toast.makeText(getActivity(), "3", Toast.LENGTH_LONG).show();
 			layoutFlag.setBackgroundResource(R.drawable.background_flag_arlet);
 			txtShopName.setText(response.shopName);
 			
@@ -324,6 +573,7 @@ public class ScanCodeFragment extends Fragment {
 		}
 		
 		case 4: {
+			Toast.makeText(getActivity(), "4", Toast.LENGTH_LONG).show();
 			layoutFlag.setBackgroundResource(R.drawable.background_flag_arlet);
 			txtShopName.setText(response.shopName);
 			
@@ -340,10 +590,7 @@ public class ScanCodeFragment extends Fragment {
 			break;
 		}
 		
-		}
+		}*/
 		
-		FontsCollection.setFont(v);
-		dlg.setContentView(v);
-		dlg.show();
 	}
 }

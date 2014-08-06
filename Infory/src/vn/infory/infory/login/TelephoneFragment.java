@@ -16,6 +16,7 @@ import vn.infory.infory.network.CheckActiveCode;
 import vn.infory.infory.network.CyAsyncTask;
 import vn.infory.infory.network.GetActiveCode;
 import vn.infory.infory.network.NetworkManager;
+import vn.infory.infory.network.UpdateDeviceInfo;
 import android.app.AlertDialog;
 import android.app.Dialog;
 import android.app.FragmentManager;
@@ -45,6 +46,7 @@ import android.widget.EditText;
 import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.TextView;
+import android.widget.Toast;
 import android.widget.TextView.OnEditorActionListener;
 
 import com.cycrix.androidannotation.AndroidAnnotationParser;
@@ -54,7 +56,7 @@ import com.cycrix.androidannotation.ViewById;
 public class TelephoneFragment extends Fragment implements BackListener {
 
 	// GUI elements
-//	@ViewById(id = R.id.btnBack)				private ImageButton mBtnBack;
+	@ViewById(id = R.id.btnBack)				private ImageButton mBtnBack;
 	@ViewById(id = R.id.btnSend)				private Button mBtnSend;
 	@ViewById(id = R.id.edtTelNum)				private EditText mEdtTelephone;
 	@ViewById(id = R.id.txtMesTop)				private TextView mTxtMesTop;
@@ -106,9 +108,11 @@ public class TelephoneFragment extends Fragment implements BackListener {
 	
 	@Override
 	public void onBackPress() {
-//		onBackClick(null);
+		if(mTimer != null)
+			mTimer.cancel();
+		onBackClick(null);
 	}
-	
+
 	@Override
 	public void onResume() {
 		super.onResume();
@@ -144,10 +148,12 @@ public class TelephoneFragment extends Fragment implements BackListener {
 	// Private methods
 	///////////////////////////////////////////////////////////////////////////
 	
-	/*@Click(id = R.id.btnBack)
+	@Click(id = R.id.btnBack)
 	private void onBackClick(View v) {
+		if(mTimer != null)
+			mTimer.cancel();
 		mListener.onBackPress();
-	}*/
+	}
 
 	@Click(id = R.id.btnSend)
 	private void onSendClick(View v) {
@@ -254,7 +260,13 @@ public class TelephoneFragment extends Fragment implements BackListener {
 				mjProfile = result;
 				saveProfile(result);
 				
+				//Update Device Info
+				CyAsyncTask taskUpdateDeviceInfo = new UpdateDeviceInfo(getActivity(), 1);
+				mTaskList.add(taskUpdateDeviceInfo);
+				taskUpdateDeviceInfo.executeOnExecutor(NetworkManager.THREAD_POOL);
+				
 				Editor e = PreferenceManager.getDefaultSharedPreferences(getActivity()).edit();
+				
 				e.putString("accessToken", mjProfile.optString("accessToken"));
 				e.putString("refreshToken", mjProfile.optString("refreshToken"));
 				e.putString("activeCode", mActiveCode);
@@ -276,9 +288,8 @@ public class TelephoneFragment extends Fragment implements BackListener {
 
 			@Override
 			protected void onSuccess(JSONObject result) {
-				mTaskList.remove(this);
-				
-				mjProfile = result;
+				mTaskList.remove(this);				
+				mjProfile = result;				
 				saveProfile(result);
 				
 				mListener.onLoginSuccess(result);
@@ -315,7 +326,7 @@ public class TelephoneFragment extends Fragment implements BackListener {
 	private void saveProfile(JSONObject result) {
 		Settings s = Settings.instance();
 		JSONObject jProfile = result.optJSONObject("userProfile");
-
+		
 		s.setAccessToken(result.optString("accessToken"), result.optString("refreshToken"));
 		s.activateID= mActiveCode;
 		
@@ -324,7 +335,7 @@ public class TelephoneFragment extends Fragment implements BackListener {
 		s.avatar 	= jProfile.optString("avatar");
 		s.name 		= jProfile.optString("name");
 		s.userID	= jProfile.optString("idUser");
-		s.gender	= jProfile.optInt("sex", -1);
+		s.gender	= jProfile.optInt("gender");
 		s.cover		= jProfile.optString("cover");
 		s.dob		= jProfile.optString("dob");
 		s.socialType= jProfile.optInt("socialType", 0);
@@ -398,7 +409,13 @@ public class TelephoneFragment extends Fragment implements BackListener {
 		if (phone.charAt(0) == '0')
 			phone = phone.substring(1);
 		
-		if (phone.length() < 9 || phone.length() > 10)
+		if(phone.charAt(0) != '1' && phone.charAt(0) != '9')
+			return false;
+		
+		if (phone.charAt(0) == '9' && phone.length() != 9)
+			return false;
+		
+		if (phone.charAt(0) == '1' && phone.length() != 10)
 			return false;
 		
 		for (int i = 0; i < phone.length(); i++) {
