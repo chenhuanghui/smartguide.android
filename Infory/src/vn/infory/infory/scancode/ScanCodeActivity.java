@@ -1,6 +1,9 @@
 package vn.infory.infory.scancode;
 
 import vn.infory.infory.R;
+import vn.infory.infory.FlashActivity.Listener;
+import vn.infory.infory.login.InforyLoginActivity;
+import vn.infory.infory.login.UseImmediatelyActivity;
 import android.app.Activity;
 import android.content.Intent;
 import android.os.Bundle;

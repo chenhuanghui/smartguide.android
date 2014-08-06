@@ -60,6 +60,7 @@
                     android:layout_marginTop="-2dp"
                     android:contentDescription="@string/sfu_normal"
                     android:text="SmartGuide"
+                    android:textStyle="bold"
                     android:textColor="#707070" />
 
             </RelativeLayout>
@@ -75,9 +76,10 @@
                 android:id="@+id/txtTitle"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_marginLeft="12dp"
+                android:layout_marginLeft="24dp"
+                android:layout_marginRight="24dp"
                 android:layout_marginTop="12dp"
-                android:contentDescription="@string/sfu_bold"
+                android:contentDescription="@string/sfu_heavy"
                 android:text="Title"
                 android:textColor="#707070" />
 

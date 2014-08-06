@@ -10,10 +10,13 @@ import vn.infory.infory.WebActivity;
 import vn.infory.infory.FlashActivity.Listener;
 import android.app.Activity;
 import android.content.Intent;
+import android.content.SharedPreferences.Editor;
 import android.os.Bundle;
+import android.preference.PreferenceManager;
 import android.support.v4.app.FragmentActivity;
 import android.view.View;
 import android.widget.ImageButton;
+import android.widget.Toast;
 
 public class UseImmediatelyActivity extends FragmentActivity {
 	
@@ -36,7 +39,7 @@ public class UseImmediatelyActivity extends FragmentActivity {
 			}
 			
 			@Override
-			public void onSuccess() {
+			public void onSuccess() {	
 				finish();
 				inerListener.onSuccess();
 			}
@@ -87,7 +90,11 @@ public class UseImmediatelyActivity extends FragmentActivity {
 	}
 	
 	@Click(id = R.id.btnUse)
-	private void onUseClick(View v) {
+	private void onUseClick(View v) {	
+		Editor e = PreferenceManager.getDefaultSharedPreferences(this).edit();
+		e.putString("use_immediately_activity", "1");
+		e.commit();
+		
 		finish();
 		mListener.onSuccess();
 		overridePendingTransition(R.anim.slide_in_right, R.anim.slide_out_left);

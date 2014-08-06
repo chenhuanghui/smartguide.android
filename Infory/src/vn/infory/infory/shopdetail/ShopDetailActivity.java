@@ -400,9 +400,9 @@ public class ShopDetailActivity extends FragmentActivity {
 		((TextView) view.findViewById(R.id.txtShopName)).setText(mShop.shopName);
 		((TextView) view.findViewById(R.id.txtShopType)).setText(mShop.shopTypeDisplay);
 
-		((TextView) view.findViewById(R.id.txtLoveNum)).setText(mShop.numOfLove);
-		((TextView) view.findViewById(R.id.txtViewNum)).setText(mShop.numOfView);
-		((TextView) view.findViewById(R.id.txtCommentNum)).setText(mShop.numOfComment);
+		((TextView) view.findViewById(R.id.txtLoveNum)).setText(mShop.numOfLove+"  ");
+		((TextView) view.findViewById(R.id.txtViewNum)).setText(mShop.numOfView+" ");
+		((TextView) view.findViewById(R.id.txtCommentNum)).setText(mShop.numOfComment+" ");
 		
 		// Like button
 		setShopLikeStatus(view);
@@ -489,7 +489,7 @@ public class ShopDetailActivity extends FragmentActivity {
 			txtLoved.setTextColor(0XFFFFFFFF);
 			break;
 		}
-		txtLoveNum.setText(mShop.numOfLove);
+		txtLoveNum.setText(mShop.numOfLove+" ");
 		
 	}
 
@@ -867,7 +867,7 @@ public class ShopDetailActivity extends FragmentActivity {
 				case 0: // shop gallery + info bar
 					convertView = mInflater.inflate(R.layout.shop_detail_1, parent, false);
 					mLayoutShopGallery = (ViewGroup) convertView;
-					mLayoutShopGallery.findViewById(R.id.btnInfo)
+					mLayoutShopGallery.findViewById(R.id.linearlayoutBtnInfo)
 					.setOnClickListener(new OnClickListener() {
 						@Override
 						public void onClick(View arg0) {

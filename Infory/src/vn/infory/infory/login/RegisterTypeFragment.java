@@ -24,23 +24,32 @@ import android.graphics.Point;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
 import android.support.v4.app.Fragment;
+import android.text.Spannable;
+import android.text.SpannableString;
+import android.text.style.ForegroundColorSpan;
+import android.text.style.StyleSpan;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.FrameLayout;
 import android.widget.ImageButton;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.TextView;
+import android.widget.LinearLayout.LayoutParams;
+import android.widget.TextView.BufferType;
 import android.widget.Toast;
 
 import android.graphics.Bitmap;
 import android.graphics.Bitmap.Config;
 import android.graphics.Canvas;
+import android.graphics.Color;
 import android.graphics.Paint;
 import android.graphics.Point;
 import android.graphics.PorterDuff.Mode;
 import android.graphics.PorterDuffXfermode;
 import android.graphics.Rect;
+import android.graphics.Typeface;
 
 public class RegisterTypeFragment extends Fragment implements BackListener {
 	
@@ -49,14 +58,16 @@ public class RegisterTypeFragment extends Fragment implements BackListener {
 	
 	private Activity mCt;
 	
+	public Settings s = Settings.instance();
+	
 	// GUI
-	@ViewById(id = R.id.btnContinue)	private TextView mBtnContinue;
-	@ViewById(id = R.id.imgAva)			private ImageView mImgAva;
-	@ViewById(id = R.id.frameAva)		private FrameLayout mFrameAva;
-	@ViewById(id = R.id.txtOr)			private TextView mTxtOr;
-	@ViewById(id = R.id.btnFacebook)	private ImageButton mBtnFacebook;
-	@ViewById(id = R.id.btnGooglePlus)	private ImageButton mBtnGooglePlus;
-	@ViewById(id = R.id.fbBtn) 			private LoginButton mFacebookButton;
+	@ViewById(id = R.id.btnContinue)			private TextView mBtnContinue;
+	@ViewById(id = R.id.imgAva)					private ImageView mImgAva;
+	@ViewById(id = R.id.frameAva)				private FrameLayout mFrameAva;
+	@ViewById(id = R.id.txtOr)					private TextView mTxtOr;
+	@ViewById(id = R.id.btnFacebook)			private ImageButton mBtnFacebook;
+	@ViewById(id = R.id.btnGooglePlus)			private ImageButton mBtnGooglePlus;
+	@ViewById(id = R.id.fbBtn) 					private LoginButton mFacebookButton;
 
 	
 	//Chuyển frame layout trong fragment
@@ -67,7 +78,7 @@ public class RegisterTypeFragment extends Fragment implements BackListener {
 	public View onCreateView(LayoutInflater inflater, ViewGroup container,
 			Bundle savedInstanceState) {
 		final View myInflatedView = inflater.inflate(R.layout.login_register_type, container, false);
-
+		
 		return myInflatedView;
 	}
 		
@@ -120,6 +131,12 @@ public class RegisterTypeFragment extends Fragment implements BackListener {
 		// TODO Auto-generated method stub
 		mListener.onButtonContinueClick();
 	}
+	
+	@Click(id = R.id.frameAva)
+	private void onFrameAvatarContinueClick(View v) {
+		// TODO Auto-generated method stub
+		mListener.onButtonContinueClick();
+	}
 
 	@Override
 	public void onBackPress() {
@@ -129,12 +146,11 @@ public class RegisterTypeFragment extends Fragment implements BackListener {
 	
 	
 	public void onFinishLogin()
-	{
-		Settings s = Settings.instance();
+	{		
 		mCt = new Activity();
 				
 		if(s.name.equals(""))
-		{	
+		{				
 			mBtnContinue.setVisibility(View.GONE);
 			mImgAva.setVisibility(View.GONE);
 			mFrameAva.setVisibility(View.GONE);
@@ -142,12 +158,28 @@ public class RegisterTypeFragment extends Fragment implements BackListener {
 		}
 		else
 		{			
+			FontsCollection.setFontForTextView(mTxtOr, "sfufuturabook");
 			mBtnContinue.setVisibility(View.VISIBLE);
 			mImgAva.setVisibility(View.VISIBLE);
 			mFrameAva.setVisibility(View.VISIBLE);
 			mTxtOr.setVisibility(View.VISIBLE);
 			
-			mBtnContinue.setText("Tiếp tục sử dụng tài khoản " + s.name + " để đăng nhập");
+			Spannable WordToSpan = new SpannableString("Sử dụng "); 
+			WordToSpan.setSpan(new ForegroundColorSpan(Color.WHITE), 0, WordToSpan.length(), Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);
+			
+			mBtnContinue.setText(WordToSpan);
+			
+			WordToSpan = new SpannableString(s.name); 
+			WordToSpan.setSpan(new ForegroundColorSpan(Color.CYAN), 0, WordToSpan.length(), Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);
+			WordToSpan.setSpan(new StyleSpan(Typeface.BOLD), 0, WordToSpan.length(), 0);
+			mBtnContinue.append(WordToSpan);
+			
+			WordToSpan = new SpannableString(" để tiếp tục "); 
+			WordToSpan.setSpan(new ForegroundColorSpan(Color.WHITE), 0, WordToSpan.length(), Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);
+			mBtnContinue.append(WordToSpan);
+			
+			FontsCollection.setFontForTextView(mBtnContinue, "sfufuturabook");
+			
 			CyImageLoader.instance().loadImage(s.avatar, new CyImageLoader.Listener() {
 				@Override
 				public void loadFinish(int from, Bitmap image, String url, CyAsyncTask task) {
@@ -183,7 +215,24 @@ public class RegisterTypeFragment extends Fragment implements BackListener {
 				mFrameAva.setVisibility(View.VISIBLE);
 				mTxtOr.setVisibility(View.VISIBLE);
 				
-				mBtnContinue.setText("Tiếp tục sử dụng tài khoản " + s.name + " để đăng nhập");
+				Spannable WordToSpan = new SpannableString("Sử dụng "); 
+				WordToSpan.setSpan(new ForegroundColorSpan(Color.WHITE), 0, WordToSpan.length(), Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);
+				
+				mBtnContinue.setText(WordToSpan);
+				
+				WordToSpan = new SpannableString(s.name); 
+				WordToSpan.setSpan(new ForegroundColorSpan(Color.CYAN), 0, WordToSpan.length(), Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);
+				WordToSpan.setSpan(new StyleSpan(Typeface.BOLD), 0, WordToSpan.length(), 0);
+				mBtnContinue.append(WordToSpan);
+				
+				WordToSpan = new SpannableString(" để tiếp tục "); 
+				WordToSpan.setSpan(new ForegroundColorSpan(Color.WHITE), 0, WordToSpan.length(), Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);
+				mBtnContinue.append(WordToSpan);
+				
+				FontsCollection.setFontForTextView(mBtnContinue, "sfufuturabook");
+				
+				
+				
 				CyImageLoader.instance().loadImage(s.avatar, new CyImageLoader.Listener() {
 					@Override
 					public void loadFinish(int from, Bitmap image, String url, CyAsyncTask task) {

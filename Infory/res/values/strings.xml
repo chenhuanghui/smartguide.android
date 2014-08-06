@@ -55,5 +55,8 @@
     <string name="title_activity_gallery">GalleryActivity</string>
     <string name="title_activity_gallery_full">GalleryFullActivity</string>
     <string name="title_activity_post_photo">PostPhotoActivity</string>
+    <string name="test">test</string>
+    <string name="scan_code_result_activity">ScanCodeResultActivity</string>
+    <string name="home_loading_activity">HomeLoadingActivity</string>
 
 </resources>

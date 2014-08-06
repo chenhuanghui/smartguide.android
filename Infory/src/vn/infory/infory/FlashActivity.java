@@ -1,13 +1,17 @@
 package vn.infory.infory;
 
 import java.security.MessageDigest;
+import java.util.ArrayList;
+import java.util.List;
 
 import vn.infory.infory.data.Profile;
 import vn.infory.infory.data.Settings;
 import vn.infory.infory.login.UseImmediatelyActivity;
 import vn.infory.infory.network.CheckEmergence;
+import vn.infory.infory.network.CyAsyncTask;
 import vn.infory.infory.network.GetProfile;
 import vn.infory.infory.network.NetworkManager;
+import vn.infory.infory.network.UpdateDeviceInfo;
 import android.app.Activity;
 import android.app.AlertDialog;
 import android.app.AlertDialog.Builder;
@@ -24,6 +28,7 @@ import android.util.Log;
 public class FlashActivity extends Activity {
 	
 	private static Listener sListener;
+	private List<CyAsyncTask> mTaskList = new ArrayList<CyAsyncTask>();
 	
 	private Listener mListener;
 	
@@ -84,6 +89,11 @@ public class FlashActivity extends Activity {
 //					mListener.onFirstTime();
 					UseImmediatelyActivity.newInstance(FlashActivity.this, mListener);
 				} else {
+					//Update Device Info
+					CyAsyncTask taskUpdateDeviceInfo = new UpdateDeviceInfo(getApplicationContext(), 1);
+					mTaskList.add(taskUpdateDeviceInfo);
+					taskUpdateDeviceInfo.executeOnExecutor(NetworkManager.THREAD_POOL);
+					
 					mListener.onSuccess();
 				}
 				

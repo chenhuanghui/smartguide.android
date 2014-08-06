@@ -14,6 +14,8 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 public class HomeItemUpdater_ShopItem extends HomeItemUpdater {
+	private static long lastClickTime = 0;
+	
 	@Override
 	public void update(View view, HomeItem item, final HomeFragment caller) {
 		
@@ -44,6 +46,33 @@ public class HomeItemUpdater_ShopItem extends HomeItemUpdater {
 		txtName.setText(itemShop.shopName);
 		txtDate.setText(itemShop.date);
 		btnGoto.setText(itemShop.goto_);
+		
+		txtName.setOnClickListener(new OnClickListener() {
+			@Override
+			public void onClick(View v) {
+				caller.onShopItemClick(itemShop.idShop, itemShop);
+			}
+		});
+		
+		imgLogo.setOnClickListener(new OnClickListener() {
+			@Override
+			public void onClick(View v) {
+				caller.onShopItemClick(itemShop.idShop, itemShop);
+			}
+		});
+		
+		
+		
+		imgCover.setOnClickListener(new OnClickListener() {
+			@Override
+			public void onClick(View v) {
+				long clickTime = System.currentTimeMillis();
+		        if (clickTime - lastClickTime < 300){
+		        	caller.onShopItemClick(itemShop.idShop, itemShop);
+		        }
+		        lastClickTime = clickTime;
+			}
+		});
 		
 		btnGoto.setOnClickListener(new OnClickListener() {
 			@Override

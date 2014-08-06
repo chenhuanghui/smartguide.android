@@ -8,6 +8,7 @@ public class APILinkMaker {
 	public static final String mCheckActivateCode 	= NetworkManager.mHostName + "/user/check_v2";
 	public static final String mEmergency 			= NetworkManager.mHostName + "/notification_v2";
 	
+	public static final String mUpdateDeviceInfo 	= mPrefix + "user/updateDeviceInfo";
 	public static final String mUpdateProfile	 	= mPrefix + "user/updateProfile";
 	public static final String mUploadSocialProfile	= mPrefix + "user/uploadSocialProfile";
 	public static final String mUploadAva		 	= mPrefix + "user/uploadAvatar";
@@ -38,7 +39,9 @@ public class APILinkMaker {
 	public static final String mGetNotifications	= mPrefix + "user/message/getNewest";
 	
 	
-	public static final String mScan				= mPrefix + "user/scanSGCode_v2";
+//	public static final String mScan				= mPrefix + "user/scanSGCode_v2";
+	public static final String mScan				= mPrefix + "qrcode/decode";
+	public static final String mRelated				= mPrefix + "qrcode/getRelated";
 	
 	public static final String mAutoComplete		= NetworkManager.mHostName + ":9200/data/_search";
 	

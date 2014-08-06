@@ -15,6 +15,7 @@ import vn.infory.infory.login.TelephoneFragment;
 import vn.infory.infory.login.InforyLoginActivity.BackListener;
 import vn.infory.infory.network.NetworkManager;
 import vn.infory.infory.scancode.ScanCodeActivity;
+import vn.infory.infory.scancode.ScanCodeRelatedActivity;
 import android.animation.Animator;
 import android.animation.AnimatorSet;
 import android.animation.ObjectAnimator;
@@ -83,7 +84,7 @@ public class MainActivity extends FragmentActivity {
 
 		try {
 			Settings.init(this);
-//			Settings.getLocation(this);
+			Settings.getLocation(this);
 			NetworkManager.init();
 			CyImageLoader.initInstance(this);
 			FontsCollection.init(this);
@@ -91,6 +92,9 @@ public class MainActivity extends FragmentActivity {
 		} catch (Exception e) {
 			finish();
 		}
+		
+		/*Intent intent = new Intent(this, ScanCodeRelatedActivity.class);
+		startActivity(intent);*/
 		
 		String last_activity = PreferenceManager.getDefaultSharedPreferences(this).getString("last_activity", "");
 //		Toast.makeText(getApplicationContext(), "Main activity: " + last_activity, Toast.LENGTH_SHORT).show();
@@ -178,17 +182,68 @@ public class MainActivity extends FragmentActivity {
 		getSupportFragmentManager().beginTransaction().hide(mFragPromo).commit();
 		mFragActive = mFragHome;
 		
+		Toast.makeText(getApplicationContext(), mScanCodeLayoutSmall+"", Toast.LENGTH_SHORT).show();
+		
 		mFragHome.setListener(new HomeFragment.Listener() {
 			@Override
 			public void onSideMenuClick() {
 				mMenu.toggle();
 			}
 		}, new OnScrollListener() {
+			private int mLastFirstVisibleItem;	
 			@Override
 			public void onScroll(AbsListView view, int firstVisibleItem,
 					int visibleItemCount, int totalItemCount) {
-				processScroll(view, firstVisibleItem, 
-						visibleItemCount, totalItemCount);
+				/*processScroll(view, firstVisibleItem, 
+						visibleItemCount, totalItemCount);	*/			
+				if (totalItemCount > 0 && firstVisibleItem == 0 &&
+						view.getChildAt(0).getTop() == 0 || totalItemCount == 0) {
+					
+					if (mScanCodeLayoutSmall) {
+						mScanCodeAnimation.cancel();
+						mImgScanCodeSmall.setVisibility(View.VISIBLE);
+						Animator animator = ObjectAnimator.ofFloat(
+								mLayoutScanCode, "translationY", mAnimationHeight, 0);
+						Animator animator2 = ObjectAnimator.ofFloat(
+								mImgScanCode, "translationY", mAnimationHeight*2, 0);
+						Animator animator3 = ObjectAnimator.ofFloat(
+								mImgScanCodeSmall, "translationY", 0, mAnimationHeight*2);
+						mScanCodeAnimation.playTogether(animator, animator2, animator3);
+						mScanCodeAnimation.start();
+						mScanCodeLayoutSmall = false;
+					}
+				}
+				
+				if(mLastFirstVisibleItem<firstVisibleItem && !mScanCodeLayoutSmall) //Scroll up
+	            {		
+					mScanCodeAnimation.cancel();
+					mImgScanCodeSmall.setVisibility(View.VISIBLE);
+					Animator animator = ObjectAnimator.ofFloat(
+							mLayoutScanCode, "translationY", 0, mAnimationHeight);
+					Animator animator2 = ObjectAnimator.ofFloat(
+							mImgScanCode, "translationY", 0, mAnimationHeight*2);
+					Animator animator3 = ObjectAnimator.ofFloat(
+							mImgScanCodeSmall, "translationY", mAnimationHeight*2, 0);
+					mScanCodeAnimation.playTogether(animator, animator2, animator3);
+					mScanCodeAnimation.start();
+					mScanCodeLayoutSmall = true;					
+	            }
+				
+	            if(mLastFirstVisibleItem>firstVisibleItem && mScanCodeLayoutSmall) //Scroll down
+	            {
+	            	mScanCodeAnimation.cancel();
+					mImgScanCodeSmall.setVisibility(View.VISIBLE);
+					Animator animator = ObjectAnimator.ofFloat(
+							mLayoutScanCode, "translationY", mAnimationHeight, 0);
+					Animator animator2 = ObjectAnimator.ofFloat(
+							mImgScanCode, "translationY", mAnimationHeight*2, 0);
+					Animator animator3 = ObjectAnimator.ofFloat(
+							mImgScanCodeSmall, "translationY", 0, mAnimationHeight*2);
+					mScanCodeAnimation.playTogether(animator, animator2, animator3);
+					mScanCodeAnimation.start();
+					mScanCodeLayoutSmall = false;
+	            }
+	            mLastFirstVisibleItem=firstVisibleItem;
 			}
 			public void onScrollStateChanged(AbsListView view, int scrollState) {}
 		});
@@ -199,11 +254,61 @@ public class MainActivity extends FragmentActivity {
 				mMenu.toggle();
 			}
 		}, new OnScrollListener() {
+			private int mLastFirstVisibleItem;
+			
 			@Override
 			public void onScroll(AbsListView view, int firstVisibleItem,
 					int visibleItemCount, int totalItemCount) {
-				processScroll(view, firstVisibleItem, 
-						visibleItemCount, totalItemCount);
+				/*processScroll(view, firstVisibleItem, 
+						visibleItemCount, totalItemCount);*/	
+				if (totalItemCount > 0 && firstVisibleItem == 0 &&
+						view.getChildAt(0).getTop() > 0 || totalItemCount == 0) {
+					
+					if (mScanCodeLayoutSmall) {
+						mScanCodeAnimation.cancel();
+						mImgScanCodeSmall.setVisibility(View.VISIBLE);
+						Animator animator = ObjectAnimator.ofFloat(
+								mLayoutScanCode, "translationY", mAnimationHeight, 0);
+						Animator animator2 = ObjectAnimator.ofFloat(
+								mImgScanCode, "translationY", mAnimationHeight*2, 0);
+						Animator animator3 = ObjectAnimator.ofFloat(
+								mImgScanCodeSmall, "translationY", 0, mAnimationHeight*2);
+						mScanCodeAnimation.playTogether(animator, animator2, animator3);
+						mScanCodeAnimation.start();
+						mScanCodeLayoutSmall = false;
+					}
+				}
+				
+				if(mLastFirstVisibleItem<firstVisibleItem && !mScanCodeLayoutSmall) //Scroll up
+	            {		
+					mScanCodeAnimation.cancel();
+					mImgScanCodeSmall.setVisibility(View.VISIBLE);
+					Animator animator = ObjectAnimator.ofFloat(
+							mLayoutScanCode, "translationY", 0, mAnimationHeight);
+					Animator animator2 = ObjectAnimator.ofFloat(
+							mImgScanCode, "translationY", 0, mAnimationHeight*2);
+					Animator animator3 = ObjectAnimator.ofFloat(
+							mImgScanCodeSmall, "translationY", mAnimationHeight*2, 0);
+					mScanCodeAnimation.playTogether(animator, animator2, animator3);
+					mScanCodeAnimation.start();
+					mScanCodeLayoutSmall = true;					
+	            }
+				
+	            if(mLastFirstVisibleItem>firstVisibleItem && mScanCodeLayoutSmall) //Scroll down
+	            {
+	            	mScanCodeAnimation.cancel();
+					mImgScanCodeSmall.setVisibility(View.VISIBLE);
+					Animator animator = ObjectAnimator.ofFloat(
+							mLayoutScanCode, "translationY", mAnimationHeight, 0);
+					Animator animator2 = ObjectAnimator.ofFloat(
+							mImgScanCode, "translationY", mAnimationHeight*2, 0);
+					Animator animator3 = ObjectAnimator.ofFloat(
+							mImgScanCodeSmall, "translationY", 0, mAnimationHeight*2);
+					mScanCodeAnimation.playTogether(animator, animator2, animator3);
+					mScanCodeAnimation.start();
+					mScanCodeLayoutSmall = false;
+	            }
+	            mLastFirstVisibleItem=firstVisibleItem;
 			}
 			public void onScrollStateChanged(AbsListView view, int scrollState) {}
 		});
@@ -245,9 +350,9 @@ public class MainActivity extends FragmentActivity {
 	// Scan code button animation
 	///////////////////////////////////////////////////////////////////////////
 	
-	private AnimatorSet mScanCodeAnimation = new AnimatorSet();
-	private boolean mScanCodeLayoutSmall = false;
+	private AnimatorSet mScanCodeAnimation = new AnimatorSet();	
 	private int mAnimationHeight;
+	private boolean mScanCodeLayoutSmall = false;
 	private void processScroll(AbsListView view, int firstVisibleItem,
 			int visibleItemCount, int totalItemCount) {
 		

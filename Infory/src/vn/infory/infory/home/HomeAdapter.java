@@ -7,20 +7,23 @@ import vn.infory.infory.FontsCollection;
 import vn.infory.infory.LazyLoadAdapter;
 import vn.infory.infory.R;
 import vn.infory.infory.data.home.HomeItem;
+import vn.infory.infory.data.home.HomeItem_Header;
 import vn.infory.infory.network.GetHome;
 import android.app.Activity;
 import android.graphics.Point;
 import android.graphics.drawable.AnimationDrawable;
 import android.support.v4.view.ViewPager;
+import android.util.Log;
 import android.view.View;
 import android.view.View.MeasureSpec;
 import android.view.View.OnClickListener;
 import android.view.ViewGroup;
+import android.widget.Toast;
 
 public class HomeAdapter extends LazyLoadAdapter {
 	
 	private HomeFragment mCaller;
-	private HomeItemUpdater[] mUpdaterArr = new HomeItemUpdater[10];
+	private HomeItemUpdater[] mUpdaterArr = new HomeItemUpdater[11];
 	
 	public static Point mLogoSize;
 	public static Point mListSize;
@@ -28,7 +31,7 @@ public class HomeAdapter extends LazyLoadAdapter {
 //	public static Point mCoverSize;
 	
 	public HomeAdapter(Activity act, HomeFragment caller) {
-		super(act, new GetHome(act, 0), R.layout.shop_list_loading, 9, new ArrayList<HomeItem>());
+		super(act, new GetHome(act, 0), R.layout.shop_list_loading, 10, new ArrayList<HomeItem>());
 		mCaller = caller;
 		
 		int logoEdge = CyUtils.dpToPx(36, caller.getActivity());
@@ -45,7 +48,8 @@ public class HomeAdapter extends LazyLoadAdapter {
 		mUpdaterArr[6] = new HomeItemUpdater_ShopItem();
 		mUpdaterArr[7] = new HomeItemUpdater_StoreItem();
 		mUpdaterArr[8] = new HomeItemUpdater_ShopPromoInfo();
-		mUpdaterArr[9] = mUpdaterArr[2];
+		mUpdaterArr[9] = new HomeItemUpdater_Header();
+		mUpdaterArr[10] = mUpdaterArr[2];
 	}
 	
 	private Point calcViewSizeById(int rid) {
@@ -125,10 +129,18 @@ public class HomeAdapter extends LazyLoadAdapter {
 			
 			// home_block_3 : image list
 			case 2:
-			case 9:
+			case 10:
 				convertView = mInflater.inflate(R.layout.home_block_3, parent, false);
 				break;
 				
+			case 9:				
+				convertView = mInflater.inflate(R.layout.home_block_5, parent, false);
+				/*if(item.title != "")
+					convertView = mInflater.inflate(R.layout.home_block_5, parent, false);
+				else
+					convertView = mInflater.inflate(R.layout.home_block_3, parent, false);*/
+				break;
+								
 			// home_block_4 : item
 			case 6:
 			case 7:
