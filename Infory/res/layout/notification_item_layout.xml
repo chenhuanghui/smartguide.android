@@ -1,0 +1,134 @@
+<?xml version="1.0" encoding="utf-8"?>
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content" >
+
+    <LinearLayout
+        android:id="@+id/back"
+        android:layout_width="@dimen/width_delete"
+        android:layout_height="match_parent"
+        android:layout_gravity="right"
+        android:gravity="center"
+        android:orientation="vertical"
+        android:tag="back" >
+
+        <TextView
+            android:id="@+id/txtDelete"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:contentDescription="@string/sfu_normal"
+            android:drawableLeft="@drawable/icon_remove"
+            android:text="Xoá"
+            android:textColor="@android:color/holo_red_light" />
+    </LinearLayout>
+
+    <LinearLayout
+        android:id="@+id/front"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        android:paddingRight="5dip" >
+
+        <RelativeLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content" >
+
+            <RelativeLayout
+                android:id="@+id/linearText"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="-2.5dip"
+                android:layout_toRightOf="@+id/viewLeft"
+                android:background="@drawable/leftroundedinput"
+                android:gravity="center"
+                android:orientation="vertical" >
+
+                <LinearLayout
+                    android:id="@+id/linearContent"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_alignParentLeft="true"
+                    android:layout_toLeftOf="@+id/relaImage"
+                    android:orientation="vertical"
+                    android:padding="@dimen/activity_vertical_margin" >
+
+                    <TextView
+                        android:id="@+id/txtContent"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:contentDescription="@string/sfu_normal"
+                        android:ellipsize="end"
+                        android:maxLines="2"
+                        android:text="Mọi người nói về địa điểm Mọi người nói về địa điểm Mọi người nói về địa điểm Mọi người nói về địa điểm Mọi người nói về địa điểm Mọi người nói về địa điểm"
+                        android:textColor="#000000" />
+
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:orientation="horizontal"
+                        android:weightSum="10" >
+
+                        <TextView
+                            android:id="@+id/txtDateTime"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:layout_weight="4"
+                            android:contentDescription="@string/sfu_normal"
+                            android:singleLine="true"
+                            android:text="12121"
+                            android:textColor="#737373" />
+
+                        <TextView
+                            android:id="@+id/txtUnreadCount"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:layout_weight="6"
+                            android:contentDescription="@string/sfu_normal"
+                            android:gravity="right"
+                            android:singleLine="true"
+                            android:text="dsds"
+                            android:textColor="#737373" />
+                    </LinearLayout>
+                </LinearLayout>
+
+                <RelativeLayout
+                    android:id="@+id/relaImage"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_alignBottom="@+id/linearContent"
+                    android:layout_alignParentRight="true"
+                    android:layout_alignTop="@+id/linearContent"
+                    android:layout_marginRight="5dip" >
+
+                    <ImageView
+                        android:id="@+id/imgDotBlue"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_alignParentTop="true"
+                        android:layout_marginTop="5dip"
+                        android:src="@drawable/oval" />
+
+                    <ImageView
+                        android:id="@+id/imgArrow"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_centerVertical="true"
+                        android:src="@drawable/icon_arrow_notification" />
+                </RelativeLayout>
+            </RelativeLayout>
+
+            <View
+                android:id="@+id/viewLeft"
+                android:layout_width="5dip"
+                android:layout_height="wrap_content"
+                android:layout_alignBottom="@+id/linearText"
+                android:layout_alignParentLeft="true"
+                android:layout_alignTop="@+id/linearText"
+                android:layout_marginBottom="6dip"
+                android:layout_marginTop="6dip"
+                android:background="@color/background_view_unread_message" />
+        </RelativeLayout>
+    </LinearLayout>
+
+</FrameLayout>

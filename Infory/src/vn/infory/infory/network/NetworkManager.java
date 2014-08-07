@@ -43,6 +43,7 @@ public final class NetworkManager {
 	public static final String mHostName 	= "https://api.infory.vn";
 //	public static final String mHostName 	= "http://dev2.smartguide.vn";
 //	public static final String mHostName 	= "http://125.253.122.44/";
+//	public static final String mHostName 	= "http://dev.infory.vn";
 
 	public static final String mApiDomain 	= "/api/";
 	public static final String serverOAuth 	= mHostName + "/oauth/v2/token";
