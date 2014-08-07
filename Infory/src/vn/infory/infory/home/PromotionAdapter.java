@@ -1,5 +1,7 @@
 package vn.infory.infory.home;
 
+import it.sephiroth.android.library.widget.AbsHListView.PositionScroller;
+
 import java.util.ArrayList;
 
 import vn.infory.infory.CyImageLoader;
@@ -28,6 +30,8 @@ implements OnClickListener {
 	private Point mAvaAize, mCoverSize;
 	private HomeListener mListener;
 
+	private static long lastClickTime = 0;
+	
 	public PromotionAdapter(Activity act, HomeListener listener, ArrayList itemList) {
 		super(act, new GetPromotion(act, 0), R.layout.shop_list_loading, 1, itemList);
 		
@@ -47,7 +51,7 @@ implements OnClickListener {
 	}
 
 	@Override
-	public View getView(int position, View convertView, ViewGroup parent) {
+	public View getView(final int position, View convertView, ViewGroup parent) {
 		convertView = super.getView(position, convertView, parent);
 		
 		if (position >= mItemList.size()) {
@@ -123,7 +127,51 @@ implements OnClickListener {
 			}
 		}, mCoverSize, parent.getContext());
 		
+		imgLogo.setOnClickListener(new View.OnClickListener() {
+			
+			@Override
+			public void onClick(View v) {
+				// TODO Auto-generated method stub
+				onItemClick(position);
+			}
+		});
+		
+		imgCover.setOnClickListener(new View.OnClickListener() {
+			
+			@Override
+			public void onClick(View v) {
+				// TODO Auto-generated method stub
+				long clickTime = System.currentTimeMillis();
+		        if (clickTime - lastClickTime < 300){
+		        	onItemClick(position);
+		        }
+		        lastClickTime = clickTime;
+			}
+		});
+		
+		txtName.setOnClickListener(new View.OnClickListener() {
+			
+			@Override
+			public void onClick(View v) {
+				// TODO Auto-generated method stub
+				onItemClick(position);
+			}
+		});
+		
 		return convertView;
+	}
+	
+	public void onItemClick(Integer position) {
+		PromoItem item = (PromoItem) getItem(position);
+		
+		switch (item.type) {
+		case 0: // branch
+			mListener.onBranchPromoInfoClick(item.idShops);
+			break;
+		case 1: // shop
+			mListener.onShopItemClick(item.idShop, item);
+			break;
+		}
 	}
 
 	@Override
