@@ -11,7 +11,9 @@ import org.json.JSONObject;
 
 import vn.infory.infory.CyImageLoader;
 import vn.infory.infory.CyUtils;
+import vn.infory.infory.FlashActivity;
 import vn.infory.infory.FontsCollection;
+import vn.infory.infory.LayoutError;
 import vn.infory.infory.R;
 import vn.infory.infory.WebActivity;
 import vn.infory.infory.data.PlaceList;
@@ -25,8 +27,11 @@ import vn.infory.infory.network.ScanCode;
 import vn.infory.infory.network.ScanCodeRelated;
 import vn.infory.infory.shopdetail.ShopDetailActivity;
 import vn.infory.infory.shoplist.ShopListActivity;
+import android.app.AlertDialog;
 import android.app.Dialog;
+import android.app.AlertDialog.Builder;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.content.res.Resources.NotFoundException;
@@ -128,57 +133,57 @@ public class ScanCodeFragment extends Fragment {
 				v.vibrate(300);
 			} catch (Exception e) {
 				// TODO: handle exception
-			}
+			}			
+			
+			mLayoutLoading.setVisibility(View.VISIBLE);
+    		AnimationDrawable frameAnimation = (AnimationDrawable) 
+					mLayoutLoadingAnimation.getBackground();
+			frameAnimation.start();
 			
 			isCanScan = false;	
 			
 			String prefix = "http://page.infory.vn/";
-			String ssl_prefix = "https://page.infory.vn/";
-			String www_prefix = "www.page.infory.vn/";			
-			
-			if(mQRCode.toLowerCase().contains("?infory=true") || 
-					mQRCode.toLowerCase().contains("&infory=true"))
-			{
-				// Call scan code api
-				ScanCode scanCodeTask = new ScanCode(getActivity(), mQRCode) {
-					@Override
-					protected void onCompleted(final Object result2) throws Exception {
-						mTaskList.remove(this);
+			/*String ssl_prefix = "https://page.infory.vn/";
+			String www_prefix = "www.page.infory.vn/";		*/	
 						
-						/*objScanCode = result2;
-						scanCodeTaskStatus = 1;*/ //Finished
-						
-						ScanCodeResultActivity.newInstance(getActivity(), result2, mQRCode);
-						getActivity().finish();
-					}
-					
-					@Override
-					protected void onFail(Exception e) {
-						mTaskList.remove(this);
-					}
-				};		
-
-				mTaskList.add(scanCodeTask);
-	    		scanCodeTask.setVisibleView(mLayoutLoading);
-	    		scanCodeTask.executeOnExecutor(NetworkManager.THREAD_POOL);
-				
-	    		AnimationDrawable frameAnimation = (AnimationDrawable) 
-						mLayoutLoadingAnimation.getBackground();
-				frameAnimation.start();
-			}
-			else if(mQRCode.toLowerCase().startsWith("http://") ||
+			if(mQRCode.toLowerCase().startsWith("http://") ||
 					mQRCode.toLowerCase().startsWith("https://") ||
-					mQRCode.toLowerCase().startsWith("www.")) //Open webview
+					mQRCode.toLowerCase().startsWith("www."))
 			{
-				if(mQRCode.toLowerCase().startsWith("http://page.infory.vn/") ||
-						mQRCode.toLowerCase().startsWith("https://page.infory.vn/") ||
-						mQRCode.toLowerCase().startsWith("www.page.infory.vn/")||
-						mQRCode.toLowerCase().startsWith("http://www.page.infory.vn/") ||
-						mQRCode.toLowerCase().startsWith("https://www.page.infory.vn/"))
+				if(mQRCode.toLowerCase().contains("?infory=true") || 
+						mQRCode.toLowerCase().contains("&infory=true"))
+				{				
+					try {
+						ScanCode scanCodeTask = new ScanCode(getActivity(), mQRCode) {
+							@Override
+							protected void onCompleted(final Object result2) throws Exception {
+								mTaskList.remove(this);
+								
+								/*objScanCode = result2;
+								scanCodeTaskStatus = 1;*/ //Finished
+								
+								ScanCodeResultActivity.newInstance(getActivity(), result2, mQRCode);
+								getActivity().finish();
+							}
+							
+							@Override
+							protected void onFail(Exception e) {
+								mTaskList.remove(this);
+								
+								LayoutError.newInstance(getActivity());
+							}
+						};		
+
+						mTaskList.add(scanCodeTask);
+			    		scanCodeTask.executeOnExecutor(NetworkManager.THREAD_POOL);	
+					} catch (Exception e) {
+						// TODO: handle exception
+						LayoutError.newInstance(getActivity());
+					}					
+				}	
+				else if(mQRCode.toLowerCase().startsWith(prefix))
 				{
-					if(mQRCode.toLowerCase().startsWith(prefix + "shop/") ||
-						mQRCode.toLowerCase().startsWith(ssl_prefix + "shop/") ||
-						mQRCode.toLowerCase().startsWith(www_prefix + "shop/"))
+					if(mQRCode.toLowerCase().startsWith(prefix + "shop/"))
 					{					
 						try
 						{
@@ -204,6 +209,8 @@ public class ScanCodeFragment extends Fragment {
 								@Override
 								protected void onFail(Exception e) {
 									mTaskList.remove(this);
+									
+									LayoutError.newInstance(getActivity());
 								}
 							};
 							task.setTaskList(mTaskList);
@@ -211,19 +218,16 @@ public class ScanCodeFragment extends Fragment {
 						}
 						catch(Exception e)
 						{
+							LayoutError.newInstance(getActivity());
 						}						
 					}
-					else if(mQRCode.toLowerCase().startsWith(prefix + "shops?idshops=") ||
-							mQRCode.toLowerCase().startsWith(ssl_prefix + "shops?idshops=")||
-							mQRCode.toLowerCase().startsWith(www_prefix + "shops?idshops="))
+					else if(mQRCode.toLowerCase().startsWith(prefix + "shops?idshops="))
 					{
 						String id_shops = mQRCode.substring(mQRCode.lastIndexOf("shops?idshops=")+14);
 						ShopListActivity.newInstance(getActivity(), id_shops, new ArrayList<Shop>(),0);
 						getActivity().finish();
 					}
-					else if(mQRCode.toLowerCase().startsWith(prefix + "placelist/") ||
-							mQRCode.toLowerCase().startsWith(ssl_prefix + "placelist/")||
-							mQRCode.toLowerCase().startsWith(www_prefix + "placelist/"))
+					else if(mQRCode.toLowerCase().startsWith(prefix + "placelist/"))
 					{
 						try {
 							int id_placelist = Integer.parseInt(mQRCode.substring(mQRCode.lastIndexOf("placelist/")+10));
@@ -244,6 +248,8 @@ public class ScanCodeFragment extends Fragment {
 								protected void onFail(
 										Exception e) {
 									mTaskList.remove(this);
+									
+									LayoutError.newInstance(getActivity());
 								}														
 							};	
 							
@@ -251,79 +257,118 @@ public class ScanCodeFragment extends Fragment {
 							place_list_task.executeOnExecutor(NetworkManager.THREAD_POOL);
 						} catch (Exception e) {
 							// TODO: handle exception
+							LayoutError.newInstance(getActivity());
 						}						
 					}	
-					else if(mQRCode.toLowerCase().startsWith(prefix + "qrcode/") ||
-							mQRCode.toLowerCase().startsWith(ssl_prefix + "qrcode/") ||
-							mQRCode.toLowerCase().startsWith(www_prefix + "qrcode/"))
+					else if(mQRCode.toLowerCase().startsWith(prefix + "qrcode/"))
 					{
-						String qrcode = mQRCode.substring(mQRCode.lastIndexOf("qrcode/")+7);
-						
-						// Call scan code api
-						ScanCode scanCodeTask = new ScanCode(getActivity(), qrcode) {
-							@Override
-							protected void onCompleted(final Object result2) throws Exception {
-								mTaskList.remove(this);
-								
-								/*objScanCode = result2;
-								scanCodeTaskStatus = 1;*/ //Finished
-								
-								ScanCodeResultActivity.newInstance(getActivity(), result2, mQRCode);
-								getActivity().finish();
-							}
+						try {
+							String qrcode = mQRCode.substring(mQRCode.lastIndexOf("qrcode/")+7);
 							
-							@Override
-							protected void onFail(Exception e) {
-								mTaskList.remove(this);
-							}
-						};		
+							// Call scan code api
+							ScanCode scanCodeTask = new ScanCode(getActivity(), qrcode) {
+								@Override
+								protected void onCompleted(final Object result2) throws Exception {
+									mTaskList.remove(this);
+									
+									/*objScanCode = result2;
+									scanCodeTaskStatus = 1;*/ //Finished
+									
+									ScanCodeResultActivity.newInstance(getActivity(), result2, mQRCode);
+									getActivity().finish();
+								}
+								
+								@Override
+								protected void onFail(Exception e) {
+									mTaskList.remove(this);
+									
+									LayoutError.newInstance(getActivity());
+								}
+							};		
 
-						mTaskList.add(scanCodeTask);
-			    		scanCodeTask.setVisibleView(mLayoutLoading);
-			    		scanCodeTask.executeOnExecutor(NetworkManager.THREAD_POOL);
-						
-			    		AnimationDrawable frameAnimation = (AnimationDrawable) 
-								mLayoutLoadingAnimation.getBackground();
-						frameAnimation.start();
+							mTaskList.add(scanCodeTask);
+				    		scanCodeTask.executeOnExecutor(NetworkManager.THREAD_POOL);	
+						} catch (Exception e) {
+							// TODO: handle exception
+							LayoutError.newInstance(getActivity());
+						}
+					}
+					else
+					{
+						try {
+							// Call scan code api
+							ScanCode scanCodeTask = new ScanCode(getActivity(), mQRCode) {
+								@Override
+								protected void onCompleted(final Object result2) throws Exception {
+									mTaskList.remove(this);
+									
+									/*objScanCode = result2;
+									scanCodeTaskStatus = 1;*/ //Finished
+									
+									ScanCodeResultActivity.newInstance(getActivity(), result2, mQRCode);
+									getActivity().finish();
+								}
+								
+								@Override
+								protected void onFail(Exception e) {
+									mTaskList.remove(this);
+									
+									LayoutError.newInstance(getActivity());
+								}
+							};		
+
+							mTaskList.add(scanCodeTask);
+				    		scanCodeTask.executeOnExecutor(NetworkManager.THREAD_POOL);
+						} catch (Exception e) {
+							// TODO: handle exception
+							LayoutError.newInstance(getActivity());
+						}
 					}
 				}
 				else
 				{
-					String newQRCode = mQRCode;
-					if(mQRCode.toLowerCase().startsWith("www."))
-						newQRCode = mQRCode.replace("www.", "http://");
-					WebActivity.newInstance(getActivity(), newQRCode);
-					getActivity().finish();
+					try {
+						String newQRCode = mQRCode;
+						if(mQRCode.toLowerCase().startsWith("www."))
+							newQRCode = mQRCode.replace("www.", "http://");
+						WebActivity.newInstance(getActivity(), newQRCode);
+						getActivity().finish();
+					} catch (Exception e) {
+						// TODO: handle exception
+						LayoutError.newInstance(getActivity());
+					}
 				}				
 			}
 			else
 			{
-				// Call scan code api
-				ScanCode scanCodeTask = new ScanCode(getActivity(), mQRCode) {
-					@Override
-					protected void onCompleted(final Object result2) throws Exception {
-						mTaskList.remove(this);
+				try {
+					// Call scan code api
+					ScanCode scanCodeTask = new ScanCode(getActivity(), mQRCode) {
+						@Override
+						protected void onCompleted(final Object result2) throws Exception {
+							mTaskList.remove(this);
+							
+							/*objScanCode = result2;
+							scanCodeTaskStatus = 1;*/ //Finished
+							
+							ScanCodeResultActivity.newInstance(getActivity(), result2, mQRCode);
+							getActivity().finish();
+						}
 						
-						/*objScanCode = result2;
-						scanCodeTaskStatus = 1;*/ //Finished
-						
-						ScanCodeResultActivity.newInstance(getActivity(), result2, mQRCode);
-						getActivity().finish();
-					}
-					
-					@Override
-					protected void onFail(Exception e) {
-						mTaskList.remove(this);
-					}
-				};		
+						@Override
+						protected void onFail(Exception e) {
+							mTaskList.remove(this);
+							
+							LayoutError.newInstance(getActivity());
+						}
+					};		
 
-				mTaskList.add(scanCodeTask);
-	    		scanCodeTask.setVisibleView(mLayoutLoading);
-	    		scanCodeTask.executeOnExecutor(NetworkManager.THREAD_POOL);
-				
-	    		AnimationDrawable frameAnimation = (AnimationDrawable) 
-						mLayoutLoadingAnimation.getBackground();
-				frameAnimation.start();
+					mTaskList.add(scanCodeTask);
+		    		scanCodeTask.executeOnExecutor(NetworkManager.THREAD_POOL);
+				} catch (Exception e) {
+					// TODO: handle exception
+					LayoutError.newInstance(getActivity());
+				}
 			}
 			
 			//Call API get related

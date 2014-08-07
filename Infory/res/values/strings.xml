@@ -58,5 +58,6 @@
     <string name="test">test</string>
     <string name="scan_code_result_activity">ScanCodeResultActivity</string>
     <string name="home_loading_activity">HomeLoadingActivity</string>
+    <string name="layout_error">LayoutErrorActivity</string>
 
 </resources>
