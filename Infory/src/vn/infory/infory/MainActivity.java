@@ -182,7 +182,7 @@ public class MainActivity extends FragmentActivity {
 		getSupportFragmentManager().beginTransaction().hide(mFragPromo).commit();
 		mFragActive = mFragHome;
 		
-		Toast.makeText(getApplicationContext(), mScanCodeLayoutSmall+"", Toast.LENGTH_SHORT).show();
+//		Toast.makeText(getApplicationContext(), mScanCodeLayoutSmall+"", Toast.LENGTH_SHORT).show();
 		
 		mFragHome.setListener(new HomeFragment.Listener() {
 			@Override
