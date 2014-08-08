@@ -223,6 +223,7 @@ public class ScanCodeFragment extends Fragment {
 						catch(Exception e)
 						{
 							ShopDetailActivity.newInstanceNoReload(getActivity(), new Shop());
+							getActivity().finish();
 						}						
 					}
 					else if(mQRCode.startsWith(prefix + "shops?idShops="))
@@ -234,35 +235,11 @@ public class ScanCodeFragment extends Fragment {
 					else if(mQRCode.toLowerCase().startsWith(prefix + "placelist/"))
 					{
 						try {
-							int id_placelist = Integer.parseInt(mQRCode.substring(mQRCode.lastIndexOf("placelist/")+10));
-							
-							GetPlaceListDetail place_list_task = new GetPlaceListDetail(getActivity(), id_placelist, 0){
-
-								@Override
-								protected void onCompleted(Object result) throws Exception {
-									// TODO Auto-generated method stub
-									mTaskList.remove(this);
-									
-									Object[] placelist = (Object[]) result;
-									ShopListActivity.newInstance(getActivity(), (PlaceList)placelist[0], new ArrayList<Shop>());
-									getActivity().finish();
-								}
-
-								@Override
-								protected void onFail(
-										Exception e) {
-									mTaskList.remove(this);
-									
-//									LayoutError.newInstance(getActivity());
-									showAlertDialog();
-								}														
-							};	
-							
-							mTaskList.add(place_list_task);
-							place_list_task.executeOnExecutor(NetworkManager.THREAD_POOL);
+							String id_placelist = mQRCode.substring(mQRCode.lastIndexOf("placelist/")+10);
+							ShopListActivity.newInstanceWithPlacelistId(getActivity(), id_placelist, new ArrayList<Shop>());
+							getActivity().finish();
 						} catch (Exception e) {
 							// TODO: handle exception
-//							LayoutError.newInstance(getActivity());
 							showAlertDialog();
 						}						
 					}	
@@ -343,7 +320,6 @@ public class ScanCodeFragment extends Fragment {
 //							newQRCode = mQRCode.replace("www.", "http://");
 							newQRCode = "http://" + mQRCode;
 						}
-						Toast.makeText(getActivity(), newQRCode, Toast.LENGTH_SHORT).show();
 						WebActivity.newInstance(getActivity(), newQRCode);
 						getActivity().finish();
 					} catch (Exception e) {

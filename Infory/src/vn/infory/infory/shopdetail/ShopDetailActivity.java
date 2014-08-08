@@ -160,7 +160,8 @@ public class ShopDetailActivity extends FragmentActivity {
 				@Override
 				protected void onFail(Exception e) {
 					mTaskList.remove(this);
-					CyUtils.showError("Không thể lấy chi tiết cửa hàng", e, ShopDetailActivity.this);
+//					CyUtils.showError("Không thể lấy chi tiết cửa hàng", e, ShopDetailActivity.this);
+					showAlertDialog();
 				}
 			};
 			task.setTaskList(mTaskList);
@@ -215,23 +216,6 @@ public class ShopDetailActivity extends FragmentActivity {
 		CyUtils.setHoverEffect(mBtnSend, false);
 		((AnimationDrawable) mLayoutLoadingAni.getBackground()).start();
 	}	
-	
-	@Override
-	protected void onPostCreate(Bundle savedInstanceState) {
-		// TODO Auto-generated method stub
-		super.onPostCreate(savedInstanceState);
-		
-		AlertDialog.Builder builder = new Builder(ShopDetailActivity.this);
-		builder.setCancelable(false);
-		builder.setMessage("Không có dữ liệu!");
-		builder.setPositiveButton("OK", new DialogInterface.OnClickListener() {
-			@Override
-			public void onClick(DialogInterface arg0, int arg1) {
-				finish();
-			}
-		});
-		builder.create().show();
-	}
 
 	private AnimatorSet mToggleSendSortAnimator;
 	private void toggleSendSort(View show, final View hide) {
@@ -282,9 +266,8 @@ public class ShopDetailActivity extends FragmentActivity {
 	public static void newInstanceNoReload(Activity act, Shop s) {
 		sShop = s;
 		sNoReload = true;
-		Intent intent = new Intent(act, ShopDetailActivity.class);
-		act.startActivity(intent);
-		act.overridePendingTransition(R.anim.slide_in_down_detail, R.anim.alpha_out);
+		
+		newInstance(act, s);
 	}
 	
 	@Override
@@ -1119,5 +1102,18 @@ public class ShopDetailActivity extends FragmentActivity {
 		@ViewById(id = R.id.imgAva)			public ImageView mImgAva;
 		@ViewById(id = R.id.txtTime)		public TextView mTxtTime;
 		@ViewById(id = R.id.btnAgree)		public ImageButton mBtnLike;
+	}
+	
+	public void showAlertDialog() {
+		AlertDialog.Builder builder = new Builder(ShopDetailActivity.this);
+		builder.setCancelable(false);
+		builder.setMessage("Không có dữ liệu!");
+		builder.setPositiveButton("OK", new DialogInterface.OnClickListener() {
+			@Override
+			public void onClick(DialogInterface arg0, int arg1) {
+				finish();
+			}
+		});
+		builder.create().show();
 	}
 }

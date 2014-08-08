@@ -396,8 +396,7 @@ public class ScanCodeResultActivity extends FragmentActivity{
 													@Override
 													protected void onFail(Exception e) {
 														mTaskList.remove(this);
-														
-														showAlertDialog();
+														ShopDetailActivity.newInstanceNoReload(ScanCodeResultActivity.this, new Shop());
 													}
 												};
 												task.setTaskList(mTaskList);
@@ -407,7 +406,8 @@ public class ScanCodeResultActivity extends FragmentActivity{
 											case 2: //Shop list
 												if(jItemButton.has("idPlacelist"))
 												{
-													LoadingActivity.newInstance(mAct, jItemButton.optInt("idPlacelist"));													
+//													LoadingActivity.newInstance(mAct, jItemButton.optInt("idPlacelist"));
+													ShopListActivity.newInstanceWithPlacelistId(mAct, jItemButton.optInt("idPlacelist")+"", new ArrayList<Shop>());
 												}												
 												else if(jItemButton.has("keywords"))
 												{
