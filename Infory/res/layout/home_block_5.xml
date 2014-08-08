@@ -16,6 +16,10 @@
         android:text="Cơm trưa cho dân văn phòng Sài Gòn"
         android:textColor="#ffffff"
         android:textSize="12sp"
+        android:shadowColor="#000000"  
+	    android:shadowRadius="1.5"  
+	    android:shadowDx="1"  
+	    android:shadowDy="1"
         android:textStyle="bold|italic" />
     
     <FrameLayout
