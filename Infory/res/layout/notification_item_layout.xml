@@ -131,4 +131,8 @@
         </RelativeLayout>
     </LinearLayout>
 
+    <include
+        layout="@layout/line_unread_layout"
+        android:visibility="gone" />
+
 </FrameLayout>

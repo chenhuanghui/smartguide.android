@@ -3,12 +3,23 @@ package vn.infory.infory.notification;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.json.JSONArray;
+import org.json.JSONObject;
+
+import vn.infory.infory.FontsCollection;
 import vn.infory.infory.R;
 import vn.infory.infory.data.MessageInfo;
+import vn.infory.infory.home.HomeFragment;
 import vn.infory.infory.mywidget.MyPTRAndSwipeListView;
 import vn.infory.infory.mywidget.MyPTRAndSwipeListView.OnActionPullToRefreshAndLoadMoreListView;
+import vn.infory.infory.network.CyAsyncTask;
+import vn.infory.infory.network.CyAsyncTask.Listener2;
+import vn.infory.infory.network.DeleteMessageTask;
+import vn.infory.infory.network.DeleteMessageTask.onDeleteMessageTaskListener;
+import vn.infory.infory.network.GetCounterMessage;
 import vn.infory.infory.network.GetNotificationTask;
 import vn.infory.infory.network.GetNotificationTask.onGetNotificationsTaskListener;
+import vn.infory.infory.network.NetworkManager;
 import android.app.ProgressDialog;
 import android.content.Context;
 import android.os.AsyncTask;
@@ -17,15 +28,18 @@ import android.support.v4.app.FragmentActivity;
 import android.util.DisplayMetrics;
 import android.util.Log;
 import android.view.View;
+import android.widget.ImageButton;
+import android.widget.LinearLayout;
 import android.widget.ListView;
 import android.widget.ProgressBar;
+import android.widget.TextView;
 
 import com.fortysevendeg.swipelistview.SwipeListView;
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
 import com.handmark.pulltorefresh.library.PullToRefreshSwipsListView;
 
-public class NotificationActivity extends FragmentActivity {
+public class NotificationActivity extends FragmentActivity implements Listener2 {
     private static final String TAG = "Infory NotificationActivity";
 
     public static final int GET_UNREAD_MESSAGES = 0;
@@ -48,7 +62,36 @@ public class NotificationActivity extends FragmentActivity {
 
         @Override
         public void onClickBackViewListView(final int position) {
-        	int positionClick = position - swipeListView.getHeaderViewsCount();
+        	MessageInfo messageInfo = lstMessages.get(position);
+        	if(messageInfo.getStatus() != -1) {
+        		DeleteMessageTask task = new DeleteMessageTask(mContext, 0, messageInfo.getIdSender());
+            	task.setDeleteMessageTaskListener(new onDeleteMessageTaskListener() {
+    				
+    				@Override
+    				public void onPreDeleteMessage() {
+    					if(dialog != null && !dialog.isShowing())
+    						dialog.show();
+    				}
+    				
+    				@Override
+    				public void onDeleteMessageSuccess(String response) {
+    					if(dialog != null && dialog.isShowing())
+    						dialog.cancel();
+    					lstMessages.remove(position);
+    					viewAdapter.notifyDataSetChanged();
+    					swipeListView.closeOpenedItems(true);
+    					
+    				}
+    				
+    				@Override
+    				public void onDeleteMessageFailure() {
+    					if(dialog != null && dialog.isShowing())
+    						dialog.cancel();
+    					swipeListView.closeOpenedItems(true);
+    				}
+    			});
+            	task.execute();
+        	}
         }
 
         @Override
@@ -69,6 +112,9 @@ public class NotificationActivity extends FragmentActivity {
         }
 
     };
+    private LinearLayout linearContentView;
+    private ImageButton btnBack;
+    private TextView txtHeader;
     private MyPTRAndSwipeListView myPullToRefreshSwipeListView;
     private SwipeListView swipeListView;
 	private ProgressDialog dialog;
@@ -104,22 +150,38 @@ public class NotificationActivity extends FragmentActivity {
     }
 
     private void init() {
+    	linearContentView = (LinearLayout) findViewById(R.id.linearContentView);
+    	btnBack = (ImageButton) findViewById(R.id.btnBack);
+    	txtHeader = (TextView) findViewById(R.id.txtHeader);
         myPullToRefreshSwipeListView = (MyPTRAndSwipeListView) findViewById(R.id.myPullToRefreshSwipeListView);
         swipeListView = myPullToRefreshSwipeListView.getListView();
 
 		dialog = new ProgressDialog(mContext);
 		dialog.setMessage("Vui lòng chờ đợi!");
 		dialog.setCancelable(false);
+
+		FontsCollection.setFont(linearContentView);
     }
 
     private void setGUI() {
+    	// Get count unread message
+		CyAsyncTask mLoader = new GetCounterMessage(mContext, HomeFragment.iType_all);
+		mLoader.setListener(this);
+		mLoader.executeOnExecutor(NetworkManager.THREAD_POOL);
+    			
         myPullToRefreshSwipeListView.setOnActionPullToRefreshAndLoadMoreListView(onActionPullToRefreshAndLoadMore);
         // reload data
         myPullToRefreshSwipeListView.activePullToRefeshAndLoadMoreListView();
     }
 
     private void initEvents() {
-        
+        btnBack.setOnClickListener(new View.OnClickListener() {
+			
+			@Override
+			public void onClick(View v) {
+				onBackPressed();
+			}
+		});
     }
 
     private void loadDataForFirstTime(
@@ -149,6 +211,7 @@ public class NotificationActivity extends FragmentActivity {
 					loadMessagesData(response);
 					if (lstMessages != null && lstMessages.size() > 0) {
 						checkLogicLoadMore(lstMessages);
+			            addSpecialMessage();
 						initAdapterListView();
 					} else {
 						initEmptyData();
@@ -193,7 +256,6 @@ public class NotificationActivity extends FragmentActivity {
         try {
             lstMessages = new Gson().fromJson(response, new TypeToken<List<MessageInfo>>() {
             }.getType());
-            addSpecialMessage();
         } catch (Exception ex) {
             Log.e(TAG + "loadMessagesData: ", ex.toString());
             checkLoad = false;
@@ -214,25 +276,25 @@ public class NotificationActivity extends FragmentActivity {
     }
     
     private void addSpecialMessage() {
-//    	MessageInfo messageSpecial = new MessageInfo();
-//        messageSpecial.setStatus(-1);
-//        for(int i = 0; i < lstMessages.size(); i++) {
-//        	MessageInfo message1 = lstMessages.get(i);
-//        	if(message1.getStatus() == -1) {
-//        		return;
-//        	}
-//        }
-//        for(int i = 0; i < lstMessages.size(); i++) {
-//        	MessageInfo message1 = lstMessages.get(i);
-//        	if(i < lstMessages.size() - 1) {
-//        		MessageInfo message2 = lstMessages.get(i + 1);
-//	        	if(message1.getStatus() != message2.getStatus()) {
-//	        		Log.d(TAG, "Index will have special message: " + (i + 1));
-//	        		lstMessages.add(i + 1, messageSpecial);
-//	        		break;
-//	        	}
-//        	}
-//        }
+    	MessageInfo messageSpecial = new MessageInfo();
+        messageSpecial.setStatus(-1);
+        for(int i = 0; i < lstMessages.size(); i++) {
+        	MessageInfo message1 = lstMessages.get(i);
+        	if(message1.getStatus() == -1) {
+        		return;
+        	}
+        }
+        for(int i = 0; i < lstMessages.size(); i++) {
+        	MessageInfo message1 = lstMessages.get(i);
+        	if(i < lstMessages.size() - 1) {
+        		MessageInfo message2 = lstMessages.get(i + 1);
+	        	if(message1.getStatus() != message2.getStatus()) {
+	        		Log.d(TAG, "Index will have special message: " + (i + 1));
+	        		lstMessages.add(i + 1, messageSpecial);
+	        		break;
+	        	}
+        	}
+        }
     }
     
     private void initEmptyData() {
@@ -324,4 +386,22 @@ public class NotificationActivity extends FragmentActivity {
             myPullToRefreshSwipeListView.setMyIsLoadingMore(mIsLoadingMore);
         }
     }
+
+	@Override
+	public void onCompleted(Object result) {
+		try {
+//			{"number":[400,0,400],"string":["400","0","400"]}
+//			unread, read, total
+			
+			JSONArray jsonArr = new JSONObject((String) result).getJSONArray("string");
+			txtHeader.setText("Thông báo" + " (" + jsonArr.getString(0) + "/" + jsonArr.getString(2) + ")");
+		} catch (Exception e) {
+			Log.e(TAG, e.toString());
+		}
+	}
+
+	@Override
+	public void onFail(Exception e) {
+		txtHeader.setText("Thông báo");
+	}
 }

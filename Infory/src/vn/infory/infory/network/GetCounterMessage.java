@@ -36,7 +36,7 @@ public class GetCounterMessage extends CyAsyncTask {
 
 			String json = NetworkManager.post(APILinkMaker.mGetMessageCount, pairs);
 			// String json = readWholeFile(mContext, R.raw.home);
-//			Log.e(TAG, "json response: " + json);
+			Log.e(TAG, "json response: " + json);
 			
 
 			return json;

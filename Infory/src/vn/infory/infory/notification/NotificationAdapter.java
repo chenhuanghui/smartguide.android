@@ -12,10 +12,13 @@ import android.text.SpannableString;
 import android.text.style.StyleSpan;
 import android.util.Log;
 import android.view.LayoutInflater;
+import android.view.MotionEvent;
 import android.view.View;
+import android.view.View.OnTouchListener;
 import android.view.ViewGroup;
 import android.widget.BaseAdapter;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
@@ -49,6 +52,7 @@ public class NotificationAdapter extends BaseAdapter {
 	}
 
 	private class ViewHolder {
+		LinearLayout front, linearUnreadlayout, back;
 		View viewLeft;
 		RelativeLayout linearText;
 		TextView txtContent, txtDateTime, txtUnreadCount, txtDelete;
@@ -58,11 +62,6 @@ public class NotificationAdapter extends BaseAdapter {
 	@Override
 	public View getView(final int position, View convertView, final ViewGroup parent) {
 		final MessageInfo item = lstMessages.get(position);
-//		if (item.getStatus() == -1) {
-//			convertView = mInflater.inflate(R.layout.line_unread_layout, parent, false);
-//		} else {
-//			
-//		}
 		ViewHolder holder;
 		if (convertView == null) {
 			convertView = mInflater.inflate(R.layout.notification_item_layout, parent, false);
@@ -75,6 +74,9 @@ public class NotificationAdapter extends BaseAdapter {
 			holder.imgDotBlue = (ImageView) convertView.findViewById(R.id.imgDotBlue);
 			holder.imgArrow = (ImageView) convertView.findViewById(R.id.imgArrow);
 			holder.linearText = (RelativeLayout) convertView.findViewById(R.id.linearText);
+			holder.back = (LinearLayout) convertView.findViewById(R.id.back);
+			holder.front = (LinearLayout) convertView.findViewById(R.id.front);
+			holder.linearUnreadlayout = (LinearLayout) convertView.findViewById(R.id.linearUnreadlayout);
 			convertView.setTag(holder);
 		} else {
 			holder = (ViewHolder) convertView.getTag();
@@ -88,7 +90,7 @@ public class NotificationAdapter extends BaseAdapter {
 	private void initGUI(final ViewHolder holder, MessageInfo item, int position){
 
 		Log.d(log_tag, String.format("Item in %s has status %s", position, item.getStatus()));
-//		if(item.getStatus() != -1) {
+		if(item.getStatus() != -1) {
 			if(item.getStatus() == 0) {
 				// con message chua doc
 				holder.txtContent.setTextColor(mContext.getResources().getColor(R.color.black));
@@ -126,11 +128,27 @@ public class NotificationAdapter extends BaseAdapter {
 				holder.txtContent.setText(contentSpan);
 				holder.txtDateTime.setText(item.getNewestMessage().getTime());
 			}
-//		}
+			holder.front.setVisibility(View.VISIBLE);
+			holder.back.setVisibility(View.VISIBLE);
+			holder.linearUnreadlayout.setVisibility(View.GONE);
+		} else {
+			holder.front.setVisibility(View.GONE);
+			holder.back.setVisibility(View.GONE);
+			holder.linearUnreadlayout.setVisibility(View.VISIBLE);
+		}
 	}
 
-	private void initEvents(final ViewHolder view, final MessageInfo item, final int position) {
-
+	private void initEvents(final ViewHolder holder, final MessageInfo item, final int position) {
+//		holder.front.setOnTouchListener(new View.OnTouchListener() {
+//			
+//			@Override
+//			public boolean onTouch(View v, MotionEvent event) {
+//				if(item.getStatus() == -1)
+//					return holder.front.dispatchTouchEvent(event);
+//				
+//				return false;
+//			}
+//		});
 	}
 
 }
