@@ -1,5 +1,6 @@
 package vn.infory.infory.shoplist;
 
+import java.lang.reflect.Array;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -40,6 +41,7 @@ import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.ListView;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.cycrix.androidannotation.AndroidAnnotationParser;
 import com.cycrix.androidannotation.Click;
@@ -364,21 +366,21 @@ public class ShopListActivity extends FragmentActivity {
 			super(new GetShopList(ShopListActivity.this, shopId, 0, sort){
 
 				@Override
+				protected void onCompleted(Object result) throws Exception {
+					// TODO Auto-generated method stub					
+
+					ArrayList<Shop> result2 = (ArrayList<Shop>) result;
+					if(result2.size() == 0)
+					{
+						showAlertDialog();
+					}
+				}
+
+				@Override
 				protected void onFail(Exception e) {
 					// TODO Auto-generated method stub
 					super.onFail(e);
-//					LayoutError.newInstance(ShopListActivity.this);
-					
-					AlertDialog.Builder builder = new Builder(mAct);
-					builder.setCancelable(false);
-					builder.setMessage("Không có dữ liệu!");
-					builder.setPositiveButton("OK", new DialogInterface.OnClickListener() {
-						@Override
-						public void onClick(DialogInterface arg0, int arg1) {
-							mAct.finish();
-						}
-					});
-					builder.create().show();
+					showAlertDialog();
 				}				
 			}, lst, 2, itemList);
 		}
@@ -576,6 +578,19 @@ public class ShopListActivity extends FragmentActivity {
 
 			return convertView;
 		}
+	}
+	
+	public void showAlertDialog() {
+		AlertDialog.Builder builder = new Builder(ShopListActivity.this);
+		builder.setCancelable(false);
+		builder.setMessage("Không có dữ liệu!");
+		builder.setPositiveButton("OK", new DialogInterface.OnClickListener() {
+			@Override
+			public void onClick(DialogInterface arg0, int arg1) {
+				finish();
+			}
+		});
+		builder.create().show();
 	}
 
 //	public void setListener(Listener listener) {

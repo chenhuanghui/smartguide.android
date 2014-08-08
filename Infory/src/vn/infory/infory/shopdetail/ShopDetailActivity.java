@@ -42,6 +42,7 @@ import android.animation.AnimatorSet;
 import android.animation.ObjectAnimator;
 import android.app.Activity;
 import android.app.AlertDialog;
+import android.app.AlertDialog.Builder;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
@@ -164,7 +165,7 @@ public class ShopDetailActivity extends FragmentActivity {
 			};
 			task.setTaskList(mTaskList);
 			task.executeOnExecutor(NetworkManager.THREAD_POOL);
-		}
+		}		
 
 		FontsCollection.setFont(findViewById(android.R.id.content));
 		
@@ -213,8 +214,25 @@ public class ShopDetailActivity extends FragmentActivity {
 		CyUtils.setHoverEffect(mBtnSort, false);
 		CyUtils.setHoverEffect(mBtnSend, false);
 		((AnimationDrawable) mLayoutLoadingAni.getBackground()).start();
-	}
+	}	
 	
+	@Override
+	protected void onPostCreate(Bundle savedInstanceState) {
+		// TODO Auto-generated method stub
+		super.onPostCreate(savedInstanceState);
+		
+		AlertDialog.Builder builder = new Builder(ShopDetailActivity.this);
+		builder.setCancelable(false);
+		builder.setMessage("Không có dữ liệu!");
+		builder.setPositiveButton("OK", new DialogInterface.OnClickListener() {
+			@Override
+			public void onClick(DialogInterface arg0, int arg1) {
+				finish();
+			}
+		});
+		builder.create().show();
+	}
+
 	private AnimatorSet mToggleSendSortAnimator;
 	private void toggleSendSort(View show, final View hide) {
 		if (mToggleSendSortAnimator != null)
@@ -268,7 +286,7 @@ public class ShopDetailActivity extends FragmentActivity {
 		act.startActivity(intent);
 		act.overridePendingTransition(R.anim.slide_in_down_detail, R.anim.alpha_out);
 	}
-
+	
 	@Override
 	public void onBackPressed() {
 		finish();
@@ -399,7 +417,7 @@ public class ShopDetailActivity extends FragmentActivity {
 		// Info
 		((TextView) view.findViewById(R.id.txtShopName)).setText(mShop.shopName);
 		((TextView) view.findViewById(R.id.txtShopType)).setText(mShop.shopTypeDisplay);
-
+			
 		((TextView) view.findViewById(R.id.txtLoveNum)).setText(mShop.numOfLove+"  ");
 		((TextView) view.findViewById(R.id.txtViewNum)).setText(mShop.numOfView+" ");
 		((TextView) view.findViewById(R.id.txtCommentNum)).setText(mShop.numOfComment+" ");

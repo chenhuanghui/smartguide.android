@@ -213,17 +213,16 @@ public class ScanCodeFragment extends Fragment {
 								protected void onFail(Exception e) {
 									mTaskList.remove(this);
 									
-//									LayoutError.newInstance(getActivity());
-									showAlertDialog();
+									ShopDetailActivity.newInstanceNoReload(getActivity(), new Shop());
+									getActivity().finish();
 								}
 							};
 							task.setTaskList(mTaskList);
-							task.executeOnExecutor(NetworkManager.THREAD_POOL);
+							task.executeOnExecutor(NetworkManager.THREAD_POOL);							
 						}
 						catch(Exception e)
 						{
-//							LayoutError.newInstance(getActivity());
-							showAlertDialog();
+							ShopDetailActivity.newInstanceNoReload(getActivity(), new Shop());
 						}						
 					}
 					else if(mQRCode.startsWith(prefix + "shops?idShops="))
