@@ -6,7 +6,11 @@ import vn.infory.infory.network.CyAsyncTask;
 import vn.infory.infory.network.NetworkManager;
 import vn.infory.infory.network.CyAsyncTask.Listener2;
 import android.app.Activity;
+import android.app.AlertDialog;
+import android.app.AlertDialog.Builder;
 import android.content.Context;
+import android.content.DialogInterface;
+import android.content.DialogInterface.OnClickListener;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -25,7 +29,7 @@ public abstract class LazyLoadAdapter extends BaseAdapter implements OnScrollLis
 	public boolean mLoading, mIsMore = true;
 	public boolean mHideLoading = true;
 	protected int mPageNum = 0;
-	protected Activity mAct;
+	protected static Activity mAct;
 	protected int mContentTypeCount;
 	
 	private OnScrollListener mOnScrollListener;
@@ -141,6 +145,16 @@ public abstract class LazyLoadAdapter extends BaseAdapter implements OnScrollLis
 		mLoading = false;
 		mIsMore = false;
 		notifyDataSetChanged();
-		CyUtils.showError("Không thể lấy thêm", e, mAct);
+//		CyUtils.showError("Không thể lấy thêm", e, mAct);
+		
+		AlertDialog.Builder builder = new Builder(mAct);
+		builder.setMessage("Không có dữ liệu!");
+		builder.setPositiveButton("OK", new OnClickListener() {
+			@Override
+			public void onClick(DialogInterface arg0, int arg1) {
+				mAct.finish();
+			}
+		});
+		builder.create().show();
 	}
 }

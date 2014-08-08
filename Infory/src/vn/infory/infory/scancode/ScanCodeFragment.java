@@ -27,6 +27,7 @@ import vn.infory.infory.network.ScanCode;
 import vn.infory.infory.network.ScanCodeRelated;
 import vn.infory.infory.shopdetail.ShopDetailActivity;
 import vn.infory.infory.shoplist.ShopListActivity;
+import android.app.Activity;
 import android.app.AlertDialog;
 import android.app.Dialog;
 import android.app.AlertDialog.Builder;
@@ -170,7 +171,8 @@ public class ScanCodeFragment extends Fragment {
 							protected void onFail(Exception e) {
 								mTaskList.remove(this);
 								
-								LayoutError.newInstance(getActivity());
+//								LayoutError.newInstance(getActivity());								
+								showAlertDialog();
 							}
 						};		
 
@@ -178,7 +180,8 @@ public class ScanCodeFragment extends Fragment {
 			    		scanCodeTask.executeOnExecutor(NetworkManager.THREAD_POOL);	
 					} catch (Exception e) {
 						// TODO: handle exception
-						LayoutError.newInstance(getActivity());
+//						LayoutError.newInstance(getActivity());
+						showAlertDialog();
 					}					
 				}	
 				else if(mQRCode.toLowerCase().startsWith(prefix))
@@ -210,7 +213,8 @@ public class ScanCodeFragment extends Fragment {
 								protected void onFail(Exception e) {
 									mTaskList.remove(this);
 									
-									LayoutError.newInstance(getActivity());
+//									LayoutError.newInstance(getActivity());
+									showAlertDialog();
 								}
 							};
 							task.setTaskList(mTaskList);
@@ -218,7 +222,8 @@ public class ScanCodeFragment extends Fragment {
 						}
 						catch(Exception e)
 						{
-							LayoutError.newInstance(getActivity());
+//							LayoutError.newInstance(getActivity());
+							showAlertDialog();
 						}						
 					}
 					else if(mQRCode.startsWith(prefix + "shops?idShops="))
@@ -249,7 +254,8 @@ public class ScanCodeFragment extends Fragment {
 										Exception e) {
 									mTaskList.remove(this);
 									
-									LayoutError.newInstance(getActivity());
+//									LayoutError.newInstance(getActivity());
+									showAlertDialog();
 								}														
 							};	
 							
@@ -257,7 +263,8 @@ public class ScanCodeFragment extends Fragment {
 							place_list_task.executeOnExecutor(NetworkManager.THREAD_POOL);
 						} catch (Exception e) {
 							// TODO: handle exception
-							LayoutError.newInstance(getActivity());
+//							LayoutError.newInstance(getActivity());
+							showAlertDialog();
 						}						
 					}	
 					else if(mQRCode.toLowerCase().startsWith(prefix + "qrcode/"))
@@ -282,7 +289,8 @@ public class ScanCodeFragment extends Fragment {
 								protected void onFail(Exception e) {
 									mTaskList.remove(this);
 									
-									LayoutError.newInstance(getActivity());
+//									LayoutError.newInstance(getActivity());
+									showAlertDialog();
 								}
 							};		
 
@@ -290,7 +298,8 @@ public class ScanCodeFragment extends Fragment {
 				    		scanCodeTask.executeOnExecutor(NetworkManager.THREAD_POOL);	
 						} catch (Exception e) {
 							// TODO: handle exception
-							LayoutError.newInstance(getActivity());
+//							LayoutError.newInstance(getActivity());
+							showAlertDialog();
 						}
 					}
 					else
@@ -313,7 +322,8 @@ public class ScanCodeFragment extends Fragment {
 								protected void onFail(Exception e) {
 									mTaskList.remove(this);
 									
-									LayoutError.newInstance(getActivity());
+//									LayoutError.newInstance(getActivity());
+									showAlertDialog();
 								}
 							};		
 
@@ -321,7 +331,8 @@ public class ScanCodeFragment extends Fragment {
 				    		scanCodeTask.executeOnExecutor(NetworkManager.THREAD_POOL);
 						} catch (Exception e) {
 							// TODO: handle exception
-							LayoutError.newInstance(getActivity());
+//							LayoutError.newInstance(getActivity());
+							showAlertDialog();
 						}
 					}
 				}
@@ -335,7 +346,8 @@ public class ScanCodeFragment extends Fragment {
 						getActivity().finish();
 					} catch (Exception e) {
 						// TODO: handle exception
-						LayoutError.newInstance(getActivity());
+//						LayoutError.newInstance(getActivity());
+						showAlertDialog();
 					}
 				}				
 			}
@@ -359,7 +371,8 @@ public class ScanCodeFragment extends Fragment {
 						protected void onFail(Exception e) {
 							mTaskList.remove(this);
 							
-							LayoutError.newInstance(getActivity());
+//							LayoutError.newInstance(getActivity());
+							showAlertDialog();
 						}
 					};		
 
@@ -367,7 +380,8 @@ public class ScanCodeFragment extends Fragment {
 		    		scanCodeTask.executeOnExecutor(NetworkManager.THREAD_POOL);
 				} catch (Exception e) {
 					// TODO: handle exception
-					LayoutError.newInstance(getActivity());
+//					LayoutError.newInstance(getActivity());
+					showAlertDialog();
 				}
 			}
 			
@@ -637,5 +651,17 @@ public class ScanCodeFragment extends Fragment {
 		
 		}*/
 		
+	}
+	
+	public void showAlertDialog() {
+		AlertDialog.Builder builder = new Builder(getActivity());
+		builder.setMessage("Không có dữ liệu!");
+		builder.setPositiveButton("OK", new DialogInterface.OnClickListener() {
+			@Override
+			public void onClick(DialogInterface arg0, int arg1) {
+				getActivity().finish();
+			}
+		});
+		builder.create().show();
 	}
 }

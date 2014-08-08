@@ -19,6 +19,7 @@ import vn.infory.infory.network.Search;
 import vn.infory.infory.shopdetail.ShopDetailActivity;
 import android.app.Activity;
 import android.app.AlertDialog;
+import android.app.AlertDialog.Builder;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.graphics.Typeface;
@@ -366,7 +367,17 @@ public class ShopListActivity extends FragmentActivity {
 				protected void onFail(Exception e) {
 					// TODO Auto-generated method stub
 					super.onFail(e);
-					LayoutError.newInstance(ShopListActivity.this);
+//					LayoutError.newInstance(ShopListActivity.this);
+					
+					AlertDialog.Builder builder = new Builder(mAct);
+					builder.setMessage("Không có dữ liệu!");
+					builder.setPositiveButton("OK", new DialogInterface.OnClickListener() {
+						@Override
+						public void onClick(DialogInterface arg0, int arg1) {
+							mAct.finish();
+						}
+					});
+					builder.create().show();
 				}				
 			}, lst, 2, itemList);
 		}
