@@ -340,8 +340,11 @@ public class ScanCodeFragment extends Fragment {
 				{
 					try {
 						String newQRCode = mQRCode;
-						if(mQRCode.toLowerCase().startsWith("www."))
-							newQRCode = mQRCode.replace("www.", "http://");
+						if(mQRCode.toLowerCase().startsWith("www.")) {
+//							newQRCode = mQRCode.replace("www.", "http://");
+							newQRCode = "http://" + mQRCode;
+						}
+						Toast.makeText(getActivity(), newQRCode, Toast.LENGTH_SHORT).show();
 						WebActivity.newInstance(getActivity(), newQRCode);
 						getActivity().finish();
 					} catch (Exception e) {
@@ -655,6 +658,7 @@ public class ScanCodeFragment extends Fragment {
 	
 	public void showAlertDialog() {
 		AlertDialog.Builder builder = new Builder(getActivity());
+		builder.setCancelable(false);
 		builder.setMessage("Không có dữ liệu!");
 		builder.setPositiveButton("OK", new DialogInterface.OnClickListener() {
 			@Override

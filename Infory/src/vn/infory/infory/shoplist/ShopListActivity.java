@@ -370,6 +370,7 @@ public class ShopListActivity extends FragmentActivity {
 //					LayoutError.newInstance(ShopListActivity.this);
 					
 					AlertDialog.Builder builder = new Builder(mAct);
+					builder.setCancelable(false);
 					builder.setMessage("Không có dữ liệu!");
 					builder.setPositiveButton("OK", new DialogInterface.OnClickListener() {
 						@Override

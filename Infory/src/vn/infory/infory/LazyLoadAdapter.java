@@ -148,6 +148,7 @@ public abstract class LazyLoadAdapter extends BaseAdapter implements OnScrollLis
 //		CyUtils.showError("Không thể lấy thêm", e, mAct);
 		
 		AlertDialog.Builder builder = new Builder(mAct);
+		builder.setCancelable(false);
 		builder.setMessage("Không có dữ liệu!");
 		builder.setPositiveButton("OK", new OnClickListener() {
 			@Override

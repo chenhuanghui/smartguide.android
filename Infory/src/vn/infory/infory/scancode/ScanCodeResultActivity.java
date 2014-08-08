@@ -47,7 +47,10 @@ import com.google.android.gms.plus.PlusShare;
 
 import android.R.array;
 import android.app.Activity;
+import android.app.AlertDialog;
+import android.app.AlertDialog.Builder;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.pm.ApplicationInfo;
 import android.content.pm.PackageManager;
@@ -393,8 +396,8 @@ public class ScanCodeResultActivity extends FragmentActivity{
 													@Override
 													protected void onFail(Exception e) {
 														mTaskList.remove(this);
-														Log.e("Lỗi","Lỗi",e);
-														CyUtils.showError("Lỗi", e, ScanCodeResultActivity.this);
+														
+														showAlertDialog();
 													}
 												};
 												task.setTaskList(mTaskList);
@@ -871,4 +874,17 @@ public class ScanCodeResultActivity extends FragmentActivity{
 
         return output;
     }
+	
+	public void showAlertDialog() {
+		AlertDialog.Builder builder = new Builder(mAct);
+		builder.setCancelable(false);
+		builder.setMessage("Không có dữ liệu!");
+		builder.setPositiveButton("OK", new DialogInterface.OnClickListener() {
+			@Override
+			public void onClick(DialogInterface arg0, int arg1) {
+				mAct.finish();
+			}
+		});
+		builder.create().show();
+	}
 }

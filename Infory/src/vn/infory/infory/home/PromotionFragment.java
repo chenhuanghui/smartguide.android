@@ -125,6 +125,7 @@ public class PromotionFragment extends Fragment implements HomeListener {
 //				LayoutError.newInstance(getActivity());
 				
 				AlertDialog.Builder builder = new Builder(getActivity());
+				builder.setCancelable(false);
 				builder.setMessage("Không có dữ liệu!");
 				builder.setPositiveButton("OK", new DialogInterface.OnClickListener() {
 					@Override

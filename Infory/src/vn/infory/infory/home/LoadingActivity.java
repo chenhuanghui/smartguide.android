@@ -15,6 +15,9 @@ import vn.infory.infory.network.GetPlaceListDetail;
 import vn.infory.infory.network.NetworkManager;
 import vn.infory.infory.shoplist.ShopListActivity;
 import android.app.Activity;
+import android.app.AlertDialog;
+import android.app.AlertDialog.Builder;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.graphics.drawable.AnimationDrawable;
 import android.os.Bundle;
@@ -24,6 +27,7 @@ import android.widget.FrameLayout;
 public class LoadingActivity extends Activity{
 	
 	private static int mPlacelist_id;
+	private static Activity mAct;
 	private List<CyAsyncTask> mTaskList = new ArrayList<CyAsyncTask>();
 
 	@Override
@@ -38,7 +42,7 @@ public class LoadingActivity extends Activity{
 				mLayoutLoadingAni.getBackground();
 		frameAnimation.start();
 		
-		final Activity mAct = this;
+		mAct = this;
 		try {
 			
 			GetPlaceListDetail place_list_task = new GetPlaceListDetail(mAct, mPlacelist_id, 0){
@@ -57,6 +61,8 @@ public class LoadingActivity extends Activity{
 				protected void onFail(
 						Exception e) {
 					mTaskList.remove(this);
+					
+					showAlertDialog();
 				}														
 			};	
 			
@@ -64,6 +70,7 @@ public class LoadingActivity extends Activity{
 			place_list_task.executeOnExecutor(NetworkManager.THREAD_POOL);
 		} catch (Exception e) {
 			// TODO: handle exception
+			showAlertDialog();
 		}	
 	}
 
@@ -74,5 +81,18 @@ public class LoadingActivity extends Activity{
 		act.startActivity(intent);
 		
 		act.overridePendingTransition(R.anim.slide_in_top, R.anim.slide_out_bottom);
+	}
+	
+	public void showAlertDialog() {
+		AlertDialog.Builder builder = new Builder(mAct);
+		builder.setCancelable(false);
+		builder.setMessage("Không có dữ liệu!");
+		builder.setPositiveButton("OK", new DialogInterface.OnClickListener() {
+			@Override
+			public void onClick(DialogInterface arg0, int arg1) {
+				mAct.finish();
+			}
+		});
+		builder.create().show();
 	}
 }
