@@ -6,6 +6,7 @@ import java.util.List;
 import vn.infory.infory.CyImageLoader;
 import vn.infory.infory.CyUtils;
 import vn.infory.infory.FontsCollection;
+import vn.infory.infory.LayoutError;
 import vn.infory.infory.LazyLoadAdapter;
 import vn.infory.infory.PlaceListListActivity;
 import vn.infory.infory.R;
@@ -359,7 +360,15 @@ public class ShopListActivity extends FragmentActivity {
 
 		public ShopListAdapter(String shopId, ListView lst, ArrayList itemList, int sort, 
 				int dummyidShopList) {
-			super(new GetShopList(ShopListActivity.this, shopId, 0, sort), lst, 2, itemList);
+			super(new GetShopList(ShopListActivity.this, shopId, 0, sort){
+
+				@Override
+				protected void onFail(Exception e) {
+					// TODO Auto-generated method stub
+					super.onFail(e);
+					LayoutError.newInstance(ShopListActivity.this);
+				}				
+			}, lst, 2, itemList);
 		}
 
 		@Override

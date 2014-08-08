@@ -181,7 +181,7 @@ public class ScanCodeResultActivity extends FragmentActivity{
 														
 							final FrameLayout frameImg = new FrameLayout(getApplicationContext());
 							
-							FrameLayout frameLoading = new FrameLayout(getApplicationContext());
+							final FrameLayout frameLoading = new FrameLayout(getApplicationContext());
 							
 							FrameLayout.LayoutParams loadingParams = new FrameLayout.LayoutParams(LayoutParams.WRAP_CONTENT,LayoutParams.WRAP_CONTENT,Gravity.CENTER);													
 							frameLoading.setLayoutParams(loadingParams);
@@ -209,7 +209,7 @@ public class ScanCodeResultActivity extends FragmentActivity{
 										Bitmap image, String url,
 										CyAsyncTask task) {
 									// TODO Auto-generated method stub
-									frameAnimation.stop();	
+									frameLoading.setVisibility(View.GONE);
 									imgView.setImageBitmap(image);
 								}
 								
@@ -229,7 +229,7 @@ public class ScanCodeResultActivity extends FragmentActivity{
 							
 							final FrameLayout frameVideo = new FrameLayout(getApplicationContext());
 							
-							FrameLayout frameLoading = new FrameLayout(getApplicationContext());
+							final FrameLayout frameLoading = new FrameLayout(getApplicationContext());
 							
 							FrameLayout.LayoutParams loadingParams = new FrameLayout.LayoutParams(LayoutParams.WRAP_CONTENT,LayoutParams.WRAP_CONTENT,Gravity.CENTER);													
 							frameLoading.setLayoutParams(loadingParams);
@@ -260,7 +260,7 @@ public class ScanCodeResultActivity extends FragmentActivity{
 										CyAsyncTask task) {
 									// TODO Auto-generated method stub
 									
-									frameAnimation.stop();									
+									frameLoading.setVisibility(View.GONE);								
 									thumb.setImageBitmap(image);	
 									frameVideo.addView(thumb);
 									

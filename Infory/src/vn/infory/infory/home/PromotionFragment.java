@@ -5,6 +5,7 @@ import java.util.List;
 
 import vn.infory.infory.CyUtils;
 import vn.infory.infory.FontsCollection;
+import vn.infory.infory.LayoutError;
 import vn.infory.infory.PlaceListListActivity;
 import vn.infory.infory.R;
 import vn.infory.infory.data.PlaceList;
@@ -117,7 +118,8 @@ public class PromotionFragment extends Fragment implements HomeListener {
 			protected void onFail(Exception e) {
 				mTaskList.remove(this);
 				
-				CyUtils.showError("Không thể lấy danh sách chuỗi cửa hàng", mEx, getActivity());
+//				CyUtils.showError("Không thể lấy danh sách chuỗi cửa hàng", mEx, getActivity());
+				LayoutError.newInstance(getActivity());
 			}
 		};
 		mTaskList.add(getShopListTask);

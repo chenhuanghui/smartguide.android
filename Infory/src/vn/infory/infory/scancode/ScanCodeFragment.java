@@ -221,9 +221,9 @@ public class ScanCodeFragment extends Fragment {
 							LayoutError.newInstance(getActivity());
 						}						
 					}
-					else if(mQRCode.toLowerCase().startsWith(prefix + "shops?idshops="))
+					else if(mQRCode.startsWith(prefix + "shops?idShops="))
 					{
-						String id_shops = mQRCode.substring(mQRCode.lastIndexOf("shops?idshops=")+14);
+						String id_shops = mQRCode.substring(mQRCode.lastIndexOf("shops?idShops=")+14);
 						ShopListActivity.newInstance(getActivity(), id_shops, new ArrayList<Shop>(),0);
 						getActivity().finish();
 					}
