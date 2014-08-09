@@ -38,6 +38,8 @@ public class APILinkMaker {
 	public static final String mGetMessageCount		= mPrefix + "user/message/count";
 	public static final String mGetMesages			= mPrefix + "user/message/getNewest";
 	public static final String mDeleteMessages		= mPrefix + "user/message/remove";
+	public static final String mGetMessagesBySender	= mPrefix + "user/message/listBySender";
+	
 	
 	
 	

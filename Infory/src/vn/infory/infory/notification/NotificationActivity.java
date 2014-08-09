@@ -22,6 +22,7 @@ import vn.infory.infory.network.GetNotificationTask.onGetNotificationsTaskListen
 import vn.infory.infory.network.NetworkManager;
 import android.app.ProgressDialog;
 import android.content.Context;
+import android.content.Intent;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.v4.app.FragmentActivity;
@@ -96,10 +97,10 @@ public class NotificationActivity extends FragmentActivity implements Listener2 
 
         @Override
         public void onClickFrontViewListView(int position) {
-//            DoctorInfo info = lstDoctors.get(position - swipeListView.getHeaderViewsCount());
-//            Intent intent = new Intent(mContext, DoctorProfileActivity.class);
-//            intent.putExtra(com.medpat.ringmd.Constants.BUNDLE_STRING_DOCTOR_INFO, new Gson().toJson(info));
-//            startActivity(intent);
+            MessageInfo info = lstMessages.get(position);
+            Intent intent = new Intent(mContext, ListMessagesBySenderActivity.class);
+            intent.putExtra("message_info", new Gson().toJson(info));
+            startActivity(intent);
         }
 
         @Override
@@ -164,14 +165,7 @@ public class NotificationActivity extends FragmentActivity implements Listener2 
     }
 
     private void setGUI() {
-    	// Get count unread message
-		CyAsyncTask mLoader = new GetCounterMessage(mContext, HomeFragment.iType_all);
-		mLoader.setListener(this);
-		mLoader.executeOnExecutor(NetworkManager.THREAD_POOL);
-    			
         myPullToRefreshSwipeListView.setOnActionPullToRefreshAndLoadMoreListView(onActionPullToRefreshAndLoadMore);
-        // reload data
-        myPullToRefreshSwipeListView.activePullToRefeshAndLoadMoreListView();
     }
 
     private void initEvents() {
@@ -306,6 +300,12 @@ public class NotificationActivity extends FragmentActivity implements Listener2 
     @Override
     protected void onResume() {
     	super.onResume();
+    	// Get count unread message
+		CyAsyncTask mLoader = new GetCounterMessage(mContext, HomeFragment.iType_all);
+		mLoader.setListener(this);
+		mLoader.executeOnExecutor(NetworkManager.THREAD_POOL);
+        // reload data
+        myPullToRefreshSwipeListView.activePullToRefeshAndLoadMoreListView();
     }
 
     private class loadMoreListMessagesTask extends AsyncTask<Void, Void, Void> {

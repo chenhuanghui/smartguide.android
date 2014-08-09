@@ -223,7 +223,8 @@ public class MyPTRAndSwipeListView extends RelativeLayout {
 			public void onClickFrontView(int position){
 				Log.d("swipe", String.format("onClickFrontView %d", position));
 				if(listener != null) {
-					listener.onClickFrontViewListView(position);
+					int positionReturn = position - swipeListView.getHeaderViewsCount(); 
+					listener.onClickFrontViewListView(positionReturn);
 				}
 			}
 
