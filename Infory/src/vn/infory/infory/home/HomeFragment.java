@@ -225,6 +225,10 @@ public class HomeFragment extends Fragment implements HomeListener, Listener2 {
 	public void onFail(Exception e) {
 		txtCounter.setVisibility(View.GONE);
 		// TODO Auto-generated method stub
-		
+	}
+	
+	public void updateCounter(String count)
+	{
+		txtCounter.setText(count + "");
 	}
 }
