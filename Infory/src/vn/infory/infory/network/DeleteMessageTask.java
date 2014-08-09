@@ -7,36 +7,33 @@ import org.apache.http.NameValuePair;
 import org.apache.http.message.BasicNameValuePair;
 
 import vn.infory.infory.data.Settings;
+import vn.infory.infory.network.GetNotificationTask.onGetNotificationsTaskListener;
 import android.content.Context;
 import android.util.Log;
 
-public class GetNotificationTask extends CyAsyncTask {
-	public String TAG = "Infory GetNotificationTask";
+public class DeleteMessageTask extends CyAsyncTask {
+	
+	public String TAG = "Infory DeleteMessage";
 	// Data
-	private int mType, mPage;
+	private int idMessage, idSender;
 
-    private onGetNotificationsTaskListener mListener;
+    private onDeleteMessageTaskListener mListener;
     
-	public interface onGetNotificationsTaskListener {
-        public void onPreGetNotifications();
+	public interface onDeleteMessageTaskListener {
+        public void onPreDeleteMessage();
 
-        public void onGetNotificationsSuccess(String response);
+        public void onDeleteMessageSuccess(String response);
 
-        public void onGetNotificationsFailure();
+        public void onDeleteMessageFailure();
     }
 	
-	public GetNotificationTask(Context c, int type, int page) {
+	public DeleteMessageTask(Context c, int idMessage, int idSender) {
 		super(c);
-		mType = type;
-		mPage = page;
+		this.idMessage = idMessage;
+		this.idSender = idSender;
 	}
 
-	@Override
-	public void setPage(int page) {
-		mPage = page;
-	}
-
-    public void setGetNotificationsTaskListener(onGetNotificationsTaskListener listener) {
+    public void setDeleteMessageTaskListener(onDeleteMessageTaskListener listener) {
         mListener = listener;
     }
 	
@@ -44,7 +41,7 @@ public class GetNotificationTask extends CyAsyncTask {
 	protected void onPreExecute() {
 		super.onPreExecute();
 		if (mListener != null) {
-            mListener.onPreGetNotifications();
+            mListener.onPreDeleteMessage();
         }
 	}
 
@@ -59,10 +56,12 @@ public class GetNotificationTask extends CyAsyncTask {
 				pairs.add(new BasicNameValuePair("userLat", Float.toString(s.lat)));
 				pairs.add(new BasicNameValuePair("userLng", Float.toString(s.lng)));
 			}
-			pairs.add(new BasicNameValuePair("type", Integer.toString(mType)));
-			pairs.add(new BasicNameValuePair("page", Integer.toString(mPage)));
+			if(idMessage != 0)
+				pairs.add(new BasicNameValuePair("idMessage", Integer.toString(idMessage)));
+			
+			pairs.add(new BasicNameValuePair("idSender", Integer.toString(idSender)));
 
-			String json = NetworkManager.post(APILinkMaker.mGetMesages, pairs);
+			String json = NetworkManager.post(APILinkMaker.mDeleteMessages, pairs);
 
 			Log.d(TAG, "json response: " + json);
 			if (json.equalsIgnoreCase("null"))
@@ -82,10 +81,11 @@ public class GetNotificationTask extends CyAsyncTask {
 		if (mListener != null) {
 			String returnString = (String) result;
 			if(returnString != null && returnString.length() > 0)
-				mListener.onGetNotificationsSuccess(returnString);
+				mListener.onDeleteMessageSuccess(returnString);
 			else
-				mListener.onGetNotificationsFailure();
+				mListener.onDeleteMessageFailure();
         }
 	}
 	
+
 }

@@ -35,9 +35,12 @@ import android.app.Activity;
 import android.content.Context;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
+import android.util.Log;
 
 public final class NetworkManager {
 
+	private static final String TAG = "Infory NetworkManager";
+	
 	public static ThreadPoolExecutor THREAD_POOL;
 	
 	public static final String mHostName 	= "https://api.infory.vn";
@@ -112,6 +115,7 @@ public final class NetworkManager {
 			fullURL = URL;
 		}
 
+		Log.e(TAG, "fullURL: " + fullURL);
 		HttpPost httppost = new HttpPost(fullURL);
 		httppost.setEntity(entity);
 		HttpResponse response = httpclient.execute(httppost);

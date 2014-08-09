@@ -1,6 +1,7 @@
 package vn.infory.infory.network;
 
-public class APILinkMaker {
+public class APILinkMaker
+{
 	private static final String	mPrefix					= NetworkManager.mHostName + NetworkManager.mApiDomain;
 
 	// v2
@@ -34,10 +35,9 @@ public class APILinkMaker {
 	public static final String	mPostPhotoBinary		= mPrefix + "user/uploadUserGallery";
 	public static final String	mPostPhotoDsc			= mPrefix + "user/postpicture";
 
-	
 	public static final String	mGetMessageCount		= mPrefix + "user/message/count";
-	public static final String	mGetNotifications		= mPrefix + "user/message/getNewest";
-
+	public static final String	mGetMesages				= mPrefix + "user/message/getNewest";
+	public static final String	mDeleteMessages			= mPrefix + "user/message/remove";
 	
 	// public static final String mScan = mPrefix + "user/scanSGCode_v2";
 	public static final String	mScan					= mPrefix + "qrcode/decode";
@@ -45,11 +45,10 @@ public class APILinkMaker {
 
 	public static final String	mAutoComplete			= NetworkManager.mHostName + ":9200/data/_search";
 
+	public static final String	mRegisterIDGCM			= mPrefix + "user/message/updateRegistrationId";
 	// v1
 	// public static final String mCheckEmergence = NetworkManager.mHostName +
 	// "notification";
-
-	public static final String	mRegisterIDGCM			= mPrefix + "user/message/updateRegistrationId";
 	//
 	// public static final String mDefaultAvatar = mPrefix + "user/avatar/get";
 	// public static final String mUserInfo = mPrefix + "user/sginfo/update";
