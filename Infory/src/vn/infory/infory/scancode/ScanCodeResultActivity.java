@@ -376,31 +376,38 @@ public class ScanCodeResultActivity extends FragmentActivity{
 										public void onClick(View v) {
 											// TODO Auto-generated method stub
 											switch (jItemButton.optInt("actionType")) {
-											case 1: //Shop user																					
-												GetShopDetail2 task = new GetShopDetail2(getApplicationContext(), jItemButton.optInt("idShop")) {
-													@Override
-													protected void onCompleted(Object result2) {
-														mTaskList.remove(this);
-														
-														JSONObject jShop = (JSONObject) result2;
-														
-														Shop shop = new Shop();
-														shop.idShop	= jShop.optInt("idShop");
-														shop.shopName	= jShop.optString("shopName");
-														shop.numOfView = jShop.optString("numOfView");
-														shop.logo		= jShop.optString("logo");
-														
-														ShopDetailActivity.newInstance(mAct, shop);
-													}
+											case 1: //Shop user									
+												try
+												{													
+													GetShopDetail2 task = new GetShopDetail2(mAct, jItemButton.optInt("idShop")) {
+														@Override
+														protected void onCompleted(Object result2) {
+															mTaskList.remove(this);
+															
+															JSONObject jShop = (JSONObject) result2;
+															
+															Shop shop = new Shop();
+															shop.idShop	= jShop.optInt("idShop");
+															shop.shopName	= jShop.optString("shopName");
+															shop.numOfView = jShop.optString("numOfView");
+															shop.logo		= jShop.optString("logo");
+															
+															ShopDetailActivity.newInstance(mAct, shop);
+														}
 
-													@Override
-													protected void onFail(Exception e) {
-														mTaskList.remove(this);
-														ShopDetailActivity.newInstanceNoReload(ScanCodeResultActivity.this, new Shop());
-													}
-												};
-												task.setTaskList(mTaskList);
-												task.executeOnExecutor(NetworkManager.THREAD_POOL);
+														@Override
+														protected void onFail(Exception e) {
+															mTaskList.remove(this);
+															ShopDetailActivity.newInstanceNoReload(mAct, new Shop());
+														}
+													};
+													task.setTaskList(mTaskList);
+													task.executeOnExecutor(NetworkManager.THREAD_POOL);							
+												}
+												catch(Exception e)
+												{
+													ShopDetailActivity.newInstanceNoReload(mAct, new Shop());
+												}
 												break;
 												
 											case 2: //Shop list
@@ -420,7 +427,11 @@ public class ScanCodeResultActivity extends FragmentActivity{
 												break;
 
 											case 3: //popup url (tutorial,...)
-												WebActivity.newInstance(mAct, jItemButton.optString("url"));
+												String url = jItemButton.optString("url");
+												if(url.startsWith("www.")) {
+													url = "http://" + url;
+												}
+												WebActivity.newInstance(mAct, url);
 												break;
 											}
 										}
