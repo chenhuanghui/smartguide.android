@@ -25,15 +25,14 @@
     <string name="Cancel">Cancel</string>
 
     <!-- Shop list -->
-
+    
     <string-array name="sortby">
-        <item>&#160;Distance</item>
-        <item>&#160;Views</item>
-        <item>&#160;Loves</item>
-        <item>&#160;Default</item>
+        <item>&#160;Khoảng cách</item>
+        <item>&#160;Lượt xem</item>
+        <item>&#160;Lượt love</item>
+        <item>&#160;Mặc định</item>
     </string-array>
-
-    <string name="sortby_title">Sort by</string>
+    <string name="sortby_title">Sắp xếp theo</string>
 
     <!-- Store -->
 
