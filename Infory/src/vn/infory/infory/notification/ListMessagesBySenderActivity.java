@@ -4,10 +4,9 @@ import vn.infory.infory.FontsCollection;
 import vn.infory.infory.R;
 import vn.infory.infory.data.MessageBySender;
 import vn.infory.infory.data.MessageBySender.messages;
-import vn.infory.infory.data.MessageInfo;
 import vn.infory.infory.network.DeleteMessageTask;
-import vn.infory.infory.network.GetListMessagesBySenderTask;
 import vn.infory.infory.network.DeleteMessageTask.onDeleteMessageTaskListener;
+import vn.infory.infory.network.GetListMessagesBySenderTask;
 import vn.infory.infory.network.GetListMessagesBySenderTask.onGetListMessagesBySenderTaskListener;
 import android.app.ProgressDialog;
 import android.content.Context;
@@ -44,7 +43,9 @@ public class ListMessagesBySenderActivity extends FragmentActivity {
     private int per_page = 10;
     private boolean isLoadMore = false;
     
-    private MessageInfo messageInfo;
+//    private MessageInfo messageInfo;
+    private int senderID;
+    private int messageId = -1;
     private MessageBySender messageBySender;
     private MessageBySenderAdapter adapter;
     
@@ -59,7 +60,9 @@ public class ListMessagesBySenderActivity extends FragmentActivity {
 		
 		Bundle bundle = getIntent().getExtras();
 		if(bundle != null) {
-			messageInfo = new Gson().fromJson(bundle.getString("message_info"), MessageInfo.class);
+//			messageInfo = new Gson().fromJson(bundle.getString("message_info"), MessageInfo.class);
+			senderID = bundle.getInt(NotificationUtil.senderId);
+			messageId = bundle.getInt(NotificationUtil.messageId);
 		}
         mContext = this;
         
@@ -82,8 +85,7 @@ public class ListMessagesBySenderActivity extends FragmentActivity {
 	}
 
 	private void setGUI() {
-		txtHeader.setText(messageInfo.getSender());
-		GetListMessagesBySenderTask task = new GetListMessagesBySenderTask(mContext, messageInfo.getIdSender(), page);
+		GetListMessagesBySenderTask task = new GetListMessagesBySenderTask(mContext, senderID, page);
 		task.setGetListMessagesBySenderTaskListener(new onGetListMessagesBySenderTaskListener() {
 			
 			@Override
@@ -141,8 +143,20 @@ public class ListMessagesBySenderActivity extends FragmentActivity {
 		}
 		adapter = new MessageBySenderAdapter(mContext, R.layout.activity_expandablelistitem_card, messageBySender.getMessages(), swipeListView);
 		swipeListView.setAdapter(adapter);
-    	// expand item in position 0 by default
-		adapter.setSelectedIndex(0);
+		if(messageId > 0) {
+			int index = 0;
+			for(int i = 0; i < messageBySender.getMessages().size(); i++) {
+				messages mess = messageBySender.getMessages().get(i);
+				if(mess.getIdMessage() == messageId) {
+					index = i;
+					break;
+				}
+			}
+			adapter.setSelectedIndex(index);
+		} else {
+			// expand item in position 0 by default
+			adapter.setSelectedIndex(0);
+		}
 		adapter.notifyDataSetChanged();
     }
 	
@@ -156,6 +170,7 @@ public class ListMessagesBySenderActivity extends FragmentActivity {
         try {
         	messageBySender = new Gson().fromJson(response, new TypeToken<MessageBySender>() {
             }.getType());
+    		txtHeader.setText(messageBySender.getSender());
         	Log.e(TAG, "messageBySender.getMessages().size(): " + messageBySender.getMessages().size());
         } catch (Exception ex) {
             Log.e(TAG + "loadMessagesData: ", ex.toString());
@@ -211,35 +226,33 @@ public class ListMessagesBySenderActivity extends FragmentActivity {
             public void onClickBackView(final int position) {
                 Log.d("swipe", String.format("onClickBackView %d", position));
                 messages message = messageBySender.getMessages().get(position);
-            	if(messageInfo.getStatus() == 0) {
-            		DeleteMessageTask task = new DeleteMessageTask(mContext, message.getIdMessage(), 0);
-                	task.setDeleteMessageTaskListener(new onDeleteMessageTaskListener() {
-        				
-        				@Override
-        				public void onPreDeleteMessage() {
-        					if(dialog != null && !dialog.isShowing())
-        						dialog.show();
-        				}
-        				
-        				@Override
-        				public void onDeleteMessageSuccess(String response) {
-        					if(dialog != null && dialog.isShowing())
-        						dialog.cancel();
-        					messageBySender.getMessages().remove(position);
-        					adapter.notifyDataSetChanged();
-        					swipeListView.closeOpenedItems(true);
-        					
-        				}
-        				
-        				@Override
-        				public void onDeleteMessageFailure() {
-        					if(dialog != null && dialog.isShowing())
-        						dialog.cancel();
-        					swipeListView.closeOpenedItems(true);
-        				}
-        			});
-                	task.execute();
-            	}
+                DeleteMessageTask task = new DeleteMessageTask(mContext, message.getIdMessage(), 0);
+            	task.setDeleteMessageTaskListener(new onDeleteMessageTaskListener() {
+    				
+    				@Override
+    				public void onPreDeleteMessage() {
+    					if(dialog != null && !dialog.isShowing())
+    						dialog.show();
+    				}
+    				
+    				@Override
+    				public void onDeleteMessageSuccess(String response) {
+    					if(dialog != null && dialog.isShowing())
+    						dialog.cancel();
+    					messageBySender.getMessages().remove(position);
+    					adapter.notifyDataSetChanged();
+    					swipeListView.closeOpenedItems(true);
+    					
+    				}
+    				
+    				@Override
+    				public void onDeleteMessageFailure() {
+    					if(dialog != null && dialog.isShowing())
+    						dialog.cancel();
+    					swipeListView.closeOpenedItems(true);
+    				}
+    			});
+            	task.execute();
             }
 
             @Override

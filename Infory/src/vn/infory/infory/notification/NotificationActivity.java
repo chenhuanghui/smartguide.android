@@ -99,7 +99,8 @@ public class NotificationActivity extends FragmentActivity implements Listener2 
         public void onClickFrontViewListView(int position) {
             MessageInfo info = lstMessages.get(position);
             Intent intent = new Intent(mContext, ListMessagesBySenderActivity.class);
-            intent.putExtra("message_info", new Gson().toJson(info));
+//            intent.putExtra("message_info", new Gson().toJson(info));
+            intent.putExtra(NotificationUtil.senderId, info.getIdSender());
             startActivity(intent);
         }
 
