@@ -21,4 +21,6 @@
     <string name="store_menu_newest">Newest</string>
     <string name="store_menu_top_sellers">Top Sellers</string>
 
+    
+	<string name="error_message_no_internet_connection">Lỗi kết nối</string>
 </resources>

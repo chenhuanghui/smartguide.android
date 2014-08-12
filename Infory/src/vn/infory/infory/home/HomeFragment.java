@@ -11,6 +11,7 @@ import vn.infory.infory.FontsCollection;
 import vn.infory.infory.MainActivity;
 import vn.infory.infory.PlaceListListActivity;
 import vn.infory.infory.R;
+import vn.infory.infory.Tools;
 import vn.infory.infory.data.PlaceList;
 import vn.infory.infory.data.Shop;
 import vn.infory.infory.data.home.HomeItem_ShopItem;
@@ -22,6 +23,8 @@ import vn.infory.infory.network.GetCounterMessage;
 import vn.infory.infory.notification.NotificationActivity;
 import vn.infory.infory.shopdetail.ShopDetailActivity;
 import vn.infory.infory.shoplist.ShopListActivity;
+import android.app.Activity;
+import android.app.AlertDialog;
 import android.content.Intent;
 import android.content.SharedPreferences.Editor;
 import android.os.Bundle;
@@ -49,20 +52,29 @@ public class HomeFragment extends Fragment implements HomeListener, Listener2 {
 	// Data
 	private Listener mListener = new Listener();
 	private OnScrollListener mScrollListener = new OnScrollListener() {
-		public void onScroll(AbsListView a, int b, int c, int d) {}
-		public void onScrollStateChanged(AbsListView arg0, int arg1) {}
+		public void onScroll(AbsListView a, int b, int c, int d) {
+		}
+
+		public void onScrollStateChanged(AbsListView arg0, int arg1) {
+		}
 	};
 
 	private List<CyAsyncTask> mTaskList = new ArrayList<CyAsyncTask>();
 	private HomeAdapter mAdapter;
 
 	// GUI elements
-	@ViewById(id = R.id.edtSearch)			private View mEdtSearch;
-	@ViewById(id = R.id.lstMain)			private ListView mLayoutMain;
-	@ViewById(id = R.id.layoutLoading)		private View mLayoutLoading;
-	@ViewById(id = R.id.btnSideMenu)		private View mBtnSideMenu;
-	@ViewById(id = R.id.imageNotification)	private View imageNotification;
-	@ViewById(id = R.id.txtCounter)			private TextView txtCounter;
+	@ViewById(id = R.id.edtSearch)
+	private View mEdtSearch;
+	@ViewById(id = R.id.lstMain)
+	private ListView mLayoutMain;
+	@ViewById(id = R.id.layoutLoading)
+	private View mLayoutLoading;
+	@ViewById(id = R.id.btnSideMenu)
+	private View mBtnSideMenu;
+	@ViewById(id = R.id.imageNotification)
+	private View imageNotification;
+	@ViewById(id = R.id.txtCounter)
+	private TextView txtCounter;
 
 	@Override
 	public View onCreateView(LayoutInflater inflater, ViewGroup container,
@@ -87,46 +99,49 @@ public class HomeFragment extends Fragment implements HomeListener, Listener2 {
 		CyAsyncTask mLoader = new GetCounterMessage(getActivity(), iType_unread);
 		mLoader.setListener(this);
 		mLoader.executeOnExecutor(NetworkManager.THREAD_POOL);
-		
+
 		mAdapter = new HomeAdapter(getActivity(), this);
 		mLayoutMain.setAdapter(mAdapter);
 		mLayoutMain.setOnScrollListener(mAdapter);
 		mAdapter.setOnScrollListener(mScrollListener);
 		FontsCollection.setFont(getView());
-		
+
 		CyUtils.setHoverEffect(imageNotification, false);
 	}
 
 	@Override
 	public void onResume() {
 		// TODO Auto-generated method stub
-		Editor e = PreferenceManager.getDefaultSharedPreferences(getActivity()).edit();
-		e.putString("last_activity", getClass().getSimpleName());		
+		Editor e = PreferenceManager.getDefaultSharedPreferences(getActivity())
+				.edit();
+		e.putString("last_activity", getClass().getSimpleName());
 		e.putString("use_immediately_activity", "0");
 		e.commit();
-		
+
 		super.onResume();
 	}
 
 	@Override
 	public void onDestroy() {
-		Editor e = PreferenceManager.getDefaultSharedPreferences(getActivity()).edit();
+		Editor e = PreferenceManager.getDefaultSharedPreferences(getActivity())
+				.edit();
 		e.putString("last_activity", getClass().getSimpleName());
 		e.commit();
-		
+
 		for (CyAsyncTask task : mTaskList)
 			task.cancel(true);
 
 		super.onDestroy();
 	}
-	
+
 	@Override
 	public void onPause() {
 		// TODO Auto-generated method stub
-		Editor e = PreferenceManager.getDefaultSharedPreferences(getActivity()).edit();
+		Editor e = PreferenceManager.getDefaultSharedPreferences(getActivity())
+				.edit();
 		e.putString("last_activity", getClass().getSimpleName());
 		e.commit();
-		
+
 		super.onPause();
 	}
 
@@ -139,44 +154,57 @@ public class HomeFragment extends Fragment implements HomeListener, Listener2 {
 	private void onSideMenuClick(View v) {
 		mListener.onSideMenuClick();
 	}
-	
+
 	@Click(id = R.id.imageNotification)
 	private void onNotificationClick(View v) {
-		Intent intent = new Intent(getActivity(), NotificationActivity.class);
-		getActivity().startActivity(intent);
-		getActivity().overridePendingTransition(android.R.anim.fade_in, android.R.anim.fade_out);
+		// check connection cho nay
+
+		if (Tools.isNetworkAvailable(getActivity())) {
+			Intent intent = new Intent(getActivity(),
+					NotificationActivity.class);
+			getActivity().startActivity(intent);
+			getActivity().overridePendingTransition(android.R.anim.fade_in,
+					android.R.anim.fade_out);
+		} else {
+			AlertDialog.Builder builder = Tools.AlertNetWorkDialog(
+					getActivity(), getActivity());
+			builder.show();
+		}
+
 	}
 
 	public void setListener(Listener listener, OnScrollListener scrollListener) {
 		if (listener == null)
 			listener = new Listener();
-		
+
 		mListener = listener;
 		mScrollListener = scrollListener;
-//		mAdapter.setOnScrollListener(scrollListener);
+		// mAdapter.setOnScrollListener(scrollListener);
 	}
 
-	///////////////////////////////////////////////////////////////////////////
+	// /////////////////////////////////////////////////////////////////////////
 	// Private method
-	///////////////////////////////////////////////////////////////////////////
+	// /////////////////////////////////////////////////////////////////////////
 
-	///////////////////////////////////////////////////////////////////////////
+	// /////////////////////////////////////////////////////////////////////////
 	// Home listener implemetation
-	///////////////////////////////////////////////////////////////////////////
+	// /////////////////////////////////////////////////////////////////////////
 
 	@Override
 	public void onBranchPromoInfoClick(final String shopId) {
-		ShopListActivity.newInstance(getActivity(), shopId, new ArrayList<Shop>());
+		ShopListActivity.newInstance(getActivity(), shopId,
+				new ArrayList<Shop>());
 	}
 
 	@Override
 	public void onImageClick(List<String> urlList, int index) {
-		
+
 	}
 
 	@Override
 	public void onPlaceListClick(int placeListId, PlaceList placeList) {
-		ShopListActivity.newInstance(getActivity(), placeList, new ArrayList<Shop>());
+		ShopListActivity.newInstance(getActivity(), placeList,
+				new ArrayList<Shop>());
 	}
 
 	@Override
@@ -189,36 +217,39 @@ public class HomeFragment extends Fragment implements HomeListener, Listener2 {
 
 	}
 
-	///////////////////////////////////////////////////////////////////////////
+	// /////////////////////////////////////////////////////////////////////////
 	// Main Pager Adapter
-	///////////////////////////////////////////////////////////////////////////
+	// /////////////////////////////////////////////////////////////////////////
 
-	public static class Listener implements MainActivity.onSideMenuClickListener {
-		public void onSideMenuClick() {}
+	public static class Listener implements
+			MainActivity.onSideMenuClickListener {
+		public void onSideMenuClick() {
+		}
 	}
 
 	@Override
 	public void onShopItemClick(int shopId, PromoItem shopItem) {
 		// TODO Auto-generated method stub
-		
+
 	}
 
 	@Override
 	public void onCompleted(Object result) {
 		// TODO Auto-generated method stub
-//		json response: {"number":0,"string":"0"}
+		// json response: {"number":0,"string":"0"}
 
 		try {
-			String unreadMessage = new JSONObject((String) result).getString("string");
+			String unreadMessage = new JSONObject((String) result)
+					.getString("string");
 			Log.e(getTag(), "unreadMessage: " + unreadMessage);
-			if(unreadMessage.compareTo("0") != 0) {
+			if (unreadMessage.compareTo("0") != 0) {
 				txtCounter.setVisibility(View.VISIBLE);
 				txtCounter.setText(unreadMessage);
 			}
 		} catch (JSONException e) {
 			Log.e(getTag(), e.toString());
 		}
-		
+
 	}
 
 	@Override
@@ -226,9 +257,8 @@ public class HomeFragment extends Fragment implements HomeListener, Listener2 {
 		txtCounter.setVisibility(View.GONE);
 		// TODO Auto-generated method stub
 	}
-	
-	public void updateCounter(String count)
-	{
+
+	public void updateCounter(String count) {
 		txtCounter.setText(count + "");
 	}
 }

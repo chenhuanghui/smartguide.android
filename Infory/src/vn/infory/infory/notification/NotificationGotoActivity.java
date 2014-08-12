@@ -42,19 +42,26 @@ public class NotificationGotoActivity extends Activity
 			
 			if(messageId.compareTo("") != 0 && senderId.compareTo("") != 0)
 			{
-				
+				Intent i = new Intent(this, ListMessagesBySenderActivity.class);
+				i.putExtra(NotificationUtil.messageId, messageId);
+				i.putExtra(NotificationUtil.senderId, senderId);
+				this.startActivity(i);
 			}
 			else
 			{
 				if(messageId.compareTo("") == 0 && senderId.compareTo("") != 0)
 				{
-					
+					Intent i = new Intent(this, ListMessagesBySenderActivity.class);
+					i.putExtra(NotificationUtil.senderId, senderId);
+					this.startActivity(i);
 				}
 				else
 				{
 					if(messageId.compareTo("") == 0 && senderId.compareTo("") == 0)
 					{
-						
+						//Đi đến view message list
+						Intent i = new Intent(this, NotificationActivity.class);
+						this.startActivity(i);
 					}
 				}
 			}

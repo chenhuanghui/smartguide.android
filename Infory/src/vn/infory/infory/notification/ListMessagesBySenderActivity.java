@@ -18,13 +18,14 @@ import android.widget.LinearLayout;
 import android.widget.ListView;
 import android.widget.TextView;
 
+import com.fortysevendeg.swipelistview.BaseSwipeListViewListener;
 import com.fortysevendeg.swipelistview.SwipeListView;
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
 
 public class ListMessagesBySenderActivity extends FragmentActivity {
     private static final String TAG = "Infory ListMessagesBySenderActivity";
-
+	
     private LinearLayout linearContentView;
     private ImageButton btnBack;
     private TextView txtHeader;
@@ -33,7 +34,7 @@ public class ListMessagesBySenderActivity extends FragmentActivity {
 
     private Context mContext;
 
-	private int screenWidth;
+	public static int screenWidth;
     public static String stringEmptyData = "Không có dữ liệu";
 
     private int page = 0;
@@ -42,6 +43,7 @@ public class ListMessagesBySenderActivity extends FragmentActivity {
     
     private MessageInfo messageInfo;
     private MessageBySender messageBySender;
+    private MessageBySenderAdapter adapter;
     
 	@Override
 	public void onCreate(Bundle savedInstanceState) {
@@ -134,16 +136,18 @@ public class ListMessagesBySenderActivity extends FragmentActivity {
 			swipeListView.setChoiceMode(ListView.CHOICE_MODE_SINGLE);
 			swipeListView.setOffsetLeft(screenWidth - width_deletehide_btn);
 		}
-//		viewAdapter = new NotificationAdapter(mContext, lstMessages);
-//		swipeListView.setAdapter(viewAdapter);
-//		viewAdapter.notifyDataSetChanged();
+		adapter = new MessageBySenderAdapter(mContext, R.layout.activity_expandablelistitem_card, messageBySender.getMessages(), swipeListView);
+		swipeListView.setAdapter(adapter);
+    	// expand item in position 0 by default
+		adapter.setSelectedIndex(0);
+		adapter.notifyDataSetChanged();
     }
 	
     private void initEmptyData() {
     	MessageBySender messageInfo = new MessageBySender();
     	messageInfo.setSender(stringEmptyData);
     }
-
+    
 	protected boolean loadMessagesData(String response) {
 		boolean checkLoad = false;
         try {
@@ -165,6 +169,52 @@ public class ListMessagesBySenderActivity extends FragmentActivity {
 				onBackPressed();
 			}
 		});
+		
+		swipeListView.setSwipeListViewListener(new BaseSwipeListViewListener() {
+            @Override
+            public void onOpened(int position, boolean toRight) {
+            	
+            }
+
+            @Override
+            public void onClosed(int position, boolean fromRight) {
+            	
+            }
+
+            @Override
+            public void onListChanged() {
+            }
+
+            @Override
+            public void onMove(int position, float x) {
+            }
+
+            @Override
+            public void onStartOpen(int position, int action, boolean right) {
+                Log.d("swipe", String.format("onStartOpen %d - action %d", position, action));
+            }
+
+            @Override
+            public void onStartClose(int position, boolean right) {
+                Log.d("swipe", String.format("onStartClose %d", position));
+            }
+
+            @Override
+            public void onClickFrontView(int position) {
+                Log.d("swipe", String.format("onClickFrontView %d", position));
+            }
+
+            @Override
+            public void onClickBackView(int position) {
+                Log.d("swipe", String.format("onClickBackView %d", position));
+            }
+
+            @Override
+            public void onDismiss(int[] reverseSortedPositions) {
+                
+            }
+
+        });
 	}
 	
 }

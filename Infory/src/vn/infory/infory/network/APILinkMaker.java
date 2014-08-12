@@ -35,19 +35,19 @@ public class APILinkMaker
 	public static final String	mPostPhotoBinary		= mPrefix + "user/uploadUserGallery";
 	public static final String	mPostPhotoDsc			= mPrefix + "user/postpicture";
 
-	public static final String	mGetMessageCount		= mPrefix + "user/message/count";
-	public static final String	mGetMesages				= mPrefix + "user/message/getNewest";
-	public static final String	mDeleteMessages			= mPrefix + "user/message/remove";
+//	public static final String	mGetMessageCount		= mPrefix + "user/message/count";
+//	public static final String	mGetMesages				= mPrefix + "user/message/getNewest";
+//	public static final String	mDeleteMessages			= mPrefix + "user/message/remove";
 	
 	// public static final String mScan = mPrefix + "user/scanSGCode_v2";
-	public static final String	mScan					= mPrefix + "qrcode/decode";
-	public static final String	mRelated				= mPrefix + "qrcode/getRelated";
+//	public static final String	mScan					= mPrefix + "qrcode/decode";
+//	public static final String	mRelated				= mPrefix + "qrcode/getRelated";
 
 	public static final String mGetMessageCount		= mPrefix + "user/message/count";
 	public static final String mGetMesages			= mPrefix + "user/message/getNewest";
 	public static final String mDeleteMessages		= mPrefix + "user/message/remove";
 	public static final String mGetMessagesBySender	= mPrefix + "user/message/listBySender";
-	
+	public static final String mRegisterIDGCM		= mPrefix + "user/message/updateRegistrationId";
 	
 	
 	

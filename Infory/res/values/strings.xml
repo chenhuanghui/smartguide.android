@@ -58,5 +58,8 @@
     <string name="test">test</string>
     <string name="scan_code_result_activity">ScanCodeResultActivity</string>
     <string name="home_loading_activity">HomeLoadingActivity</string>
-
+    
+    <string name="error">Lỗi!</string>
+	<string name="dialog_cancel">Hủy</string>
+	<string name="dialog_setting">Cài đặt</string>
 </resources>
