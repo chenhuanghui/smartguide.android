@@ -85,9 +85,7 @@ implements OnMarkerClickListener, OnInfoWindowClickListener, OnMyLocationChangeL
 		map.setOnMyLocationChangeListener(this);
 		map.setMyLocationEnabled(true);
 
-		LatLngBounds.Builder builder = new LatLngBounds.Builder();
-
-
+		LatLngBounds.Builder builder = new LatLngBounds.Builder();		
 
 		for (int i = 0; i < shopList.size(); i++) {
 
@@ -99,6 +97,10 @@ implements OnMarkerClickListener, OnInfoWindowClickListener, OnMyLocationChangeL
 
 			builder.include(ll);
 		}
+		
+		Settings s = Settings.instance();
+		LatLng userMarker = new LatLng(s.lat, s.lng);
+		builder.include(userMarker);
 
 		if (shopList.size() != 0)
 			map.animateCamera(CameraUpdateFactory.newLatLngBounds(builder.build(), 200));
