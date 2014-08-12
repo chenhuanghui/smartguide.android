@@ -44,15 +44,16 @@ public class Settings {
 	public int socialType;
 	public boolean firstTime;
 
-	//
-	public String cityId;
+	//City
+	public String cityId = "1";
+	public String cityName = "Hồ Chí Minh";
 
 //	public float lat = 10.759765f;
 //	public float lng = 106.692842f;
 	public static float lat = -1;
 	public static float lng = -1;
 	public String P;
-
+	
 	public static void init(Context context) {
 		if (sInstance == null) {
 			mContext = context;

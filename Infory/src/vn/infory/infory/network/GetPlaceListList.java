@@ -7,6 +7,7 @@ import org.apache.http.NameValuePair;
 import org.apache.http.message.BasicNameValuePair;
 import org.json.JSONArray;
 
+import vn.infory.infory.CyLogger;
 import vn.infory.infory.R;
 import vn.infory.infory.data.PlaceList;
 import vn.infory.infory.data.Settings;
@@ -18,7 +19,7 @@ import com.cycrix.jsonparser.JsonParser;
 import android.content.Context;
 
 public class GetPlaceListList extends CyAsyncTask {
-
+	CyLogger mLog = new CyLogger("CycrixDebug", true);
 	// Data
 	private int mPage;
 
@@ -51,7 +52,7 @@ public class GetPlaceListList extends CyAsyncTask {
 			
 			String json = NetworkManager.post(APILinkMaker.mPlaceListList, pairs);
 //			String json = readWholeFile(mContext, R.raw.place_list_list);
-			
+//			mLog.d("json city: ");
 			if (json.equalsIgnoreCase("null"))
 				json = "[]";
 			ArrayList<PlaceList> placeListList = new ArrayList<PlaceList>();

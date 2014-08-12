@@ -14,6 +14,7 @@ import org.xml.sax.InputSource;
 
 import vn.infory.infory.data.AutoCompleteItem;
 import vn.infory.infory.data.PlaceList;
+import vn.infory.infory.data.Settings;
 import vn.infory.infory.data.Shop;
 import vn.infory.infory.data.AutoCompleteItem.Fields;
 import vn.infory.infory.data.AutoCompleteItem.Highlight;
@@ -49,6 +50,7 @@ import android.view.inputmethod.InputMethodManager;
 import android.widget.AdapterView;
 import android.widget.AdapterView.OnItemClickListener;
 import android.widget.BaseAdapter;
+import android.widget.Button;
 import android.widget.EditText;
 import android.widget.FrameLayout;
 import android.widget.ImageView;
@@ -75,6 +77,7 @@ public class PlaceListListActivity extends Activity {
 	// GUI
 	@ViewById(id = R.id.edtSearch)		private EditText mEdtSearch;
 	@ViewById(id = R.id.lst)			private ListView mLst;
+	@ViewById(id = R.id.btnSelectCity)	private Button mBtnSelectCity;
 	@ViewById(id = R.id.layoutLoading)	private View mLayoutLoading;
 	@ViewById(id = R.id.activityPlacelistLayoutLoadingAni)	private View mLayoutLoadingAni;
 
@@ -120,6 +123,9 @@ public class PlaceListListActivity extends Activity {
 				return false;
 			}
 		});
+		
+		Settings s = Settings.instance();
+		mBtnSelectCity.setText(" \" " + s.cityName + " \" ");
 
 		// Set up listview
 		mPlaceListAdapter = new PlaceListAdapter();
@@ -173,6 +179,15 @@ public class PlaceListListActivity extends Activity {
 	}
 
 	@Override
+	protected void onResume() {
+		// TODO Auto-generated method stub
+		super.onResume();
+		
+		Settings s = Settings.instance();
+		mBtnSelectCity.setText(" \" " + s.cityName + " \" ");
+	}
+
+	@Override
 	public void finish() {
 		for (CyAsyncTask task : mTaskList)
 			task.cancel(true);
@@ -189,6 +204,11 @@ public class PlaceListListActivity extends Activity {
 	@Click(id = R.id.btnClearSearch)
 	private void onClearSearchClick(View v) {
 		mEdtSearch.setText("");
+	}
+	
+	@Click(id = R.id.btnSelectCity)
+	private void onBtnSelectCityClick(View v) {
+		CityList.newInstance(PlaceListListActivity.this);
 	}
 
 	///////////////////////////////////////////////////////////////////////////
