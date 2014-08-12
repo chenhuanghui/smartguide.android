@@ -58,8 +58,8 @@ public class DeleteMessageTask extends CyAsyncTask {
 			}
 			if(idMessage != 0)
 				pairs.add(new BasicNameValuePair("idMessage", Integer.toString(idMessage)));
-			
-			pairs.add(new BasicNameValuePair("idSender", Integer.toString(idSender)));
+			if(idSender != 0)
+				pairs.add(new BasicNameValuePair("idSender", Integer.toString(idSender)));
 
 			String json = NetworkManager.post(APILinkMaker.mDeleteMessages, pairs);
 

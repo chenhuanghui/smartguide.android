@@ -3,8 +3,11 @@ package vn.infory.infory.notification;
 import vn.infory.infory.FontsCollection;
 import vn.infory.infory.R;
 import vn.infory.infory.data.MessageBySender;
+import vn.infory.infory.data.MessageBySender.messages;
 import vn.infory.infory.data.MessageInfo;
+import vn.infory.infory.network.DeleteMessageTask;
 import vn.infory.infory.network.GetListMessagesBySenderTask;
+import vn.infory.infory.network.DeleteMessageTask.onDeleteMessageTaskListener;
 import vn.infory.infory.network.GetListMessagesBySenderTask.onGetListMessagesBySenderTaskListener;
 import android.app.ProgressDialog;
 import android.content.Context;
@@ -205,8 +208,38 @@ public class ListMessagesBySenderActivity extends FragmentActivity {
             }
 
             @Override
-            public void onClickBackView(int position) {
+            public void onClickBackView(final int position) {
                 Log.d("swipe", String.format("onClickBackView %d", position));
+                messages message = messageBySender.getMessages().get(position);
+            	if(messageInfo.getStatus() == 0) {
+            		DeleteMessageTask task = new DeleteMessageTask(mContext, message.getIdMessage(), 0);
+                	task.setDeleteMessageTaskListener(new onDeleteMessageTaskListener() {
+        				
+        				@Override
+        				public void onPreDeleteMessage() {
+        					if(dialog != null && !dialog.isShowing())
+        						dialog.show();
+        				}
+        				
+        				@Override
+        				public void onDeleteMessageSuccess(String response) {
+        					if(dialog != null && dialog.isShowing())
+        						dialog.cancel();
+        					messageBySender.getMessages().remove(position);
+        					adapter.notifyDataSetChanged();
+        					swipeListView.closeOpenedItems(true);
+        					
+        				}
+        				
+        				@Override
+        				public void onDeleteMessageFailure() {
+        					if(dialog != null && dialog.isShowing())
+        						dialog.cancel();
+        					swipeListView.closeOpenedItems(true);
+        				}
+        			});
+                	task.execute();
+            	}
             }
 
             @Override

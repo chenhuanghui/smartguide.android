@@ -185,9 +185,12 @@ public class MessageBySenderAdapter extends ArrayAdapter<messages> {
 			holder.txtDateTime.setTextColor(mContext.getResources().getColor(R.color.black));
 			holder.txtTitle.setTextColor(mContext.getResources().getColor(R.color.black));
 			holder.txtContent.setTextColor(mContext.getResources().getColor(R.color.black));
-			Utils.expand(holder.imgImage);
-//			holder.imgImage.setVisibility(View.VISIBLE);
+//			Utils.expand(holder.imgImage);
+			holder.imgImage.setVisibility(View.VISIBLE);
 			holder.txtContent.setVisibility(View.VISIBLE);
+		}
+		if(item.getStatus() == 0) {
+			// chua doc message, call service mark read message trong day
 		}
 	}
 	
@@ -202,8 +205,8 @@ public class MessageBySenderAdapter extends ArrayAdapter<messages> {
 				holder.txtTitle.setTextColor(mContext.getResources().getColor(R.color.text_color_read_message));
 				holder.txtContent.setTextColor(mContext.getResources().getColor(R.color.text_color_read_message));
 			}
-			Utils.collapse(holder.imgImage);
-//			holder.imgImage.setVisibility(View.GONE);
+//			Utils.collapse(holder.imgImage);
+			holder.imgImage.setVisibility(View.GONE);
 			holder.txtContent.setVisibility(View.GONE);
 		}
 	}
