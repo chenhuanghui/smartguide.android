@@ -7,6 +7,7 @@ import vn.infory.infory.network.NetworkManager;
 import vn.infory.infory.shoplist.MapModule;
 import android.app.Activity;
 import android.content.Intent;
+import android.graphics.Color;
 import android.location.Location;
 import android.os.Bundle;
 import android.os.Handler;
@@ -36,7 +37,7 @@ public class MapActivity extends FragmentActivity implements InfoWindowAdapter, 
 	private Shop mShop;
 	private GetDirection mDirectionTask;
 	private boolean mDestroyed = false;
-	private boolean mHasGetLocation = false;
+//	private boolean mHasGetLocation = false;
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
@@ -86,7 +87,7 @@ public class MapActivity extends FragmentActivity implements InfoWindowAdapter, 
 				.icon(BitmapDescriptorFactory.fromResource(MapModule.iconIdArr[mShop.shopType])))
 				.showInfoWindow();
 		map.animateCamera(CameraUpdateFactory.newCameraPosition(
-				new CameraPosition(ll, 13, 0, 0)));
+				new CameraPosition(ll, 100, 0, 0)));
 		getDirection();
 	}
 
@@ -131,7 +132,8 @@ public class MapActivity extends FragmentActivity implements InfoWindowAdapter, 
 			mDirectionTask.cancel(true);
 		
 		Settings s = Settings.instance();
-		if (s.lat == -1 || s.lng == -1 || mHasGetLocation)
+//		if (s.lat == -1 || s.lng == -1 || mHasGetLocation)
+		if (s.lat == -1 || s.lng == -1)
 			return;
 		
 		GetDirection task = new GetDirection(MapActivity.this, s.lat, s.lng, 
@@ -143,14 +145,14 @@ public class MapActivity extends FragmentActivity implements InfoWindowAdapter, 
 				GoogleMap map = mMapModule.getMap();
 				PolylineOptions result = (PolylineOptions) result1;
 				
-				Polyline polyline = map.addPolyline(result.color(0xffff3b3b).width(3));
+				Polyline polyline = map.addPolyline(result.color(Color.rgb(14, 62, 252)).width(3));
 				// Zoom in to direction
 		
 				LatLngBounds.Builder builder = LatLngBounds.builder();
 				for (LatLng latlng : polyline.getPoints())
 					builder.include(latlng);
 		
-				map.animateCamera(CameraUpdateFactory.newLatLngBounds(builder.build(), 24));
+				map.animateCamera(CameraUpdateFactory.newLatLngBounds(builder.build(), 100));
 			}
 			
 			@Override
@@ -161,7 +163,7 @@ public class MapActivity extends FragmentActivity implements InfoWindowAdapter, 
 			}
 		};
 		mDirectionTask = task;
-		mHasGetLocation = true;
+//		mHasGetLocation = true;
 		task.executeOnExecutor(NetworkManager.THREAD_POOL);
 	}
 

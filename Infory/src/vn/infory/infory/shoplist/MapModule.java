@@ -12,10 +12,12 @@ import vn.infory.infory.network.CyAsyncTask;
 import vn.infory.infory.network.GetDirection;
 import vn.infory.infory.network.NetworkManager;
 import vn.infory.infory.shopdetail.ShopDetailActivity;
+import android.graphics.Color;
 import android.location.Location;
 import android.view.View;
 import android.widget.TextView;
 
+import com.google.android.gms.maps.CameraUpdate;
 import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.GoogleMap.InfoWindowAdapter;
@@ -99,11 +101,11 @@ implements OnMarkerClickListener, OnInfoWindowClickListener, OnMyLocationChangeL
 		}
 
 		if (shopList.size() != 0)
-			map.animateCamera(CameraUpdateFactory.newLatLngBounds(builder.build(), 20));
+			map.animateCamera(CameraUpdateFactory.newLatLngBounds(builder.build(), 200));
 	}
 
 	@Override
-	public boolean onMarkerClick(Marker marker) {
+	public boolean onMarkerClick(final Marker marker) {
 
 		final int index = Integer.parseInt(marker.getSnippet());
 		final Shop shop = mShopList.get(index);
@@ -120,7 +122,7 @@ implements OnMarkerClickListener, OnInfoWindowClickListener, OnMyLocationChangeL
 			return false;
 		}
 
-		Settings s = Settings.instance();
+		final Settings s = Settings.instance();
 		if (s.lat == -1 || s.lng == -1)
 			return false;
 
@@ -132,7 +134,18 @@ implements OnMarkerClickListener, OnInfoWindowClickListener, OnMyLocationChangeL
 				GoogleMap map = getMap();
 				PolylineOptions result = (PolylineOptions) result1;
 
-				shop.polyline = map.addPolyline(result.color(0xffff3b3b).width(3));
+				shop.polyline = map.addPolyline(result.color(Color.rgb(14, 62, 252)).width(3));
+				
+				LatLng userMarker = new LatLng(s.lat, s.lng);
+				
+				LatLngBounds.Builder builder = new LatLngBounds.Builder();
+				builder.include(userMarker);
+				builder.include(marker.getPosition());				
+				LatLngBounds bounds = builder.build();
+				
+				CameraUpdate cameraUpdate = CameraUpdateFactory.newLatLngBounds(bounds, 200);
+				map.animateCamera(cameraUpdate);
+				
 				ShowDirection(index);
 			}
 
