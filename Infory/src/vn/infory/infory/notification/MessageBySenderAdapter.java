@@ -8,6 +8,9 @@ import vn.infory.infory.R;
 import vn.infory.infory.data.MessageBySender.messages;
 import vn.infory.infory.home.HomeAdapter;
 import vn.infory.infory.network.CyAsyncTask;
+import vn.infory.infory.network.MarkReadMessageTask;
+import vn.infory.infory.network.MarkReadMessageTask.onMarkReadMessageTaskListener;
+import android.app.ProgressDialog;
 import android.content.Context;
 import android.graphics.Bitmap;
 import android.view.LayoutInflater;
@@ -27,6 +30,7 @@ public class MessageBySenderAdapter extends ArrayAdapter<messages> {
 	
     private Context mContext;
     private SwipeListView swipeListView;
+	private ProgressDialog dialog;
     private List<messages> messages;
 	private LayoutInflater mInflater;
     private int selectedIndex = -1;
@@ -37,6 +41,10 @@ public class MessageBySenderAdapter extends ArrayAdapter<messages> {
         this.messages = messages;
         this.swipeListView = swipeListView;
 		mInflater = (LayoutInflater) mContext.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
+
+		dialog = new ProgressDialog(mContext);
+		dialog.setMessage("Vui lòng chờ đợi!");
+		dialog.setCancelable(false);
 	}
 
     public void setSelectedIndex(int index) {
@@ -99,12 +107,12 @@ public class MessageBySenderAdapter extends ArrayAdapter<messages> {
 			final vn.infory.infory.data.MessageBySender.messages item, int position) {
 		if(item.getStatus() == 0) {
 			// message chua doc
-//			holder.linearText.setBackgroundResource(R.drawable.leftroundedinput);
+			holder.linearText.setBackgroundResource(R.drawable.leftroundedinput);
 			holder.imgLogoBackground.setBackgroundResource(R.drawable.circle_border_white);
 			holder.imgDotBlue.setVisibility(View.VISIBLE);
 		} else if(item.getStatus() == 1){
 			// da doc message
-//			holder.linearText.setBackgroundResource(R.drawable.leftrounded_gray);
+			holder.linearText.setBackgroundResource(R.drawable.leftrounded_gray);
 			holder.imgLogoBackground.setBackgroundResource(R.drawable.circle_border_gray);
 			holder.imgDotBlue.setVisibility(View.GONE);
 		}
@@ -180,8 +188,9 @@ public class MessageBySenderAdapter extends ArrayAdapter<messages> {
 		});
 	}
 	
-	private void expand(ViewHolder holder, vn.infory.infory.data.MessageBySender.messages item) {
+	private void expand(ViewHolder holder, final vn.infory.infory.data.MessageBySender.messages item) {
 		if(holder.txtContent.getVisibility() != View.VISIBLE) {
+			holder.linearText.setBackgroundResource(R.drawable.leftroundedinput);
 			holder.txtDateTime.setTextColor(mContext.getResources().getColor(R.color.black));
 			holder.txtTitle.setTextColor(mContext.getResources().getColor(R.color.black));
 			holder.txtContent.setTextColor(mContext.getResources().getColor(R.color.black));
@@ -191,6 +200,32 @@ public class MessageBySenderAdapter extends ArrayAdapter<messages> {
 		}
 		if(item.getStatus() == 0) {
 			// chua doc message, call service mark read message trong day
+			MarkReadMessageTask task = new MarkReadMessageTask(mContext, item.getIdMessage(), 0);
+			task.setMarkReadMessageTaskListener(new onMarkReadMessageTaskListener() {
+				
+				@Override
+				public void onPreMarkReadMessage() {
+					if(dialog != null && !dialog.isShowing())
+						dialog.show();
+				}
+				
+				@Override
+				public void onMarkReadMessageSuccess(String response) {
+					if(dialog != null && dialog.isShowing())
+						dialog.cancel();
+					item.setStatus(1);
+					notifyDataSetChanged();
+				}
+				
+				@Override
+				public void onMarkReadMessageFailure() {
+					if(dialog != null && dialog.isShowing())
+						dialog.cancel();
+					item.setStatus(1);
+					notifyDataSetChanged();
+				}
+			});
+			task.execute();
 		}
 	}
 	

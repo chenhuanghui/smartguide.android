@@ -48,6 +48,7 @@ public class APILinkMaker
 	public static final String mDeleteMessages		= mPrefix + "user/message/remove";
 	public static final String mGetMessagesBySender	= mPrefix + "user/message/listBySender";
 	public static final String mRegisterIDGCM		= mPrefix + "user/message/updateRegistrationId";
+	public static final String mMarkReadMessage		= mPrefix + "user/message/markRead";
 	
 	
 	
