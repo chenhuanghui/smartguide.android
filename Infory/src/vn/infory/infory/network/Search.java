@@ -22,25 +22,28 @@ public class Search extends CyAsyncTask {
 	private int mSort;
 	private float mLat;
 	private float mLng;
+	private int mCityId;
 
 	public Search(Context c, String keyword, int page, int sort) {
 		super(c);
 		Settings s = vn.infory.infory.data.Settings.instance();
-		init(keyword, page, sort, s.lat, s.lng);
+		int cityId = Integer.parseInt(s.cityId);
+		init(keyword, page, sort, s.lat, s.lng, cityId);
 	}
 
 	public Search(Context c, String keyword, int page, int sort, float lat,
-			float lng) {
+			float lng, int cityId) {
 		super(c);
-		init(keyword, page, sort, lat, lng);
+		init(keyword, page, sort, lat, lng, cityId);
 	}
 
-	private void init(String keyword, int page, int sort, float lat, float lng) {
+	private void init(String keyword, int page, int sort, float lat, float lng, int cityId) {
 		mKeyword = keyword;
 		mPage = page;
 		mSort = sort;
 		mLat = lat;
 		mLng = lng;
+		mCityId = cityId;
 	}
 
 	@Override
@@ -54,7 +57,7 @@ public class Search extends CyAsyncTask {
 
 	@Override
 	public Search clone() {
-		return new Search(mContext, mKeyword, mPage, mSort, mLat, mLng);
+		return new Search(mContext, mKeyword, mPage, mSort, mLat, mLng, mCityId);
 	}
 
 	@Override
@@ -69,6 +72,7 @@ public class Search extends CyAsyncTask {
 			pairs.add(new BasicNameValuePair("userLng", Float.toString(mLng)));
 			pairs.add(new BasicNameValuePair("sort", Integer.toString(mSort)));
 			pairs.add(new BasicNameValuePair("page", Integer.toString(mPage)));
+			pairs.add(new BasicNameValuePair("idCity", Integer.toString(mCityId)));
 			String json = NetworkManager.post(APILinkMaker.mSearch, pairs);
 			if (json.equalsIgnoreCase("null"))
 				json = "[]";

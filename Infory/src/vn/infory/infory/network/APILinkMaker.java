@@ -15,7 +15,7 @@ public class APILinkMaker {
 	public static final String mProfile	 			= mPrefix + "user/profile";
 	public static final String mGetAvatarList		= mPrefix + "user/avatar/get";
 	
-	public static final String mSearch 				= mPrefix + "shop/search_v2_1";
+	public static final String mSearch 				= mPrefix + "elastic/searchV2";
 	public static final String mPlaceListList		= mPrefix + "placelist/getList";
 	public static final String mPlaceList			= mPrefix + "placelist/get";
 	public static final String mPlaceListDetail		= mPrefix + "placelist/getDetail";

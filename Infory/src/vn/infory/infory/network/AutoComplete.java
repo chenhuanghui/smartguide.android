@@ -6,14 +6,12 @@ import java.util.ArrayList;
 import org.json.JSONArray;
 import org.json.JSONObject;
 
-import com.cycrix.jsonparser.JsonArray;
 import com.cycrix.jsonparser.JsonParser;
 
 import vn.infory.infory.CyUtils;
 import vn.infory.infory.data.AutoCompleteItem;
+import vn.infory.infory.data.Settings;
 import android.content.Context;
-import android.graphics.Paint.Join;
-import android.media.audiofx.BassBoost.Settings;
 
 public class AutoComplete extends CyAsyncTask {
 
@@ -21,10 +19,13 @@ public class AutoComplete extends CyAsyncTask {
 	private JSONObject mRequestBody;
 	private int mCityId;
 
-	public AutoComplete(Context c, String keyword, int cityId) {
+	public AutoComplete(Context c, String keyword) {
 		super(c);
 
 		mKeyword = keyword;
+		
+		Settings s = vn.infory.infory.data.Settings.instance();
+		int cityId = Integer.parseInt(s.cityId);
 		mCityId = cityId;
 	}
 
