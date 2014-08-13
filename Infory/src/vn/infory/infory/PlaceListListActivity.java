@@ -229,9 +229,12 @@ public class PlaceListListActivity extends Activity {
 			// if not found, cancel current request, make new request
 			if (mCurrentAutoCompRequest != null)
 				mCurrentAutoCompRequest.cancel(true);
+			
+			Settings s = Settings.instance();
+			int cityId = Integer.parseInt(s.cityId);
 
 			mCurrentAutoCompRequest = new AutoComplete(PlaceListListActivity.this, 
-					keyword.toString().trim()) {
+					keyword.toString().trim(), cityId) {
 				@Override
 				protected void onCompleted(Object result2) {
 					mTaskList.remove(this);

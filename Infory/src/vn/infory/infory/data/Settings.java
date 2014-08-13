@@ -104,6 +104,7 @@ public class Settings {
 		editor.putString("job", job);
 
 		editor.putString("cityId", cityId);
+		editor.putString("cityName", cityName);
 
 		editor.putString("cover", cover);
 		editor.putInt("socialType", socialType);
@@ -144,6 +145,7 @@ public class Settings {
 		job 			= preference.getString("job", "");
 
 		cityId 			= preference.getString("cityId", "1");
+		cityName		= preference.getString("cityName", "Hồ Chí Minh");
 
 		cover 			= preference.getString("cover", "");
 		socialType		= preference.getInt("socialType", 0);
@@ -166,6 +168,7 @@ public class Settings {
 		job 			= "";
 
 		cityId 			= "1";
+		cityName		= "Hồ Chí Minh";
 
 		cover 			= "";
 		socialType		= 0;

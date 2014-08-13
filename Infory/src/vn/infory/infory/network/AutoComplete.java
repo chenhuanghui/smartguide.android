@@ -13,16 +13,19 @@ import vn.infory.infory.CyUtils;
 import vn.infory.infory.data.AutoCompleteItem;
 import android.content.Context;
 import android.graphics.Paint.Join;
+import android.media.audiofx.BassBoost.Settings;
 
 public class AutoComplete extends CyAsyncTask {
 
 	private String mKeyword;
 	private JSONObject mRequestBody;
+	private int mCityId;
 
-	public AutoComplete(Context c, String keyword) {
+	public AutoComplete(Context c, String keyword, int cityId) {
 		super(c);
 
 		mKeyword = keyword;
+		mCityId = cityId;
 	}
 
 	@Override
@@ -30,11 +33,16 @@ public class AutoComplete extends CyAsyncTask {
 
 		try {
 			if (mRequestBody == null)
-				mRequestBody = new JSONObject(
-						"{\"query\":{\"query_string\":{\"query\":\"a\",\"fields\":[\"shop_name_auto_complete\",\"name_auto_complete\"]}},\"highlight\":{\"fields\":{\"shop_name_auto_complete\":{},\"name_auto_complete\":{}}},\"from\":0,\"size\":5,\"fields\":[\"shop_name\",\"hasPromotion\",\"name\",\"id\"]}");
+				/*mRequestBody = new JSONObject(
+						"{\"query\":{\"query_string\":{\"query\":\"a\",\"fields\":[\"shop_name_auto_complete\",\"name_auto_complete\"]}},\"highlight\":{\"fields\":{\"shop_name_auto_complete\":{},\"name_auto_complete\":{}}},\"from\":0,\"size\":5,\"fields\":[\"shop_name\",\"hasPromotion\",\"name\",\"id\"]}");*/
+				mRequestBody = new JSONObject("{\"query\":{\"filtered\":{\"query\":{\"query_string\":{\"query\":\"infory\",\"fields\":[\"shop_name_auto_complete\",\"name_auto_complete\"]}},\"filter\":{\"term\":{\"city\":83}}}},\"highlight\":{\"fields\":{\"shop_name_auto_complete\":{},\"name_auto_complete\":{}}},\"from\":0,\"size\":5,\"fields\":[\"shop_name\",\"hasPromotion\",\"name\",\"id\"]}");
 
-			mRequestBody.getJSONObject("query").getJSONObject("query_string")
+			mRequestBody.getJSONObject("query").getJSONObject("filtered").getJSONObject("query").getJSONObject("query_string")
 					.put("query", CyUtils.covertToNonVietnamese(mKeyword));
+			
+			mRequestBody.getJSONObject("query").getJSONObject("filtered").getJSONObject("filter").getJSONObject("term")
+					.put("city", mCityId);
+			
 
 			String httpDomain = APILinkMaker.mAutoComplete;
 			if (httpDomain.startsWith("https"))
