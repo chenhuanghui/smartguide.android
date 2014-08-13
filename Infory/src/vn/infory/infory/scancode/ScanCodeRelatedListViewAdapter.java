@@ -105,53 +105,46 @@ public class ScanCodeRelatedListViewAdapter extends BaseAdapter{
 		}
 		
 		if(data.size() > 0){
-			
+			String name, description, logo;
 			if(type == 0)
 			{
 				ListModelRelatedShops tempValues = null;
 				tempValues = (ListModelRelatedShops)data.get(position);
 				
-				holder.name.setText(tempValues.getName());
-				holder.content.setText(tempValues.getDescription());
-				
-				CyImageLoader.instance().showImage(tempValues.getLogo(), holder.image);
-				/*CyImageLoader.instance().loadImage(tempValues.getLogo(), new CyImageLoader.Listener() {
-					@Override
-					public void loadFinish(int from, Bitmap image, String url, CyAsyncTask task) {
-						holder.image.setImageBitmap(SGSideMenu.getCroppedBitmap(image));
-					}
-				}, new Point(), new Activity());*/				
+				name = tempValues.getName();
+				description = tempValues.getDescription();
+				logo = tempValues.getLogo();
 			}
 			else if(type == 1)
 			{
 				ListModelRelatedPromotions tempValues = null;
 				tempValues = (ListModelRelatedPromotions)data.get(position);
 				
-				holder.name.setText(tempValues.getName());
-				holder.content.setText(tempValues.getDescription());
-				
-				CyImageLoader.instance().loadImage(tempValues.getLogo(), new CyImageLoader.Listener() {
-					@Override
-					public void loadFinish(int from, Bitmap image, String url, CyAsyncTask task) {
-						holder.image.setImageBitmap(SGSideMenu.getCroppedBitmap(image));
-					}
-				}, new Point(), new Activity());
+				name = tempValues.getName();
+				description = tempValues.getDescription();
+				logo = tempValues.getLogo();				
 			}
 			else
 			{
 				ListModelRelatedPlacelists tempValues = null;
 				tempValues = (ListModelRelatedPlacelists)data.get(position);
 				
-				holder.name.setText(tempValues.getName());
-				holder.content.setText(tempValues.getDescription());
-				
-				CyImageLoader.instance().loadImage(tempValues.getAuthorAvatar(), new CyImageLoader.Listener() {
-					@Override
-					public void loadFinish(int from, Bitmap image, String url, CyAsyncTask task) {
-						holder.image.setImageBitmap(SGSideMenu.getCroppedBitmap(image));
-					}
-				}, new Point(), new Activity());
+				name = tempValues.getName();
+				description = tempValues.getDescription();
+				logo = tempValues.getAuthorAvatar();
 			}
+			holder.name.setText(name);
+			holder.content.setText(description);
+			
+//			CyImageLoader.instance().showImage(tempValues.getLogo(), holder.image);
+			/*CyImageLoader.instance().loadImage(tempValues.getLogo(), new CyImageLoader.Listener() {
+				@Override
+				public void loadFinish(int from, Bitmap image, String url, CyAsyncTask task) {
+					holder.image.setImageBitmap(SGSideMenu.getCroppedBitmap(image));
+				}
+			}, new Point(), new Activity());*/
+			
+			CyImageLoader.instance().showImageListView(logo, holder.image, new Point(), mTaskList);
 		}
 		return vi;
 	}

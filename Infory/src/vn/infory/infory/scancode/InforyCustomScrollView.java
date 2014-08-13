@@ -45,7 +45,8 @@ public class InforyCustomScrollView extends ScrollView{
 //                Log.i("VerticalScrollview", "onInterceptTouchEvent: UP super false" );
                 return false;
 
-            default: Log.i("VerticalScrollview", "onInterceptTouchEvent: " + action ); break;
+            default: 
+//            	Log.i("VerticalScrollview", "onInterceptTouchEvent: " + action ); break;
         }
 
         return false;

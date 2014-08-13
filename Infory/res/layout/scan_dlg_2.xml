@@ -50,7 +50,7 @@
                android:id="@+id/linearLayoutScanDLG2"
                android:layout_width="match_parent"
                android:layout_height="wrap_content"
-               android:background="#D8D8D8"
+               android:background="#EBEBEB"
                android:gravity="center_horizontal"
                android:orientation="vertical" >
            </LinearLayout>
@@ -60,7 +60,7 @@
                android:layout_width="match_parent"
                android:layout_height="wrap_content"
                android:orientation="vertical"
-               android:background="#D8D8D8"
+               android:background="#EBEBEB"
                android:gravity="center" 
                android:visibility="gone">
 
@@ -79,7 +79,7 @@
                android:layout_height="wrap_content" 
                android:gravity="center_vertical"
                android:layout_marginBottom="20dp"
-               android:background="#D8D8D8"
+               android:background="#EBEBEB"
                android:visibility="gone">
 
                <ImageButton
@@ -116,7 +116,7 @@
                android:layout_width="match_parent"
                android:layout_height="wrap_content"
                android:gravity="center"
-               android:background="#EBEBEB"
+               android:background="#F2F2F2"
                android:orientation="vertical" >
 
                <TextView
@@ -130,11 +130,12 @@
                    android:textSize="12sp" />
            </LinearLayout>
 
-           <ImageView
-               android:id="@+id/imageView2"
-               android:layout_width="wrap_content"
-               android:layout_height="wrap_content"
-               android:src="@drawable/line_blur_status" />
+           <LinearLayout
+               android:layout_width="match_parent"
+               android:layout_height="3dp"
+               android:orientation="vertical"
+               android:background="#EBEBEB" >
+           </LinearLayout>
 
            <LinearLayout
                android:id="@+id/linearLayoutRelated"
@@ -153,7 +154,7 @@
                        android:layout_width="match_parent"
                        android:layout_height="wrap_content"
                        android:layout_gravity="top"
-                       android:background="#EBEBEB"
+                       android:background="#F2F2F2"
                        android:paddingBottom="8dp"
                        android:paddingTop="8dp"
                        android:contentDescription="@string/sfu_heavy"
