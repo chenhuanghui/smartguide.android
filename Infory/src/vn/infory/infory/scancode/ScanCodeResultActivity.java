@@ -91,6 +91,7 @@ import android.view.View.OnClickListener;
 import android.view.ViewGroup;
 import android.view.WindowManager;
 import android.webkit.WebView;
+import android.widget.AdapterView;
 import android.widget.Button;
 import android.widget.FrameLayout;
 import android.widget.HorizontalScrollView;
@@ -116,7 +117,7 @@ public class ScanCodeResultActivity extends FragmentActivity{
 	private static Object mScanCodeResult;
 	public static Object mScanCodeRelated;
 	public static String mQRCode;
-	
+		
 	private UiLifecycleHelper uiHelper;
 	
 	ScanCodeRelatedPagerAdapter mScanCodeRelatedPagerAdapter;	
@@ -618,8 +619,8 @@ public class ScanCodeResultActivity extends FragmentActivity{
         	Bundle args = new Bundle();
             Fragment fragment = null;
             
-            fragment = new ScanCodeRelatedShopsFragment();
-			args.putInt(ScanCodeRelatedShopsFragment.ARG_OBJECT, position);	
+            fragment = new ScanCodeRelatedFragment();
+			args.putInt(ScanCodeRelatedFragment.ARG_OBJECT, position);	
 			fragment.setArguments(args);
             
             return fragment;
@@ -725,40 +726,116 @@ public class ScanCodeResultActivity extends FragmentActivity{
 		}
     }
     
-    public static class ScanCodeRelatedShopsFragment extends Fragment {
+    public static class ScanCodeRelatedFragment extends Fragment {
 
         public static final String ARG_OBJECT = "object";        
             	
     	public ScanCodeResultActivity CustomListView = null;
+    	private ListView list_related_shop;
 
         @Override
         public View onCreateView(LayoutInflater inflater, ViewGroup container,
                 Bundle savedInstanceState) {            
             Bundle args = getArguments();
             
-            View rootView = inflater.inflate(R.layout.scan_code_related_shop_fragment, container, false);
+            View rootView = inflater.inflate(R.layout.scan_code_related_fragment, container, false);
             
             Resources res = getResources();            
             CustomListView = (ScanCodeResultActivity) getActivity();  
             
-            ScanCodeRelatedListViewAdapter adapter_related_shops;
+            ScanCodeRelatedListViewAdapter adapter_related;
             if(args.getInt(ARG_OBJECT) == 0)
             {
-            	adapter_related_shops = new ScanCodeRelatedListViewAdapter(CustomListView, arrListModelRelatedShops,res,0);		
+            	adapter_related = new ScanCodeRelatedListViewAdapter(CustomListView, arrListModelRelatedShops,res,0);		
             }
             else if(args.getInt(ARG_OBJECT) == 1)
             {
-            	adapter_related_shops = new ScanCodeRelatedListViewAdapter(CustomListView, arrListModelRelatedPromotions,res,1);            	
+            	adapter_related = new ScanCodeRelatedListViewAdapter(CustomListView, arrListModelRelatedPromotions,res,1);            	
             }
             else
             {
-            	adapter_related_shops = new ScanCodeRelatedListViewAdapter(CustomListView, arrListModelRelatedPlacelists,res,2);
+            	adapter_related = new ScanCodeRelatedListViewAdapter(CustomListView, arrListModelRelatedPlacelists,res,2);
             }
-            ListView list_related_shop = (ListView)rootView.findViewById(R.id.lstRelatedShops);			
-			list_related_shop.setAdapter(adapter_related_shops);
+            list_related_shop = (ListView)rootView.findViewById(R.id.lstRelated);			
+			list_related_shop.setAdapter(adapter_related);
             
             return rootView;
         }
+
+		@Override
+		public void onActivityCreated(Bundle savedInstanceState) {
+			// TODO Auto-generated method stub
+			super.onActivityCreated(savedInstanceState);
+			
+			list_related_shop.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+
+				@Override
+				public void onItemClick(AdapterView<?> parent, View view,
+						int position, long id) {
+					// TODO Auto-generated method stub
+					
+					ScanCodeRelatedListViewAdapter adapter = (ScanCodeRelatedListViewAdapter)parent.getAdapter();
+					int type = adapter.getType();
+					if(type == 0) //Shop
+					{
+						ListModelRelatedShops item = (ListModelRelatedShops) adapter.getItem(position);
+						
+						GetShopDetail2 task = new GetShopDetail2(getActivity(), item.getId()) {
+							@Override
+							protected void onCompleted(Object result2) {
+								mTaskList.remove(this);
+								
+								JSONObject jShop = (JSONObject) result2;
+								
+								Shop shop = new Shop();
+								shop.idShop	= jShop.optInt("idShop");
+								shop.shopName	= jShop.optString("shopName");
+								shop.numOfView = jShop.optString("numOfView");
+								shop.logo		= jShop.optString("logo");
+								
+								ShopDetailActivity.newInstance(getActivity(), shop);
+							}
+
+							@Override
+							protected void onFail(Exception e) {
+								mTaskList.remove(this);
+								
+								ShopDetailActivity.newInstanceNoReload(getActivity(), new Shop());
+							}
+						};
+						task.setTaskList(mTaskList);
+						task.executeOnExecutor(NetworkManager.THREAD_POOL);
+					}
+					else if(type == 1) //Shop list
+					{
+						ListModelRelatedPromotions item = (ListModelRelatedPromotions) adapter.getItem(position);
+						try {							
+							
+							//Convert JSONArray thành string "[1,2,3,4]"
+							String ids = item.getShop_ids().toString();		
+							//Cắt bỏ dấu [ và ]
+							ids = ids.substring(1, ids.length()-1);
+							
+							ShopListActivity.newInstance(getActivity(), ids, new ArrayList<Shop>(),0);
+						} catch (Exception e) {
+							// TODO Auto-generated catch block
+							ShopListActivity.newInstance(getActivity(), "a", new ArrayList<Shop>(),0);
+						} 
+					}
+					else
+					{
+						try {
+							ListModelRelatedPlacelists item = (ListModelRelatedPlacelists) adapter.getItem(position);
+							String id_placelist = Integer.toString(item.getId());
+							ShopListActivity.newInstanceWithPlacelistId(getActivity(), id_placelist, new ArrayList<Shop>());
+						} catch (Exception e) {
+							// TODO: handle exception
+							ShopListActivity.newInstanceWithPlacelistId(getActivity(), "a", new ArrayList<Shop>());
+						}
+					}						
+				}
+			});
+		}        
     }
 	
 	public static void newInstance(final Activity act, Object objScanCode, String code) {

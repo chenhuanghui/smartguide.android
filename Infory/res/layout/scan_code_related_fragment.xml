@@ -2,7 +2,8 @@
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:orientation="vertical" >
+    android:orientation="vertical"
+    android:descendantFocusability="blocksDescendants" >
     
     <!-- <TextView
     android:id="@android:id/text1"
@@ -13,7 +14,7 @@
     android:padding="32dp" />	 -->
     
     <ListView
-        android:id="@+id/lstRelatedShops"
+        android:id="@+id/lstRelated"
         android:layout_width="match_parent"
         android:layout_height="wrap_content" >
     </ListView>

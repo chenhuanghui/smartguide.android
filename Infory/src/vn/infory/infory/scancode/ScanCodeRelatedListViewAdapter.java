@@ -1,11 +1,19 @@
 package vn.infory.infory.scancode;
 
 import java.util.ArrayList;
+import java.util.List;
+
+import org.json.JSONObject;
 
 import vn.infory.infory.CyImageLoader;
 import vn.infory.infory.R;
 import vn.infory.infory.SGSideMenu;
+import vn.infory.infory.data.Shop;
+import vn.infory.infory.home.HomeAdapter;
 import vn.infory.infory.network.CyAsyncTask;
+import vn.infory.infory.network.GetShopDetail2;
+import vn.infory.infory.network.NetworkManager;
+import vn.infory.infory.shopdetail.ShopDetailActivity;
 
 import android.app.Activity;
 import android.content.Context;
@@ -17,17 +25,22 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.view.ViewGroup;
+import android.widget.AdapterView;
+import android.widget.AdapterView.OnItemClickListener;
 import android.widget.BaseAdapter;
 import android.widget.ImageView;
 import android.widget.TextView;
+import android.widget.Toast;
 
-public class ScanCodeRelatedListViewAdapter extends BaseAdapter implements OnClickListener{
+public class ScanCodeRelatedListViewAdapter extends BaseAdapter{
 	
 	private Activity activity;
 	private ArrayList data;
 	private static LayoutInflater inflater = null;
 	public Resources res;	
 	private int type;
+	
+	private List<CyAsyncTask> mTaskList = new ArrayList<CyAsyncTask>();
 	
 	public ScanCodeRelatedListViewAdapter(Activity a, ArrayList d, Resources resLocal, int t){
 		activity = a;
@@ -49,13 +62,17 @@ public class ScanCodeRelatedListViewAdapter extends BaseAdapter implements OnCli
 	@Override
 	public Object getItem(int position) {
 		// TODO Auto-generated method stub
-		return position;
+		return data.get(position);
 	}
 
 	@Override
 	public long getItemId(int position) {
 		// TODO Auto-generated method stub
 		return position;
+	}
+	
+	public int getType() {
+		return type;
 	}
 	
 	public static class ViewHolder {
@@ -97,12 +114,13 @@ public class ScanCodeRelatedListViewAdapter extends BaseAdapter implements OnCli
 				holder.name.setText(tempValues.getName());
 				holder.content.setText(tempValues.getDescription());
 				
-				CyImageLoader.instance().loadImage(tempValues.getLogo(), new CyImageLoader.Listener() {
+				CyImageLoader.instance().showImage(tempValues.getLogo(), holder.image);
+				/*CyImageLoader.instance().loadImage(tempValues.getLogo(), new CyImageLoader.Listener() {
 					@Override
 					public void loadFinish(int from, Bitmap image, String url, CyAsyncTask task) {
 						holder.image.setImageBitmap(SGSideMenu.getCroppedBitmap(image));
 					}
-				}, new Point(), new Activity());				
+				}, new Point(), new Activity());*/				
 			}
 			else if(type == 1)
 			{
@@ -137,29 +155,4 @@ public class ScanCodeRelatedListViewAdapter extends BaseAdapter implements OnCli
 		}
 		return vi;
 	}
-
-	@Override
-	public void onClick(View v) {
-		// TODO Auto-generated method stub
-		Log.v("CustomAdapter","Click");
-	}
-
-	private class OnItemClickListener implements OnClickListener {
-
-		private int mPosition;
-		
-		public OnItemClickListener(int position) {
-			// TODO Auto-generated constructor stub
-			mPosition = position;
-		}
-		
-		@Override
-		public void onClick(View v) {
-			// TODO Auto-generated method stub
-			
-		}
-		
-	}
-	
-
 }

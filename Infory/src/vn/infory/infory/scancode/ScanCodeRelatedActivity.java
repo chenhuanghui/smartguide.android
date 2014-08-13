@@ -152,7 +152,7 @@ public class ScanCodeRelatedActivity extends FragmentActivity {
         @Override
         public View onCreateView(LayoutInflater inflater, ViewGroup container,
                 Bundle savedInstanceState) {
-            View rootView = inflater.inflate(R.layout.scan_code_related_shop_fragment, container, false);
+            View rootView = inflater.inflate(R.layout.scan_code_related_fragment, container, false);
             Bundle args = getArguments();
             
             if(args.getInt(ARG_OBJECT) == 1){
