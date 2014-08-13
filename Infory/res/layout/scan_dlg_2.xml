@@ -111,7 +111,7 @@
 
            </RelativeLayout>
 
-           <!-- <LinearLayout
+           <LinearLayout
                android:layout_width="match_parent"
                android:layout_height="wrap_content"
                android:gravity="center"
@@ -125,9 +125,9 @@
                    android:paddingTop="5dp"
                    android:text="Có thể bạn thích"
                    android:textAppearance="?android:attr/textAppearanceMedium" />
-           </LinearLayout> -->
+           </LinearLayout>
 
-          <!--  <LinearLayout
+           <LinearLayout
                android:id="@+id/linearLayoutRelated"
                android:layout_width="match_parent"
                android:layout_height="match_parent"
@@ -135,7 +135,7 @@
 
                <android.support.v4.view.ViewPager
                    xmlns:android="http://schemas.android.com/apk/res/android"
-                   android:id="@+id/testpager1"
+                   android:id="@+id/testpager"
                    android:layout_width="match_parent"
                    android:layout_height="300dp" >
 
@@ -150,7 +150,7 @@
                        android:textColor="#fff" >
                    </android.support.v4.view.PagerTitleStrip>
                </android.support.v4.view.ViewPager>
-           </LinearLayout> -->
+           </LinearLayout>
 
 <!--             <FrameLayout
                 android:id="@+id/scanDLGLayoutLoading"

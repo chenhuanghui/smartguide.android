@@ -2,16 +2,18 @@ package vn.infory.infory.scancode;
 
 import java.util.ArrayList;
 
+import org.json.JSONArray;
+
 public class ListModelRelatedPromotions {
-	private ArrayList<Integer> shop_ids;
+	private JSONArray shop_ids;
 	private String name;
 	private String logo;
 	private String time;
 	private String description;
-	public ArrayList<Integer> getShop_ids() {
+	public JSONArray getShop_ids() {
 		return shop_ids;
 	}
-	public void setShop_ids(ArrayList<Integer> shop_ids) {
+	public void setShop_ids(JSONArray shop_ids) {
 		this.shop_ids = shop_ids;
 	}
 	public String getName() {
@@ -39,5 +41,5 @@ public class ListModelRelatedPromotions {
 		this.description = description;
 	}
 	
-	
+		
 }

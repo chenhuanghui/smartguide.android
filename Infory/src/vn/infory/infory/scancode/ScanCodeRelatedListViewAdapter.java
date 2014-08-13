@@ -27,11 +27,13 @@ public class ScanCodeRelatedListViewAdapter extends BaseAdapter implements OnCli
 	private ArrayList data;
 	private static LayoutInflater inflater = null;
 	public Resources res;	
+	private int type;
 	
-	public ScanCodeRelatedListViewAdapter(Activity a, ArrayList d, Resources resLocal){
+	public ScanCodeRelatedListViewAdapter(Activity a, ArrayList d, Resources resLocal, int t){
 		activity = a;
 		data = d;
 		res = resLocal;
+		type = t;
 		
 		inflater = (LayoutInflater)activity.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
 	}
@@ -87,14 +89,26 @@ public class ScanCodeRelatedListViewAdapter extends BaseAdapter implements OnCli
 		
 		if(data.size() > 0){
 			
-			if(position == 1)
+			if(type == 0)
+			{
+				ListModelRelatedShops tempValues = null;
+				tempValues = (ListModelRelatedShops)data.get(position);
+				
+				holder.name.setText(tempValues.getName());
+				holder.content.setText(tempValues.getDescription());
+				
+				CyImageLoader.instance().loadImage(tempValues.getLogo(), new CyImageLoader.Listener() {
+					@Override
+					public void loadFinish(int from, Bitmap image, String url, CyAsyncTask task) {
+						holder.image.setImageBitmap(SGSideMenu.getCroppedBitmap(image));
+					}
+				}, new Point(), new Activity());				
+			}
+			else if(type == 1)
 			{
 				ListModelRelatedPromotions tempValues = null;
-				/***** Get each Model object from Arraylist ********/
-				tempValues = null;
 				tempValues = (ListModelRelatedPromotions)data.get(position);
 				
-				/************  Set Model values in Holder elements ***********/
 				holder.name.setText(tempValues.getName());
 				holder.content.setText(tempValues.getDescription());
 				
@@ -107,16 +121,13 @@ public class ScanCodeRelatedListViewAdapter extends BaseAdapter implements OnCli
 			}
 			else
 			{
-				ListModelRelatedShops tempValues = null;
-				/***** Get each Model object from Arraylist ********/
-				tempValues = null;
-				tempValues = (ListModelRelatedShops)data.get(position);
+				ListModelRelatedPlacelists tempValues = null;
+				tempValues = (ListModelRelatedPlacelists)data.get(position);
 				
-				/************  Set Model values in Holder elements ***********/
 				holder.name.setText(tempValues.getName());
 				holder.content.setText(tempValues.getDescription());
 				
-				CyImageLoader.instance().loadImage(tempValues.getLogo(), new CyImageLoader.Listener() {
+				CyImageLoader.instance().loadImage(tempValues.getAuthorAvatar(), new CyImageLoader.Listener() {
 					@Override
 					public void loadFinish(int from, Bitmap image, String url, CyAsyncTask task) {
 						holder.image.setImageBitmap(SGSideMenu.getCroppedBitmap(image));

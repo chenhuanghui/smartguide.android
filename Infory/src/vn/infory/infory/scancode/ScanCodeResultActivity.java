@@ -27,6 +27,8 @@ import vn.infory.infory.network.GetShopDetail2;
 import vn.infory.infory.network.NetworkManager;
 import vn.infory.infory.network.ScanCode;
 import vn.infory.infory.network.ScanCodeRelated;
+import vn.infory.infory.scancode.ScanCodeRelatedActivity.ScanCodeRelatedFragment;
+import vn.infory.infory.scancode.ScanCodeRelatedActivity.ScanCodeRelatedPagerAdapter;
 import vn.infory.infory.shopdetail.ShopDetailActivity;
 import vn.infory.infory.shoplist.ShopListActivity;
 
@@ -105,7 +107,7 @@ import android.widget.VideoView;
 
 public class ScanCodeResultActivity extends FragmentActivity{
 	
-	private List<CyAsyncTask> mTaskList = new ArrayList<CyAsyncTask>();
+	private static List<CyAsyncTask> mTaskList = new ArrayList<CyAsyncTask>();
 	
 	private Listener mListener;
 	
@@ -117,8 +119,8 @@ public class ScanCodeResultActivity extends FragmentActivity{
 	
 	private UiLifecycleHelper uiHelper;
 	
-//	ScanCodeRelatedPagerAdapter mScanCodeRelatedPagerAdapter;	
-//	ViewPager mViewPager;
+	ScanCodeRelatedPagerAdapter mScanCodeRelatedPagerAdapter;	
+	ViewPager mViewPager;
 		
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
@@ -535,18 +537,19 @@ public class ScanCodeResultActivity extends FragmentActivity{
 			}	
 		}
 		
-		/*mScanCodeRelatedPagerAdapter = new ScanCodeRelatedPagerAdapter(getSupportFragmentManager());
-		mViewPager = (ViewPager) findViewById(R.id.testpager1);
-        mViewPager.setAdapter(mScanCodeRelatedPagerAdapter);*/
+		setListData();
+		mScanCodeRelatedPagerAdapter = new ScanCodeRelatedPagerAdapter(getSupportFragmentManager());
+		mViewPager = (ViewPager) findViewById(R.id.testpager);
+        mViewPager.setAdapter(mScanCodeRelatedPagerAdapter);
 		
         
-        /*mViewPager.setOnTouchListener(new View.OnTouchListener() {
+        mViewPager.setOnTouchListener(new View.OnTouchListener() {
             @Override
             public boolean onTouch(View v, MotionEvent event) {
                 mViewPager.getParent().requestDisallowInterceptTouchEvent(true);
                 return false;
             }
-        });*/
+        });
 		
 		ImageButton mBtnBack = (ImageButton) findViewById(R.id.btnBack);
 		mBtnBack.setOnClickListener(new View.OnClickListener() {			
@@ -599,7 +602,7 @@ public class ScanCodeResultActivity extends FragmentActivity{
 	    uiHelper.onDestroy();
 	}
 	
-	/*@Override
+	@Override
     public boolean onOptionsItemSelected(MenuItem item) {        
         return super.onOptionsItemSelected(item);
     }
@@ -611,43 +614,14 @@ public class ScanCodeResultActivity extends FragmentActivity{
         }
 
         @Override
-        public Fragment getItem(int position) {            
-            Bundle args = new Bundle();
-            
-            setListData();
+        public Fragment getItem(int position) { 
+        	Bundle args = new Bundle();
             Fragment fragment = null;
             
-            if(position == 1)
-            {            	
-                fragment = new ScanCodeRelatedPromotionsFragment();
-    			args.putInt(ScanCodeRelatedPromotionsFragment.ARG_OBJECT, position);	
-    			fragment.setArguments(args);
-            }            
-            else
-            {
-            	fragment = new ScanCodeRelatedShopsFragment();
-    			args.putInt(ScanCodeRelatedShopsFragment.ARG_OBJECT, position);	
-    			fragment.setArguments(args);
-            }
-			
-//            switch (position) {
-//			case 0:
-//				fragment = new ScanCodeRelatedShopsFragment();
-//				args.putInt(ScanCodeRelatedShopsFragment.ARG_OBJECT, position);	
-//				fragment.setArguments(args);
-//				break;
-//
-//			case 1:
-//				fragment = new ScanCodeRelatedShopsFragment();
-//				args.putInt(ScanCodeRelatedShopsFragment.ARG_OBJECT, position);	
-//				fragment.setArguments(args);
-//				break;
-//			case 2:
-//				fragment = new ScanCodeRelatedShopsFragment();
-//				args.putInt(ScanCodeRelatedShopsFragment.ARG_OBJECT, position);
-//				fragment.setArguments(args);
-//				break;
-//			}            
+            fragment = new ScanCodeRelatedShopsFragment();
+			args.putInt(ScanCodeRelatedShopsFragment.ARG_OBJECT, position);	
+			fragment.setArguments(args);
+            
             return fragment;
         }
 
@@ -678,6 +652,7 @@ public class ScanCodeResultActivity extends FragmentActivity{
     
     private static ArrayList<ListModelRelatedShops> arrListModelRelatedShops = new ArrayList<ListModelRelatedShops>();
     private static ArrayList<ListModelRelatedPromotions> arrListModelRelatedPromotions = new ArrayList<ListModelRelatedPromotions>();
+    private static ArrayList<ListModelRelatedPlacelists> arrListModelRelatedPlacelists = new ArrayList<ListModelRelatedPlacelists>();
 	
     public static void setListData()
     {
@@ -696,9 +671,11 @@ public class ScanCodeResultActivity extends FragmentActivity{
 							JSONObject related_shop_obj = jArrRelatedShops.getJSONObject(j);
 							final ListModelRelatedShops related_shop_model = new ListModelRelatedShops();
 		                     
-			                related_shop_model.setName(related_shop_obj.optString("shopName"));
-			                related_shop_model.setDescription(related_shop_obj.optString("description"));
+							related_shop_model.setId(related_shop_obj.optInt("idShop"));
+							related_shop_model.setName(related_shop_obj.optString("shopName"));			                
 			                related_shop_model.setLogo(related_shop_obj.optString("logo"));
+			                related_shop_model.setAddress(related_shop_obj.optString("address"));
+			                related_shop_model.setDescription(related_shop_obj.optString("description"));
 			                    
 			                arrListModelRelatedShops.add( related_shop_model );
 						}
@@ -710,11 +687,31 @@ public class ScanCodeResultActivity extends FragmentActivity{
 							JSONObject related_promotion_obj = jArrRelatedPromotions.getJSONObject(j);
 							final ListModelRelatedPromotions related_promotion_model = new ListModelRelatedPromotions();
 		                     
+							related_promotion_model.setShop_ids(related_promotion_obj.optJSONArray("idShops"));
 							related_promotion_model.setName(related_promotion_obj.optString("promotionName"));
-							related_promotion_model.setDescription(related_promotion_obj.optString("description"));
 							related_promotion_model.setLogo(related_promotion_obj.optString("logo"));
+							related_promotion_model.setTime(related_promotion_obj.optString("time"));
+							related_promotion_model.setDescription(related_promotion_obj.optString("description"));
+							
 			                    
 							arrListModelRelatedPromotions.add( related_promotion_model );
+						}
+					}
+					
+					if(jItem.has("relatedPlacelists"))
+					{
+						JSONArray jArrRelatedPlacelists = jItem.getJSONArray("relatedPlacelists");
+						for(int j = 0; j < jArrRelatedPlacelists.length(); j++){
+							JSONObject related_placelists_obj = jArrRelatedPlacelists.getJSONObject(j);
+							final ListModelRelatedPlacelists related_placelists_model = new ListModelRelatedPlacelists();
+		                     
+							related_placelists_model.setId(related_placelists_obj.optInt("placelistId"));
+							related_placelists_model.setName(related_placelists_obj.optString("placelistName"));
+							related_placelists_model.setAuthorName(related_placelists_obj.optString("authorName"));
+							related_placelists_model.setAuthorAvatar(related_placelists_obj.optString("authorAvatar"));
+							related_placelists_model.setDescription(related_placelists_obj.optString("description"));
+			                    
+			                arrListModelRelatedPlacelists.add( related_placelists_model );
 						}
 					}
 				}					
@@ -727,7 +724,6 @@ public class ScanCodeResultActivity extends FragmentActivity{
 			}	
 		}
     }
-    
     
     public static class ScanCodeRelatedShopsFragment extends Fragment {
 
@@ -742,56 +738,54 @@ public class ScanCodeResultActivity extends FragmentActivity{
             
             View rootView = inflater.inflate(R.layout.scan_code_related_shop_fragment, container, false);
             
-            Resources res =getResources();            
+            Resources res = getResources();            
             CustomListView = (ScanCodeResultActivity) getActivity();  
             
+            ScanCodeRelatedListViewAdapter adapter_related_shops;
             if(args.getInt(ARG_OBJECT) == 0)
             {
-            	ScanCodeRelatedListViewAdapter adapter_related_shops = new ScanCodeRelatedListViewAdapter(CustomListView, arrListModelRelatedShops,res);
-    			ListView list_related_shop = (ListView)rootView.findViewById(R.id.lstRelatedShops);
-    			
-    			list_related_shop.setAdapter(adapter_related_shops);
+            	adapter_related_shops = new ScanCodeRelatedListViewAdapter(CustomListView, arrListModelRelatedShops,res,0);		
             }
+            else if(args.getInt(ARG_OBJECT) == 1)
+            {
+            	adapter_related_shops = new ScanCodeRelatedListViewAdapter(CustomListView, arrListModelRelatedPromotions,res,1);            	
+            }
+            else
+            {
+            	adapter_related_shops = new ScanCodeRelatedListViewAdapter(CustomListView, arrListModelRelatedPlacelists,res,2);
+            }
+            ListView list_related_shop = (ListView)rootView.findViewById(R.id.lstRelatedShops);			
+			list_related_shop.setAdapter(adapter_related_shops);
             
             return rootView;
         }
     }
-    
-    public static class ScanCodeRelatedPromotionsFragment extends Fragment {
-
-        public static final String ARG_OBJECT = "object";        
-            	
-    	public ScanCodeResultActivity CustomListView = null;
-
-        @Override
-        public View onCreateView(LayoutInflater inflater, ViewGroup container,
-                Bundle savedInstanceState) {            
-            Bundle args = getArguments();
-            
-            View rootView = inflater.inflate(R.layout.scan_code_related_promotion_fragment, container, false);
-            
-            Resources res = getResources();            
-            CustomListView = (ScanCodeResultActivity) getActivity(); 
-            
-            if(args.getInt(ARG_OBJECT) == 1)
-            {
-            	ScanCodeRelatedListViewAdapter adapter_related_promotions = new ScanCodeRelatedListViewAdapter(CustomListView, arrListModelRelatedPromotions,res);
-    			ListView list_related_promotions = (ListView)rootView.findViewById(R.id.lstRelatedPromotions);
-    			
-    			list_related_promotions.setAdapter(adapter_related_promotions); 
-            }
-                       
-            return rootView;
-        }
-    }*/
 	
-	public static void newInstance(Activity act, Object objScanCode, String code) {
+	public static void newInstance(final Activity act, Object objScanCode, String code) {
 		mScanCodeResult = objScanCode;
 		mQRCode = code;
 		
-		Intent intent = new Intent(act, ScanCodeResultActivity.class);
-		act.startActivity(intent);
-		act.overridePendingTransition(android.R.anim.fade_in, android.R.anim.fade_out);
+		ScanCodeRelated scanCodeRelatedTask = new ScanCodeRelated(act, mQRCode, 0, 0)
+		{
+			@Override
+			protected void onCompleted(Object result3) throws Exception {
+				mTaskList.remove(this);		
+								
+				mScanCodeRelated = result3;
+				
+				Intent intent = new Intent(act, ScanCodeResultActivity.class);
+				act.startActivity(intent);
+				act.overridePendingTransition(android.R.anim.fade_in, android.R.anim.fade_out);
+			}
+
+			@Override
+			protected void onFail(Exception e) {
+				mTaskList.remove(this);
+			}
+		};    
+		
+		mTaskList.add(scanCodeRelatedTask);
+		scanCodeRelatedTask.executeOnExecutor(NetworkManager.THREAD_POOL);		
 	}	
 	
 	private void publishFeedDialog(Session session,String link) {

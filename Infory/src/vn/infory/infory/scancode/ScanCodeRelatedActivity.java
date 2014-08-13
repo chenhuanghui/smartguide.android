@@ -101,7 +101,10 @@ public class ScanCodeRelatedActivity extends FragmentActivity {
         public Fragment getItem(int i) {
             Fragment fragment = new ScanCodeRelatedFragment();
             Bundle args = new Bundle();
-            args.putInt(ScanCodeRelatedFragment.ARG_OBJECT, i + 1); // Our object is just an integer :-P
+            if(i == 1)
+            	args.putInt(ScanCodeRelatedFragment.ARG_OBJECT, 1000); // Our object is just an integer :-P
+        	else
+            	args.putInt(ScanCodeRelatedFragment.ARG_OBJECT, i + 1); // Our object is just an integer :-P
             fragment.setArguments(args);
             return fragment;
         }
@@ -161,7 +164,7 @@ public class ScanCodeRelatedActivity extends FragmentActivity {
                 list = new ListView(getActivity());
                  
                 /**************** Create Custom Adapter *********/
-                adapter=new ScanCodeRelatedListViewAdapter( CustomListView, CustomListViewValuesArr,res );
+                adapter=new ScanCodeRelatedListViewAdapter( CustomListView, CustomListViewValuesArr,res,0 );
                 list.setAdapter( adapter );
             }
             else{
