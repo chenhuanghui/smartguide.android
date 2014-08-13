@@ -5,6 +5,7 @@ import java.util.List;
 
 import vn.infory.infory.CyUtils;
 import vn.infory.infory.FontsCollection;
+import vn.infory.infory.LayoutError;
 import vn.infory.infory.PlaceListListActivity;
 import vn.infory.infory.R;
 import vn.infory.infory.data.PlaceList;
@@ -17,6 +18,9 @@ import vn.infory.infory.network.GetShopList;
 import vn.infory.infory.network.NetworkManager;
 import vn.infory.infory.shopdetail.ShopDetailActivity;
 import vn.infory.infory.shoplist.ShopListActivity;
+import android.app.AlertDialog;
+import android.app.AlertDialog.Builder;
+import android.content.DialogInterface;
 import android.graphics.drawable.AnimationDrawable;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
@@ -118,6 +122,18 @@ public class PromotionFragment extends Fragment implements HomeListener {
 				mTaskList.remove(this);
 				
 				CyUtils.showError("Không thể lấy danh sách chuỗi cửa hàng", mEx, getActivity());
+//				LayoutError.newInstance(getActivity());
+				
+				AlertDialog.Builder builder = new Builder(getActivity());
+				builder.setCancelable(false);
+				builder.setMessage("Không có dữ liệu!");
+				builder.setPositiveButton("OK", new DialogInterface.OnClickListener() {
+					@Override
+					public void onClick(DialogInterface arg0, int arg1) {
+						getActivity().finish();
+					}
+				});
+				builder.create().show();
 			}
 		};
 		mTaskList.add(getShopListTask);

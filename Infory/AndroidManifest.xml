@@ -229,6 +229,12 @@
             android:screenOrientation="portrait"
             android:theme="@android:style/Theme.Holo.Light.NoActionBar"
             android:windowSoftInputMode="adjustNothing" >
+		</activity>
+		<activity
+            android:name="vn.infory.infory.LayoutError"
+            android:label="@string/layout_error"
+            android:screenOrientation="portrait"
+            android:theme="@android:style/Theme.Holo.Light.NoActionBar" >
         </activity>
     </application>
 

@@ -46,7 +46,8 @@ public class HomeItemUpdater_Header extends HomeItemUpdater{
 				// TODO Auto-generated method stub
 				if(itemHeader.idPlacelist != 0)
 				{		    		
-					LoadingActivity.newInstance(caller.getActivity(), itemHeader.idPlacelist);			
+					ShopListActivity.newInstanceWithPlacelistId(caller.getActivity(), itemHeader.idPlacelist+"", new ArrayList<Shop>());
+//					LoadingActivity.newInstance(caller.getActivity(), itemHeader.idPlacelist);			
 				}
 				else if(itemHeader.idShops != "")
 				{		    		

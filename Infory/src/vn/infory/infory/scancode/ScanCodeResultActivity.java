@@ -47,7 +47,10 @@ import com.google.android.gms.plus.PlusShare;
 
 import android.R.array;
 import android.app.Activity;
+import android.app.AlertDialog;
+import android.app.AlertDialog.Builder;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.pm.ApplicationInfo;
 import android.content.pm.PackageManager;
@@ -181,7 +184,7 @@ public class ScanCodeResultActivity extends FragmentActivity{
 														
 							final FrameLayout frameImg = new FrameLayout(getApplicationContext());
 							
-							FrameLayout frameLoading = new FrameLayout(getApplicationContext());
+							final FrameLayout frameLoading = new FrameLayout(getApplicationContext());
 							
 							FrameLayout.LayoutParams loadingParams = new FrameLayout.LayoutParams(LayoutParams.WRAP_CONTENT,LayoutParams.WRAP_CONTENT,Gravity.CENTER);													
 							frameLoading.setLayoutParams(loadingParams);
@@ -209,7 +212,7 @@ public class ScanCodeResultActivity extends FragmentActivity{
 										Bitmap image, String url,
 										CyAsyncTask task) {
 									// TODO Auto-generated method stub
-									frameAnimation.stop();	
+									frameLoading.setVisibility(View.GONE);
 									imgView.setImageBitmap(image);
 								}
 								
@@ -229,7 +232,7 @@ public class ScanCodeResultActivity extends FragmentActivity{
 							
 							final FrameLayout frameVideo = new FrameLayout(getApplicationContext());
 							
-							FrameLayout frameLoading = new FrameLayout(getApplicationContext());
+							final FrameLayout frameLoading = new FrameLayout(getApplicationContext());
 							
 							FrameLayout.LayoutParams loadingParams = new FrameLayout.LayoutParams(LayoutParams.WRAP_CONTENT,LayoutParams.WRAP_CONTENT,Gravity.CENTER);													
 							frameLoading.setLayoutParams(loadingParams);
@@ -260,7 +263,7 @@ public class ScanCodeResultActivity extends FragmentActivity{
 										CyAsyncTask task) {
 									// TODO Auto-generated method stub
 									
-									frameAnimation.stop();									
+									frameLoading.setVisibility(View.GONE);								
 									thumb.setImageBitmap(image);	
 									frameVideo.addView(thumb);
 									
@@ -373,38 +376,45 @@ public class ScanCodeResultActivity extends FragmentActivity{
 										public void onClick(View v) {
 											// TODO Auto-generated method stub
 											switch (jItemButton.optInt("actionType")) {
-											case 1: //Shop user																					
-												GetShopDetail2 task = new GetShopDetail2(getApplicationContext(), jItemButton.optInt("idShop")) {
-													@Override
-													protected void onCompleted(Object result2) {
-														mTaskList.remove(this);
-														
-														JSONObject jShop = (JSONObject) result2;
-														
-														Shop shop = new Shop();
-														shop.idShop	= jShop.optInt("idShop");
-														shop.shopName	= jShop.optString("shopName");
-														shop.numOfView = jShop.optString("numOfView");
-														shop.logo		= jShop.optString("logo");
-														
-														ShopDetailActivity.newInstance(mAct, shop);
-													}
+											case 1: //Shop user									
+												try
+												{													
+													GetShopDetail2 task = new GetShopDetail2(mAct, jItemButton.optInt("idShop")) {
+														@Override
+														protected void onCompleted(Object result2) {
+															mTaskList.remove(this);
+															
+															JSONObject jShop = (JSONObject) result2;
+															
+															Shop shop = new Shop();
+															shop.idShop	= jShop.optInt("idShop");
+															shop.shopName	= jShop.optString("shopName");
+															shop.numOfView = jShop.optString("numOfView");
+															shop.logo		= jShop.optString("logo");
+															
+															ShopDetailActivity.newInstance(mAct, shop);
+														}
 
-													@Override
-													protected void onFail(Exception e) {
-														mTaskList.remove(this);
-														Log.e("Lỗi","Lỗi",e);
-														CyUtils.showError("Lỗi", e, ScanCodeResultActivity.this);
-													}
-												};
-												task.setTaskList(mTaskList);
-												task.executeOnExecutor(NetworkManager.THREAD_POOL);
+														@Override
+														protected void onFail(Exception e) {
+															mTaskList.remove(this);
+															ShopDetailActivity.newInstanceNoReload(mAct, new Shop());
+														}
+													};
+													task.setTaskList(mTaskList);
+													task.executeOnExecutor(NetworkManager.THREAD_POOL);							
+												}
+												catch(Exception e)
+												{
+													ShopDetailActivity.newInstanceNoReload(mAct, new Shop());
+												}
 												break;
 												
 											case 2: //Shop list
 												if(jItemButton.has("idPlacelist"))
 												{
-													LoadingActivity.newInstance(mAct, jItemButton.optInt("idPlacelist"));													
+//													LoadingActivity.newInstance(mAct, jItemButton.optInt("idPlacelist"));
+													ShopListActivity.newInstanceWithPlacelistId(mAct, jItemButton.optInt("idPlacelist")+"", new ArrayList<Shop>());
 												}												
 												else if(jItemButton.has("keywords"))
 												{
@@ -417,7 +427,11 @@ public class ScanCodeResultActivity extends FragmentActivity{
 												break;
 
 											case 3: //popup url (tutorial,...)
-												WebActivity.newInstance(mAct, jItemButton.optString("url"));
+												String url = jItemButton.optString("url");
+												if(url.startsWith("www.")) {
+													url = "http://" + url;
+												}
+												WebActivity.newInstance(mAct, url);
 												break;
 											}
 										}
@@ -871,4 +885,17 @@ public class ScanCodeResultActivity extends FragmentActivity{
 
         return output;
     }
+	
+	public void showAlertDialog() {
+		AlertDialog.Builder builder = new Builder(mAct);
+		builder.setCancelable(false);
+		builder.setMessage("Không có dữ liệu!");
+		builder.setPositiveButton("OK", new DialogInterface.OnClickListener() {
+			@Override
+			public void onClick(DialogInterface arg0, int arg1) {
+				mAct.finish();
+			}
+		});
+		builder.create().show();
+	}
 }

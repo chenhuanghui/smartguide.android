@@ -25,15 +25,14 @@
     <string name="Cancel">Cancel</string>
 
     <!-- Shop list -->
-
+    
     <string-array name="sortby">
-        <item>&#160;Distance</item>
-        <item>&#160;Views</item>
-        <item>&#160;Loves</item>
-        <item>&#160;Default</item>
+        <item>&#160;Khoảng cách</item>
+        <item>&#160;Lượt xem</item>
+        <item>&#160;Lượt thích</item>
+        <item>&#160;Mặc định</item>
     </string-array>
-
-    <string name="sortby_title">Sort by</string>
+    <string name="sortby_title">Sắp xếp theo</string>
 
     <!-- Store -->
 
@@ -58,8 +57,8 @@
     <string name="test">test</string>
     <string name="scan_code_result_activity">ScanCodeResultActivity</string>
     <string name="home_loading_activity">HomeLoadingActivity</string>
-    
     <string name="error">Lỗi!</string>
 	<string name="dialog_cancel">Hủy</string>
 	<string name="dialog_setting">Cài đặt</string>
+    <string name="layout_error">LayoutErrorActivity</string>
 </resources>

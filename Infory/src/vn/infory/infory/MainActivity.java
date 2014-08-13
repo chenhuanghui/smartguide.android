@@ -255,10 +255,6 @@ public class MainActivity extends FragmentActivity
 		// manager.findFragmentById(R.id.fragStore);
 		getSupportFragmentManager().beginTransaction().hide(mFragPromo).commit();
 		mFragActive = mFragHome;
-
-		// Toast.makeText(getApplicationContext(), mScanCodeLayoutSmall+"",
-		// Toast.LENGTH_SHORT).show();
-
 		mFragHome.setListener(new HomeFragment.Listener() {
 			@Override
 			public void onSideMenuClick()

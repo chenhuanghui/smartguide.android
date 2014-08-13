@@ -7,6 +7,10 @@ import vn.infory.infory.network.GetShopGallery;
 import vn.infory.infory.network.NetworkManager;
 import vn.infory.infory.network.CyAsyncTask.Listener2;
 import android.annotation.SuppressLint;
+import android.app.AlertDialog;
+import android.app.AlertDialog.Builder;
+import android.content.DialogInterface;
+import android.content.DialogInterface.OnClickListener;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentActivity;
@@ -102,7 +106,18 @@ implements Listener2, OnPageChangeListener {
 		mLoading = false;
 		mIsMore = false;
 		notifyDataSetChanged();
-		CyUtils.showError("Không thể lấy thêm", e, mAct);
+//		CyUtils.showError("Không thể lấy thêm", e, mAct);
+		
+		/*AlertDialog.Builder builder = new Builder(mAct);
+		builder.setCancelable(false);
+		builder.setMessage("Không có dữ liệu!");
+		builder.setPositiveButton("OK", new OnClickListener() {
+			@Override
+			public void onClick(DialogInterface arg0, int arg1) {
+				mAct.finish();
+			}
+		});
+		builder.create().show();*/
 	}
 
 	@Override

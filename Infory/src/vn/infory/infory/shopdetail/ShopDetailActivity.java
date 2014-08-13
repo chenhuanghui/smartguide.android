@@ -42,6 +42,7 @@ import android.animation.AnimatorSet;
 import android.animation.ObjectAnimator;
 import android.app.Activity;
 import android.app.AlertDialog;
+import android.app.AlertDialog.Builder;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
@@ -159,12 +160,13 @@ public class ShopDetailActivity extends FragmentActivity {
 				@Override
 				protected void onFail(Exception e) {
 					mTaskList.remove(this);
-					CyUtils.showError("Không thể lấy chi tiết cửa hàng", e, ShopDetailActivity.this);
+//					CyUtils.showError("Không thể lấy chi tiết cửa hàng", e, ShopDetailActivity.this);
+					showAlertDialog();
 				}
 			};
 			task.setTaskList(mTaskList);
 			task.executeOnExecutor(NetworkManager.THREAD_POOL);
-		}
+		}		
 
 		FontsCollection.setFont(findViewById(android.R.id.content));
 		
@@ -213,8 +215,8 @@ public class ShopDetailActivity extends FragmentActivity {
 		CyUtils.setHoverEffect(mBtnSort, false);
 		CyUtils.setHoverEffect(mBtnSend, false);
 		((AnimationDrawable) mLayoutLoadingAni.getBackground()).start();
-	}
-	
+	}	
+
 	private AnimatorSet mToggleSendSortAnimator;
 	private void toggleSendSort(View show, final View hide) {
 		if (mToggleSendSortAnimator != null)
@@ -264,11 +266,10 @@ public class ShopDetailActivity extends FragmentActivity {
 	public static void newInstanceNoReload(Activity act, Shop s) {
 		sShop = s;
 		sNoReload = true;
-		Intent intent = new Intent(act, ShopDetailActivity.class);
-		act.startActivity(intent);
-		act.overridePendingTransition(R.anim.slide_in_down_detail, R.anim.alpha_out);
+		
+		newInstance(act, s);
 	}
-
+	
 	@Override
 	public void onBackPressed() {
 		finish();
@@ -399,7 +400,7 @@ public class ShopDetailActivity extends FragmentActivity {
 		// Info
 		((TextView) view.findViewById(R.id.txtShopName)).setText(mShop.shopName);
 		((TextView) view.findViewById(R.id.txtShopType)).setText(mShop.shopTypeDisplay);
-
+			
 		((TextView) view.findViewById(R.id.txtLoveNum)).setText(mShop.numOfLove+"  ");
 		((TextView) view.findViewById(R.id.txtViewNum)).setText(mShop.numOfView+" ");
 		((TextView) view.findViewById(R.id.txtCommentNum)).setText(mShop.numOfComment+" ");
@@ -1101,5 +1102,18 @@ public class ShopDetailActivity extends FragmentActivity {
 		@ViewById(id = R.id.imgAva)			public ImageView mImgAva;
 		@ViewById(id = R.id.txtTime)		public TextView mTxtTime;
 		@ViewById(id = R.id.btnAgree)		public ImageButton mBtnLike;
+	}
+	
+	public void showAlertDialog() {
+		AlertDialog.Builder builder = new Builder(ShopDetailActivity.this);
+		builder.setCancelable(false);
+		builder.setMessage("Không có dữ liệu!");
+		builder.setPositiveButton("OK", new DialogInterface.OnClickListener() {
+			@Override
+			public void onClick(DialogInterface arg0, int arg1) {
+				finish();
+			}
+		});
+		builder.create().show();
 	}
 }

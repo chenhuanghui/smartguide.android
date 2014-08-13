@@ -1,11 +1,13 @@
 package vn.infory.infory.shoplist;
 
+import java.lang.reflect.Array;
 import java.util.ArrayList;
 import java.util.List;
 
 import vn.infory.infory.CyImageLoader;
 import vn.infory.infory.CyUtils;
 import vn.infory.infory.FontsCollection;
+import vn.infory.infory.LayoutError;
 import vn.infory.infory.LazyLoadAdapter;
 import vn.infory.infory.PlaceListListActivity;
 import vn.infory.infory.R;
@@ -13,11 +15,14 @@ import vn.infory.infory.data.PlaceList;
 import vn.infory.infory.data.Shop;
 import vn.infory.infory.network.CyAsyncTask;
 import vn.infory.infory.network.GetPlaceList;
+import vn.infory.infory.network.GetPlaceListDetail;
 import vn.infory.infory.network.GetShopList;
+import vn.infory.infory.network.NetworkManager;
 import vn.infory.infory.network.Search;
 import vn.infory.infory.shopdetail.ShopDetailActivity;
 import android.app.Activity;
 import android.app.AlertDialog;
+import android.app.AlertDialog.Builder;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.graphics.Typeface;
@@ -38,6 +43,7 @@ import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.ListView;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.cycrix.androidannotation.AndroidAnnotationParser;
 import com.cycrix.androidannotation.Click;
@@ -47,9 +53,11 @@ public class ShopListActivity extends FragmentActivity {
 
 	private static String sKeyword;
 	private static PlaceList sPlacelist;
+	private static Integer sPlacelistId;
 	private static String sShopIds;
 	private static ArrayList<Shop> sShoplist;
 	private static boolean sFromPlaceList;
+	private static boolean startActivityWithPlacelistId = false; 
 
 	// GUI element
 	@ViewById(id = R.id.lst) 				private SGShopListLayout mLayoutLst;
@@ -103,7 +111,7 @@ public class ShopListActivity extends FragmentActivity {
 				mLayoutLst.setHeaderHeight(firstHeaderHeight, headerHeight);
 			}
 		});
-
+		
 		// Set adapter
 		if (sKeyword != null)
 			setSearchData(sKeyword, sShoplist);
@@ -111,7 +119,7 @@ public class ShopListActivity extends FragmentActivity {
 			setPlaceListData(sPlacelist, sShoplist);
 		else if (sShopIds != null)
 			setShopListData(sShopIds, sShoplist);
-
+		
 		sKeyword 	= null;
 		sPlacelist 	= null;
 		sShopIds	= null;
@@ -166,6 +174,38 @@ public class ShopListActivity extends FragmentActivity {
 		Intent intent = new Intent(act, ShopListActivity.class);
 		act.startActivity(intent);
 		act.overridePendingTransition(android.R.anim.fade_in, android.R.anim.fade_out);
+	}
+	
+	public static void newInstanceWithPlacelistId(final Activity act, String placelistId, ArrayList<Shop> shopList) {
+		final List<CyAsyncTask> mTaskList = new ArrayList<CyAsyncTask>();
+		try {
+			int id = Integer.parseInt(placelistId);
+			GetPlaceListDetail place_list_task = new GetPlaceListDetail(act, id, 0){
+
+				@Override
+				protected void onCompleted(Object result) throws Exception {
+					// TODO Auto-generated method stub
+					mTaskList.remove(this);
+					
+					Object[] placelist = (Object[]) result;
+					newInstance(act, (PlaceList)placelist[0], new ArrayList<Shop>());
+				}
+
+				@Override
+				protected void onFail(
+						Exception e) {
+					mTaskList.remove(this);
+					newInstance(act, new PlaceList(), new ArrayList<Shop>());
+//					showAlertDialog();
+				}														
+			};	
+			
+			mTaskList.add(place_list_task);
+			place_list_task.executeOnExecutor(NetworkManager.THREAD_POOL);
+		} catch (Exception e) {
+			// TODO: handle exception
+			newInstance(act, new PlaceList(), new ArrayList<Shop>());
+		}		
 	}
 
 	@Override
@@ -354,12 +394,49 @@ public class ShopListActivity extends FragmentActivity {
 	public class ShopListAdapter extends AbsShopListAdapter {
 
 		public ShopListAdapter(String keyword, ListView lst, ArrayList itemList, int sort) {
-			super(new Search(ShopListActivity.this, keyword, 0, sort), lst, 2, itemList);
+			super(new Search(ShopListActivity.this, keyword, 0, sort){
+				@Override
+				protected void onCompleted(Object result) throws Exception {
+					// TODO Auto-generated method stub					
+
+					ArrayList<Shop> result2 = (ArrayList<Shop>) result;
+					if(result2.size() == 0)
+					{
+						showAlertDialog();
+					}
+				}
+
+				@Override
+				protected void onFail(Exception e) {
+					// TODO Auto-generated method stub
+					super.onFail(e);
+					showAlertDialog();
+				}
+			}, lst, 2, itemList);
 		}
 
 		public ShopListAdapter(String shopId, ListView lst, ArrayList itemList, int sort, 
 				int dummyidShopList) {
-			super(new GetShopList(ShopListActivity.this, shopId, 0, sort), lst, 2, itemList);
+			super(new GetShopList(ShopListActivity.this, shopId, 0, sort){
+
+				@Override
+				protected void onCompleted(Object result) throws Exception {
+					// TODO Auto-generated method stub					
+
+					ArrayList<Shop> result2 = (ArrayList<Shop>) result;
+					if(result2.size() == 0)
+					{
+						showAlertDialog();
+					}
+				}
+
+				@Override
+				protected void onFail(Exception e) {
+					// TODO Auto-generated method stub
+					super.onFail(e);
+					showAlertDialog();
+				}				
+			}, lst, 2, itemList);
 		}
 
 		@Override
@@ -449,7 +526,25 @@ public class ShopListActivity extends FragmentActivity {
 
 		public PlaceListAdapter(PlaceList placeList, ListView lst, ArrayList<Shop> itemList, 
 				int sort) {
-			super(new GetPlaceList(ShopListActivity.this, 0, placeList.idPlacelist, sort), 
+			super(new GetPlaceList(ShopListActivity.this, 0, placeList.idPlacelist, sort){
+				@Override
+				protected void onCompleted(Object result) throws Exception {
+					// TODO Auto-generated method stub					
+
+					ArrayList<Shop> result2 = (ArrayList<Shop>) result;
+					if(result2.size() == 0)
+					{
+						showAlertDialog();
+					}
+				}
+				
+				@Override
+				protected void onFail(Exception e) {
+					// TODO Auto-generated method stub
+					super.onFail(e);
+					showAlertDialog();
+				}				
+			}, 
 					lst, 3, itemList);
 			mPlaceList = placeList;
 		}
@@ -555,6 +650,19 @@ public class ShopListActivity extends FragmentActivity {
 
 			return convertView;
 		}
+	}
+	
+	public void showAlertDialog() {
+		AlertDialog.Builder builder = new Builder(ShopListActivity.this);
+		builder.setCancelable(false);
+		builder.setMessage("Không có dữ liệu!");
+		builder.setPositiveButton("OK", new DialogInterface.OnClickListener() {
+			@Override
+			public void onClick(DialogInterface arg0, int arg1) {
+				finish();
+			}
+		});
+		builder.create().show();
 	}
 
 //	public void setListener(Listener listener) {
