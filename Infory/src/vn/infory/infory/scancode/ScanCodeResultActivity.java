@@ -903,55 +903,55 @@ public class ScanCodeResultActivity extends FragmentActivity{
 							switch (action)
 					        {        	
 					            case MotionEvent.ACTION_DOWN:
+					            	Log.i("VerticalScrollview", "onInterceptTouchEvent: UP super false" );
+					            	
 					            	old_position = list_related_shop.getChildAt(0).getTop();
 					                break;
 
 					            case MotionEvent.ACTION_MOVE:
-					            	new_position = list_related_shop.getChildAt(0).getTop();
-					            	
-					            	int old = height + old_position + 1;
-									int neww = height + new_position;
-//									Log.i("A", old  + " , " + neww + " , " + reachTop);	
-									
-									if(firstVisibleItem == 0 && list_related_shop.getChildAt(0).getTop() == 0)
-									{	
-										Log.i("A", old  + " , " + neww + " , " + reachTop);	
-										if(old > neww || neww == height)
-										{
-											if(reachTop)
-											{
-												reachTop = false;
-												Log.i("B", reachTop+"");
-												
-												view.requestDisallowInterceptTouchEvent(false);
-												mScrollView.onTouchEvent(ev);
-												
-												return true;
-											}
-											reachTop = true;
-											return false;
-										}
-										else
-										{									
-//											Log.i("C", reachTop+"");
-											return true;
-										}
-										
-									}
+					            	new_position = list_related_shop.getChildAt(0).getTop();					            	
 					            	break;
 
 					            case MotionEvent.ACTION_CANCEL:
-//					                Log.i("VerticalScrollview", "onInterceptTouchEvent: CANCEL super false" );
+					                Log.i("VerticalScrollview", "onInterceptTouchEvent: CANCEL super false" );
 					                return false;
 
 					            case MotionEvent.ACTION_UP:
-//					                Log.i("VerticalScrollview", "onInterceptTouchEvent: UP super false" );
+					                Log.i("VerticalScrollview", "onInterceptTouchEvent: UP super false" );
 					                return false;
 
 					            default: 
+					            	Log.i("VerticalScrollview", "onInterceptTouchEvent: default" );
 					            	return false;
 					        }
 							
+							int old = height + old_position + 1;
+							int neww = height + new_position;
+//							Log.i("A", old  + " , " + neww + " , " + reachTop);	
+							
+							if(firstVisibleItem == 0 && list_related_shop.getChildAt(0).getTop() == 0)
+							{	
+								Log.i("A", old  + " , " + neww + " , " + reachTop);	
+								if(old > neww || neww == height)
+								{
+									if(reachTop)
+									{
+										reachTop = false;
+										Log.i("B", reachTop+"");
+										
+//										mScrollView.onTouchEvent(ev);
+										mScrollView.scrollBy(-10, -10);
+										return true;
+									}
+									reachTop = true;
+									return false;
+								}
+								else
+								{									
+//									Log.i("C", reachTop+"");
+									return true;
+								}
+							}
 							return false;
 							
 							/*if(!reachTop)
