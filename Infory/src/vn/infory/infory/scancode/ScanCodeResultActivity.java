@@ -879,7 +879,7 @@ public class ScanCodeResultActivity extends FragmentActivity{
 				}
 				
 				@Override
-				public void onScroll(AbsListView view, final int firstVisibleItem,
+				public void onScroll(final AbsListView view, final int firstVisibleItem,
 						int visibleItemCount, int totalItemCount) {
 					// TODO Auto-generated method stub									
 					list_related_shop.setOnTouchListener(new View.OnTouchListener() {
@@ -890,45 +890,69 @@ public class ScanCodeResultActivity extends FragmentActivity{
 							int action = ev.getAction();
 //							Log.i("Position", list_related_shop.getChildAt(0).getTop()+"");
 							
-							if(action == MotionEvent.ACTION_DOWN)
+							/*if(action == MotionEvent.ACTION_DOWN)
+							{
 								old_position = list_related_shop.getChildAt(0).getTop();
+							}
 							
 							if(action == MotionEvent.ACTION_MOVE)
 							{								
 								new_position = list_related_shop.getChildAt(0).getTop();
-							}
+							}*/
 							
-							int old = height + old_position + 1;
-							int neww = height + new_position;
-//							Log.i("A", old  + " , " + neww + " , " + reachTop);	
-							
-							if(firstVisibleItem == 0 && list_related_shop.getChildAt(0).getTop() == 0)
-							{	
-								Log.i("A", old  + " , " + neww + " , " + reachTop);	
-								if(old > neww)
-								{
-									if(reachTop)
-									{
-										reachTop = false;
-										Log.i("B", reachTop+"");
-										mScrollView.onTouchEvent(ev);
-										return true;
+							switch (action)
+					        {        	
+					            case MotionEvent.ACTION_DOWN:
+					            	old_position = list_related_shop.getChildAt(0).getTop();
+					                break;
+
+					            case MotionEvent.ACTION_MOVE:
+					            	new_position = list_related_shop.getChildAt(0).getTop();
+					            	
+					            	int old = height + old_position + 1;
+									int neww = height + new_position;
+//									Log.i("A", old  + " , " + neww + " , " + reachTop);	
+									
+									if(firstVisibleItem == 0 && list_related_shop.getChildAt(0).getTop() == 0)
+									{	
+										Log.i("A", old  + " , " + neww + " , " + reachTop);	
+										if(old > neww || neww == height)
+										{
+											if(reachTop)
+											{
+												reachTop = false;
+												Log.i("B", reachTop+"");
+												
+												view.requestDisallowInterceptTouchEvent(false);
+												mScrollView.onTouchEvent(ev);
+												
+												return true;
+											}
+											reachTop = true;
+											return false;
+										}
+										else
+										{									
+//											Log.i("C", reachTop+"");
+											return true;
+										}
+										
 									}
-									reachTop = true;
-									return false;
-								}
-								else
-								{									
-//									Log.i("C", reachTop+"");
-									return true;
-								}
-								
-							}
-							else
-							{
-								Log.i("A", old  + " , " + neww + " , " + reachTop);	
-								return false;
-							}
+					            	break;
+
+					            case MotionEvent.ACTION_CANCEL:
+//					                Log.i("VerticalScrollview", "onInterceptTouchEvent: CANCEL super false" );
+					                return false;
+
+					            case MotionEvent.ACTION_UP:
+//					                Log.i("VerticalScrollview", "onInterceptTouchEvent: UP super false" );
+					                return false;
+
+					            default: 
+					            	return false;
+					        }
+							
+							return false;
 							
 							/*if(!reachTop)
 							{
