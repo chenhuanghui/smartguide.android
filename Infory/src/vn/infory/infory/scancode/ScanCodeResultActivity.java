@@ -754,7 +754,7 @@ public class ScanCodeResultActivity extends FragmentActivity{
     	private ScanCodeRelatedListViewAdapter adapter;
     	private boolean reachTop = true;	
     	
-    	private int height = 200;
+    	private int height;
     	private static int old_position;
     	private static int new_position;
 
@@ -881,7 +881,13 @@ public class ScanCodeResultActivity extends FragmentActivity{
 				@Override
 				public void onScroll(final AbsListView view, final int firstVisibleItem,
 						int visibleItemCount, int totalItemCount) {
-					// TODO Auto-generated method stub									
+					// TODO Auto-generated method stub			
+					
+					ScanCodeRelatedListViewAdapter adapter = (ScanCodeRelatedListViewAdapter) list_related_shop.getAdapter(); 
+					View listItem = adapter.getView(0, null, list_related_shop);
+					listItem.measure(0, 0);
+					height = listItem.getMeasuredHeight();
+					
 					list_related_shop.setOnTouchListener(new View.OnTouchListener() {
 						
 						@Override
