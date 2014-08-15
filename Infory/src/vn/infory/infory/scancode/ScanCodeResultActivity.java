@@ -127,6 +127,8 @@ public class ScanCodeResultActivity extends FragmentActivity{
 	
 	ScanCodeRelatedPagerAdapter mScanCodeRelatedPagerAdapter;	
 	ViewPager mViewPager;
+	
+	@ViewById(id = R.id.scanDLGLayoutLoading)	private View mLayoutLoading;
 			
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
@@ -137,6 +139,13 @@ public class ScanCodeResultActivity extends FragmentActivity{
 	    uiHelper.onCreate(savedInstanceState);
         
 		mAct = this;	
+		
+		try {
+			AndroidAnnotationParser.parse(this, findViewById(android.R.id.content));
+		} catch (Exception e) {
+			e.printStackTrace();
+			finish();
+		}
 				
 		JSONArray jArr = (JSONArray) mScanCodeResult;	
 		
@@ -600,6 +609,8 @@ public class ScanCodeResultActivity extends FragmentActivity{
 	public void onPause() {
 	    super.onPause();
 	    uiHelper.onPause();
+	    
+	    mLayoutLoading.setVisibility(View.GONE);
 	}
 
 	@Override
@@ -738,6 +749,8 @@ public class ScanCodeResultActivity extends FragmentActivity{
     	public ScanCodeResultActivity CustomListView = null;
     	private ListView list_related_shop;
     	private InforyCustomScrollView mScrollView;
+    	private View mLayoutLoading, mLayoutLoadingAnimation;
+    	
     	private ScanCodeRelatedListViewAdapter adapter;
     	private boolean reachTop = true;	
     	
@@ -752,6 +765,8 @@ public class ScanCodeResultActivity extends FragmentActivity{
             
             View rootView = inflater.inflate(R.layout.scan_code_related_fragment, container, false);
             mScrollView = (InforyCustomScrollView) getActivity().findViewById(R.id.scrollView1);
+            mLayoutLoading = (View) getActivity().findViewById(R.id.scanDLGLayoutLoading);
+            mLayoutLoadingAnimation = (View) getActivity().findViewById(R.id.scanDLGLayoutLoadingAnimation);
             
             Resources res = getResources();            
             CustomListView = (ScanCodeResultActivity) getActivity();  
@@ -787,6 +802,12 @@ public class ScanCodeResultActivity extends FragmentActivity{
 						int position, long id) {
 					// TODO Auto-generated method stub
 					Toast.makeText(getActivity(), "Click", Toast.LENGTH_SHORT).show();
+					
+					mLayoutLoading.setVisibility(View.VISIBLE);
+		    		AnimationDrawable frameAnimation = (AnimationDrawable) 
+							mLayoutLoadingAnimation.getBackground();
+					frameAnimation.start();
+					
 					adapter = (ScanCodeRelatedListViewAdapter)parent.getAdapter();
 					int type = adapter.getType();
 					if(type == 0) //Shop

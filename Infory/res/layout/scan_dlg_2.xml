@@ -17,169 +17,154 @@
             android:background="#00000000"
             android:src="@drawable/button_backarrow" />
     </FrameLayout>
-    
-    <!-- <FrameLayout
-        android:id="@+id/scanDLGLayoutLoading"
+
+    <FrameLayout
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:background="#80000000"
-        android:clickable="true"
-        android:visibility="invisible" >
+        android:layout_height="fill_parent" >
 
-        <FrameLayout
-            android:id="@+id/scanDLGLayoutLoadingAnimation"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_gravity="center"
-            android:background="@drawable/button_loading_big" >
-        </FrameLayout>
-    </FrameLayout> -->
-
-    <vn.infory.infory.scancode.InforyCustomScrollView
-        android:id="@+id/scrollView1"
-        android:layout_width="match_parent"
-        android:layout_height="fill_parent" 
-        android:fillViewport="true">
-
-       <LinearLayout
+        <vn.infory.infory.scancode.InforyCustomScrollView
+            android:id="@+id/scrollView1"
             android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:orientation="vertical" >
+            android:layout_height="fill_parent"
+            android:fillViewport="true" >
 
-           <LinearLayout
-               android:id="@+id/linearLayoutScanDLG2"
-               android:layout_width="match_parent"
-               android:layout_height="wrap_content"
-               android:background="#EBEBEB"
-               android:gravity="center_horizontal"
-               android:orientation="vertical" >
-           </LinearLayout>
-
-           <LinearLayout
-               android:id="@+id/linearLayoutLineComment"
-               android:layout_width="match_parent"
-               android:layout_height="wrap_content"
-               android:orientation="vertical"
-               android:background="#EBEBEB"
-               android:gravity="center" 
-               android:visibility="gone">
-
-               <ImageView
-                   android:paddingBottom="20dp"
-                   android:id="@+id/imageView1"
-                   android:layout_width="wrap_content"
-                   android:layout_height="wrap_content"
-                   android:src="@drawable/line_comment" />
-
-           </LinearLayout>
-
-           <RelativeLayout
-               android:id="@+id/relativeLayoutShare"
-               android:layout_width="match_parent"
-               android:layout_height="wrap_content" 
-               android:gravity="center_vertical"
-               android:layout_marginBottom="20dp"
-               android:background="#EBEBEB"
-               android:visibility="gone">
-
-               <ImageButton
-                   android:id="@+id/btnShareFb"
-                   android:layout_width="wrap_content"
-                   android:layout_height="wrap_content"
-                   android:layout_alignParentRight="true"
-                   android:layout_centerVertical="true"
-                   android:layout_marginRight="102dp"
-                   android:background="@drawable/fb" />
-
-               <ImageButton
-                   android:id="@+id/btnShareGoogle"
-                   android:layout_width="wrap_content"
-                   android:layout_height="wrap_content"
-                   android:layout_alignParentRight="true"
-                   android:layout_alignTop="@+id/btnShareFb"
-                   android:layout_marginRight="40dp"
-                   android:background="@drawable/gg" />
-
-               <TextView
-                   android:id="@+id/txtShare"
-                   android:layout_width="wrap_content"
-                   android:layout_height="wrap_content"
-                   android:layout_alignParentLeft="true"
-                   android:layout_centerVertical="true"
-                   android:layout_marginLeft="19dp"
-                   android:text="Chia sẻ"
-                   android:textAppearance="?android:attr/textAppearanceMedium" />
-
-           </RelativeLayout>
-
-           <LinearLayout
-               android:layout_width="match_parent"
-               android:layout_height="wrap_content"
-               android:gravity="center"
-               android:background="#F2F2F2"
-               android:orientation="vertical" >
-
-               <TextView
-                   android:id="@+id/textView2"
-                   android:layout_width="wrap_content"
-                   android:layout_height="wrap_content"
-                   android:paddingBottom="5dp"
-                   android:paddingTop="5dp"
-                   android:text="Có thể bạn thích"
-                   android:contentDescription="@string/sfu_normal"
-                   android:textSize="12sp" />
-           </LinearLayout>
-
-           <LinearLayout
-               android:layout_width="match_parent"
-               android:layout_height="3dp"
-               android:orientation="vertical"
-               android:background="#EBEBEB" >
-           </LinearLayout>
-
-           <LinearLayout
-               android:id="@+id/linearLayoutRelated"
-               android:layout_width="match_parent"
-               android:layout_height="match_parent"
-               android:orientation="vertical" >               
-
-               <android.support.v4.view.ViewPager
-                   xmlns:android="http://schemas.android.com/apk/res/android"
-                   android:id="@+id/testpager"
-                   android:layout_width="match_parent"
-                   android:layout_height="300dp" >
-
-                   <android.support.v4.view.PagerTitleStrip
-                       android:id="@+id/pager_title_strip1"
-                       android:layout_width="match_parent"
-                       android:layout_height="wrap_content"
-                       android:layout_gravity="top"
-                       android:background="#F2F2F2"
-                       android:paddingBottom="8dp"
-                       android:paddingTop="8dp"
-                       android:contentDescription="@string/sfu_heavy"
-                       android:textColor="#7D7C80" >
-                   </android.support.v4.view.PagerTitleStrip>
-               </android.support.v4.view.ViewPager>
-           </LinearLayout>
-
-<!--             <FrameLayout
-                android:id="@+id/scanDLGLayoutLoading"
+            <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
-                android:background="#80000000"
-                android:clickable="true"
-                android:visibility="invisible" >
+                android:orientation="vertical" >
 
-                <FrameLayout
-                    android:id="@+id/scanDLGLayoutLoadingAnimation"
-                    android:layout_width="wrap_content"
+                <LinearLayout
+                    android:id="@+id/linearLayoutScanDLG2"
+                    android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:layout_gravity="center"
-                    android:background="@drawable/button_loading_big" >
-                </FrameLayout>
-            </FrameLayout> -->          
+                    android:background="#EBEBEB"
+                    android:gravity="center_horizontal"
+                    android:orientation="vertical" >
+                </LinearLayout>
 
-        </LinearLayout>
-    </vn.infory.infory.scancode.InforyCustomScrollView>
+                <LinearLayout
+                    android:id="@+id/linearLayoutLineComment"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:background="#EBEBEB"
+                    android:gravity="center"
+                    android:orientation="vertical"
+                    android:visibility="gone" >
+
+                    <ImageView
+                        android:id="@+id/imageView1"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:paddingBottom="20dp"
+                        android:src="@drawable/line_comment" />
+                </LinearLayout>
+
+                <RelativeLayout
+                    android:id="@+id/relativeLayoutShare"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginBottom="20dp"
+                    android:background="#EBEBEB"
+                    android:gravity="center_vertical"
+                    android:visibility="gone" >
+
+                    <ImageButton
+                        android:id="@+id/btnShareFb"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_alignParentRight="true"
+                        android:layout_centerVertical="true"
+                        android:layout_marginRight="102dp"
+                        android:background="@drawable/fb" />
+
+                    <ImageButton
+                        android:id="@+id/btnShareGoogle"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_alignParentRight="true"
+                        android:layout_alignTop="@+id/btnShareFb"
+                        android:layout_marginRight="40dp"
+                        android:background="@drawable/gg" />
+
+                    <TextView
+                        android:id="@+id/txtShare"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_alignParentLeft="true"
+                        android:layout_centerVertical="true"
+                        android:layout_marginLeft="19dp"
+                        android:text="Chia sẻ"
+                        android:textAppearance="?android:attr/textAppearanceMedium" />
+                </RelativeLayout>
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:background="#F2F2F2"
+                    android:gravity="center"
+                    android:orientation="vertical" >
+
+                    <TextView
+                        android:id="@+id/textView2"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:contentDescription="@string/sfu_normal"
+                        android:paddingBottom="5dp"
+                        android:paddingTop="5dp"
+                        android:text="Có thể bạn thích"
+                        android:textSize="12sp" />
+                </LinearLayout>
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="3dp"
+                    android:background="#EBEBEB"
+                    android:orientation="vertical" >
+                </LinearLayout>
+
+                <LinearLayout
+                    android:id="@+id/linearLayoutRelated"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:orientation="vertical" >
+
+                    <android.support.v4.view.ViewPager
+                        xmlns:android="http://schemas.android.com/apk/res/android"
+                        android:id="@+id/testpager"
+                        android:layout_width="match_parent"
+                        android:layout_height="300dp" >
+
+                        <android.support.v4.view.PagerTitleStrip
+                            android:id="@+id/pager_title_strip1"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:layout_gravity="top"
+                            android:background="#F2F2F2"
+                            android:contentDescription="@string/sfu_heavy"
+                            android:paddingBottom="8dp"
+                            android:paddingTop="8dp"
+                            android:textColor="#7D7C80" >
+                        </android.support.v4.view.PagerTitleStrip>
+                    </android.support.v4.view.ViewPager>
+                </LinearLayout>
+            </LinearLayout>            
+        </vn.infory.infory.scancode.InforyCustomScrollView>
+
+        <FrameLayout
+	        android:id="@+id/scanDLGLayoutLoading"
+	        android:layout_width="match_parent"
+	        android:layout_height="match_parent"
+	        android:background="#80000000"
+	        android:clickable="true"
+	        android:visibility="invisible" >
+	
+	        <FrameLayout
+	            android:id="@+id/scanDLGLayoutLoadingAnimation"
+	            android:layout_width="wrap_content"
+	            android:layout_height="wrap_content"
+	            android:layout_gravity="center"
+	            android:background="@drawable/button_loading_big" >
+	        </FrameLayout>
+	    </FrameLayout>
+    </FrameLayout>
 </LinearLayout>
