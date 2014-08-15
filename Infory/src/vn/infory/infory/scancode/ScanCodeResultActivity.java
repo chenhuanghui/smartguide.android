@@ -15,6 +15,7 @@ import vn.infory.infory.FontsCollection;
 import vn.infory.infory.R;
 import vn.infory.infory.WebActivity;
 import vn.infory.infory.data.PlaceList;
+import vn.infory.infory.data.Settings;
 import vn.infory.infory.data.Shop;
 import vn.infory.infory.home.LoadingActivity;
 import vn.infory.infory.login.InforyLoginActivity.BackListener;
@@ -32,6 +33,7 @@ import vn.infory.infory.scancode.ScanCodeRelatedActivity.ScanCodeRelatedPagerAda
 import vn.infory.infory.shopdetail.ShopDetailActivity;
 import vn.infory.infory.shoplist.ShopListActivity;
 
+import com.cycrix.androidannotation.AndroidAnnotationParser;
 import com.cycrix.androidannotation.Click;
 import com.cycrix.androidannotation.ViewById;
 import com.facebook.FacebookException;
@@ -91,6 +93,8 @@ import android.view.View.OnClickListener;
 import android.view.ViewGroup;
 import android.view.WindowManager;
 import android.webkit.WebView;
+import android.widget.AbsListView;
+import android.widget.AbsListView.OnScrollListener;
 import android.widget.AdapterView;
 import android.widget.Button;
 import android.widget.FrameLayout;
@@ -101,6 +105,7 @@ import android.widget.LinearLayout;
 import android.widget.ListView;
 import android.widget.MediaController;
 import android.widget.RelativeLayout;
+import android.widget.ScrollView;
 import android.widget.TextView;
 import android.widget.Toast;
 import android.widget.LinearLayout.LayoutParams;
@@ -122,7 +127,7 @@ public class ScanCodeResultActivity extends FragmentActivity{
 	
 	ScanCodeRelatedPagerAdapter mScanCodeRelatedPagerAdapter;	
 	ViewPager mViewPager;
-		
+			
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
@@ -132,7 +137,7 @@ public class ScanCodeResultActivity extends FragmentActivity{
 	    uiHelper.onCreate(savedInstanceState);
         
 		mAct = this;	
-		
+				
 		JSONArray jArr = (JSONArray) mScanCodeResult;	
 		
 		final LinearLayout linearLayout = (LinearLayout) findViewById(R.id.linearLayoutScanDLG2);
@@ -732,6 +737,13 @@ public class ScanCodeResultActivity extends FragmentActivity{
             	
     	public ScanCodeResultActivity CustomListView = null;
     	private ListView list_related_shop;
+    	private InforyCustomScrollView mScrollView;
+    	private ScanCodeRelatedListViewAdapter adapter;
+    	private boolean reachTop = true;	
+    	
+    	private int height = 200;
+    	private static int old_position;
+    	private static int new_position;
 
         @Override
         public View onCreateView(LayoutInflater inflater, ViewGroup container,
@@ -739,6 +751,7 @@ public class ScanCodeResultActivity extends FragmentActivity{
             Bundle args = getArguments();
             
             View rootView = inflater.inflate(R.layout.scan_code_related_fragment, container, false);
+            mScrollView = (InforyCustomScrollView) getActivity().findViewById(R.id.scrollView1);
             
             Resources res = getResources();            
             CustomListView = (ScanCodeResultActivity) getActivity();  
@@ -773,8 +786,8 @@ public class ScanCodeResultActivity extends FragmentActivity{
 				public void onItemClick(AdapterView<?> parent, View view,
 						int position, long id) {
 					// TODO Auto-generated method stub
-					
-					ScanCodeRelatedListViewAdapter adapter = (ScanCodeRelatedListViewAdapter)parent.getAdapter();
+					Toast.makeText(getActivity(), "Click", Toast.LENGTH_SHORT).show();
+					adapter = (ScanCodeRelatedListViewAdapter)parent.getAdapter();
 					int type = adapter.getType();
 					if(type == 0) //Shop
 					{
@@ -834,7 +847,92 @@ public class ScanCodeResultActivity extends FragmentActivity{
 						}
 					}						
 				}
-			});
+			});	
+			
+			list_related_shop.setOnScrollListener(new OnScrollListener() {
+				
+				@Override
+				public void onScrollStateChanged(AbsListView view, int scrollState) {
+					// TODO Auto-generated method stub
+					
+				}
+				
+				@Override
+				public void onScroll(AbsListView view, final int firstVisibleItem,
+						int visibleItemCount, int totalItemCount) {
+					// TODO Auto-generated method stub									
+					list_related_shop.setOnTouchListener(new View.OnTouchListener() {
+						
+						@Override
+						public boolean onTouch(View v, MotionEvent ev) {
+							// TODO Auto-generated method stub
+							int action = ev.getAction();
+//							Log.i("Position", list_related_shop.getChildAt(0).getTop()+"");
+							
+							if(action == MotionEvent.ACTION_DOWN)
+								old_position = list_related_shop.getChildAt(0).getTop();
+							
+							if(action == MotionEvent.ACTION_MOVE)
+							{								
+								new_position = list_related_shop.getChildAt(0).getTop();
+							}
+							
+							int old = height + old_position + 1;
+							int neww = height + new_position;
+//							Log.i("A", old  + " , " + neww + " , " + reachTop);	
+							
+							if(firstVisibleItem == 0 && list_related_shop.getChildAt(0).getTop() == 0)
+							{	
+								Log.i("A", old  + " , " + neww + " , " + reachTop);	
+								if(old > neww)
+								{
+									if(reachTop)
+									{
+										reachTop = false;
+										Log.i("B", reachTop+"");
+										mScrollView.onTouchEvent(ev);
+										return true;
+									}
+									reachTop = true;
+									return false;
+								}
+								else
+								{									
+//									Log.i("C", reachTop+"");
+									return true;
+								}
+								
+							}
+							else
+							{
+								Log.i("A", old  + " , " + neww + " , " + reachTop);	
+								return false;
+							}
+							
+							/*if(!reachTop)
+							{
+								if(firstVisibleItem > 0)
+								{
+									Log.i("Top", "firstVisibleItem > 0" );
+									mScrollView.onTouchEvent(ev);
+									reachTop = true;
+								}
+								return false;
+							}
+							else
+							{
+								if(list_related_shop.getChildAt(0).getTop() == 0)
+								{
+									Log.i("Top", "firstVisibleItem == 0" );									
+									mScrollView.onTouchEvent(ev);		
+								}
+								return false;
+							}*/	
+							
+						}
+					});
+				}
+			});			
 		}        
     }
 	
