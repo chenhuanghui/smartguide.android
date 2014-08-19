@@ -118,6 +118,7 @@ public class ScanCodeResult2Activity extends FragmentActivity implements ScrollT
 	@ViewById(id = R.id.linearLayoutScanDLG2)		private LinearLayout linearLayout;
 	@ViewById(id = R.id.scrScanDLG2)				private ScrollView mScrScanDLG2;
 	@ViewById(id = R.id.linearLayoutCoTheBanThich)	private LinearLayout mLinearLayoutCoTheBanThich;
+	@ViewById(id = R.id.btnBack)	private ImageButton mBtnBack;
 	
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
@@ -144,7 +145,13 @@ public class ScanCodeResult2Activity extends FragmentActivity implements ScrollT
 			finish();
 		}
 		
-		
+		mBtnBack.setOnClickListener(new View.OnClickListener() {			
+			@Override
+			public void onClick(View v) {
+				// TODO Auto-generated method stub
+				finish();
+			}
+		});
 		
 		JSONArray jArr = (JSONArray) mScanCodeResult;	
 		mLayoutScanDLGHeight = 0;
