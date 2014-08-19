@@ -9,6 +9,7 @@ import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.util.Log;
 import android.view.LayoutInflater;
+import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AbsListView;
@@ -17,6 +18,7 @@ import android.widget.FrameLayout;
 import android.widget.LinearLayout;
 import android.widget.ListView;
 import android.widget.AbsListView.OnScrollListener;
+import android.widget.ScrollView;
 
 
 public class SampleListFragment extends ScrollTabHolderFragment implements OnScrollListener {
@@ -28,10 +30,14 @@ public class SampleListFragment extends ScrollTabHolderFragment implements OnScr
 
 	private int mPosition;
 	private Activity mAct;
+	private int mLayoutHeight;
 
-	public static Fragment newInstance(Activity act, int position) {
+	public static Fragment newInstance(Activity act, int position, int layoutHeight) {
 		SampleListFragment f = new SampleListFragment();
+		
 		f.mAct = act;
+		f.mLayoutHeight = layoutHeight;
+		
 		Bundle b = new Bundle();
 		b.putInt(ARG_POSITION, position);
 		f.setArguments(b);
@@ -54,16 +60,12 @@ public class SampleListFragment extends ScrollTabHolderFragment implements OnScr
 	public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
 		View v = inflater.inflate(R.layout.scan_code_fragment_list, null);
 
-		mListView = (ListView) v.findViewById(R.id.listView);
-
-		LinearLayout ll = (LinearLayout)mAct.findViewById(R.id.linearLayoutScanDLG2);
-		
-		
+		mListView = (ListView) v.findViewById(R.id.listView);		
 		
 		View placeHolderView = inflater.inflate(R.layout.scan_code_view_header_placeholder, mListView, false);
 		FrameLayout fr = (FrameLayout)placeHolderView.findViewById(R.id.frViewHeader);
-		Log.i("Height", ll.getHeight()+"");
-		fr.setPadding(0, ll.getHeight(), 0, 0);
+		
+		fr.setPadding(0, mLayoutHeight, 0, 0);
 		mListView.addHeaderView(placeHolderView);
 
 		return v;
@@ -72,6 +74,12 @@ public class SampleListFragment extends ScrollTabHolderFragment implements OnScr
 	@Override
 	public void onActivityCreated(Bundle savedInstanceState) {
 		super.onActivityCreated(savedInstanceState);
+		
+/*		LinearLayout ll = (LinearLayout)mAct.findViewById(R.id.linearLayoutScanDLG2);
+		Log.i("Height", ll.getHeight()+"");*/
+		
+		/*InforyCustomScrollView mScrollView = (InforyCustomScrollView)mAct.findViewById(R.id.scScanDLG2);
+		mScrollView.setEnableScrolling(false);	*/	
 
 		mListView.setOnScrollListener(this);
 		mListView.setAdapter(new ArrayAdapter<String>(getActivity(), R.layout.scan_code_list_item, android.R.id.text1, mListItems));

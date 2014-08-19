@@ -63,21 +63,24 @@ import android.support.v4.view.ViewPager;
 import android.support.v7.app.ActionBarActivity;
 import android.text.Spannable;
 import android.text.SpannableString;
+import android.util.Log;
 import android.util.TypedValue;
 import android.view.Display;
 import android.view.Gravity;
+import android.view.MotionEvent;
 import android.view.View;
 import android.view.WindowManager;
 import android.view.animation.AccelerateDecelerateInterpolator;
 import android.widget.AbsListView;
 import android.widget.Button;
 import android.widget.FrameLayout;
+import android.widget.FrameLayout.LayoutParams;
 import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
+import android.widget.ScrollView;
 import android.widget.TextView;
 import android.widget.Toast;
-import android.widget.LinearLayout.LayoutParams;
 
 
 public class ScanCodeResult2Activity extends FragmentActivity implements ScrollTabHolder, ViewPager.OnPageChangeListener{
@@ -110,8 +113,11 @@ public class ScanCodeResult2Activity extends FragmentActivity implements ScrollT
 	private static List<CyAsyncTask> mTaskList = new ArrayList<CyAsyncTask>();
 	public Activity mAct;
 	private UiLifecycleHelper uiHelper;
+	private static int mLayoutScanDLGHeight; 
 	
-	@ViewById(id = R.id.linearLayoutScanDLG2)	private LinearLayout mLinearLayoutScan;
+	@ViewById(id = R.id.linearLayoutScanDLG2)		private LinearLayout linearLayout;
+	@ViewById(id = R.id.scrScanDLG2)				private ScrollView mScrScanDLG2;
+	@ViewById(id = R.id.linearLayoutCoTheBanThich)	private LinearLayout mLinearLayoutCoTheBanThich;
 	
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
@@ -123,11 +129,7 @@ public class ScanCodeResult2Activity extends FragmentActivity implements ScrollT
     		View childView = mLinearLayoutScan.getChildAt(i);
     		scanLayoutHeight += childView.getHeight();
     	}
-		Toast.makeText(getApplicationContext(), scanLayoutHeight+"", Toast.LENGTH_SHORT).show();*/
-		
-		mMinHeaderHeight = 250;
-		mHeaderHeight = 250;
-		mMinHeaderTranslation = -mMinHeaderHeight;
+		Toast.makeText(getApplicationContext(), scanLayoutHeight+"", Toast.LENGTH_SHORT).show();*/		
 
 		setContentView(R.layout.scan_dlg_2_2);
 		
@@ -142,9 +144,10 @@ public class ScanCodeResult2Activity extends FragmentActivity implements ScrollT
 			finish();
 		}
 		
-		JSONArray jArr = (JSONArray) mScanCodeResult;	
 		
-		final LinearLayout linearLayout = (LinearLayout) findViewById(R.id.linearLayoutScanDLG2);
+		
+		JSONArray jArr = (JSONArray) mScanCodeResult;	
+		mLayoutScanDLGHeight = 0;
 		for (int i = 0; i < jArr.length(); i++) 
 		{						
 			try {
@@ -164,6 +167,9 @@ public class ScanCodeResult2Activity extends FragmentActivity implements ScrollT
 						FontsCollection.setFontForTextView(txtHeader, "sfufuturabook");
 						   
 						linearLayout.addView(txtHeader);
+						
+						linearLayout .measure(0, 0);
+						mLayoutScanDLGHeight += linearLayout.getMeasuredHeight();
 					}
 					
 					if(jItem.has("bigText"))
@@ -180,6 +186,9 @@ public class ScanCodeResult2Activity extends FragmentActivity implements ScrollT
 						FontsCollection.setFontForTextView(txtBigText, "sfufuturabook");
 						
 						linearLayout.addView(txtBigText);
+						
+						linearLayout .measure(0, 0);
+						mLayoutScanDLGHeight += linearLayout.getMeasuredHeight();
 						
 						/*String html_text = "<html><head></head><body style=\"text-align:justify;background-color:#EBEBEB;padding-left: 20px;padding-right: 20px;\">"+ jItem.optString("bigText") +"</body></html>";
 						WebView wv = new WebView(getApplicationContext());
@@ -198,7 +207,7 @@ public class ScanCodeResult2Activity extends FragmentActivity implements ScrollT
 							
 							final FrameLayout frameLoading = new FrameLayout(getApplicationContext());
 							
-							FrameLayout.LayoutParams loadingParams = new FrameLayout.LayoutParams(LayoutParams.WRAP_CONTENT,LayoutParams.WRAP_CONTENT,Gravity.CENTER);													
+							FrameLayout.LayoutParams loadingParams = new FrameLayout.LayoutParams(FrameLayout.LayoutParams.WRAP_CONTENT,FrameLayout.LayoutParams.WRAP_CONTENT,Gravity.CENTER);													
 							frameLoading.setLayoutParams(loadingParams);
 							
 							frameLoading.setBackgroundResource(R.drawable.button_loading_big);	
@@ -209,7 +218,7 @@ public class ScanCodeResult2Activity extends FragmentActivity implements ScrollT
 										
 							int[] scaled_width_height = getScaledSize(jImage.optInt("width"), jImage.optInt("height"));
 										
-							LayoutParams params = new LayoutParams(
+							FrameLayout.LayoutParams params = new FrameLayout.LayoutParams(
 									scaled_width_height[0],
 									scaled_width_height[1]
 							);
@@ -232,6 +241,9 @@ public class ScanCodeResult2Activity extends FragmentActivity implements ScrollT
 							
 							frameImg.addView(imgView);
 							linearLayout.addView(frameImg);
+							
+							linearLayout .measure(0, 0);
+							mLayoutScanDLGHeight += linearLayout.getMeasuredHeight();
 						}
 					}
 					
@@ -246,7 +258,7 @@ public class ScanCodeResult2Activity extends FragmentActivity implements ScrollT
 							
 							final FrameLayout frameLoading = new FrameLayout(getApplicationContext());
 							
-							FrameLayout.LayoutParams loadingParams = new FrameLayout.LayoutParams(LayoutParams.WRAP_CONTENT,LayoutParams.WRAP_CONTENT,Gravity.CENTER);													
+							FrameLayout.LayoutParams loadingParams = new FrameLayout.LayoutParams(FrameLayout.LayoutParams.WRAP_CONTENT,FrameLayout.LayoutParams.WRAP_CONTENT,Gravity.CENTER);													
 							frameLoading.setLayoutParams(loadingParams);
 							
 							frameLoading.setBackgroundResource(R.drawable.button_loading_big);	
@@ -257,7 +269,7 @@ public class ScanCodeResult2Activity extends FragmentActivity implements ScrollT
 							
 							int[] scaled_width_height = getScaledSize(jVideo.optInt("width"), jVideo.optInt("height"));
 							
-							LayoutParams params = new LayoutParams(
+							FrameLayout.LayoutParams params = new FrameLayout.LayoutParams(
 									scaled_width_height[0],
 									scaled_width_height[1]
 							);
@@ -279,7 +291,7 @@ public class ScanCodeResult2Activity extends FragmentActivity implements ScrollT
 									thumb.setImageBitmap(image);	
 									frameVideo.addView(thumb);
 									
-									FrameLayout.LayoutParams playButtonParams = new FrameLayout.LayoutParams(LayoutParams.WRAP_CONTENT,LayoutParams.WRAP_CONTENT,Gravity.CENTER);
+									FrameLayout.LayoutParams playButtonParams = new FrameLayout.LayoutParams(FrameLayout.LayoutParams.WRAP_CONTENT,FrameLayout.LayoutParams.WRAP_CONTENT,Gravity.CENTER);
 									
 									playButton.setImageResource(R.drawable.play_icon);	
 									playButton.setLayoutParams(playButtonParams);
@@ -291,6 +303,9 @@ public class ScanCodeResult2Activity extends FragmentActivity implements ScrollT
 							}, new Point(), getApplicationContext());	
 							
 							linearLayout.addView(frameVideo);
+							
+							linearLayout .measure(0, 0);
+							mLayoutScanDLGHeight += linearLayout.getMeasuredHeight();
 							
 							/*final VideoView video = new VideoView(this);
 							MediaController mediaController = new MediaController(this);
@@ -334,6 +349,9 @@ public class ScanCodeResult2Activity extends FragmentActivity implements ScrollT
 						
 						linearLayout.addView(txtSmallText);
 						
+						linearLayout .measure(0, 0);
+						mLayoutScanDLGHeight += linearLayout.getMeasuredHeight();
+						
 						/*String html_small_text = "<html><head></head><body style=\"text-align:justify; font-size:14px; color:gray;background-color:#EBEBEB;padding-left: 20px;padding-right: 20px;\">"+ jItem.optString("smallText") +"</body></html>";
 						WebView wv_small_text = new WebView(getApplicationContext());
 						wv_small_text.setVerticalScrollBarEnabled(false);
@@ -353,9 +371,9 @@ public class ScanCodeResult2Activity extends FragmentActivity implements ScrollT
 								btnLayout.setOrientation(LinearLayout.HORIZONTAL);
 								btnLayout.setGravity(Gravity.CENTER);
 								
-								LayoutParams params = new LayoutParams(
-								        LayoutParams.WRAP_CONTENT,      
-								        LayoutParams.WRAP_CONTENT
+								LinearLayout.LayoutParams params = new LinearLayout.LayoutParams(
+										LinearLayout.LayoutParams.WRAP_CONTENT,      
+										LinearLayout.LayoutParams.WRAP_CONTENT
 								);
 								params.setMargins(0, 0, 0, 20);
 								btnLayout.setLayoutParams(params);
@@ -450,6 +468,8 @@ public class ScanCodeResult2Activity extends FragmentActivity implements ScrollT
 									});
 								}
 								linearLayout.addView(btnLayout);	
+								linearLayout .measure(0, 0);
+								mLayoutScanDLGHeight += linearLayout.getMeasuredHeight();
 							}
 						}
 						else if (jItem.optJSONObject("buttons") instanceof JSONObject) 
@@ -545,7 +565,30 @@ public class ScanCodeResult2Activity extends FragmentActivity implements ScrollT
 				// TODO Auto-generated catch block
 				e.printStackTrace();
 			}	
-		}		
+		}				
+		Display display = getWindowManager().getDefaultDisplay();
+		int maxHeight = display.getHeight();
+		int visibleHeight = (int)(maxHeight/2) - 48; //Trừ 48 là chiều cao của btnBack
+		Log.i("truoc", mLayoutScanDLGHeight+"");		
+		if(mLayoutScanDLGHeight >= visibleHeight)
+		{
+			LinearLayout.LayoutParams lp = (LinearLayout.LayoutParams) mScrScanDLG2.getLayoutParams();
+			lp.width = LinearLayout.LayoutParams.MATCH_PARENT;
+			lp.height = visibleHeight;
+			mScrScanDLG2.requestLayout();
+			
+			mLayoutScanDLGHeight = visibleHeight;
+		}
+		else
+		{
+			mLayoutScanDLGHeight -= 100;
+			Log.i("sau", mLayoutScanDLGHeight+"");
+		}
+
+		
+//		mMinHeaderHeight = 250;
+		mHeaderHeight = mLayoutScanDLGHeight;
+		mMinHeaderTranslation = -mLayoutScanDLGHeight;
 
 		/*mHeaderPicture = (KenBurnsSupportView) findViewById(R.id.header_picture);
 		mHeaderPicture.setResourceIds(R.drawable.pic0, R.drawable.pic1);
@@ -714,8 +757,13 @@ public class ScanCodeResult2Activity extends FragmentActivity implements ScrollT
 
 		@Override
 		public Fragment getItem(int position) {
-			ScrollTabHolderFragment fragment = (ScrollTabHolderFragment) SampleListFragment.newInstance(mAct,position);
-
+			ScrollTabHolderFragment fragment = (ScrollTabHolderFragment) SampleListFragment.newInstance(mAct,position,mLayoutScanDLGHeight+48+30+3+48+29);
+																																		//48: btnBack
+																																		//30: có thể bạn thích
+																																		//3: line ngăn cách
+																																		//48: tabs
+																																		//29: ko biết (+ vào thì khi chuyển tab ko bị giật)
+			Log.i("h", mLayoutScanDLGHeight+"");
 			mScrollTabHolders.put(position, fragment);
 			if (mListener != null) {
 				fragment.setScrollTabHolder(mListener);
