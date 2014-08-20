@@ -149,7 +149,8 @@
                 android:id="@+id/tabs"
                 android:layout_width="match_parent"
                 android:layout_height="48dp"
-                android:background="#757271" >
+                android:background="#757271" 
+                android:scrollbars="none">
             </vn.infory.infory.scancode.PagerSlidingTabStrip>
         </LinearLayout>
 

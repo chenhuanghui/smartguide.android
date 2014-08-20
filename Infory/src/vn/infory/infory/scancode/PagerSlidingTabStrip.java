@@ -64,7 +64,7 @@ public class PagerSlidingTabStrip extends HorizontalScrollView {
 	private int underlineColor = 0x33FFFFFF;
 	private int dividerColor = 0xAAFFFFFF;
 
-	private boolean shouldExpand = false;
+	private boolean shouldExpand = true;
 	private boolean textAllCaps = true;
 
 	private int scrollOffset = 52;
@@ -214,10 +214,11 @@ public class PagerSlidingTabStrip extends HorizontalScrollView {
 	private void addTextTab(final int position, String title) {
 
 		TextView tab = new TextView(getContext());
+		
 		tab.setText(title);
 		tab.setGravity(Gravity.CENTER);
 		tab.setSingleLine();
-
+		
 		addTab(position, tab);
 	}
 
