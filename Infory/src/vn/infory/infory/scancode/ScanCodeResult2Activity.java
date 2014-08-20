@@ -69,6 +69,8 @@ import android.view.Display;
 import android.view.Gravity;
 import android.view.MotionEvent;
 import android.view.View;
+import android.view.ViewTreeObserver;
+import android.view.View.MeasureSpec;
 import android.view.WindowManager;
 import android.view.animation.AccelerateDecelerateInterpolator;
 import android.widget.AbsListView;
@@ -78,9 +80,11 @@ import android.widget.FrameLayout.LayoutParams;
 import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
+import android.widget.MediaController;
 import android.widget.ScrollView;
 import android.widget.TextView;
 import android.widget.Toast;
+import android.widget.VideoView;
 
 
 public class ScanCodeResult2Activity extends FragmentActivity implements ScrollTabHolder, ViewPager.OnPageChangeListener{
@@ -116,6 +120,7 @@ public class ScanCodeResult2Activity extends FragmentActivity implements ScrollT
 	private static int mLayoutScanDLGHeight; 
 	
 	@ViewById(id = R.id.linearLayoutScanDLG2)		private LinearLayout linearLayout;
+	@ViewById(id = R.id.linearLayoutContent)		private LinearLayout linearLayoutContent;
 	@ViewById(id = R.id.scrScanDLG2)				private ScrollView mScrScanDLG2;
 	@ViewById(id = R.id.linearLayoutCoTheBanThich)	private LinearLayout mLinearLayoutCoTheBanThich;
 	@ViewById(id = R.id.btnBack)	private ImageButton mBtnBack;
@@ -153,8 +158,7 @@ public class ScanCodeResult2Activity extends FragmentActivity implements ScrollT
 			}
 		});
 		
-		JSONArray jArr = (JSONArray) mScanCodeResult;	
-		mLayoutScanDLGHeight = 0;
+		JSONArray jArr = (JSONArray) mScanCodeResult;
 		for (int i = 0; i < jArr.length(); i++) 
 		{						
 			try {
@@ -175,8 +179,9 @@ public class ScanCodeResult2Activity extends FragmentActivity implements ScrollT
 						   
 						linearLayout.addView(txtHeader);
 						
-						linearLayout .measure(0, 0);
+						/*linearLayout.measure(0, 0);
 						mLayoutScanDLGHeight += linearLayout.getMeasuredHeight();
+						Log.i("header", linearLayout.getMeasuredHeight()+"");*/
 					}
 					
 					if(jItem.has("bigText"))
@@ -194,8 +199,9 @@ public class ScanCodeResult2Activity extends FragmentActivity implements ScrollT
 						
 						linearLayout.addView(txtBigText);
 						
-						linearLayout .measure(0, 0);
+						/*linearLayout.measure(0, 0);
 						mLayoutScanDLGHeight += linearLayout.getMeasuredHeight();
+						Log.i("bigText", linearLayout.getMeasuredHeight()+"");*/
 						
 						/*String html_text = "<html><head></head><body style=\"text-align:justify;background-color:#EBEBEB;padding-left: 20px;padding-right: 20px;\">"+ jItem.optString("bigText") +"</body></html>";
 						WebView wv = new WebView(getApplicationContext());
@@ -249,7 +255,7 @@ public class ScanCodeResult2Activity extends FragmentActivity implements ScrollT
 							frameImg.addView(imgView);
 							linearLayout.addView(frameImg);
 							
-							linearLayout .measure(0, 0);
+							linearLayout.measure(0, 0);
 							mLayoutScanDLGHeight += linearLayout.getMeasuredHeight();
 						}
 					}
@@ -311,9 +317,6 @@ public class ScanCodeResult2Activity extends FragmentActivity implements ScrollT
 							
 							linearLayout.addView(frameVideo);
 							
-							linearLayout .measure(0, 0);
-							mLayoutScanDLGHeight += linearLayout.getMeasuredHeight();
-							
 							/*final VideoView video = new VideoView(this);
 							MediaController mediaController = new MediaController(this);
 							mediaController.setAnchorView(video);
@@ -355,15 +358,12 @@ public class ScanCodeResult2Activity extends FragmentActivity implements ScrollT
 						FontsCollection.setFontForTextView(txtSmallText, "sfufuturabook");
 						
 						linearLayout.addView(txtSmallText);
-						
-						linearLayout .measure(0, 0);
-						mLayoutScanDLGHeight += linearLayout.getMeasuredHeight();
-						
+												
 						/*String html_small_text = "<html><head></head><body style=\"text-align:justify; font-size:14px; color:gray;background-color:#EBEBEB;padding-left: 20px;padding-right: 20px;\">"+ jItem.optString("smallText") +"</body></html>";
 						WebView wv_small_text = new WebView(getApplicationContext());
 						wv_small_text.setVerticalScrollBarEnabled(false);
-						wv_small_text.loadData(html_small_text, "text/html; charset=UTF-8", null);
-						*/
+						wv_small_text.loadData(html_small_text, "text/html; charset=UTF-8", null);*/
+						
 					}		
 					
 					if(jItem.has("buttons"))
@@ -475,8 +475,6 @@ public class ScanCodeResult2Activity extends FragmentActivity implements ScrollT
 									});
 								}
 								linearLayout.addView(btnLayout);	
-								linearLayout .measure(0, 0);
-								mLayoutScanDLGHeight += linearLayout.getMeasuredHeight();
 							}
 						}
 						else if (jItem.optJSONObject("buttons") instanceof JSONObject) 
@@ -572,62 +570,68 @@ public class ScanCodeResult2Activity extends FragmentActivity implements ScrollT
 				// TODO Auto-generated catch block
 				e.printStackTrace();
 			}	
-		}				
-		Display display = getWindowManager().getDefaultDisplay();
-		int maxHeight = display.getHeight();
-		int visibleHeight = (int)(maxHeight/2) - 48; //Trừ 48 là chiều cao của btnBack
-		Log.i("truoc", mLayoutScanDLGHeight+"");		
-		if(mLayoutScanDLGHeight >= visibleHeight)
-		{
-			LinearLayout.LayoutParams lp = (LinearLayout.LayoutParams) mScrScanDLG2.getLayoutParams();
-			lp.width = LinearLayout.LayoutParams.MATCH_PARENT;
-			lp.height = visibleHeight;
-			mScrScanDLG2.requestLayout();
-			
-			mLayoutScanDLGHeight = visibleHeight;
 		}
-		else
-		{
-			mLayoutScanDLGHeight -= 100;
-			Log.i("sau", mLayoutScanDLGHeight+"");
-		}
-
 		
-//		mMinHeaderHeight = 250;
-		mHeaderHeight = mLayoutScanDLGHeight;
-		mMinHeaderTranslation = -mLayoutScanDLGHeight;
+		ViewTreeObserver vto = linearLayoutContent.getViewTreeObserver();
+		vto.addOnGlobalLayoutListener(new ViewTreeObserver.OnGlobalLayoutListener() {
 
-		/*mHeaderPicture = (KenBurnsSupportView) findViewById(R.id.header_picture);
-		mHeaderPicture.setResourceIds(R.drawable.pic0, R.drawable.pic1);
-		mHeaderLogo = (ImageView) findViewById(R.id.header_logo);*/
-		mHeader = findViewById(R.id.header);
+		    @Override
+		    public void onGlobalLayout() {
+		        ViewTreeObserver obs = linearLayoutContent.getViewTreeObserver();
 
-		mPagerSlidingTabStrip = (PagerSlidingTabStrip) findViewById(R.id.tabs);
-		mViewPager = (ViewPager) findViewById(R.id.pager);
-		mViewPager.setOffscreenPageLimit(4);
+		        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.ICE_CREAM_SANDWICH) {
+		            obs.removeGlobalOnLayoutListener(this);
+		        } else {
+		            obs.removeGlobalOnLayoutListener(this);
+		        }
+		        
+		        mLayoutScanDLGHeight = linearLayoutContent.getHeight();
+		        Log.i("test", mLayoutScanDLGHeight+"");
+		        
+		        Display display = getWindowManager().getDefaultDisplay();
+				int maxHeight = display.getHeight();
+				int visibleHeight = maxHeight - ((int)(maxHeight/3)) - 48; //Trừ 48 là chiều cao của btnBack
+					
+				Log.i("height", mLayoutScanDLGHeight+"");
+				if(mLayoutScanDLGHeight >= visibleHeight)
+				{
+					LinearLayout.LayoutParams lp = (LinearLayout.LayoutParams) mScrScanDLG2.getLayoutParams();
+					lp.width = LinearLayout.LayoutParams.MATCH_PARENT;
+					lp.height = visibleHeight;
+					mScrScanDLG2.requestLayout();
+					
+					mLayoutScanDLGHeight = visibleHeight;
+				}
+				/*else
+				{
+					mLayoutScanDLGHeight -= 100;
+//					Log.i("sau", mLayoutScanDLGHeight+"");
+				}*/
 
-		mPagerAdapter = new PagerAdapter(getSupportFragmentManager());
-		mPagerAdapter.setTabHolderScrollingContent(this);
+				
+//				mMinHeaderHeight = 250;
+				mHeaderHeight = mLayoutScanDLGHeight;
+				mMinHeaderTranslation = -mLayoutScanDLGHeight;
 
-		mViewPager.setAdapter(mPagerAdapter);
+				mHeader = findViewById(R.id.header);
 
-		mPagerSlidingTabStrip.setViewPager(mViewPager);
-		mPagerSlidingTabStrip.setOnPageChangeListener(this);
-//		mSpannableString = new SpannableString(getString(R.string.actionbar_title));
-		mAlphaForegroundColorSpan = new AlphaForegroundColorSpan(0xffffffff);
-		
-//		ViewHelper.setAlpha(getActionBarIconView(), 0f);
-		
-//		getSupportActionBar().setBackgroundDrawable(null);
+				mPagerSlidingTabStrip = (PagerSlidingTabStrip) findViewById(R.id.tabs);
+				mViewPager = (ViewPager) findViewById(R.id.pager);
+				mViewPager.setOffscreenPageLimit(4);
+
+				mPagerAdapter = new PagerAdapter(getSupportFragmentManager());
+				mPagerAdapter.setTabHolderScrollingContent((ScrollTabHolder)mAct);
+
+				mViewPager.setAdapter(mPagerAdapter);
+
+				mPagerSlidingTabStrip.setViewPager(mViewPager);
+				mPagerSlidingTabStrip.setOnPageChangeListener((ViewPager.OnPageChangeListener)mAct);
+				mAlphaForegroundColorSpan = new AlphaForegroundColorSpan(0xffffffff);
+		    }
+
+		});			
 	}
 
-	@Override
-	protected void onActivityResult(int arg0, int arg1, Intent arg2) {
-		// TODO Auto-generated method stub
-		super.onActivityResult(arg0, arg1, arg2);
-		
-		
-	}
 
 	@Override
 	public void onPageScrollStateChanged(int arg0) {
@@ -764,13 +768,13 @@ public class ScanCodeResult2Activity extends FragmentActivity implements ScrollT
 
 		@Override
 		public Fragment getItem(int position) {
-			ScrollTabHolderFragment fragment = (ScrollTabHolderFragment) SampleListFragment.newInstance(mAct,position,mLayoutScanDLGHeight+48+30+3+48+29);
+			ScrollTabHolderFragment fragment = (ScrollTabHolderFragment) SampleListFragment.newInstance(mAct,position,mLayoutScanDLGHeight+48+30+3+48+30);
 																																		//48: btnBack
 																																		//30: có thể bạn thích
 																																		//3: line ngăn cách
 																																		//48: tabs
 																																		//29: ko biết (+ vào thì khi chuyển tab ko bị giật)
-			Log.i("h", mLayoutScanDLGHeight+"");
+//			Log.i("h", mLayoutScanDLGHeight+"");
 			mScrollTabHolders.put(position, fragment);
 			if (mListener != null) {
 				fragment.setScrollTabHolder(mListener);
