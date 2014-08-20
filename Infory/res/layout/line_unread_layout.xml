@@ -1,11 +1,16 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:id="@+id/linearUnreadlayout"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:background="@drawable/line_unread"
     android:gravity="center"
     android:orientation="vertical" >
+
+    <ImageView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center"
+        android:background="@drawable/line_unread" />
 
     <TextView
         android:layout_width="match_parent"
@@ -15,4 +20,4 @@
         android:text="Tin đã đọc"
         android:textColor="#737373" />
 
-</LinearLayout>
+</FrameLayout>

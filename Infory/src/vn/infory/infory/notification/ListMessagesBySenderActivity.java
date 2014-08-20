@@ -1,15 +1,21 @@
 package vn.infory.infory.notification;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import vn.infory.infory.FontsCollection;
 import vn.infory.infory.R;
 import vn.infory.infory.data.MessageBySender;
 import vn.infory.infory.data.MessageBySender.messages;
+import vn.infory.infory.mywidget.LoadMoreSwipeListView;
+import vn.infory.infory.mywidget.LoadMoreSwipeListView.OnLoadMoreListener;
 import vn.infory.infory.network.DeleteMessageTask;
 import vn.infory.infory.network.DeleteMessageTask.onDeleteMessageTaskListener;
 import vn.infory.infory.network.GetListMessagesBySenderTask;
 import vn.infory.infory.network.GetListMessagesBySenderTask.onGetListMessagesBySenderTaskListener;
 import android.app.ProgressDialog;
 import android.content.Context;
+import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.v4.app.FragmentActivity;
 import android.util.DisplayMetrics;
@@ -26,56 +32,60 @@ import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
 
 public class ListMessagesBySenderActivity extends FragmentActivity {
-    private static final String TAG = "Infory ListMessagesBySenderActivity";
-	
-    private LinearLayout linearContentView;
-    private ImageButton btnBack;
-    private TextView txtHeader;
-    private SwipeListView swipeListView;
+	private static final String TAG = "Infory ListMessagesBySenderActivity";
+
+	private LinearLayout linearContentView;
+	private ImageButton btnBack;
+	private TextView txtHeader;
+	private LoadMoreSwipeListView swipeListView;
 	private ProgressDialog dialog;
 
-    private Context mContext;
+	private Context mContext;
 
 	public static int screenWidth;
-    public static String stringEmptyData = "Không có dữ liệu";
+	public static String stringEmptyData = "Không có dữ liệu";
 
-    private int page = 0;
-    private int per_page = 10;
-    private boolean isLoadMore = false;
-    
-//    private MessageInfo messageInfo;
-    private int senderID;
-    private int messageId = -1;
-    private MessageBySender messageBySender;
-    private MessageBySenderAdapter adapter;
-    
+	private int page = 0;
+	private int per_page = 10;
+	private boolean isLoadMore = false;
+
+	// private MessageInfo messageInfo;
+	private int senderID;
+	private int messageId = -1;
+	private MessageBySender messageBySender;
+	private MessageBySenderAdapter adapter;
+	private List<messages> lstMessages;
+
 	@Override
 	public void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.list_messags_by_sender_activity_layout);
-		
+
 		DisplayMetrics metrics = new DisplayMetrics();
 		getWindowManager().getDefaultDisplay().getMetrics(metrics);
 		screenWidth = metrics.widthPixels;
-		
+
 		Bundle bundle = getIntent().getExtras();
-		if(bundle != null) {
-//			messageInfo = new Gson().fromJson(bundle.getString("message_info"), MessageInfo.class);
+		if (bundle != null) {
+			// messageInfo = new
+			// Gson().fromJson(bundle.getString("message_info"),
+			// MessageInfo.class);
 			senderID = bundle.getInt(NotificationUtil.senderId);
 			messageId = bundle.getInt(NotificationUtil.messageId);
 		}
-        mContext = this;
-        
-        init();
-        setGUI();
-        initEvents();
+		mContext = this;
+		lstMessages = new ArrayList<messages>();
+
+		init();
+		setGUI();
+		initEvents();
 	}
 
 	private void init() {
-    	linearContentView = (LinearLayout) findViewById(R.id.linearContentView);
-    	btnBack = (ImageButton) findViewById(R.id.btnBack);
-    	txtHeader = (TextView) findViewById(R.id.txtHeader);
-		swipeListView = (SwipeListView) findViewById(R.id.listMessages);
+		linearContentView = (LinearLayout) findViewById(R.id.linearContentView);
+		btnBack = (ImageButton) findViewById(R.id.btnBack);
+		txtHeader = (TextView) findViewById(R.id.txtHeader);
+		swipeListView = (LoadMoreSwipeListView) findViewById(R.id.listMessages);
 
 		dialog = new ProgressDialog(mContext);
 		dialog.setMessage("Vui lòng chờ đợi!");
@@ -85,18 +95,19 @@ public class ListMessagesBySenderActivity extends FragmentActivity {
 	}
 
 	private void setGUI() {
-		GetListMessagesBySenderTask task = new GetListMessagesBySenderTask(mContext, senderID, page);
+		GetListMessagesBySenderTask task = new GetListMessagesBySenderTask(
+				mContext, senderID, page);
 		task.setGetListMessagesBySenderTaskListener(new onGetListMessagesBySenderTaskListener() {
-			
+
 			@Override
 			public void onPreGetListMessagesBySender() {
-				if(dialog != null && !dialog.isShowing())
+				if (dialog != null && !dialog.isShowing())
 					dialog.show();
 			}
-			
+
 			@Override
 			public void onGetListMessagesBySenderSuccess(String response) {
-				if(dialog != null && dialog.isShowing())
+				if (dialog != null && dialog.isShowing())
 					dialog.cancel();
 				if (response != null && response.compareTo("") != 0) {
 					loadMessagesData(response);
@@ -108,10 +119,10 @@ public class ListMessagesBySenderActivity extends FragmentActivity {
 					}
 				}
 			}
-			
+
 			@Override
 			public void onGetListMessagesBySenderFailure() {
-				if(dialog != null && dialog.isShowing())
+				if (dialog != null && dialog.isShowing())
 					dialog.cancel();
 				// show error in here
 				initEmptyData();
@@ -120,34 +131,38 @@ public class ListMessagesBySenderActivity extends FragmentActivity {
 		});
 		task.execute();
 	}
-	
-    private void checkLogicLoadMore(MessageBySender messageBySender) {
-    	Log.d(TAG, "checkLogicLoadMore: size is " + messageBySender.getMessages().size());
-    	if(messageBySender.getMessages().size() < 10)
+
+	private void checkLogicLoadMore(MessageBySender messageBySender) {
+		Log.d(TAG, "checkLogicLoadMore: size is "
+				+ messageBySender.getMessages().size());
+		if (messageBySender.getMessages().size() < 10)
 			isLoadMore = false;
 		else {
-            isLoadMore = true;
-            page++;
+			isLoadMore = true;
+			page++;
 		}
-    	Log.d(TAG, "isLoadMore: " + isLoadMore);
-    }
-	
+		Log.d(TAG, "isLoadMore: " + isLoadMore);
+	}
+
 	protected void initAdapterListView() {
-    	if(messageBySender.getSender().compareTo(stringEmptyData) == 0){
+		if (messageBySender.getSender().compareTo(stringEmptyData) == 0) {
 			swipeListView.setSwipeMode(SwipeListView.SWIPE_MODE_NONE);
-		}else{
-			float width_deletehide_btn = getResources().getDimensionPixelOffset(R.dimen.width_delete);
+		} else {
+			float width_deletehide_btn = getResources()
+					.getDimensionPixelOffset(R.dimen.width_delete);
 			swipeListView.setSwipeMode(SwipeListView.SWIPE_MODE_LEFT);
 			swipeListView.setChoiceMode(ListView.CHOICE_MODE_SINGLE);
 			swipeListView.setOffsetLeft(screenWidth - width_deletehide_btn);
 		}
-		adapter = new MessageBySenderAdapter(mContext, R.layout.activity_expandablelistitem_card, messageBySender.getMessages(), swipeListView);
+		adapter = new MessageBySenderAdapter(mContext,
+				R.layout.activity_expandablelistitem_card,
+				lstMessages, swipeListView);
 		swipeListView.setAdapter(adapter);
-		if(messageId > 0) {
+		if (messageId > 0) {
 			int index = 0;
-			for(int i = 0; i < messageBySender.getMessages().size(); i++) {
+			for (int i = 0; i < messageBySender.getMessages().size(); i++) {
 				messages mess = messageBySender.getMessages().get(i);
-				if(mess.getIdMessage() == messageId) {
+				if (mess.getIdMessage() == messageId) {
 					index = i;
 					break;
 				}
@@ -158,109 +173,191 @@ public class ListMessagesBySenderActivity extends FragmentActivity {
 			adapter.setSelectedIndex(0);
 		}
 		adapter.notifyDataSetChanged();
-    }
-	
-    private void initEmptyData() {
-    	MessageBySender messageInfo = new MessageBySender();
-    	messageInfo.setSender(stringEmptyData);
-    }
-    
+	}
+
+	private void initEmptyData() {
+		MessageBySender messageInfo = new MessageBySender();
+		messageInfo.setSender(stringEmptyData);
+	}
+
 	protected boolean loadMessagesData(String response) {
 		boolean checkLoad = false;
-        try {
-        	messageBySender = new Gson().fromJson(response, new TypeToken<MessageBySender>() {
-            }.getType());
-    		txtHeader.setText(messageBySender.getSender());
-        	Log.e(TAG, "messageBySender.getMessages().size(): " + messageBySender.getMessages().size());
-        } catch (Exception ex) {
-            Log.e(TAG + "loadMessagesData: ", ex.toString());
-            checkLoad = false;
-        }
-        return checkLoad;
+		try {
+			messageBySender = new Gson().fromJson(response,
+					new TypeToken<MessageBySender>() {
+					}.getType());
+			txtHeader.setText(messageBySender.getSender());
+			lstMessages = messageBySender.getMessages();
+			Log.d(TAG, "messageBySender.getMessages().size(): " + messageBySender.getMessages().size());
+		} catch (Exception ex) {
+			Log.e(TAG + "loadMessagesData: ", ex.toString());
+			checkLoad = false;
+		}
+		return checkLoad;
 	}
 
 	private void initEvents() {
 		btnBack.setOnClickListener(new View.OnClickListener() {
-			
+
 			@Override
 			public void onClick(View v) {
 				onBackPressed();
 			}
 		});
-		
+
+		// set a listener to be invoked when the list reaches the end
+		swipeListView.setOnLoadMoreListener(new OnLoadMoreListener() {
+			public void onLoadMore() {
+				// Do the work to load more items at the end of list
+				// here
+				new LoadDataTask().execute();
+			}
+		});
+
 		swipeListView.setSwipeListViewListener(new BaseSwipeListViewListener() {
-            @Override
-            public void onOpened(int position, boolean toRight) {
-            	
-            }
+			@Override
+			public void onOpened(int position, boolean toRight) {
 
-            @Override
-            public void onClosed(int position, boolean fromRight) {
-            	
-            }
+			}
 
-            @Override
-            public void onListChanged() {
-            }
+			@Override
+			public void onClosed(int position, boolean fromRight) {
 
-            @Override
-            public void onMove(int position, float x) {
-            }
+			}
 
-            @Override
-            public void onStartOpen(int position, int action, boolean right) {
-                Log.d("swipe", String.format("onStartOpen %d - action %d", position, action));
-            }
+			@Override
+			public void onListChanged() {
+			}
 
-            @Override
-            public void onStartClose(int position, boolean right) {
-                Log.d("swipe", String.format("onStartClose %d", position));
-            }
+			@Override
+			public void onMove(int position, float x) {
+			}
 
-            @Override
-            public void onClickFrontView(int position) {
-                Log.d("swipe", String.format("onClickFrontView %d", position));
-            }
+			@Override
+			public void onStartOpen(int position, int action, boolean right) {
+				Log.d("swipe", String.format("onStartOpen %d - action %d",
+						position, action));
+			}
 
-            @Override
-            public void onClickBackView(final int position) {
-                Log.d("swipe", String.format("onClickBackView %d", position));
-                messages message = messageBySender.getMessages().get(position);
-                DeleteMessageTask task = new DeleteMessageTask(mContext, message.getIdMessage(), 0);
-            	task.setDeleteMessageTaskListener(new onDeleteMessageTaskListener() {
-    				
-    				@Override
-    				public void onPreDeleteMessage() {
-    					if(dialog != null && !dialog.isShowing())
-    						dialog.show();
-    				}
-    				
-    				@Override
-    				public void onDeleteMessageSuccess(String response) {
-    					if(dialog != null && dialog.isShowing())
-    						dialog.cancel();
-    					messageBySender.getMessages().remove(position);
-    					adapter.notifyDataSetChanged();
-    					swipeListView.closeOpenedItems(true);
-    					
-    				}
-    				
-    				@Override
-    				public void onDeleteMessageFailure() {
-    					if(dialog != null && dialog.isShowing())
-    						dialog.cancel();
-    					swipeListView.closeOpenedItems(true);
-    				}
-    			});
-            	task.execute();
-            }
+			@Override
+			public void onStartClose(int position, boolean right) {
+				Log.d("swipe", String.format("onStartClose %d", position));
+			}
 
-            @Override
-            public void onDismiss(int[] reverseSortedPositions) {
-                
-            }
+			@Override
+			public void onClickFrontView(int position) {
+				Log.d("swipe", String.format("onClickFrontView %d", position));
+			}
 
-        });
+			@Override
+			public void onClickBackView(final int position) {
+				Log.d("swipe", String.format("onClickBackView %d", position));
+				messages message = messageBySender.getMessages().get(position);
+				DeleteMessageTask task = new DeleteMessageTask(mContext,
+						message.getIdMessage(), 0);
+				task.setDeleteMessageTaskListener(new onDeleteMessageTaskListener() {
+
+					@Override
+					public void onPreDeleteMessage() {
+						if (dialog != null && !dialog.isShowing())
+							dialog.show();
+					}
+
+					@Override
+					public void onDeleteMessageSuccess(String response) {
+						if (dialog != null && dialog.isShowing())
+							dialog.cancel();
+						messageBySender.getMessages().remove(position);
+						adapter.notifyDataSetChanged();
+						swipeListView.closeOpenedItems(true);
+
+					}
+
+					@Override
+					public void onDeleteMessageFailure() {
+						if (dialog != null && dialog.isShowing())
+							dialog.cancel();
+						swipeListView.closeOpenedItems(true);
+					}
+				});
+				task.execute();
+			}
+
+			@Override
+			public void onDismiss(int[] reverseSortedPositions) {
+
+			}
+
+		});
 	}
-	
+
+	private class LoadDataTask extends AsyncTask<Void, Void, Void> {
+
+		private MessageBySender loadDataLoadMore(String response) {
+			MessageBySender messageBySender = new Gson().fromJson(response,
+					new TypeToken<MessageBySender>() {
+					}.getType());
+			return messageBySender;
+		}
+
+		@Override
+		protected Void doInBackground(Void... params) {
+			if (isCancelled()) {
+				return null;
+			}
+			return null;
+		}
+
+		@Override
+		protected void onPreExecute() {
+			super.onPreExecute();
+			if (isLoadMore) {
+				GetListMessagesBySenderTask task = new GetListMessagesBySenderTask(
+						mContext, senderID, page);
+				task.setGetListMessagesBySenderTaskListener(new onGetListMessagesBySenderTaskListener() {
+
+					@Override
+					public void onPreGetListMessagesBySender() {
+
+					}
+
+					@Override
+					public void onGetListMessagesBySenderSuccess(String response) {
+						if (response != null && response.compareTo("") != 0) {
+							MessageBySender messageBySender = loadDataLoadMore(response);
+							if (messageBySender.getMessages() != null && messageBySender.getMessages().size() > 0) {
+								checkLogicLoadMore(messageBySender);
+								for (int i = 0; i < messageBySender.getMessages().size(); i++) {
+									lstMessages.add(messageBySender.getMessages().get(i));
+								}
+								adapter.notifyDataSetChanged();
+							} else {
+								isLoadMore = false;
+							}
+						}
+					}
+
+					@Override
+					public void onGetListMessagesBySenderFailure() {
+
+					}
+				});
+				task.execute();
+			}
+		}
+
+		@Override
+		protected void onPostExecute(Void result) {
+			// Call onLoadMoreComplete when the LoadMore task, has finished
+			swipeListView.onLoadMoreComplete();
+			super.onPostExecute(result);
+		}
+
+		@Override
+		protected void onCancelled() {
+			// Notify the loading more operation has finished
+			swipeListView.onLoadMoreComplete();
+		}
+	}
+
 }

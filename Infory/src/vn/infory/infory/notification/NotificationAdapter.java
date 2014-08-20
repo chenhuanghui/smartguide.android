@@ -12,11 +12,10 @@ import android.text.SpannableString;
 import android.text.style.StyleSpan;
 import android.util.Log;
 import android.view.LayoutInflater;
-import android.view.MotionEvent;
 import android.view.View;
-import android.view.View.OnTouchListener;
 import android.view.ViewGroup;
 import android.widget.BaseAdapter;
+import android.widget.FrameLayout;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
@@ -52,7 +51,8 @@ public class NotificationAdapter extends BaseAdapter {
 	}
 
 	private class ViewHolder {
-		LinearLayout front, linearUnreadlayout, back;
+		LinearLayout front, back;
+		FrameLayout linearUnreadlayout;
 		View viewLeft;
 		RelativeLayout linearText;
 		TextView txtContent, txtDateTime, txtUnreadCount, txtDelete;
@@ -76,7 +76,7 @@ public class NotificationAdapter extends BaseAdapter {
 			holder.linearText = (RelativeLayout) convertView.findViewById(R.id.linearText);
 			holder.back = (LinearLayout) convertView.findViewById(R.id.back);
 			holder.front = (LinearLayout) convertView.findViewById(R.id.front);
-			holder.linearUnreadlayout = (LinearLayout) convertView.findViewById(R.id.linearUnreadlayout);
+			holder.linearUnreadlayout = (FrameLayout) convertView.findViewById(R.id.linearUnreadlayout);
 			convertView.setTag(holder);
 		} else {
 			holder = (ViewHolder) convertView.getTag();

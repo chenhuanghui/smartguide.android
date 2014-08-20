@@ -40,7 +40,7 @@ import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
 import com.handmark.pulltorefresh.library.PullToRefreshSwipsListView;
 
-public class NotificationActivity extends FragmentActivity implements Listener2 {
+public class NotificationActivity extends FragmentActivity {
     private static final String TAG = "Infory NotificationActivity";
 
     public static final int GET_UNREAD_MESSAGES = 0;
@@ -52,6 +52,31 @@ public class NotificationActivity extends FragmentActivity implements Listener2 
         public void onRefreshListView(
                 PullToRefreshSwipsListView mPullRefreshListView,
                 ProgressBar proNotifications, boolean isShowProgressBar) {
+
+        	// Get count unread message
+    		CyAsyncTask mLoader = new GetCounterMessage(mContext, HomeFragment.iType_all);
+    		mLoader.setListener(new Listener2() {
+				
+				@Override
+				public void onFail(Exception e) {
+					txtHeader.setText("Thông báo");
+				}
+				
+				@Override
+				public void onCompleted(Object result) {
+					try {
+//						{"number":[400,0,400],"string":["400","0","400"]}
+//						unread, read, total
+						
+						JSONArray jsonArr = new JSONObject((String) result).getJSONArray("string");
+						txtHeader.setText("Thông báo" + " (" + jsonArr.getString(0) + "/" + jsonArr.getString(2) + ")");
+					} catch (Exception e) {
+						Log.e(TAG, e.toString());
+					}
+				}
+			});
+    		mLoader.executeOnExecutor(NetworkManager.THREAD_POOL);
+    		
             loadDataForFirstTime(mPullRefreshListView, proNotifications, isShowProgressBar);
         }
 
@@ -167,6 +192,8 @@ public class NotificationActivity extends FragmentActivity implements Listener2 
 
     private void setGUI() {
         myPullToRefreshSwipeListView.setOnActionPullToRefreshAndLoadMoreListView(onActionPullToRefreshAndLoadMore);
+        // reload data
+        myPullToRefreshSwipeListView.activePullToRefeshAndLoadMoreListView();
     }
 
     private void initEvents() {
@@ -301,12 +328,6 @@ public class NotificationActivity extends FragmentActivity implements Listener2 
     @Override
     protected void onResume() {
     	super.onResume();
-    	// Get count unread message
-		CyAsyncTask mLoader = new GetCounterMessage(mContext, HomeFragment.iType_all);
-		mLoader.setListener(this);
-		mLoader.executeOnExecutor(NetworkManager.THREAD_POOL);
-        // reload data
-        myPullToRefreshSwipeListView.activePullToRefeshAndLoadMoreListView();
     }
 
     private class loadMoreListMessagesTask extends AsyncTask<Void, Void, Void> {
@@ -387,22 +408,4 @@ public class NotificationActivity extends FragmentActivity implements Listener2 
             myPullToRefreshSwipeListView.setMyIsLoadingMore(mIsLoadingMore);
         }
     }
-
-	@Override
-	public void onCompleted(Object result) {
-		try {
-//			{"number":[400,0,400],"string":["400","0","400"]}
-//			unread, read, total
-			
-			JSONArray jsonArr = new JSONObject((String) result).getJSONArray("string");
-			txtHeader.setText("Thông báo" + " (" + jsonArr.getString(0) + "/" + jsonArr.getString(2) + ")");
-		} catch (Exception e) {
-			Log.e(TAG, e.toString());
-		}
-	}
-
-	@Override
-	public void onFail(Exception e) {
-		txtHeader.setText("Thông báo");
-	}
 }

@@ -81,18 +81,25 @@
                         android:textColor="#737373" />
                 </LinearLayout>
 
-                <ImageView
-                    android:id="@+id/imgImage"
+                <FrameLayout
                     android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_marginTop="10dip"
-                    android:visibility="gone" />
+                    android:layout_height="wrap_content" >
+
+                    <ImageView
+                        android:id="@+id/imgImage"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="5dip"
+                        android:visibility="gone" />
+
+                    <include layout="@layout/video_item_layout" />
+                </FrameLayout>
 
                 <TextView
                     android:id="@+id/txtTitle"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:layout_marginTop="10dip"
+                    android:layout_marginTop="5dip"
                     android:contentDescription="@string/sfu_bold"
                     android:gravity="left"
                     android:text="dsds"
@@ -102,11 +109,18 @@
                     android:id="@+id/txtContent"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:layout_marginTop="10dip"
+                    android:layout_marginTop="5dip"
                     android:contentDescription="@string/sfu_normal"
                     android:gravity="left"
                     android:text="dsds"
                     android:textColor="#737373"
+                    android:visibility="gone" />
+
+                <ListView
+                    android:id="@+id/listViewButtons"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="8dip"
                     android:visibility="gone" />
             </LinearLayout>
 

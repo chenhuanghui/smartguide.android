@@ -94,11 +94,13 @@ public final class NetworkManager {
 	}
 	
 	public static String post(String URL, List<NameValuePair> pairs) throws Exception {
+		Log.e(TAG, "params sent: " + pairs.toString());
 		return post(URL, pairs, true);
 	}
 
 	public static String post(String URL, List<NameValuePair> pairs, 
 			boolean isNeedOauth) throws Exception {
+		Log.e(TAG, "params sent: " + pairs.toString());
 		return post(URL, new UrlEncodedFormEntity(pairs, "utf-8"), isNeedOauth, null);
 	}
 	

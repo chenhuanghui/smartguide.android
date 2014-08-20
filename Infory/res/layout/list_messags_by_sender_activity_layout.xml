@@ -33,7 +33,7 @@
             android:textStyle="bold" />
     </RelativeLayout>
 
-    <com.fortysevendeg.swipelistview.SwipeListView
+    <vn.infory.infory.mywidget.LoadMoreSwipeListView
         xmlns:swipe="http://schemas.android.com/apk/res-auto"
         android:id="@+id/listMessages"
         android:layout_width="match_parent"
@@ -52,6 +52,6 @@
         swipe:swipeFrontView="@+id/front"
         swipe:swipeMode="left"
         swipe:swipeOpenOnLongPress="false" >
-    </com.fortysevendeg.swipelistview.SwipeListView>
+    </vn.infory.infory.mywidget.LoadMoreSwipeListView>
 
 </LinearLayout>
