@@ -834,8 +834,6 @@ public class ScanCodeResult2Activity extends FragmentActivity implements ScrollT
 									//29: ko biết (+ vào thì khi chuyển tab ko bị giật)
 //			Log.i("h", mLayoutScanDLGHeight+"");
 			
-			args.putInt(ScanCodeRelatedFragment.ARG_OBJECT, position);	
-			fragment.setArguments(args);
 			
 			mScrollTabHolders.put(position, fragment);
 			if (mListener != null) {

@@ -96,20 +96,19 @@ public class SampleListFragment extends ScrollTabHolderFragment implements OnScr
 	@Override
 	public void onActivityCreated(Bundle savedInstanceState) {
 		super.onActivityCreated(savedInstanceState);
-		Bundle args = getArguments();
 		
 		mListView.setOnScrollListener(this);
 		
-		setListData(args.getInt(ARG_OBJECT));
+		setListData(mPosition);
 		
 		Resources res = getResources();    
 		CustomListView = (ScanCodeResult2Activity) getActivity();  
         final ScanCodeRelatedListViewAdapter adapter_related;
-        if(args.getInt(ARG_OBJECT) == 0)
+        if(mPosition == 0)
         {
         	adapter_related = new ScanCodeRelatedListViewAdapter(CustomListView, arrListModelRelatedShops,res,0);		
         }
-        else if(args.getInt(ARG_OBJECT) == 1)
+        else if(mPosition == 1)
         {
         	adapter_related = new ScanCodeRelatedListViewAdapter(CustomListView, arrListModelRelatedPromotions,res,1);            	
         }
