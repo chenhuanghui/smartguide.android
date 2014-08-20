@@ -113,7 +113,7 @@ public class ScanCodeResult2Activity extends FragmentActivity implements ScrollT
 	private AlphaForegroundColorSpan mAlphaForegroundColorSpan;
 	
 	private static Object mScanCodeResult;
-	private static Object mScanCodeRelated;
+	private static Object mScanCodeRelated = null;
 	private static String mQRCode;
 	
 	private static List<CyAsyncTask> mTaskList = new ArrayList<CyAsyncTask>();
@@ -860,7 +860,7 @@ public class ScanCodeResult2Activity extends FragmentActivity implements ScrollT
 				mTaskList.remove(this);		
 								
 				mScanCodeRelated = result3;
-				
+								
 				Intent intent = new Intent(act, ScanCodeResult2Activity.class);
 				act.startActivity(intent);
 				act.overridePendingTransition(android.R.anim.fade_in, android.R.anim.fade_out);
