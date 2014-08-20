@@ -153,6 +153,22 @@
             </vn.infory.infory.scancode.PagerSlidingTabStrip>
         </LinearLayout>
 
+        <FrameLayout
+	        android:id="@+id/scanDLGLayoutLoading"
+	        android:layout_width="match_parent"
+	        android:layout_height="match_parent"
+	        android:background="#80000000"
+	        android:clickable="true"
+	        android:visibility="invisible" >
+	
+	        <FrameLayout
+	            android:id="@+id/scanDLGLayoutLoadingAnimation"
+	            android:layout_width="wrap_content"
+	            android:layout_height="wrap_content"
+	            android:layout_gravity="center"
+	            android:background="@drawable/button_loading_big" >
+	        </FrameLayout>
+	    </FrameLayout>
     </FrameLayout>
 
 </LinearLayout>

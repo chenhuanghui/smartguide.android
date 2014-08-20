@@ -16,6 +16,7 @@ import vn.infory.infory.network.CyAsyncTask;
 import vn.infory.infory.network.GetShopDetail2;
 import vn.infory.infory.network.NetworkManager;
 import vn.infory.infory.network.ScanCodeRelated;
+import vn.infory.infory.scancode.ScanCodeResultActivity.ScanCodeRelatedFragment;
 import vn.infory.infory.shopdetail.ShopDetailActivity;
 import vn.infory.infory.shoplist.ShopListActivity;
 
@@ -67,6 +68,7 @@ import android.util.Log;
 import android.util.TypedValue;
 import android.view.Display;
 import android.view.Gravity;
+import android.view.MenuItem;
 import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewTreeObserver;
@@ -123,7 +125,8 @@ public class ScanCodeResult2Activity extends FragmentActivity implements ScrollT
 	@ViewById(id = R.id.linearLayoutContent)		private LinearLayout linearLayoutContent;
 	@ViewById(id = R.id.scrScanDLG2)				private ScrollView mScrScanDLG2;
 	@ViewById(id = R.id.linearLayoutCoTheBanThich)	private LinearLayout mLinearLayoutCoTheBanThich;
-	@ViewById(id = R.id.btnBack)	private ImageButton mBtnBack;
+	@ViewById(id = R.id.btnBack)					private ImageButton mBtnBack;
+	@ViewById(id = R.id.scanDLGLayoutLoading)		private View mLayoutLoading;	
 	
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
@@ -618,7 +621,7 @@ public class ScanCodeResult2Activity extends FragmentActivity implements ScrollT
 				mPagerSlidingTabStrip = (PagerSlidingTabStrip) findViewById(R.id.tabs);
 				mViewPager = (ViewPager) findViewById(R.id.pager);
 				mViewPager.setOffscreenPageLimit(4);
-
+				
 				mPagerAdapter = new PagerAdapter(getSupportFragmentManager());
 				mPagerAdapter.setTabHolderScrollingContent((ScrollTabHolder)mAct);
 
@@ -631,6 +634,56 @@ public class ScanCodeResult2Activity extends FragmentActivity implements ScrollT
 
 		});			
 	}
+	
+	@Override
+	protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+	    super.onActivityResult(requestCode, resultCode, data);
+
+	    uiHelper.onActivityResult(requestCode, resultCode, data, new FacebookDialog.Callback() {
+	        @Override
+	        public void onError(FacebookDialog.PendingCall pendingCall, Exception error, Bundle data) {
+	            Log.e("Activity", String.format("Error: %s", error.toString()));
+	        }
+
+	        @Override
+	        public void onComplete(FacebookDialog.PendingCall pendingCall, Bundle data) {
+	            Log.i("Activity", "Success!");
+	        }
+	    });
+	}
+	
+	@Override
+	protected void onResume() {
+	    super.onResume();
+	    uiHelper.onResume();
+	}
+
+	@Override
+	protected void onSaveInstanceState(Bundle outState) {
+	    super.onSaveInstanceState(outState);
+	    uiHelper.onSaveInstanceState(outState);
+	}
+
+	@Override
+	public void onPause() {
+	    super.onPause();
+	    uiHelper.onPause();
+	    
+	    mLayoutLoading.setVisibility(View.GONE);
+	}
+
+	@Override
+	public void onDestroy() {
+	    super.onDestroy();
+	    uiHelper.onDestroy();
+	}
+	
+	@Override
+    public boolean onOptionsItemSelected(MenuItem item) {        
+        return super.onOptionsItemSelected(item);
+    }
+	
+	
 
 
 	@Override
@@ -744,7 +797,7 @@ public class ScanCodeResult2Activity extends FragmentActivity implements ScrollT
 	public class PagerAdapter extends FragmentPagerAdapter {
 
 		private SparseArrayCompat<ScrollTabHolder> mScrollTabHolders;
-		private final String[] TITLES = { "Page 1", "Page 2", "Page 3", "Page 4"};
+		private final String[] TITLES = { "Địa điểm", "Ưu đãi", "Danh sách"};
 		private ScrollTabHolder mListener;
 
 		public PagerAdapter(FragmentManager fm) {
@@ -768,13 +821,18 @@ public class ScanCodeResult2Activity extends FragmentActivity implements ScrollT
 
 		@Override
 		public Fragment getItem(int position) {
-			ScrollTabHolderFragment fragment = (ScrollTabHolderFragment) SampleListFragment.newInstance(mAct,position,mLayoutScanDLGHeight+48+30+3+48+30);
+			Bundle args = new Bundle();
+			ScrollTabHolderFragment fragment = (ScrollTabHolderFragment) SampleListFragment.newInstance(mAct,mScanCodeRelated,position,mLayoutScanDLGHeight+48+30+3+48+30);
 																																		//48: btnBack
 																																		//30: có thể bạn thích
 																																		//3: line ngăn cách
 																																		//48: tabs
 																																		//29: ko biết (+ vào thì khi chuyển tab ko bị giật)
 //			Log.i("h", mLayoutScanDLGHeight+"");
+			
+			args.putInt(ScanCodeRelatedFragment.ARG_OBJECT, position);	
+			fragment.setArguments(args);
+			
 			mScrollTabHolders.put(position, fragment);
 			if (mListener != null) {
 				fragment.setScrollTabHolder(mListener);
