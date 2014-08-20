@@ -75,9 +75,7 @@ public class SampleListFragment extends ScrollTabHolderFragment implements OnScr
 	@Override
 	public void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
-		mPosition = getArguments().getInt(ARG_POSITION);
-		
-		setListData();
+		mPosition = getArguments().getInt(ARG_POSITION);		
 	}
 
 	@Override
@@ -101,6 +99,8 @@ public class SampleListFragment extends ScrollTabHolderFragment implements OnScr
 		Bundle args = getArguments();
 		
 		mListView.setOnScrollListener(this);
+		
+		setListData(args.getInt(ARG_OBJECT));
 		
 		Resources res = getResources();    
 		CustomListView = (ScanCodeResult2Activity) getActivity();  
@@ -218,8 +218,12 @@ public class SampleListFragment extends ScrollTabHolderFragment implements OnScr
 		// nothing
 	}
 
-	public static void setListData()
+	public static void setListData(int type)
     {
+		/*Type:
+			0: shop
+			1: promotion
+			2: placelist*/
 		JSONArray jArr = (JSONArray) mScanCodeRelated;
 		for (int i = 0; i < jArr.length(); i++) 
 		{						
@@ -228,7 +232,7 @@ public class SampleListFragment extends ScrollTabHolderFragment implements OnScr
 				{
 					JSONObject jItem = jArr.getJSONObject(i);							
 					
-					if(jItem.has("relatedShops"))
+					if(type == 0 && jItem.has("relatedShops"))
 					{
 						JSONArray jArrRelatedShops = jItem.getJSONArray("relatedShops");
 						for(int j = 0; j < jArrRelatedShops.length(); j++){
@@ -245,7 +249,7 @@ public class SampleListFragment extends ScrollTabHolderFragment implements OnScr
 						}
 					}
 					
-					if(jItem.has("relatedPromotions")){
+					if(type == 1 && jItem.has("relatedPromotions")){
 						JSONArray jArrRelatedPromotions = jItem.getJSONArray("relatedPromotions");
 						for(int j = 0; j < jArrRelatedPromotions.length(); j++){
 							JSONObject related_promotion_obj = jArrRelatedPromotions.getJSONObject(j);
@@ -262,7 +266,7 @@ public class SampleListFragment extends ScrollTabHolderFragment implements OnScr
 						}
 					}
 					
-					if(jItem.has("relatedPlacelists"))
+					if(type == 2 && jItem.has("relatedPlacelists"))
 					{
 						JSONArray jArrRelatedPlacelists = jItem.getJSONArray("relatedPlacelists");
 						for(int j = 0; j < jArrRelatedPlacelists.length(); j++){

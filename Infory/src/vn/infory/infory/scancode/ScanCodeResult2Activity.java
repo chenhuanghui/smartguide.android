@@ -589,13 +589,11 @@ public class ScanCodeResult2Activity extends FragmentActivity implements ScrollT
 		        }
 		        
 		        mLayoutScanDLGHeight = linearLayoutContent.getHeight();
-		        Log.i("test", mLayoutScanDLGHeight+"");
 		        
 		        Display display = getWindowManager().getDefaultDisplay();
 				int maxHeight = display.getHeight();
 				int visibleHeight = maxHeight - ((int)(maxHeight/3)) - 48; //Trừ 48 là chiều cao của btnBack
 					
-				Log.i("height", mLayoutScanDLGHeight+"");
 				if(mLayoutScanDLGHeight >= visibleHeight)
 				{
 					LinearLayout.LayoutParams lp = (LinearLayout.LayoutParams) mScrScanDLG2.getLayoutParams();
@@ -822,12 +820,18 @@ public class ScanCodeResult2Activity extends FragmentActivity implements ScrollT
 		@Override
 		public Fragment getItem(int position) {
 			Bundle args = new Bundle();
-			ScrollTabHolderFragment fragment = (ScrollTabHolderFragment) SampleListFragment.newInstance(mAct,mScanCodeRelated,position,mLayoutScanDLGHeight+48+30+3+48+30);
-																																		//48: btnBack
-																																		//30: có thể bạn thích
-																																		//3: line ngăn cách
-																																		//48: tabs
-																																		//29: ko biết (+ vào thì khi chuyển tab ko bị giật)
+			ScrollTabHolderFragment fragment = (ScrollTabHolderFragment) SampleListFragment
+					.newInstance(
+									mAct,
+									mScanCodeRelated,
+									position,
+									mLayoutScanDLGHeight+48+30+3+48+30
+								);
+									//48: btnBack
+									//30: có thể bạn thích
+									//3: line ngăn cách
+									//48: tabs
+									//29: ko biết (+ vào thì khi chuyển tab ko bị giật)
 //			Log.i("h", mLayoutScanDLGHeight+"");
 			
 			args.putInt(ScanCodeRelatedFragment.ARG_OBJECT, position);	
