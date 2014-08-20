@@ -32,6 +32,7 @@ import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.FrameLayout;
 import android.widget.LinearLayout;
+import android.widget.LinearLayout.LayoutParams;
 import android.widget.ListView;
 import android.widget.Toast;
 import android.widget.AbsListView.OnScrollListener;
@@ -116,6 +117,9 @@ public class SampleListFragment extends ScrollTabHolderFragment implements OnScr
 			llCoTheBanThich.setVisibility(View.GONE);
 			llLine.setVisibility(View.GONE);
 			pagerTab.setVisibility(View.GONE);
+			
+			ScrollView mScrollHeader = (ScrollView) getActivity().findViewById(R.id.scrScanDLG2);
+			mScrollHeader.setLayoutParams(new LayoutParams(LayoutParams.MATCH_PARENT,LayoutParams.MATCH_PARENT));
 		}
 		else
 		{
