@@ -15,6 +15,7 @@ import vn.infory.infory.FontsCollection;
 import vn.infory.infory.R;
 import vn.infory.infory.WebActivity;
 import vn.infory.infory.data.PlaceList;
+import vn.infory.infory.data.Settings;
 import vn.infory.infory.data.Shop;
 import vn.infory.infory.home.LoadingActivity;
 import vn.infory.infory.login.InforyLoginActivity.BackListener;
@@ -27,9 +28,12 @@ import vn.infory.infory.network.GetShopDetail2;
 import vn.infory.infory.network.NetworkManager;
 import vn.infory.infory.network.ScanCode;
 import vn.infory.infory.network.ScanCodeRelated;
+import vn.infory.infory.scancode.ScanCodeRelatedActivity.ScanCodeRelatedFragment;
+import vn.infory.infory.scancode.ScanCodeRelatedActivity.ScanCodeRelatedPagerAdapter;
 import vn.infory.infory.shopdetail.ShopDetailActivity;
 import vn.infory.infory.shoplist.ShopListActivity;
 
+import com.cycrix.androidannotation.AndroidAnnotationParser;
 import com.cycrix.androidannotation.Click;
 import com.cycrix.androidannotation.ViewById;
 import com.facebook.FacebookException;
@@ -89,6 +93,9 @@ import android.view.View.OnClickListener;
 import android.view.ViewGroup;
 import android.view.WindowManager;
 import android.webkit.WebView;
+import android.widget.AbsListView;
+import android.widget.AbsListView.OnScrollListener;
+import android.widget.AdapterView;
 import android.widget.Button;
 import android.widget.FrameLayout;
 import android.widget.HorizontalScrollView;
@@ -98,6 +105,7 @@ import android.widget.LinearLayout;
 import android.widget.ListView;
 import android.widget.MediaController;
 import android.widget.RelativeLayout;
+import android.widget.ScrollView;
 import android.widget.TextView;
 import android.widget.Toast;
 import android.widget.LinearLayout.LayoutParams;
@@ -105,7 +113,7 @@ import android.widget.VideoView;
 
 public class ScanCodeResultActivity extends FragmentActivity{
 	
-	private List<CyAsyncTask> mTaskList = new ArrayList<CyAsyncTask>();
+	private static List<CyAsyncTask> mTaskList = new ArrayList<CyAsyncTask>();
 	
 	private Listener mListener;
 	
@@ -114,12 +122,14 @@ public class ScanCodeResultActivity extends FragmentActivity{
 	private static Object mScanCodeResult;
 	public static Object mScanCodeRelated;
 	public static String mQRCode;
-	
+		
 	private UiLifecycleHelper uiHelper;
 	
-//	ScanCodeRelatedPagerAdapter mScanCodeRelatedPagerAdapter;	
-//	ViewPager mViewPager;
-		
+	ScanCodeRelatedPagerAdapter mScanCodeRelatedPagerAdapter;	
+	ViewPager mViewPager;
+	
+	@ViewById(id = R.id.scanDLGLayoutLoading)	private View mLayoutLoading;
+			
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
@@ -130,6 +140,13 @@ public class ScanCodeResultActivity extends FragmentActivity{
         
 		mAct = this;	
 		
+		try {
+			AndroidAnnotationParser.parse(this, findViewById(android.R.id.content));
+		} catch (Exception e) {
+			e.printStackTrace();
+			finish();
+		}
+				
 		JSONArray jArr = (JSONArray) mScanCodeResult;	
 		
 		final LinearLayout linearLayout = (LinearLayout) findViewById(R.id.linearLayoutScanDLG2);
@@ -535,18 +552,19 @@ public class ScanCodeResultActivity extends FragmentActivity{
 			}	
 		}
 		
-		/*mScanCodeRelatedPagerAdapter = new ScanCodeRelatedPagerAdapter(getSupportFragmentManager());
-		mViewPager = (ViewPager) findViewById(R.id.testpager1);
-        mViewPager.setAdapter(mScanCodeRelatedPagerAdapter);*/
+		setListData();
+		mScanCodeRelatedPagerAdapter = new ScanCodeRelatedPagerAdapter(getSupportFragmentManager());
+		mViewPager = (ViewPager) findViewById(R.id.testpager);
+        mViewPager.setAdapter(mScanCodeRelatedPagerAdapter);
 		
         
-        /*mViewPager.setOnTouchListener(new View.OnTouchListener() {
+        mViewPager.setOnTouchListener(new View.OnTouchListener() {
             @Override
             public boolean onTouch(View v, MotionEvent event) {
                 mViewPager.getParent().requestDisallowInterceptTouchEvent(true);
                 return false;
             }
-        });*/
+        });
 		
 		ImageButton mBtnBack = (ImageButton) findViewById(R.id.btnBack);
 		mBtnBack.setOnClickListener(new View.OnClickListener() {			
@@ -591,6 +609,8 @@ public class ScanCodeResultActivity extends FragmentActivity{
 	public void onPause() {
 	    super.onPause();
 	    uiHelper.onPause();
+	    
+	    mLayoutLoading.setVisibility(View.GONE);
 	}
 
 	@Override
@@ -599,7 +619,7 @@ public class ScanCodeResultActivity extends FragmentActivity{
 	    uiHelper.onDestroy();
 	}
 	
-	/*@Override
+	@Override
     public boolean onOptionsItemSelected(MenuItem item) {        
         return super.onOptionsItemSelected(item);
     }
@@ -611,43 +631,14 @@ public class ScanCodeResultActivity extends FragmentActivity{
         }
 
         @Override
-        public Fragment getItem(int position) {            
-            Bundle args = new Bundle();
-            
-            setListData();
+        public Fragment getItem(int position) { 
+        	Bundle args = new Bundle();
             Fragment fragment = null;
             
-            if(position == 1)
-            {            	
-                fragment = new ScanCodeRelatedPromotionsFragment();
-    			args.putInt(ScanCodeRelatedPromotionsFragment.ARG_OBJECT, position);	
-    			fragment.setArguments(args);
-            }            
-            else
-            {
-            	fragment = new ScanCodeRelatedShopsFragment();
-    			args.putInt(ScanCodeRelatedShopsFragment.ARG_OBJECT, position);	
-    			fragment.setArguments(args);
-            }
-			
-//            switch (position) {
-//			case 0:
-//				fragment = new ScanCodeRelatedShopsFragment();
-//				args.putInt(ScanCodeRelatedShopsFragment.ARG_OBJECT, position);	
-//				fragment.setArguments(args);
-//				break;
-//
-//			case 1:
-//				fragment = new ScanCodeRelatedShopsFragment();
-//				args.putInt(ScanCodeRelatedShopsFragment.ARG_OBJECT, position);	
-//				fragment.setArguments(args);
-//				break;
-//			case 2:
-//				fragment = new ScanCodeRelatedShopsFragment();
-//				args.putInt(ScanCodeRelatedShopsFragment.ARG_OBJECT, position);
-//				fragment.setArguments(args);
-//				break;
-//			}            
+            fragment = new ScanCodeRelatedFragment();
+			args.putInt(ScanCodeRelatedFragment.ARG_OBJECT, position);	
+			fragment.setArguments(args);
+            
             return fragment;
         }
 
@@ -678,6 +669,7 @@ public class ScanCodeResultActivity extends FragmentActivity{
     
     private static ArrayList<ListModelRelatedShops> arrListModelRelatedShops = new ArrayList<ListModelRelatedShops>();
     private static ArrayList<ListModelRelatedPromotions> arrListModelRelatedPromotions = new ArrayList<ListModelRelatedPromotions>();
+    private static ArrayList<ListModelRelatedPlacelists> arrListModelRelatedPlacelists = new ArrayList<ListModelRelatedPlacelists>();
 	
     public static void setListData()
     {
@@ -696,9 +688,11 @@ public class ScanCodeResultActivity extends FragmentActivity{
 							JSONObject related_shop_obj = jArrRelatedShops.getJSONObject(j);
 							final ListModelRelatedShops related_shop_model = new ListModelRelatedShops();
 		                     
-			                related_shop_model.setName(related_shop_obj.optString("shopName"));
-			                related_shop_model.setDescription(related_shop_obj.optString("description"));
+							related_shop_model.setId(related_shop_obj.optInt("idShop"));
+							related_shop_model.setName(related_shop_obj.optString("shopName"));			                
 			                related_shop_model.setLogo(related_shop_obj.optString("logo"));
+			                related_shop_model.setAddress(related_shop_obj.optString("address"));
+			                related_shop_model.setDescription(related_shop_obj.optString("description"));
 			                    
 			                arrListModelRelatedShops.add( related_shop_model );
 						}
@@ -710,11 +704,31 @@ public class ScanCodeResultActivity extends FragmentActivity{
 							JSONObject related_promotion_obj = jArrRelatedPromotions.getJSONObject(j);
 							final ListModelRelatedPromotions related_promotion_model = new ListModelRelatedPromotions();
 		                     
+							related_promotion_model.setShop_ids(related_promotion_obj.optJSONArray("idShops"));
 							related_promotion_model.setName(related_promotion_obj.optString("promotionName"));
-							related_promotion_model.setDescription(related_promotion_obj.optString("description"));
 							related_promotion_model.setLogo(related_promotion_obj.optString("logo"));
+							related_promotion_model.setTime(related_promotion_obj.optString("time"));
+							related_promotion_model.setDescription(related_promotion_obj.optString("description"));
+							
 			                    
 							arrListModelRelatedPromotions.add( related_promotion_model );
+						}
+					}
+					
+					if(jItem.has("relatedPlacelists"))
+					{
+						JSONArray jArrRelatedPlacelists = jItem.getJSONArray("relatedPlacelists");
+						for(int j = 0; j < jArrRelatedPlacelists.length(); j++){
+							JSONObject related_placelists_obj = jArrRelatedPlacelists.getJSONObject(j);
+							final ListModelRelatedPlacelists related_placelists_model = new ListModelRelatedPlacelists();
+		                     
+							related_placelists_model.setId(related_placelists_obj.optInt("placelistId"));
+							related_placelists_model.setName(related_placelists_obj.optString("placelistName"));
+							related_placelists_model.setAuthorName(related_placelists_obj.optString("authorName"));
+							related_placelists_model.setAuthorAvatar(related_placelists_obj.optString("authorAvatar"));
+							related_placelists_model.setDescription(related_placelists_obj.optString("description"));
+			                    
+			                arrListModelRelatedPlacelists.add( related_placelists_model );
 						}
 					}
 				}					
@@ -728,70 +742,276 @@ public class ScanCodeResultActivity extends FragmentActivity{
 		}
     }
     
-    
-    public static class ScanCodeRelatedShopsFragment extends Fragment {
+    public static class ScanCodeRelatedFragment extends Fragment {
 
         public static final String ARG_OBJECT = "object";        
             	
     	public ScanCodeResultActivity CustomListView = null;
+    	private ListView list_related_shop;
+    	private InforyCustomScrollView mScrollView;
+    	private View mLayoutLoading, mLayoutLoadingAnimation;
+    	
+    	private ScanCodeRelatedListViewAdapter adapter;
+    	private boolean reachTop = true;	
+    	
+    	private int height;
+    	private static int old_position;
+    	private static int new_position;
 
         @Override
         public View onCreateView(LayoutInflater inflater, ViewGroup container,
                 Bundle savedInstanceState) {            
             Bundle args = getArguments();
             
-            View rootView = inflater.inflate(R.layout.scan_code_related_shop_fragment, container, false);
-            
-            Resources res =getResources();            
-            CustomListView = (ScanCodeResultActivity) getActivity();  
-            
-            if(args.getInt(ARG_OBJECT) == 0)
-            {
-            	ScanCodeRelatedListViewAdapter adapter_related_shops = new ScanCodeRelatedListViewAdapter(CustomListView, arrListModelRelatedShops,res);
-    			ListView list_related_shop = (ListView)rootView.findViewById(R.id.lstRelatedShops);
-    			
-    			list_related_shop.setAdapter(adapter_related_shops);
-            }
-            
-            return rootView;
-        }
-    }
-    
-    public static class ScanCodeRelatedPromotionsFragment extends Fragment {
-
-        public static final String ARG_OBJECT = "object";        
-            	
-    	public ScanCodeResultActivity CustomListView = null;
-
-        @Override
-        public View onCreateView(LayoutInflater inflater, ViewGroup container,
-                Bundle savedInstanceState) {            
-            Bundle args = getArguments();
-            
-            View rootView = inflater.inflate(R.layout.scan_code_related_promotion_fragment, container, false);
+            View rootView = inflater.inflate(R.layout.scan_code_related_fragment, container, false);
+            mScrollView = (InforyCustomScrollView) getActivity().findViewById(R.id.scrollView1);
+            mLayoutLoading = (View) getActivity().findViewById(R.id.scanDLGLayoutLoading);
+            mLayoutLoadingAnimation = (View) getActivity().findViewById(R.id.scanDLGLayoutLoadingAnimation);
             
             Resources res = getResources();            
-            CustomListView = (ScanCodeResultActivity) getActivity(); 
+            CustomListView = (ScanCodeResultActivity) getActivity();  
             
-            if(args.getInt(ARG_OBJECT) == 1)
+            ScanCodeRelatedListViewAdapter adapter_related;
+            if(args.getInt(ARG_OBJECT) == 0)
             {
-            	ScanCodeRelatedListViewAdapter adapter_related_promotions = new ScanCodeRelatedListViewAdapter(CustomListView, arrListModelRelatedPromotions,res);
-    			ListView list_related_promotions = (ListView)rootView.findViewById(R.id.lstRelatedPromotions);
-    			
-    			list_related_promotions.setAdapter(adapter_related_promotions); 
+            	adapter_related = new ScanCodeRelatedListViewAdapter(CustomListView, arrListModelRelatedShops,res,0);		
             }
-                       
+            else if(args.getInt(ARG_OBJECT) == 1)
+            {
+            	adapter_related = new ScanCodeRelatedListViewAdapter(CustomListView, arrListModelRelatedPromotions,res,1);            	
+            }
+            else
+            {
+            	adapter_related = new ScanCodeRelatedListViewAdapter(CustomListView, arrListModelRelatedPlacelists,res,2);
+            }
+            list_related_shop = (ListView)rootView.findViewById(R.id.lstRelated);			
+			list_related_shop.setAdapter(adapter_related);
+            
             return rootView;
         }
-    }*/
+
+		@Override
+		public void onActivityCreated(Bundle savedInstanceState) {
+			// TODO Auto-generated method stub
+			super.onActivityCreated(savedInstanceState);
+			
+			list_related_shop.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+
+				@Override
+				public void onItemClick(AdapterView<?> parent, View view,
+						int position, long id) {
+					// TODO Auto-generated method stub
+					Toast.makeText(getActivity(), "Click", Toast.LENGTH_SHORT).show();
+					
+					mLayoutLoading.setVisibility(View.VISIBLE);
+		    		AnimationDrawable frameAnimation = (AnimationDrawable) 
+							mLayoutLoadingAnimation.getBackground();
+					frameAnimation.start();
+					
+					adapter = (ScanCodeRelatedListViewAdapter)parent.getAdapter();
+					int type = adapter.getType();
+					if(type == 0) //Shop
+					{
+						ListModelRelatedShops item = (ListModelRelatedShops) adapter.getItem(position);
+						
+						GetShopDetail2 task = new GetShopDetail2(getActivity(), item.getId()) {
+							@Override
+							protected void onCompleted(Object result2) {
+								mTaskList.remove(this);
+								
+								JSONObject jShop = (JSONObject) result2;
+								
+								Shop shop = new Shop();
+								shop.idShop	= jShop.optInt("idShop");
+								shop.shopName	= jShop.optString("shopName");
+								shop.numOfView = jShop.optString("numOfView");
+								shop.logo		= jShop.optString("logo");
+								
+								ShopDetailActivity.newInstance(getActivity(), shop);
+							}
+
+							@Override
+							protected void onFail(Exception e) {
+								mTaskList.remove(this);
+								
+								ShopDetailActivity.newInstanceNoReload(getActivity(), new Shop());
+							}
+						};
+						task.setTaskList(mTaskList);
+						task.executeOnExecutor(NetworkManager.THREAD_POOL);
+					}
+					else if(type == 1) //Shop list
+					{
+						ListModelRelatedPromotions item = (ListModelRelatedPromotions) adapter.getItem(position);
+						try {							
+							
+							//Convert JSONArray thành string "[1,2,3,4]"
+							String ids = item.getShop_ids().toString();		
+							//Cắt bỏ dấu [ và ]
+							ids = ids.substring(1, ids.length()-1);
+							
+							ShopListActivity.newInstance(getActivity(), ids, new ArrayList<Shop>(),0);
+						} catch (Exception e) {
+							// TODO Auto-generated catch block
+							ShopListActivity.newInstance(getActivity(), "a", new ArrayList<Shop>(),0);
+						} 
+					}
+					else
+					{
+						try {
+							ListModelRelatedPlacelists item = (ListModelRelatedPlacelists) adapter.getItem(position);
+							String id_placelist = Integer.toString(item.getId());
+							ShopListActivity.newInstanceWithPlacelistId(getActivity(), id_placelist, new ArrayList<Shop>());
+						} catch (Exception e) {
+							// TODO: handle exception
+							ShopListActivity.newInstanceWithPlacelistId(getActivity(), "a", new ArrayList<Shop>());
+						}
+					}						
+				}
+			});	
+			
+			list_related_shop.setOnScrollListener(new OnScrollListener() {
+				
+				@Override
+				public void onScrollStateChanged(AbsListView view, int scrollState) {
+					// TODO Auto-generated method stub
+					
+				}
+				
+				@Override
+				public void onScroll(final AbsListView view, final int firstVisibleItem,
+						int visibleItemCount, int totalItemCount) {
+					// TODO Auto-generated method stub			
+					
+					ScanCodeRelatedListViewAdapter adapter = (ScanCodeRelatedListViewAdapter) list_related_shop.getAdapter(); 
+					View listItem = adapter.getView(0, null, list_related_shop);
+					listItem.measure(0, 0);
+					height = listItem.getMeasuredHeight();
+					
+					list_related_shop.setOnTouchListener(new View.OnTouchListener() {
+						
+						@Override
+						public boolean onTouch(View v, MotionEvent ev) {
+							// TODO Auto-generated method stub
+							int action = ev.getAction();
+//							Log.i("Position", list_related_shop.getChildAt(0).getTop()+"");
+							
+							/*if(action == MotionEvent.ACTION_DOWN)
+							{
+								old_position = list_related_shop.getChildAt(0).getTop();
+							}
+							
+							if(action == MotionEvent.ACTION_MOVE)
+							{								
+								new_position = list_related_shop.getChildAt(0).getTop();
+							}*/
+							
+							switch (action)
+					        {        	
+					            case MotionEvent.ACTION_DOWN:
+					            	Log.i("VerticalScrollview", "onInterceptTouchEvent: UP super false" );
+					            	
+					            	old_position = list_related_shop.getChildAt(0).getTop();
+					                break;
+
+					            case MotionEvent.ACTION_MOVE:
+					            	new_position = list_related_shop.getChildAt(0).getTop();					            	
+					            	break;
+
+					            case MotionEvent.ACTION_CANCEL:
+					                Log.i("VerticalScrollview", "onInterceptTouchEvent: CANCEL super false" );
+					                return false;
+
+					            case MotionEvent.ACTION_UP:
+					                Log.i("VerticalScrollview", "onInterceptTouchEvent: UP super false" );
+					                return false;
+
+					            default: 
+					            	Log.i("VerticalScrollview", "onInterceptTouchEvent: default" );
+					            	return false;
+					        }
+							
+							int old = height + old_position + 1;
+							int neww = height + new_position;
+//							Log.i("A", old  + " , " + neww + " , " + reachTop);	
+							
+							if(firstVisibleItem == 0 && list_related_shop.getChildAt(0).getTop() == 0)
+							{	
+								Log.i("A", old  + " , " + neww + " , " + reachTop);	
+								if(old > neww || neww == height)
+								{
+									if(reachTop)
+									{
+										reachTop = false;
+										Log.i("B", reachTop+"");
+										
+//										mScrollView.onTouchEvent(ev);
+										mScrollView.scrollBy(-10, -10);
+										return true;
+									}
+									reachTop = true;
+									return false;
+								}
+								else
+								{									
+//									Log.i("C", reachTop+"");
+									return true;
+								}
+							}
+							return false;
+							
+							/*if(!reachTop)
+							{
+								if(firstVisibleItem > 0)
+								{
+									Log.i("Top", "firstVisibleItem > 0" );
+									mScrollView.onTouchEvent(ev);
+									reachTop = true;
+								}
+								return false;
+							}
+							else
+							{
+								if(list_related_shop.getChildAt(0).getTop() == 0)
+								{
+									Log.i("Top", "firstVisibleItem == 0" );									
+									mScrollView.onTouchEvent(ev);		
+								}
+								return false;
+							}*/	
+							
+						}
+					});
+				}
+			});			
+		}        
+    }
 	
-	public static void newInstance(Activity act, Object objScanCode, String code) {
+	public static void newInstance(final Activity act, Object objScanCode, String code) {
 		mScanCodeResult = objScanCode;
 		mQRCode = code;
 		
-		Intent intent = new Intent(act, ScanCodeResultActivity.class);
-		act.startActivity(intent);
-		act.overridePendingTransition(android.R.anim.fade_in, android.R.anim.fade_out);
+		ScanCodeRelated scanCodeRelatedTask = new ScanCodeRelated(act, mQRCode, 0, 0)
+		{
+			@Override
+			protected void onCompleted(Object result3) throws Exception {
+				mTaskList.remove(this);		
+								
+				mScanCodeRelated = result3;
+				
+				Intent intent = new Intent(act, ScanCodeResultActivity.class);
+				act.startActivity(intent);
+				act.overridePendingTransition(android.R.anim.fade_in, android.R.anim.fade_out);
+			}
+
+			@Override
+			protected void onFail(Exception e) {
+				mTaskList.remove(this);
+			}
+		};    
+		
+		mTaskList.add(scanCodeRelatedTask);
+		scanCodeRelatedTask.executeOnExecutor(NetworkManager.THREAD_POOL);		
 	}	
 	
 	private void publishFeedDialog(Session session,String link) {

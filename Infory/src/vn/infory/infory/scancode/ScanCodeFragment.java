@@ -338,10 +338,10 @@ public class ScanCodeFragment extends Fragment {
 						protected void onCompleted(final Object result2) throws Exception {
 							mTaskList.remove(this);
 							
-							/*objScanCode = result2;
-							scanCodeTaskStatus = 1;*/ //Finished
+							objScanCode = result2;
+							scanCodeTaskStatus = 1; //Finished
 							
-							ScanCodeResultActivity.newInstance(getActivity(), result2, mQRCode);
+							ScanCodeResult2Activity.newInstance(getActivity(), result2, mQRCode);
 							getActivity().finish();
 						}
 						

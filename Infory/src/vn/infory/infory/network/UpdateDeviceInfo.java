@@ -59,7 +59,7 @@ public class UpdateDeviceInfo extends CyAsyncTask {
 			NetworkManager.post(APILinkMaker.mUpdateDeviceInfo, pairs, false);
 			return null;
 		} catch (Exception e) {
-			mLog.d("error: " + e);
+//			mLog.d("error: " + e);
 		}
 
 		return super.doInBackground(arg0);
