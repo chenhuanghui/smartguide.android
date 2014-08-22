@@ -315,9 +315,9 @@ public class PlaceListListActivity extends Activity {
 				AutoCompleteItem fakeItem = new AutoCompleteItem();
 				fakeItem.RIDtype = 4;
 				fakeItem.highlight = new Highlight();
-				fakeItem.highlight.name_auto_complete.add("Placelist");
+				fakeItem.highlight.name_auto_complete.add("Danh sách địa điểm");
 				fakeItem.fields = new Fields();
-				fakeItem.fields.name = "Placelist";
+				fakeItem.fields.name = "Danh sách địa điểm";
 				mItemList.add(fakeItem);
 				mItemList.addAll(placeList);
 
@@ -552,15 +552,16 @@ public class PlaceListListActivity extends Activity {
 				CyImageLoader.instance().showImage(item.image, imgIcon);
 
 			} else {
+				View layoutPlacelistItem = convertView.findViewById(R.id.linearlayoutPlacelistItem);
 				if (mItemList.size() == 4) {
-					convertView.setBackgroundResource(R.drawable.button_call);
+					layoutPlacelistItem.setBackgroundResource(R.drawable.button_call);
 				} else {
 					if (position == 3) {
-						convertView.setBackgroundResource(R.drawable.frame_detail_info);
+						layoutPlacelistItem.setBackgroundResource(R.drawable.frame_detail_info);
 					} else if (!mIsMore && position == mItemList.size() - 1) {
-						convertView.setBackgroundResource(R.drawable.frame_detail_info_footer);
+						layoutPlacelistItem.setBackgroundResource(R.drawable.frame_detail_info_footer);
 					} else {
-						convertView.setBackgroundResource(R.drawable.frame_detail_info_item);
+						layoutPlacelistItem.setBackgroundResource(R.drawable.frame_detail_info_item);
 					}
 				}
 			}

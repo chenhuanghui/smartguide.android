@@ -62,9 +62,7 @@
         android:layout_height="match_parent"
         android:layout_alignParentLeft="true"
         android:layout_below="@+id/relativeLayout1"
-        android:background="#EBEBEB"
-        android:paddingLeft="15dp"
-        android:paddingRight="15dp" >
+        android:background="#EBEBEB">
 
         <ListView
             android:id="@+id/lst"
@@ -72,6 +70,8 @@
             android:layout_height="match_parent"
             android:cacheColorHint="#EBEBEB"
             android:fadingEdgeLength="12dp"
+            android:dividerHeight="2dp"
+            android:divider="#EBEBEB"
             android:paddingTop="8dp"
             android:requiresFadingEdge="vertical"
             android:animateLayoutChanges="true" >

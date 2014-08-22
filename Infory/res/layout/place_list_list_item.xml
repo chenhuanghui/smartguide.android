@@ -1,30 +1,37 @@
 <?xml version="1.0" encoding="utf-8"?>
-<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:background="@drawable/frame_detail_info_item" >
+    android:orientation="horizontal" >
 
     <LinearLayout
+        android:id="@+id/linearlayoutPlacelistItem"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:padding="4dp" >
+        android:layout_height="match_parent"
+        android:layout_marginLeft="15dp"
+    	android:layout_marginRight="15dp" >
 
-        <ImageView
-            android:id="@+id/imgIcon"
-            android:layout_width="32dp"
-            android:layout_height="32dp"
-            android:background="@drawable/icon_playlist_search" />
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+        	android:padding="4dp" >
 
-        <TextView
-            android:id="@+id/txtName"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_gravity="center_vertical"
-            android:layout_marginLeft="8dp"
-            android:contentDescription="@string/sfu_normal"
-            android:text="TextView"
-            android:textColor="#5B5B5B" />
+            <ImageView
+                android:id="@+id/imgIcon"
+                android:layout_width="32dp"
+                android:layout_height="32dp"
+                android:background="@drawable/icon_playlist_search" />
+
+            <TextView
+                android:id="@+id/txtName"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="8dp"
+                android:contentDescription="@string/sfu_normal"
+                android:text="TextView"
+                android:textColor="#5B5B5B" />
+        </LinearLayout>
 
     </LinearLayout>
 
-</FrameLayout>
+</LinearLayout>

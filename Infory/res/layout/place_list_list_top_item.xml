@@ -2,7 +2,9 @@
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:background="#EBEBEB" >
+    android:background="#EBEBEB"
+    android:paddingLeft="15dp" 
+    android:paddingRight="15dp" >
 
     <ImageView
         android:id="@+id/imgIcon"
@@ -10,7 +12,6 @@
         android:layout_height="82dp"
         android:gravity="center"
         android:paddingBottom="10dp"
-        android:paddingLeft="4dp"
         android:scaleType="fitXY"
         android:textColor="#FFFFFF"
         android:textStyle="bold" />
