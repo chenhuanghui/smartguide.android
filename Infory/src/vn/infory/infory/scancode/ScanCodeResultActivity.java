@@ -1002,6 +1002,8 @@ public class ScanCodeResultActivity extends FragmentActivity{
 				Intent intent = new Intent(act, ScanCodeResultActivity.class);
 				act.startActivity(intent);
 				act.overridePendingTransition(android.R.anim.fade_in, android.R.anim.fade_out);
+				
+				act.finish();
 			}
 
 			@Override
@@ -1011,7 +1013,7 @@ public class ScanCodeResultActivity extends FragmentActivity{
 		};    
 		
 		mTaskList.add(scanCodeRelatedTask);
-		scanCodeRelatedTask.executeOnExecutor(NetworkManager.THREAD_POOL);		
+		scanCodeRelatedTask.executeOnExecutor(NetworkManager.THREAD_POOL);			
 	}	
 	
 	private void publishFeedDialog(Session session,String link) {

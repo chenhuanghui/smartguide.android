@@ -187,8 +187,7 @@ public class ScanCodeFragment extends Fragment {
 	        								objScanCode = result2;
 	        								scanCodeTaskStatus = 1; //Finished
 	        								
-	        								ScanCodeResultActivity.newInstance(getActivity(), result2, code);
-	        								getActivity().finish();
+	        								ScanCodeResult2Activity.newInstance(getActivity(), result2, code);
 	        							}
 	        							
 	        							@Override
@@ -270,7 +269,7 @@ public class ScanCodeFragment extends Fragment {
 	        					else if(code.toLowerCase().startsWith(prefix + "qrcode/"))
 	        					{
 	        						try {
-	        							String qrcode = code.substring(code.lastIndexOf("qrcode/")+7);
+	        							final String qrcode = code.substring(code.lastIndexOf("qrcode/")+7);
 	        							
 	        							// Call scan code api
 	        							ScanCode scanCodeTask = new ScanCode(getActivity(), qrcode) {
@@ -280,9 +279,7 @@ public class ScanCodeFragment extends Fragment {
 	        									
 	        									objScanCode = result2;
 	        									scanCodeTaskStatus = 1; //Finished
-	        									
-	        									ScanCodeResultActivity.newInstance(getActivity(), result2, code);
-	        									getActivity().finish();
+	        									ScanCodeResult2Activity.newInstance(getActivity(), result2, qrcode);
 	        								}
 	        								
 	        								@Override
@@ -314,8 +311,7 @@ public class ScanCodeFragment extends Fragment {
 	        									objScanCode = result2;
 	        									scanCodeTaskStatus = 1; //Finished
 	        									
-	        									ScanCodeResultActivity.newInstance(getActivity(), result2, code);
-	        									getActivity().finish();
+	        									ScanCodeResult2Activity.newInstance(getActivity(), result2, code);
 	        								}
 	        								
 	        								@Override
@@ -366,7 +362,6 @@ public class ScanCodeFragment extends Fragment {
 	        							scanCodeTaskStatus = 1; //Finished
 	        							
 	        							ScanCodeResult2Activity.newInstance(getActivity(), result2, code);
-	        							getActivity().finish();
 	        						}
 	        						
 	        						@Override

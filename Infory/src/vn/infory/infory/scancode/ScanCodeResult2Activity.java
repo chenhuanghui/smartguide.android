@@ -121,12 +121,15 @@ public class ScanCodeResult2Activity extends FragmentActivity implements ScrollT
 	private UiLifecycleHelper uiHelper;
 	private static int mLayoutScanDLGHeight; 
 	
-	@ViewById(id = R.id.linearLayoutScanDLG2)		private LinearLayout linearLayout;
-	@ViewById(id = R.id.linearLayoutContent)		private LinearLayout linearLayoutContent;
-	@ViewById(id = R.id.scrScanDLG2)				private ScrollView mScrScanDLG2;
-	@ViewById(id = R.id.linearLayoutCoTheBanThich)	private LinearLayout mLinearLayoutCoTheBanThich;
-	@ViewById(id = R.id.btnBack)					private ImageButton mBtnBack;
-	@ViewById(id = R.id.scanDLGLayoutLoading)		private View mLayoutLoading;	
+	private static long lastClickTime = 0;
+	
+	@ViewById(id = R.id.linearLayoutScanDLG2)			private LinearLayout linearLayout;
+	@ViewById(id = R.id.linearLayoutContent)			private LinearLayout linearLayoutContent;
+	@ViewById(id = R.id.scrScanDLG2)					private ScrollView mScrScanDLG2;
+	@ViewById(id = R.id.linearLayoutCoTheBanThich)		private LinearLayout mLinearLayoutCoTheBanThich;
+	@ViewById(id = R.id.btnBack)						private ImageButton mBtnBack;
+	@ViewById(id = R.id.scanDLGLayoutLoading)			private View mLayoutLoading;	
+	@ViewById(id = R.id.scanDLGLayoutLoadingAnimation)	private View mLayoutLoadingAnimation;	
 	
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
@@ -441,6 +444,11 @@ public class ScanCodeResult2Activity extends FragmentActivity implements ScrollT
 															ShopDetailActivity.newInstanceNoReload(mAct, new Shop());
 														}
 													};
+													
+													mLayoutLoading.setVisibility(View.VISIBLE);
+								            		AnimationDrawable frameAnimation = (AnimationDrawable) 
+								        					mLayoutLoadingAnimation.getBackground();
+								        			frameAnimation.start();
 													task.setTaskList(mTaskList);
 													task.executeOnExecutor(NetworkManager.THREAD_POOL);							
 												}
@@ -453,15 +461,30 @@ public class ScanCodeResult2Activity extends FragmentActivity implements ScrollT
 											case 2: //Shop list
 												if(jItemButton.has("idPlacelist"))
 												{
+													mLayoutLoading.setVisibility(View.VISIBLE);
+								            		AnimationDrawable frameAnimation = (AnimationDrawable) 
+								        					mLayoutLoadingAnimation.getBackground();
+								        			frameAnimation.start();
 //													LoadingActivity.newInstance(mAct, jItemButton.optInt("idPlacelist"));
+								        			
 													ShopListActivity.newInstanceWithPlacelistId(mAct, jItemButton.optInt("idPlacelist")+"", new ArrayList<Shop>());
 												}												
 												else if(jItemButton.has("keywords"))
 												{
+													mLayoutLoading.setVisibility(View.VISIBLE);
+								            		AnimationDrawable frameAnimation = (AnimationDrawable) 
+								        					mLayoutLoadingAnimation.getBackground();
+								        			frameAnimation.start();
+								        			
 													ShopListActivity.newInstance(mAct, jItemButton.optString("keywords"), new ArrayList<Shop>());
 												}
 												else if(jItemButton.has("idShops"))
 												{
+													mLayoutLoading.setVisibility(View.VISIBLE);
+								            		AnimationDrawable frameAnimation = (AnimationDrawable) 
+								        					mLayoutLoadingAnimation.getBackground();
+								        			frameAnimation.start();
+								        			
 													ShopListActivity.newInstance(mAct, jItemButton.optString("idShops"), new ArrayList<Shop>(),0);
 												}												
 												break;
@@ -547,13 +570,27 @@ public class ScanCodeResult2Activity extends FragmentActivity implements ScrollT
 							@Override
 							public void onClick(View v) {
 								// TODO Auto-generated method stub
-								Intent shareIntent = new PlusShare.Builder(mAct)
-														          .setType("text/plain")
-														          .setText("")
-														          .setContentUrl(Uri.parse(jItem.optString("linkToShare")))
-														          .getIntent();
+								mLayoutLoading.setVisibility(View.VISIBLE);
+			            		AnimationDrawable frameAnimation = (AnimationDrawable) 
+			        					mLayoutLoadingAnimation.getBackground();
+			        			frameAnimation.start();
+			        			
+			        			long clickTime = System.currentTimeMillis();
+			    		        if (clickTime - lastClickTime < 500){
+			    		        }
+			    		        else
+			    		        {
+			    		        	Intent shareIntent = new PlusShare.Builder(mAct)
+							          .setType("text/plain")
+							          .setText("")
+							          .setContentUrl(Uri.parse(jItem.optString("linkToShare")))
+							          .getIntent();
 
-						      startActivityForResult(shareIntent, 0);
+		    		        		startActivityForResult(shareIntent, 0);
+			    		        }
+			    		        lastClickTime = clickTime;
+			        			
+								
 							}
 						});
 					}
@@ -654,6 +691,8 @@ public class ScanCodeResult2Activity extends FragmentActivity implements ScrollT
 	protected void onResume() {
 	    super.onResume();
 	    uiHelper.onResume();
+	    
+	    mLayoutLoading.setVisibility(View.GONE);
 	}
 
 	@Override
@@ -864,6 +903,8 @@ public class ScanCodeResult2Activity extends FragmentActivity implements ScrollT
 				Intent intent = new Intent(act, ScanCodeResult2Activity.class);
 				act.startActivity(intent);
 				act.overridePendingTransition(android.R.anim.fade_in, android.R.anim.fade_out);
+				
+				act.finish();
 			}
 
 			@Override
