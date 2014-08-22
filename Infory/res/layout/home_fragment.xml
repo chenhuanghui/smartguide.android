@@ -16,8 +16,6 @@
         android:divider="@drawable/dummy"
         android:fadingEdgeLength="12dp"
         android:paddingBottom="16dp"
-        android:paddingLeft="8dp"
-        android:paddingRight="8dp"
         android:paddingTop="8dp"
         android:requiresFadingEdge="vertical" >
     </ListView>
