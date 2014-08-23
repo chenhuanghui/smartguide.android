@@ -41,7 +41,7 @@ public class GetShopDetail2 extends CyAsyncTask{
 			String json = NetworkManager.post(APILinkMaker.mShopDetail, pairs);
 			
 			JSONObject jObj = new JSONObject(json);		
-			mLog.d("JSON: " + json.toString());
+//			mLog.d("JSON: " + json.toString());
 			return jObj;
 		} catch (Exception e) {
 			mEx = e;

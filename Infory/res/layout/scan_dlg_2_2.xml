@@ -1,0 +1,176 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical" >
+
+    <FrameLayout
+        android:layout_width="match_parent"
+        android:layout_height="48dp"
+        android:background="#383735" >
+
+        <ImageButton
+            android:id="@+id/btnBack"
+            android:layout_width="48dp"
+            android:layout_height="match_parent"
+            android:layout_centerVertical="true"
+            android:background="#00000000"
+            android:src="@drawable/button_backarrow" />
+    </FrameLayout>
+
+    <FrameLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent" >
+
+        <android.support.v4.view.ViewPager
+            android:id="@+id/pager"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent" />
+
+        <LinearLayout
+            android:id="@+id/header"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:background="#000000"
+            android:orientation="vertical" >
+
+            <ScrollView
+                android:id="@+id/scrScanDLG2"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:background="#EBEBEB" >
+
+                <LinearLayout
+                    android:id="@+id/linearLayoutContent"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:orientation="vertical" >
+
+                    <LinearLayout
+                        android:id="@+id/linearLayoutScanDLG2"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:gravity="center_horizontal"
+                        android:orientation="vertical" >
+                    </LinearLayout>
+
+                    <LinearLayout
+                        android:id="@+id/linearLayoutLineComment"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:background="#EBEBEB"
+                        android:gravity="center"
+                        android:orientation="vertical"
+                        android:visibility="gone" >
+
+                        <ImageView
+                            android:id="@+id/imageView1"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:paddingBottom="20dp"
+                            android:src="@drawable/line_comment" />
+                    </LinearLayout>
+
+                    <LinearLayout
+                        android:id="@+id/linearLayoutShare"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:background="#EBEBEB"
+                        android:orientation="vertical"
+                        android:paddingBottom="20dp"
+                        android:visibility="gone" >
+
+                        <RelativeLayout
+                            android:layout_width="match_parent"
+                            android:layout_height="match_parent"
+                            android:background="#EBEBEB" >
+
+                            <ImageButton
+                                android:id="@+id/btnShareFb"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:layout_alignParentRight="true"
+                                android:layout_centerVertical="true"
+                                android:layout_marginRight="102dp"
+                                android:background="@drawable/fb" />
+
+                            <ImageButton
+                                android:id="@+id/btnShareGoogle"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:layout_alignParentRight="true"
+                                android:layout_alignTop="@+id/btnShareFb"
+                                android:layout_centerVertical="true"
+                                android:layout_marginRight="40dp"
+                                android:background="@drawable/gg" />
+
+                            <TextView
+                                android:id="@+id/txtShare"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:layout_alignParentLeft="true"
+                                android:layout_centerVertical="true"
+                                android:layout_marginLeft="19dp"
+                                android:text="Chia sẻ"
+                                android:textAppearance="?android:attr/textAppearanceMedium" />
+                        </RelativeLayout>
+                    </LinearLayout>
+                </LinearLayout>
+                
+            </ScrollView>
+
+            <LinearLayout
+                android:id="@+id/linearLayoutCoTheBanThich"
+                android:layout_width="match_parent"
+                android:layout_height="30dp"
+                android:background="#F2F2F2"
+                android:orientation="vertical" >
+
+                <TextView
+                    android:id="@+id/textView2"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:contentDescription="@string/sfu_normal"
+                    android:gravity="center"
+                    android:paddingBottom="5dp"
+                    android:paddingTop="5dp"
+                    android:text="Có thể bạn thích"
+                    android:textSize="12sp" />
+            </LinearLayout>
+
+            <LinearLayout
+                android:id="@+id/linearLayoutLine"
+                android:layout_width="match_parent"
+                android:layout_height="3dp"
+                android:background="#EBEBEB"
+                android:orientation="vertical" >
+            </LinearLayout>
+
+            <vn.infory.infory.scancode.PagerSlidingTabStrip
+                android:id="@+id/tabs"
+                android:layout_width="match_parent"
+                android:layout_height="48dp"
+                android:background="#757271" 
+                android:scrollbars="none">
+            </vn.infory.infory.scancode.PagerSlidingTabStrip>
+        </LinearLayout>
+
+        <FrameLayout
+	        android:id="@+id/scanDLGLayoutLoading"
+	        android:layout_width="match_parent"
+	        android:layout_height="match_parent"
+	        android:background="#80000000"
+	        android:clickable="true"
+	        android:visibility="invisible" >
+	
+	        <FrameLayout
+	            android:id="@+id/scanDLGLayoutLoadingAnimation"
+	            android:layout_width="wrap_content"
+	            android:layout_height="wrap_content"
+	            android:layout_gravity="center"
+	            android:background="@drawable/button_loading_big" >
+	        </FrameLayout>
+	    </FrameLayout>
+    </FrameLayout>
+
+</LinearLayout>

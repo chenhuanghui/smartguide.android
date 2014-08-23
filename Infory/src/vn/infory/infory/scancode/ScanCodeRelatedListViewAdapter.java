@@ -1,11 +1,19 @@
 package vn.infory.infory.scancode;
 
 import java.util.ArrayList;
+import java.util.List;
+
+import org.json.JSONObject;
 
 import vn.infory.infory.CyImageLoader;
 import vn.infory.infory.R;
 import vn.infory.infory.SGSideMenu;
+import vn.infory.infory.data.Shop;
+import vn.infory.infory.home.HomeAdapter;
 import vn.infory.infory.network.CyAsyncTask;
+import vn.infory.infory.network.GetShopDetail2;
+import vn.infory.infory.network.NetworkManager;
+import vn.infory.infory.shopdetail.ShopDetailActivity;
 
 import android.app.Activity;
 import android.content.Context;
@@ -17,21 +25,28 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.view.ViewGroup;
+import android.widget.AdapterView;
+import android.widget.AdapterView.OnItemClickListener;
 import android.widget.BaseAdapter;
 import android.widget.ImageView;
 import android.widget.TextView;
+import android.widget.Toast;
 
-public class ScanCodeRelatedListViewAdapter extends BaseAdapter implements OnClickListener{
+public class ScanCodeRelatedListViewAdapter extends BaseAdapter{
 	
 	private Activity activity;
 	private ArrayList data;
 	private static LayoutInflater inflater = null;
 	public Resources res;	
+	private int type;
 	
-	public ScanCodeRelatedListViewAdapter(Activity a, ArrayList d, Resources resLocal){
+	private List<CyAsyncTask> mTaskList = new ArrayList<CyAsyncTask>();
+	
+	public ScanCodeRelatedListViewAdapter(Activity a, ArrayList d, Resources resLocal, int t){
 		activity = a;
 		data = d;
 		res = resLocal;
+		type = t;
 		
 		inflater = (LayoutInflater)activity.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
 	}
@@ -47,13 +62,17 @@ public class ScanCodeRelatedListViewAdapter extends BaseAdapter implements OnCli
 	@Override
 	public Object getItem(int position) {
 		// TODO Auto-generated method stub
-		return position;
+		return data.get(position);
 	}
 
 	@Override
 	public long getItemId(int position) {
 		// TODO Auto-generated method stub
 		return position;
+	}
+	
+	public int getType() {
+		return type;
 	}
 	
 	public static class ViewHolder {
@@ -86,69 +105,47 @@ public class ScanCodeRelatedListViewAdapter extends BaseAdapter implements OnCli
 		}
 		
 		if(data.size() > 0){
-			
-			if(position == 1)
+			String name, description, logo;
+			if(type == 0)
+			{
+				ListModelRelatedShops tempValues = null;
+				tempValues = (ListModelRelatedShops)data.get(position);
+				
+				name = tempValues.getName();
+				description = tempValues.getDescription();
+				logo = tempValues.getLogo();
+			}
+			else if(type == 1)
 			{
 				ListModelRelatedPromotions tempValues = null;
-				/***** Get each Model object from Arraylist ********/
-				tempValues = null;
 				tempValues = (ListModelRelatedPromotions)data.get(position);
 				
-				/************  Set Model values in Holder elements ***********/
-				holder.name.setText(tempValues.getName());
-				holder.content.setText(tempValues.getDescription());
-				
-				CyImageLoader.instance().loadImage(tempValues.getLogo(), new CyImageLoader.Listener() {
-					@Override
-					public void loadFinish(int from, Bitmap image, String url, CyAsyncTask task) {
-						holder.image.setImageBitmap(SGSideMenu.getCroppedBitmap(image));
-					}
-				}, new Point(), new Activity());
+				name = tempValues.getName();
+				description = tempValues.getDescription();
+				logo = tempValues.getLogo();				
 			}
 			else
 			{
-				ListModelRelatedShops tempValues = null;
-				/***** Get each Model object from Arraylist ********/
-				tempValues = null;
-				tempValues = (ListModelRelatedShops)data.get(position);
+				ListModelRelatedPlacelists tempValues = null;
+				tempValues = (ListModelRelatedPlacelists)data.get(position);
 				
-				/************  Set Model values in Holder elements ***********/
-				holder.name.setText(tempValues.getName());
-				holder.content.setText(tempValues.getDescription());
-				
-				CyImageLoader.instance().loadImage(tempValues.getLogo(), new CyImageLoader.Listener() {
-					@Override
-					public void loadFinish(int from, Bitmap image, String url, CyAsyncTask task) {
-						holder.image.setImageBitmap(SGSideMenu.getCroppedBitmap(image));
-					}
-				}, new Point(), new Activity());
+				name = tempValues.getName();
+				description = tempValues.getDescription();
+				logo = tempValues.getAuthorAvatar();
 			}
+			holder.name.setText(name);
+			holder.content.setText(description);
+			
+//			CyImageLoader.instance().showImage(tempValues.getLogo(), holder.image);
+			/*CyImageLoader.instance().loadImage(tempValues.getLogo(), new CyImageLoader.Listener() {
+				@Override
+				public void loadFinish(int from, Bitmap image, String url, CyAsyncTask task) {
+					holder.image.setImageBitmap(SGSideMenu.getCroppedBitmap(image));
+				}
+			}, new Point(), new Activity());*/
+			
+			CyImageLoader.instance().showImageListView(logo, holder.image, new Point(), mTaskList);
 		}
 		return vi;
 	}
-
-	@Override
-	public void onClick(View v) {
-		// TODO Auto-generated method stub
-		Log.v("CustomAdapter","Click");
-	}
-
-	private class OnItemClickListener implements OnClickListener {
-
-		private int mPosition;
-		
-		public OnItemClickListener(int position) {
-			// TODO Auto-generated constructor stub
-			mPosition = position;
-		}
-		
-		@Override
-		public void onClick(View v) {
-			// TODO Auto-generated method stub
-			
-		}
-		
-	}
-	
-
 }

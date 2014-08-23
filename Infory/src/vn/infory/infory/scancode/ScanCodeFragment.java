@@ -5,6 +5,11 @@ import java.net.URL;
 import java.util.ArrayList;
 import java.util.List;
 
+import net.sourceforge.zbar.Image;
+import net.sourceforge.zbar.ImageScanner;
+import net.sourceforge.zbar.Symbol;
+import net.sourceforge.zbar.SymbolSet;
+
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -76,6 +81,7 @@ public class ScanCodeFragment extends Fragment {
 	
 	// Data
 	private QRCodeReader mQRCodeReader = new QRCodeReader();
+	private ImageScanner mZBarScanner = new ImageScanner();
 	private boolean isCanScan = true;
 	private Integer scanCodeTaskStatus = 0;
 	private Object objScanCode;
@@ -115,7 +121,7 @@ public class ScanCodeFragment extends Fragment {
 			int w = parameters.getPreviewSize().width;
 			int h = parameters.getPreviewSize().height;
 			
-			YUVLuminanceSource source = new YUVLuminanceSource(data, w, h, 0, 0, w, h);
+			/*YUVLuminanceSource source = new YUVLuminanceSource(data, w, h, 0, 0, w, h);
 			
 			BinaryBitmap bitmap = new BinaryBitmap(new HybridBinarizer(source));
 			Result rs = null;
@@ -124,281 +130,265 @@ public class ScanCodeFragment extends Fragment {
 				rs = mQRCodeReader.decode(bitmap);
 			} catch (Exception e) {
 				return;
-			}
+			}*/
+			
+			Image barcode = new Image(w, h, "Y800");
+	        barcode.setData(data);
 
-			final String mQRCode = rs.getText();
-			
-			try {
-				Vibrator v = (Vibrator) getActivity().getSystemService(Context.VIBRATOR_SERVICE);
-				 // Vibrate for 500 milliseconds
-				v.vibrate(300);
-			} catch (Exception e) {
-				// TODO: handle exception
-			}			
-			
-			mLayoutLoading.setVisibility(View.VISIBLE);
-    		AnimationDrawable frameAnimation = (AnimationDrawable) 
-					mLayoutLoadingAnimation.getBackground();
-			frameAnimation.start();
-			
-			isCanScan = false;	
-			
-			String prefix = "http://page.infory.vn/";
-			/*String ssl_prefix = "https://page.infory.vn/";
-			String www_prefix = "www.page.infory.vn/";		*/	
-						
-			if(mQRCode.toLowerCase().startsWith("http://") ||
-					mQRCode.toLowerCase().startsWith("https://") ||
-					mQRCode.toLowerCase().startsWith("www."))
-			{
-				if(mQRCode.toLowerCase().contains("?infory=true") || 
-						mQRCode.toLowerCase().contains("&infory=true"))
-				{				
-					try {
-						ScanCode scanCodeTask = new ScanCode(getActivity(), mQRCode) {
-							@Override
-							protected void onCompleted(final Object result2) throws Exception {
-								mTaskList.remove(this);
-								
-								/*objScanCode = result2;
-								scanCodeTaskStatus = 1;*/ //Finished
-								
-								ScanCodeResultActivity.newInstance(getActivity(), result2, mQRCode);
-								getActivity().finish();
-							}
-							
-							@Override
-							protected void onFail(Exception e) {
-								mTaskList.remove(this);
-								
-//								LayoutError.newInstance(getActivity());								
-								showAlertDialog();
-							}
-						};		
+	        int result = mZBarScanner.scanImage(barcode);	        
 
-						mTaskList.add(scanCodeTask);
-			    		scanCodeTask.executeOnExecutor(NetworkManager.THREAD_POOL);	
-					} catch (Exception e) {
-						// TODO: handle exception
-//						LayoutError.newInstance(getActivity());
-						showAlertDialog();
-					}					
-				}	
-				else if(mQRCode.toLowerCase().startsWith(prefix))
-				{
-					if(mQRCode.toLowerCase().startsWith(prefix + "shop/"))
-					{					
-						try
-						{
-							int shop_id = Integer.parseInt(mQRCode.substring(mQRCode.lastIndexOf("shop/")+5));
-							
-							GetShopDetail2 task = new GetShopDetail2(getActivity(), shop_id) {
-								@Override
-								protected void onCompleted(Object result2) {
-									mTaskList.remove(this);
-									
-									JSONObject jShop = (JSONObject) result2;
-									
-									Shop shop = new Shop();
-									shop.idShop	= jShop.optInt("idShop");
-									shop.shopName	= jShop.optString("shopName");
-									shop.numOfView = jShop.optString("numOfView");
-									shop.logo		= jShop.optString("logo");
-									
-									ShopDetailActivity.newInstance(getActivity(), shop);
-									getActivity().finish();
-								}
+	        if (result != 0) {
+	            mCamera.setPreviewCallback(null);
+	            mCamera.stopPreview();
 
-								@Override
-								protected void onFail(Exception e) {
-									mTaskList.remove(this);
-									
-									ShopDetailActivity.newInstanceNoReload(getActivity(), new Shop());
-									getActivity().finish();
-								}
-							};
-							task.setTaskList(mTaskList);
-							task.executeOnExecutor(NetworkManager.THREAD_POOL);							
-						}
-						catch(Exception e)
-						{
-							ShopDetailActivity.newInstanceNoReload(getActivity(), new Shop());
-							getActivity().finish();
-						}						
-					}
-					else if(mQRCode.startsWith(prefix + "shops?idShops="))
-					{
-						String id_shops = mQRCode.substring(mQRCode.lastIndexOf("shops?idShops=")+14);
-						ShopListActivity.newInstance(getActivity(), id_shops, new ArrayList<Shop>(),0);
+	            SymbolSet syms = mZBarScanner.getResults();
+	            for (Symbol sym : syms) {	                
+	                try {
+	    				Vibrator v = (Vibrator) getActivity().getSystemService(Context.VIBRATOR_SERVICE);
+	    				 // Vibrate for 500 milliseconds
+	    				v.vibrate(300);
+	    			} catch (Exception e) {
+	    				// TODO: handle exception
+	    			}
+	                
+	                final String code = sym.getData();
+	                
+	                if(sym.getType() == 13) //Barcode
+	                {
+	                	WebActivity.newInstance(getActivity(), "http://shp.li/barcode/ean_13/"+code+"/?t=v&partner=scan");
 						getActivity().finish();
-					}
-					else if(mQRCode.toLowerCase().startsWith(prefix + "placelist/"))
-					{
-						try {
-							String id_placelist = mQRCode.substring(mQRCode.lastIndexOf("placelist/")+10);
-							ShopListActivity.newInstanceWithPlacelistId(getActivity(), id_placelist, new ArrayList<Shop>());
-							getActivity().finish();
-						} catch (Exception e) {
-							// TODO: handle exception
-							showAlertDialog();
-						}						
-					}	
-					else if(mQRCode.toLowerCase().startsWith(prefix + "qrcode/"))
-					{
-						try {
-							String qrcode = mQRCode.substring(mQRCode.lastIndexOf("qrcode/")+7);
-							
-							// Call scan code api
-							ScanCode scanCodeTask = new ScanCode(getActivity(), qrcode) {
-								@Override
-								protected void onCompleted(final Object result2) throws Exception {
-									mTaskList.remove(this);
-									
-									/*objScanCode = result2;
-									scanCodeTaskStatus = 1;*/ //Finished
-									
-									ScanCodeResultActivity.newInstance(getActivity(), result2, mQRCode);
-									getActivity().finish();
-								}
-								
-								@Override
-								protected void onFail(Exception e) {
-									mTaskList.remove(this);
-									
-//									LayoutError.newInstance(getActivity());
-									showAlertDialog();
-								}
-							};		
+	                }
+	                else
+	                {
+	        			mLayoutLoading.setVisibility(View.VISIBLE);
+	            		AnimationDrawable frameAnimation = (AnimationDrawable) 
+	        					mLayoutLoadingAnimation.getBackground();
+	        			frameAnimation.start();
+	        			
+	        			isCanScan = false;	
+	        			
+	        			String prefix = "http://page.infory.vn/";
+	        			String ssl_prefix = "https://page.infory.vn/";
+	        			String www_prefix = "www.page.infory.vn/";			
+	        						
+	        			if(code.toLowerCase().startsWith("http://") ||
+	        					code.toLowerCase().startsWith("https://") ||
+	        					code.toLowerCase().startsWith("www."))
+	        			{
+	        				if(code.toLowerCase().contains("?infory=true") || 
+	        						code.toLowerCase().contains("&infory=true"))
+	        				{				
+	        					try {
+	        						ScanCode scanCodeTask = new ScanCode(getActivity(), code) {
+	        							@Override
+	        							protected void onCompleted(final Object result2) throws Exception {
+	        								mTaskList.remove(this);
+	        								
+	        								objScanCode = result2;
+	        								scanCodeTaskStatus = 1; //Finished
+	        								
+	        								ScanCodeResultActivity.newInstance(getActivity(), result2, code);
+	        								getActivity().finish();
+	        							}
+	        							
+	        							@Override
+	        							protected void onFail(Exception e) {
+	        								mTaskList.remove(this);
+	        								
+//	        								LayoutError.newInstance(getActivity());								
+	        								showAlertDialog();
+	        							}
+	        						};		
 
-							mTaskList.add(scanCodeTask);
-				    		scanCodeTask.executeOnExecutor(NetworkManager.THREAD_POOL);	
-						} catch (Exception e) {
-							// TODO: handle exception
-//							LayoutError.newInstance(getActivity());
-							showAlertDialog();
-						}
-					}
-					else
-					{
-						try {
-							// Call scan code api
-							ScanCode scanCodeTask = new ScanCode(getActivity(), mQRCode) {
-								@Override
-								protected void onCompleted(final Object result2) throws Exception {
-									mTaskList.remove(this);
-									
-									/*objScanCode = result2;
-									scanCodeTaskStatus = 1;*/ //Finished
-									
-									ScanCodeResultActivity.newInstance(getActivity(), result2, mQRCode);
-									getActivity().finish();
-								}
-								
-								@Override
-								protected void onFail(Exception e) {
-									mTaskList.remove(this);
-									
-//									LayoutError.newInstance(getActivity());
-									showAlertDialog();
-								}
-							};		
+	        						mTaskList.add(scanCodeTask);
+	        			    		scanCodeTask.executeOnExecutor(NetworkManager.THREAD_POOL);	
+	        					} catch (Exception e) {
+	        						// TODO: handle exception
+//	        						LayoutError.newInstance(getActivity());
+	        						showAlertDialog();
+	        					}					
+	        				}	
+	        				else if(code.toLowerCase().startsWith(prefix))
+	        				{
+	        					if(code.toLowerCase().startsWith(prefix + "shop/"))
+	        					{					
+	        						try
+	        						{
+	        							int shop_id = Integer.parseInt(code.substring(code.lastIndexOf("shop/")+5));
+	        							
+	        							GetShopDetail2 task = new GetShopDetail2(getActivity(), shop_id) {
+	        								@Override
+	        								protected void onCompleted(Object result2) {
+	        									mTaskList.remove(this);
+	        									
+	        									JSONObject jShop = (JSONObject) result2;
+	        									
+	        									Shop shop = new Shop();
+	        									shop.idShop	= jShop.optInt("idShop");
+	        									shop.shopName	= jShop.optString("shopName");
+	        									shop.numOfView = jShop.optString("numOfView");
+	        									shop.logo		= jShop.optString("logo");
+	        									
+	        									ShopDetailActivity.newInstance(getActivity(), shop);
+	        									getActivity().finish();
+	        								}
 
-							mTaskList.add(scanCodeTask);
-				    		scanCodeTask.executeOnExecutor(NetworkManager.THREAD_POOL);
-						} catch (Exception e) {
-							// TODO: handle exception
-//							LayoutError.newInstance(getActivity());
-							showAlertDialog();
-						}
-					}
-				}
-				else
-				{
-					try {
-						String newQRCode = mQRCode;
-						if(mQRCode.toLowerCase().startsWith("www.")) {
-//							newQRCode = mQRCode.replace("www.", "http://");
-							newQRCode = "http://" + mQRCode;
-						}
-						WebActivity.newInstance(getActivity(), newQRCode);
-						getActivity().finish();
-					} catch (Exception e) {
-						// TODO: handle exception
-//						LayoutError.newInstance(getActivity());
-						showAlertDialog();
-					}
-				}				
-			}
-			else
-			{
-				try {
-					// Call scan code api
-					ScanCode scanCodeTask = new ScanCode(getActivity(), mQRCode) {
-						@Override
-						protected void onCompleted(final Object result2) throws Exception {
-							mTaskList.remove(this);
-							
-							/*objScanCode = result2;
-							scanCodeTaskStatus = 1;*/ //Finished
-							
-							ScanCodeResultActivity.newInstance(getActivity(), result2, mQRCode);
-							getActivity().finish();
-						}
-						
-						@Override
-						protected void onFail(Exception e) {
-							mTaskList.remove(this);
-							
-//							LayoutError.newInstance(getActivity());
-							showAlertDialog();
-						}
-					};		
+	        								@Override
+	        								protected void onFail(Exception e) {
+	        									mTaskList.remove(this);
+	        									
+	        									ShopDetailActivity.newInstanceNoReload(getActivity(), new Shop());
+	        									getActivity().finish();
+	        								}
+	        							};
+	        							task.setTaskList(mTaskList);
+	        							task.executeOnExecutor(NetworkManager.THREAD_POOL);							
+	        						}
+	        						catch(Exception e)
+	        						{
+	        							ShopDetailActivity.newInstanceNoReload(getActivity(), new Shop());
+	        							getActivity().finish();
+	        						}						
+	        					}
+	        					else if(code.startsWith(prefix + "shops?idShops="))
+	        					{
+	        						String id_shops = code.substring(code.lastIndexOf("shops?idShops=")+14);
+	        						ShopListActivity.newInstance(getActivity(), id_shops, new ArrayList<Shop>(),0);
+	        						getActivity().finish();
+	        					}
+	        					else if(code.toLowerCase().startsWith(prefix + "placelist/"))
+	        					{
+	        						try {
+	        							String id_placelist = code.substring(code.lastIndexOf("placelist/")+10);
+	        							ShopListActivity.newInstanceWithPlacelistId(getActivity(), id_placelist, new ArrayList<Shop>());
+	        							getActivity().finish();
+	        						} catch (Exception e) {
+	        							// TODO: handle exception
+	        							showAlertDialog();
+	        						}						
+	        					}	
+	        					else if(code.toLowerCase().startsWith(prefix + "qrcode/"))
+	        					{
+	        						try {
+	        							String qrcode = code.substring(code.lastIndexOf("qrcode/")+7);
+	        							
+	        							// Call scan code api
+	        							ScanCode scanCodeTask = new ScanCode(getActivity(), qrcode) {
+	        								@Override
+	        								protected void onCompleted(final Object result2) throws Exception {
+	        									mTaskList.remove(this);
+	        									
+	        									objScanCode = result2;
+	        									scanCodeTaskStatus = 1; //Finished
+	        									
+	        									ScanCodeResultActivity.newInstance(getActivity(), result2, code);
+	        									getActivity().finish();
+	        								}
+	        								
+	        								@Override
+	        								protected void onFail(Exception e) {
+	        									mTaskList.remove(this);
+	        									
+//	        									LayoutError.newInstance(getActivity());
+	        									showAlertDialog();
+	        								}
+	        							};		
 
-					mTaskList.add(scanCodeTask);
-		    		scanCodeTask.executeOnExecutor(NetworkManager.THREAD_POOL);
-				} catch (Exception e) {
-					// TODO: handle exception
-//					LayoutError.newInstance(getActivity());
-					showAlertDialog();
-				}
-			}
-			
-			//Call API get related
-    		/*ScanCodeRelated scanCodeRelatedTask = new ScanCodeRelated(getActivity(), mQRCode, 0, 0)
-    		{
-				@Override
-				protected void onCompleted(Object result3) throws Exception {
-					mTaskList.remove(this);		
-					
-					//Wait for task 1
-					while( scanCodeTaskStatus == 0 )
-			        {
-			            try 
-			            {
-			                Thread.sleep(100);
-			            } 
-			            catch (InterruptedException e) 
-			            {
-			                e.printStackTrace();
-			            }
-			        }
-					
-					ScanCodeResultActivity.newInstance(getActivity(), objScanCode, result3, mQRCode);
-				}
+	        							mTaskList.add(scanCodeTask);
+	        				    		scanCodeTask.executeOnExecutor(NetworkManager.THREAD_POOL);	
+	        						} catch (Exception e) {
+	        							// TODO: handle exception
+//	        							LayoutError.newInstance(getActivity());
+	        							showAlertDialog();
+	        						}
+	        					}
+	        					else
+	        					{
+	        						try {
+	        							// Call scan code api
+	        							ScanCode scanCodeTask = new ScanCode(getActivity(), code) {
+	        								@Override
+	        								protected void onCompleted(final Object result2) throws Exception {
+	        									mTaskList.remove(this);
+	        									
+	        									objScanCode = result2;
+	        									scanCodeTaskStatus = 1; //Finished
+	        									
+	        									ScanCodeResultActivity.newInstance(getActivity(), result2, code);
+	        									getActivity().finish();
+	        								}
+	        								
+	        								@Override
+	        								protected void onFail(Exception e) {
+	        									mTaskList.remove(this);
+	        									
+//	        									LayoutError.newInstance(getActivity());
+	        									showAlertDialog();
+	        								}
+	        							};		
 
-				@Override
-				protected void onFail(Exception e) {
-					mTaskList.remove(this);
-				}
-    		};    
-    		
-    		mTaskList.add(scanCodeRelatedTask);
-    		scanCodeTask.setVisibleView(mLayoutLoading);
-    		scanCodeRelatedTask.executeOnExecutor(NetworkManager.THREAD_POOL);
-			
-    		AnimationDrawable frameAnimation = (AnimationDrawable) 
-					mLayoutLoadingAnimation.getBackground();
-			frameAnimation.start();*/
+	        							mTaskList.add(scanCodeTask);
+	        				    		scanCodeTask.executeOnExecutor(NetworkManager.THREAD_POOL);
+	        						} catch (Exception e) {
+	        							// TODO: handle exception
+//	        							LayoutError.newInstance(getActivity());
+	        							showAlertDialog();
+	        						}
+	        					}
+	        				}
+	        				else
+	        				{
+	        					try {
+	        						String newQRCode = code;
+	        						if(code.toLowerCase().startsWith("www.")) {
+//	        							newQRCode = mQRCode.replace("www.", "http://");
+	        							newQRCode = "http://" + code;
+	        						}
+	        						WebActivity.newInstance(getActivity(), newQRCode);
+	        						getActivity().finish();
+	        					} catch (Exception e) {
+	        						// TODO: handle exception
+//	        						LayoutError.newInstance(getActivity());
+	        						showAlertDialog();
+	        					}
+	        				}				
+	        			}
+	        			else
+	        			{
+	        				try {
+	        					// Call scan code api
+	        					ScanCode scanCodeTask = new ScanCode(getActivity(), code) {
+	        						@Override
+	        						protected void onCompleted(final Object result2) throws Exception {
+	        							mTaskList.remove(this);
+	        							
+	        							objScanCode = result2;
+	        							scanCodeTaskStatus = 1; //Finished
+	        							
+	        							ScanCodeResult2Activity.newInstance(getActivity(), result2, code);
+	        							getActivity().finish();
+	        						}
+	        						
+	        						@Override
+	        						protected void onFail(Exception e) {
+	        							mTaskList.remove(this);
+	        							
+//	        							LayoutError.newInstance(getActivity());
+	        							showAlertDialog();
+	        						}
+	        					};		
+
+	        					mTaskList.add(scanCodeTask);
+	        		    		scanCodeTask.executeOnExecutor(NetworkManager.THREAD_POOL);
+	        				} catch (Exception e) {
+	        					// TODO: handle exception
+//	        					LayoutError.newInstance(getActivity());
+	        					showAlertDialog();
+	        				}
+	        			}
+	                }
+	            }
+	        }
 		}
 	};
 	
@@ -492,143 +482,6 @@ public class ScanCodeFragment extends Fragment {
 		}
 		mFlash = !mFlash;
 		cam.setParameters(p);
-	}
-	
-	private void processScanResponse(final ScanResponse response) {
-		
-		/*final Dialog dlg = new Dialog(getActivity(),
-				android.R.style.Theme_Translucent_NoTitleBar);
-		View v = getActivity().getLayoutInflater().inflate(R.layout.scan_dlg, null);
-		
-		View layoutFlag = v.findViewById(R.id.layoutFlag);
-//		TextView txtShop = (TextView) v.findViewById(R.id.txtShop);
-		TextView txtShopName = (TextView) v.findViewById(R.id.txtShopName);
-		View btnClose = v.findViewById(R.id.btnClose);
-		TextView btnContinue = (TextView) v.findViewById(R.id.btnContinue);
-		FrameLayout layoutContentHolder = (FrameLayout) v.findViewById(R.id.layoutContentHolder);
-		
-		btnClose.setOnClickListener(new OnClickListener() {
-			@Override
-			public void onClick(View arg0) {
-				getActivity().finish();
-			}
-		});
-		
-		if (response.idShop == 0) {
-			btnContinue.setText("Quét tiếp");
-			btnContinue.setOnClickListener(new OnClickListener() {
-				@Override
-				public void onClick(View v) {
-					dlg.dismiss();
-					isCanScan = true;
-				}
-			});
-		} else { 
-			btnContinue.setText("Đến cửa hàng");
-			btnContinue.setOnClickListener(new OnClickListener() {
-				@Override
-				public void onClick(View v) {
-					Shop s = new Shop();
-					s.idShop = response.idShop;
-					ShopDetailActivity.newInstance(getActivity(), s);
-					getActivity().finish();
-				}
-			});
-		}
-		
-		
-		switch (0) {
-		case -1:
-		case 0: {
-			Toast.makeText(getActivity(), "0", Toast.LENGTH_LONG).show();
-			layoutFlag.setBackgroundResource(R.drawable.background_greyflag_arlet);
-//			txtShop.setVisibility(View.GONE);
-			txtShopName.setVisibility(View.GONE);
-			
-			View childView = getActivity().getLayoutInflater()
-					.inflate(R.layout.scan_error, layoutContentHolder, true);
-			ImageView imgIcon = (ImageView) childView.findViewById(R.id.imgIcon);
-			TextView txtMessage = (TextView) childView.findViewById(R.id.txtMess);
-			
-			if (response.status == 0)
-				imgIcon.setImageResource(R.drawable.icon_wrong_arlet);
-			else
-				imgIcon.setImageResource(R.drawable.icon_disconnect_arlet);
-			txtMessage.setText(response.message);
-			break;
-		}
-		
-		case 1: {
-			Toast.makeText(getActivity(), "1", Toast.LENGTH_LONG).show();
-			layoutFlag.setBackgroundResource(R.drawable.background_flag_arlet);
-			txtShopName.setText(response.shopName);
-			
-			View childView = getActivity().getLayoutInflater()
-					.inflate(R.layout.scan_error, layoutContentHolder, true);
-			ImageView imgIcon = (ImageView) childView.findViewById(R.id.imgIcon);
-			TextView txtMessage = (TextView) childView.findViewById(R.id.txtMess);
-			
-			imgIcon.setImageResource(R.drawable.icon_condition_arlet);
-			txtMessage.setText(response.message);
-			break;
-		}
-		
-		case 2: {
-			Toast.makeText(getActivity(), "2", Toast.LENGTH_LONG).show();
-			layoutFlag.setBackgroundResource(R.drawable.background_flag_arlet);
-			txtShopName.setText(response.shopName);
-			
-			View childView = getActivity().getLayoutInflater()
-					.inflate(R.layout.scan_sgp_point, layoutContentHolder, true);
-			
-			TextView txtMessage = (TextView) childView.findViewById(R.id.txtMess);
-			TextView txtSGP = (TextView) childView.findViewById(R.id.txtSGP);
-			
-			txtMessage.setText(response.message);
-			txtSGP.setText(response.sgp);
-			break;
-		}
-		
-		case 3: {
-			Toast.makeText(getActivity(), "3", Toast.LENGTH_LONG).show();
-			layoutFlag.setBackgroundResource(R.drawable.background_flag_arlet);
-			txtShopName.setText(response.shopName);
-			
-			View childView = getActivity().getLayoutInflater()
-					.inflate(R.layout.scan_sgp_reward, layoutContentHolder, true);
-			
-			TextView txtMessage = (TextView) childView.findViewById(R.id.txtMess);
-			TextView txtType = (TextView) childView.findViewById(R.id.txtType);
-			TextView txtGiftName = (TextView) childView.findViewById(R.id.txtGiftName);
-			TextView txtSGP = (TextView) childView.findViewById(R.id.txtSGP);
-			
-			txtMessage.setText(response.message);
-			txtType.setText(response.type);
-			txtGiftName.setText(response.giftName);
-			txtSGP.setText(response.sgp);
-			break;
-		}
-		
-		case 4: {
-			Toast.makeText(getActivity(), "4", Toast.LENGTH_LONG).show();
-			layoutFlag.setBackgroundResource(R.drawable.background_flag_arlet);
-			txtShopName.setText(response.shopName);
-			
-			View childView = getActivity().getLayoutInflater()
-					.inflate(R.layout.scan_voucher, layoutContentHolder, true);
-			
-			TextView txtMessage = (TextView) childView.findViewById(R.id.txtMess);
-			TextView txtType = (TextView) childView.findViewById(R.id.txtType);
-			TextView txtVoucherName = (TextView) childView.findViewById(R.id.txtVoucherName);
-			
-			txtMessage.setText(response.message);
-			txtType.setText(response.type);
-			txtVoucherName.setText(response.voucherName);
-			break;
-		}
-		
-		}*/
-		
 	}
 	
 	public void showAlertDialog() {
