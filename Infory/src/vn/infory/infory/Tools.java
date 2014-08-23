@@ -40,8 +40,7 @@ public class Tools {
 						new DialogInterface.OnClickListener() {
 							public void onClick(DialogInterface dialog,
 									int whichButton) {
-								Intent intent = new Intent(
-										"android.settings.WIRELESS_SETTINGS");
+								Intent intent = new Intent(android.provider.Settings.ACTION_SETTINGS);
 								activity.startActivity(intent);
 							}
 						})

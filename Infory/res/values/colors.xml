@@ -8,6 +8,7 @@
     
     <color name="white">#ffffff</color>
     <color name="black">#000000</color>
+    <color name="gray_txt_app">#474948</color>
     
     <color name="text_color_read_message">#808080</color>
     <color name="background_view_unread_message">#3fa7fc</color>

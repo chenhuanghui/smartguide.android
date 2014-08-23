@@ -102,10 +102,10 @@ public class ListButtonAdapter extends BaseAdapter {
 			@Override
 			public void onClick(View v) {
 				Log.e(TAG, "action type when click is: " + item.getActionType());
-				item.setActionType(0);
-				item.setMethod(1);
-				item.setUrl("www.google.com");
-				item.setParams("{\"param1\":\"abc\", \"param2\":\"123\"}");
+//				item.setActionType(0);
+//				item.setMethod(1);
+//				item.setUrl("www.google.com");
+//				item.setParams("{\"param1\":\"abc\", \"param2\":\"123\"}");
 				if (item.getActionType() == 0) {
 					// call API
 					Log.e(TAG, "method is: " + item.getMethod());

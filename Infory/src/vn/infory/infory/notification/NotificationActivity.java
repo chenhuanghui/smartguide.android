@@ -8,6 +8,7 @@ import org.json.JSONObject;
 
 import vn.infory.infory.FontsCollection;
 import vn.infory.infory.R;
+import vn.infory.infory.Tools;
 import vn.infory.infory.data.MessageInfo;
 import vn.infory.infory.home.HomeFragment;
 import vn.infory.infory.mywidget.MyPTRAndSwipeListView;
@@ -20,6 +21,8 @@ import vn.infory.infory.network.GetCounterMessage;
 import vn.infory.infory.network.GetNotificationTask;
 import vn.infory.infory.network.GetNotificationTask.onGetNotificationsTaskListener;
 import vn.infory.infory.network.NetworkManager;
+import android.app.Activity;
+import android.app.AlertDialog;
 import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.Intent;
@@ -29,10 +32,10 @@ import android.support.v4.app.FragmentActivity;
 import android.util.DisplayMetrics;
 import android.util.Log;
 import android.view.View;
+import android.widget.FrameLayout;
 import android.widget.ImageButton;
 import android.widget.LinearLayout;
 import android.widget.ListView;
-import android.widget.ProgressBar;
 import android.widget.TextView;
 
 import com.fortysevendeg.swipelistview.SwipeListView;
@@ -49,41 +52,54 @@ public class NotificationActivity extends FragmentActivity {
     OnActionPullToRefreshAndLoadMoreListView onActionPullToRefreshAndLoadMore = new OnActionPullToRefreshAndLoadMoreListView() {
 
         @Override
-        public void onRefreshListView(
-                PullToRefreshSwipsListView mPullRefreshListView,
-                ProgressBar proNotifications, boolean isShowProgressBar) {
+        public void onRefreshListView(PullToRefreshSwipsListView mPullRefreshListView, FrameLayout proNotifications, boolean isShowProgressBar) {
 
-        	// Get count unread message
-    		CyAsyncTask mLoader = new GetCounterMessage(mContext, HomeFragment.iType_all);
-    		mLoader.setListener(new Listener2() {
-				
-				@Override
-				public void onFail(Exception e) {
-					txtHeader.setText("Thông báo");
-				}
-				
-				@Override
-				public void onCompleted(Object result) {
-					try {
-//						{"number":[400,0,400],"string":["400","0","400"]}
-//						unread, read, total
-						
-						JSONArray jsonArr = new JSONObject((String) result).getJSONArray("string");
-						txtHeader.setText("Thông báo" + " (" + jsonArr.getString(0) + "/" + jsonArr.getString(2) + ")");
-					} catch (Exception e) {
-						Log.e(TAG, e.toString());
+			if (Tools.isNetworkAvailable(mContext)) {
+				// Get count unread message
+				CyAsyncTask mLoader = new GetCounterMessage(mContext, HomeFragment.iType_all);
+				mLoader.setListener(new Listener2() {
+
+					@Override
+					public void onFail(Exception e) {
+						txtHeader.setText("Thông báo");
 					}
-				}
-			});
-    		mLoader.executeOnExecutor(NetworkManager.THREAD_POOL);
-    		
-            loadDataForFirstTime(mPullRefreshListView, proNotifications, isShowProgressBar);
+
+					@Override
+					public void onCompleted(Object result) {
+						try {
+							// {"number":[400,0,400],"string":["400","0","400"]}
+							// unread, read, total
+
+							JSONArray jsonArr = new JSONObject((String) result).getJSONArray("string");
+							txtHeader.setText("Thông báo" + " ("
+									+ jsonArr.getString(0) + "/"
+									+ jsonArr.getString(2) + ")");
+						} catch (Exception e) {
+							Log.e(TAG, e.toString());
+						}
+					}
+				});
+				mLoader.executeOnExecutor(NetworkManager.THREAD_POOL);
+
+				loadDataForFirstTime(mPullRefreshListView, proNotifications, isShowProgressBar);
+	            myPullToRefreshSwipeListView.setMyIsLoadingMore(false);
+			} else {
+				AlertDialog.Builder builder = Tools.AlertNetWorkDialog(
+						mContext, mActivity);
+				builder.show();
+			}
         }
 
         @Override
-        public void onLoadMoreListView(boolean mIsLoadingMore, ProgressBar mProgressBarLoadMore) {
-            loadMoreListMessagesTask task = new loadMoreListMessagesTask(mIsLoadingMore, mProgressBarLoadMore);
-            task.execute();
+        public void onLoadMoreListView(boolean mIsLoadingMore, FrameLayout mProgressBarLoadMore) {
+			if (Tools.isNetworkAvailable(mContext)) {
+				loadMoreListMessagesTask task = new loadMoreListMessagesTask(mIsLoadingMore, mProgressBarLoadMore);
+				task.execute();
+			} else {
+				AlertDialog.Builder builder = Tools.AlertNetWorkDialog(
+						mContext, mActivity);
+				builder.show();
+			}
         }
 
         @Override
@@ -147,6 +163,7 @@ public class NotificationActivity extends FragmentActivity {
 	private ProgressDialog dialog;
 
     private Context mContext;
+    private Activity mActivity;
 
 	private int screenWidth;
     public static String stringEmptyData = "Không có dữ liệu";
@@ -168,6 +185,7 @@ public class NotificationActivity extends FragmentActivity {
 		screenWidth = metrics.widthPixels;
 		
         mContext = this;
+        mActivity = this;
 
         lstMessages = new ArrayList<MessageInfo>();
         
@@ -208,7 +226,7 @@ public class NotificationActivity extends FragmentActivity {
 
     private void loadDataForFirstTime(
             final PullToRefreshSwipsListView mPullRefreshListView,
-            final ProgressBar proNotifications, final boolean isShowProgressBar) {
+            final FrameLayout proNotifications, final boolean isShowProgressBar) {
     	page = 0;
     	GetNotificationTask task = new GetNotificationTask(mContext, type, page);
     	task.setGetNotificationsTaskListener(new onGetNotificationsTaskListener() {
@@ -333,9 +351,9 @@ public class NotificationActivity extends FragmentActivity {
     private class loadMoreListMessagesTask extends AsyncTask<Void, Void, Void> {
 
         private boolean mIsLoadingMore;
-        private ProgressBar mProgressBarLoadMore;
+        private FrameLayout mProgressBarLoadMore;
 
-        public loadMoreListMessagesTask(boolean mIsLoadingMore, ProgressBar mProgressBarLoadMore) {
+        public loadMoreListMessagesTask(boolean mIsLoadingMore, FrameLayout mProgressBarLoadMore) {
             this.mIsLoadingMore = mIsLoadingMore;
             this.mProgressBarLoadMore = mProgressBarLoadMore;
         }

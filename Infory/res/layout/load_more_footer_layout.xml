@@ -1,24 +1,29 @@
 <?xml version="1.0" encoding="utf-8"?>
-<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:id="@+id/load_more_footer"
     android:layout_width="fill_parent"
     android:layout_height="wrap_content" >
 
-    <View
-        android:id="@+id/top_line"
-        android:layout_width="fill_parent"
-        android:layout_height="0.5dip"
-        android:layout_alignParentTop="true"
-        android:visibility="visible" />
+    <!-- <View -->
+    <!-- android:id="@+id/top_line" -->
+    <!-- android:layout_width="fill_parent" -->
+    <!-- android:layout_height="0.5dip" -->
+    <!-- android:layout_alignParentTop="true" -->
+    <!-- android:visibility="visible" /> -->
 
-    <ProgressBar
+    <FrameLayout
         android:id="@+id/load_more_progressBar"
-        android:layout_width="36dip"
-        android:layout_height="36dip"
-        android:layout_centerInParent="true"
-        android:indeterminate="true"
-        android:indeterminateDrawable="@drawable/custom_progress_bar"
-        android:padding="3dip"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center"
+        android:background="@drawable/button_loading_big"
         android:visibility="gone" />
+    <!-- android:layout_alignLeft="@+id/imgLoading" -->
+    <!-- android:layout_alignRight="@+id/imgLoading" -->
+    <!-- android:layout_below="@+id/imgLoading" -->
+    <!-- android:layout_centerInParent="true" -->
 
-</RelativeLayout>
+
+    <!-- <RelativeLayout> -->
+
+</FrameLayout>

@@ -28,12 +28,18 @@
         swipe:swipeMode="left"
         swipe:swipeOpenOnLongPress="false" />
 
-    <ProgressBar
+    <FrameLayout
         android:id="@+id/progressBar"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_centerInParent="true"
-        android:padding="5dip"
-        android:visibility="visible" />
+        android:layout_centerInParent="true" >
+
+        <FrameLayout
+            android:id="@+id/loadProgressBar"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:background="@drawable/button_loading_big" />
+    </FrameLayout>
 
 </RelativeLayout>

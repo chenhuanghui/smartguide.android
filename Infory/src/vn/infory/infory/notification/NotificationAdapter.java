@@ -93,7 +93,7 @@ public class NotificationAdapter extends BaseAdapter {
 		if(item.getStatus() != -1) {
 			if(item.getStatus() == 0) {
 				// con message chua doc
-				holder.txtContent.setTextColor(mContext.getResources().getColor(R.color.black));
+				holder.txtContent.setTextColor(mContext.getResources().getColor(R.color.gray_txt_app));
 				holder.linearText.setBackgroundResource(R.drawable.leftroundedinput);
 				holder.viewLeft.setBackgroundColor(mContext.getResources().getColor(R.color.background_view_unread_message));
 				holder.imgDotBlue.setVisibility(View.VISIBLE);

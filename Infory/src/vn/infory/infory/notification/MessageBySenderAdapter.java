@@ -8,16 +8,13 @@ import vn.infory.infory.R;
 import vn.infory.infory.data.Message.buttons;
 import vn.infory.infory.data.MessageBySender.messages;
 import vn.infory.infory.home.HomeAdapter;
-import vn.infory.infory.mywidget.VideoView;
 import vn.infory.infory.network.CyAsyncTask;
 import vn.infory.infory.network.MarkReadMessageTask;
 import vn.infory.infory.network.MarkReadMessageTask.onMarkReadMessageTaskListener;
-import android.app.ProgressDialog;
 import android.content.Context;
+import android.content.Intent;
 import android.graphics.Bitmap;
-import android.media.MediaPlayer;
-import android.media.MediaPlayer.OnCompletionListener;
-import android.media.MediaPlayer.OnPreparedListener;
+import android.graphics.drawable.AnimationDrawable;
 import android.net.Uri;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -30,7 +27,6 @@ import android.widget.FrameLayout;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.ListView;
-import android.widget.MediaController;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
@@ -41,7 +37,7 @@ public class MessageBySenderAdapter extends ArrayAdapter<messages> {
 	
     private Context mContext;
     private SwipeListView swipeListView;
-	private ProgressDialog dialog;
+//	private ProgressDialog dialog;
     private List<messages> messages;
 	private LayoutInflater mInflater;
     private int selectedIndex = -1;
@@ -53,9 +49,9 @@ public class MessageBySenderAdapter extends ArrayAdapter<messages> {
         this.swipeListView = swipeListView;
 		mInflater = (LayoutInflater) mContext.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
 
-		dialog = new ProgressDialog(mContext);
-		dialog.setMessage("Vui lòng chờ đợi!");
-		dialog.setCancelable(false);
+//		dialog = new ProgressDialog(mContext);
+//		dialog.setMessage("Vui lòng chờ đợi!");
+//		dialog.setCancelable(false);
 	}
 
     public void setSelectedIndex(int index) {
@@ -83,9 +79,8 @@ public class MessageBySenderAdapter extends ArrayAdapter<messages> {
 		TextView txtContent, txtDateTime, txtTitle;
 		ImageView imgLogo, imgLogoBackground, imgImage, imgDotBlue, imgVideoThumb;
 		ListView listViewButtons;
-		FrameLayout frameVideoThumb;
+		FrameLayout frameVideoThumb, loadProgressBarVideo, loadProgressBar;
 		Button btnPlay;
-		VideoView videoView;
 	}
 
 	@Override
@@ -105,19 +100,17 @@ public class MessageBySenderAdapter extends ArrayAdapter<messages> {
 			holder.linearLogoAndTime = (LinearLayout) convertView.findViewById(R.id.linearLogoAndTime);
 			holder.linearText = (RelativeLayout) convertView.findViewById(R.id.linearText);
 			holder.listViewButtons = (ListView) convertView.findViewById(R.id.listViewButtons);
-			holder.videoView = (VideoView) convertView.findViewById(R.id.videoView);
 			holder.imgVideoThumb = (ImageView) convertView.findViewById(R.id.imgVideoThumb);
 			holder.btnPlay = (Button) convertView.findViewById(R.id.btnPlay);
 			holder.frameVideoThumb = (FrameLayout) convertView.findViewById(R.id.frameVideoThumb);
-
-//			MediaController controller = new MediaController(mContext);
-//			controller.setAnchorView(holder.videoView);
-//			controller.setMediaPlayer(holder.videoView);
-			
+			holder.loadProgressBar = (FrameLayout) convertView.findViewById(R.id.loadProgressBar);
+			holder.loadProgressBarVideo = (FrameLayout) convertView.findViewById(R.id.loadProgressBarVideo);
 			convertView.setTag(holder);
 		} else {
 			holder = (ViewHolder) convertView.getTag();
 		}
+		((AnimationDrawable) holder.loadProgressBar.getBackground()).start();
+		((AnimationDrawable) holder.loadProgressBarVideo.getBackground()).start();
 		initGUI(holder, item, position);
 		initEvents(holder, item, position);
 		FontsCollection.setFont(convertView);
@@ -126,6 +119,9 @@ public class MessageBySenderAdapter extends ArrayAdapter<messages> {
 
 	private void initGUI(final ViewHolder holder,
 			final vn.infory.infory.data.MessageBySender.messages item, int position) {
+
+		int newWidth = ListMessagesBySenderActivity.screenWidth - mContext.getResources().getDimensionPixelSize(R.dimen.padding_20dip) * 2;
+		
 		if(item.getStatus() == 0) {
 			// message chua doc
 			holder.linearText.setBackgroundResource(R.drawable.leftroundedinput);
@@ -164,9 +160,21 @@ public class MessageBySenderAdapter extends ArrayAdapter<messages> {
 
 		if((item.getImage() != null && item.getImage().length() > 0)) {
 			holder.imgImage.setTag(item.getImage());
+			
+			int imageWidth = item.getImageWidth();
+			int imageHeight = item.getImageHeight();
+			float scaleFactor = (float)newWidth/(float)imageWidth;
+			int newHeight = (int)(imageHeight * scaleFactor);
+			
+			FrameLayout.LayoutParams params = (FrameLayout.LayoutParams) holder.imgImage.getLayoutParams();
+			params.width = newWidth;
+			params.height = newHeight;
+			holder.imgImage.setLayoutParams(params);
+			
 			CyImageLoader.instance().loadImage(item.getImage(), new CyImageLoader.Listener() {
 				@Override
 				public void startLoad(int from) {
+					holder.loadProgressBar.setVisibility(View.VISIBLE);
 					switch (from) {
 					case CyImageLoader.FROM_DISK:
 					case CyImageLoader.FROM_NETWORK:
@@ -177,24 +185,33 @@ public class MessageBySenderAdapter extends ArrayAdapter<messages> {
 				
 				@Override
 				public void loadFinish(int from, Bitmap image, String url, CyAsyncTask task) {
+					holder.loadProgressBar.setVisibility(View.GONE);
 					if (holder.imgImage.getTag().equals(url)) {
-						int imageWidth = image.getWidth();
-						int imageHeight = image.getHeight();
-
-						int newWidth = ListMessagesBySenderActivity.screenWidth - mContext.getResources().getDimensionPixelSize(R.dimen.padding_20dip) * 2;
-						float scaleFactor = (float)newWidth/(float)imageWidth;
-						int newHeight = (int)(imageHeight * scaleFactor);
-						image = Bitmap.createScaledBitmap(image, newWidth, newHeight, true);
 						holder.imgImage.setImageBitmap(image);
 					}
 				}
 			}, HomeAdapter.mImageSize, mContext);
+		} else {
+			holder.loadProgressBar.setVisibility(View.GONE);
 		}
+		
 		if(item.getVideoThumbnail() != null && item.getVideoThumbnail().length() > 0) {
 			holder.imgVideoThumb.setTag(item.getVideoThumbnail());
+			
+			int videoWidth = item.getVideoWidth();
+			int videoHeight = item.getVideoHeight();
+			float scaleFactor = (float)newWidth/(float)videoWidth;
+			int newHeight = (int)(videoHeight * scaleFactor);
+			
+			FrameLayout.LayoutParams params = (FrameLayout.LayoutParams) holder.imgVideoThumb.getLayoutParams();
+			params.width = newWidth;
+			params.height = newHeight;
+			holder.imgVideoThumb.setLayoutParams(params);
+			
 			CyImageLoader.instance().loadImage(item.getVideoThumbnail(), new CyImageLoader.Listener() {
 				@Override
 				public void startLoad(int from) {
+					holder.loadProgressBarVideo.setVisibility(View.VISIBLE);
 					switch (from) {
 					case CyImageLoader.FROM_DISK:
 					case CyImageLoader.FROM_NETWORK:
@@ -205,18 +222,21 @@ public class MessageBySenderAdapter extends ArrayAdapter<messages> {
 				
 				@Override
 				public void loadFinish(int from, Bitmap image, String url, CyAsyncTask task) {
+					holder.loadProgressBarVideo.setVisibility(View.GONE);
 					if (holder.imgVideoThumb.getTag().equals(url)) {
-						int imageWidth = image.getWidth();
-						int imageHeight = image.getHeight();
-
-						int newWidth = ListMessagesBySenderActivity.screenWidth - mContext.getResources().getDimensionPixelSize(R.dimen.padding_20dip) * 2;
-						float scaleFactor = (float)newWidth/(float)imageWidth;
-						int newHeight = (int)(imageHeight * scaleFactor);
-						image = Bitmap.createScaledBitmap(image, newWidth, newHeight, true);
+//						int imageWidth = image.getWidth();
+//						int imageHeight = image.getHeight();
+//
+//						int newWidth = ListMessagesBySenderActivity.screenWidth - mContext.getResources().getDimensionPixelSize(R.dimen.padding_20dip) * 2;
+//						float scaleFactor = (float)newWidth/(float)imageWidth;
+//						int newHeight = (int)(imageHeight * scaleFactor);
+//						image = Bitmap.createScaledBitmap(image, newWidth, newHeight, true);
 						holder.imgVideoThumb.setImageBitmap(image);
 					}
 				}
 			}, HomeAdapter.mImageSize, mContext);
+		} else {
+			holder.loadProgressBarVideo.setVisibility(View.GONE);
 		}
 		
 		// set adapter list button
@@ -249,41 +269,15 @@ public class MessageBySenderAdapter extends ArrayAdapter<messages> {
 			
 			@Override
 			public void onClick(View v) {
-				// Execute StreamVideo AsyncTask
-				dialog.show();
 				try {
-					// Start the MediaController
-//					MediaController mediacontroller = new MediaController(mContext);
-//					mediacontroller.setAnchorView(holder.videoView);
-					// Get the URL from String VideoURL
 					Log.e(TAG, item.getVideo());
 					Uri video = Uri.parse(item.getVideo());
-//					holder.videoView.setMediaController(mediacontroller);
-					holder.videoView.setVideoURI(video);
+					Intent tostart = new Intent(Intent.ACTION_VIEW);
+					tostart.setDataAndType(video, "video/*");
+					mContext.startActivity(tostart);
 				} catch (Exception e) {
 					Log.e(TAG, e.getMessage());
 				}
-
-				holder.videoView.requestFocus();
-				holder.videoView.setOnPreparedListener(new OnPreparedListener() {
-					// Close the progress bar and play the video
-					public void onPrepared(MediaPlayer mp) {
-						dialog.dismiss();
-						holder.videoView.setVisibility(View.VISIBLE);
-						holder.videoView.start();
-						holder.imgVideoThumb.setVisibility(View.GONE);
-						holder.frameVideoThumb.setVisibility(View.GONE);
-					}
-				});
-				holder.videoView.setOnCompletionListener(new OnCompletionListener() {
-					
-					@Override
-					public void onCompletion(MediaPlayer mp) {
-//						holder.videoView.setVisibility(View.GONE);
-						holder.imgVideoThumb.setVisibility(View.VISIBLE);
-						holder.frameVideoThumb.setVisibility(View.VISIBLE);
-					}
-				});
 			}
 		});
 	}
@@ -296,14 +290,14 @@ public class MessageBySenderAdapter extends ArrayAdapter<messages> {
 				
 				@Override
 				public void onPreMarkReadMessage() {
-					if(dialog != null && !dialog.isShowing())
-						dialog.show();
+//					if(dialog != null && !dialog.isShowing())
+//						dialog.show();
 				}
 				
 				@Override
 				public void onMarkReadMessageSuccess(String response) {
-					if(dialog != null && dialog.isShowing())
-						dialog.cancel();
+//					if(dialog != null && dialog.isShowing())
+//						dialog.cancel();
 					item.setStatus(1);
 					notifyDataSetChanged();
 					initUIWhenExpand(holder, item);
@@ -311,8 +305,8 @@ public class MessageBySenderAdapter extends ArrayAdapter<messages> {
 				
 				@Override
 				public void onMarkReadMessageFailure() {
-					if(dialog != null && dialog.isShowing())
-						dialog.cancel();
+//					if(dialog != null && dialog.isShowing())
+//						dialog.cancel();
 					item.setStatus(1);
 					notifyDataSetChanged();
 				}
@@ -334,11 +328,12 @@ public class MessageBySenderAdapter extends ArrayAdapter<messages> {
 				holder.txtTitle.setTextColor(mContext.getResources().getColor(R.color.text_color_read_message));
 				holder.txtContent.setTextColor(mContext.getResources().getColor(R.color.text_color_read_message));
 			}
-//			Utils.collapse(holder.imgImage);
-			holder.imgImage.setVisibility(View.GONE);
+//			if(isAnimation)
+//				Utils.collapse(holder.imgImage);
+//			else
+				holder.imgImage.setVisibility(View.GONE);
+			
 			holder.frameVideoThumb.setVisibility(View.GONE);
-			holder.videoView.stopPlayback();
-			holder.videoView.setVisibility(View.GONE);
 			holder.txtContent.setVisibility(View.GONE);
 			holder.listViewButtons.setVisibility(View.GONE);
 		}
@@ -351,15 +346,16 @@ public class MessageBySenderAdapter extends ArrayAdapter<messages> {
 			holder.txtDateTime.setTextColor(mContext.getResources().getColor(R.color.black));
 			holder.txtTitle.setTextColor(mContext.getResources().getColor(R.color.black));
 			holder.txtContent.setTextColor(mContext.getResources().getColor(R.color.black));
-//			Utils.expand(holder.imgImage);
 
 			if(item.getImage() != null && item.getImage().length() > 0) {
-				holder.imgImage.setVisibility(View.VISIBLE);
+//				if(isAnimation)
+//					Utils.expand(holder.imgImage);
+//				else
+					holder.imgImage.setVisibility(View.VISIBLE);
 			}
 			
 			if(item.getVideo() != null && item.getVideo().length() > 0) {
 				holder.frameVideoThumb.setVisibility(View.VISIBLE);
-				holder.videoView.setVisibility(View.VISIBLE);
 			}
 			holder.txtContent.setVisibility(View.VISIBLE);
 

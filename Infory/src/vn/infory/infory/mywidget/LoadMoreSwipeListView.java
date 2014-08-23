@@ -2,15 +2,15 @@ package vn.infory.infory.mywidget;
 
 import vn.infory.infory.R;
 import android.content.Context;
+import android.graphics.drawable.AnimationDrawable;
 import android.util.AttributeSet;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.AbsListView;
 import android.widget.AbsListView.OnScrollListener;
+import android.widget.FrameLayout;
 import android.widget.ListAdapter;
-import android.widget.ProgressBar;
-import android.widget.RelativeLayout;
 
 import com.fortysevendeg.swipelistview.SwipeListView;
 
@@ -26,9 +26,9 @@ public class LoadMoreSwipeListView extends SwipeListView implements
 	private LayoutInflater mInflater;
 
 	// footer view
-	private RelativeLayout mFooterView;
+	private FrameLayout mFooterView;
 	// private TextView mLabLoadMore;
-	private ProgressBar mProgressBarLoadMore;
+	private FrameLayout mProgressBarLoadMore;
 
 	// Listener to process load more items when user reaches the end of the list
 	private OnLoadMoreListener mOnLoadMoreListener;
@@ -48,17 +48,12 @@ public class LoadMoreSwipeListView extends SwipeListView implements
 
 	private void init(Context context) {
 
-		mInflater = (LayoutInflater) context
-				.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
+		mInflater = (LayoutInflater) context.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
 
 		// footer
-		mFooterView = (RelativeLayout) mInflater.inflate(R.layout.load_more_footer_layout, this, false);
-		/*
-		 * mLabLoadMore = (TextView) mFooterView
-		 * .findViewById(R.id.load_more_lab_view);
-		 */
-		mProgressBarLoadMore = (ProgressBar) mFooterView
-				.findViewById(R.id.load_more_progressBar);
+		mFooterView = (FrameLayout) mInflater.inflate(R.layout.load_more_footer_layout, this, false);
+		mProgressBarLoadMore = (FrameLayout) mFooterView.findViewById(R.id.load_more_progressBar);
+		((AnimationDrawable) mProgressBarLoadMore.getBackground()).start();
 
 		addFooterView(mFooterView);
 

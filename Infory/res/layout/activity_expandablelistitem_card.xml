@@ -40,6 +40,7 @@
             android:orientation="vertical" >
 
             <LinearLayout
+                android:id="@+id/linearContentItem"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:orientation="vertical"
@@ -83,14 +84,29 @@
 
                 <FrameLayout
                     android:layout_width="wrap_content"
-                    android:layout_height="wrap_content" >
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center" >
 
-                    <ImageView
-                        android:id="@+id/imgImage"
+                    <FrameLayout
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:layout_marginTop="5dip"
-                        android:visibility="gone" />
+                        android:layout_gravity="center" >
+
+                        <FrameLayout
+                            android:id="@+id/loadProgressBar"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_gravity="center"
+                            android:background="@drawable/button_loading_big"
+                            android:visibility="gone" />
+
+                        <ImageView
+                            android:id="@+id/imgImage"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_marginTop="5dip"
+                            android:visibility="gone" />
+                    </FrameLayout>
 
                     <include layout="@layout/video_item_layout" />
                 </FrameLayout>
@@ -115,14 +131,15 @@
                     android:text="dsds"
                     android:textColor="#737373"
                     android:visibility="gone" />
-
-                <ListView
-                    android:id="@+id/listViewButtons"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:layout_marginTop="8dip"
-                    android:visibility="gone" />
             </LinearLayout>
+
+            <ListView
+                android:id="@+id/listViewButtons"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_below="@+id/linearContentItem"
+                android:layout_marginTop="8dip"
+                android:visibility="gone" />
 
             <ImageView
                 android:id="@+id/imgDotBlue"

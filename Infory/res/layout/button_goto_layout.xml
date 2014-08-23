@@ -10,7 +10,7 @@
         android:layout_height="wrap_content"
         android:layout_gravity="center"
         android:background="@drawable/leftrounded_gray"
-        android:drawableRight="@drawable/button_arrow_right"
+        android:drawableRight="@drawable/icon_arrow_notification"
         android:paddingBottom="8dip"
         android:paddingRight="10dip"
         android:paddingTop="8dip"

@@ -5,6 +5,7 @@ import java.util.List;
 
 import vn.infory.infory.FontsCollection;
 import vn.infory.infory.R;
+import vn.infory.infory.Tools;
 import vn.infory.infory.data.MessageBySender;
 import vn.infory.infory.data.MessageBySender.messages;
 import vn.infory.infory.mywidget.LoadMoreSwipeListView;
@@ -13,14 +14,18 @@ import vn.infory.infory.network.DeleteMessageTask;
 import vn.infory.infory.network.DeleteMessageTask.onDeleteMessageTaskListener;
 import vn.infory.infory.network.GetListMessagesBySenderTask;
 import vn.infory.infory.network.GetListMessagesBySenderTask.onGetListMessagesBySenderTaskListener;
+import android.app.Activity;
+import android.app.AlertDialog;
 import android.app.ProgressDialog;
 import android.content.Context;
+import android.graphics.drawable.AnimationDrawable;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.v4.app.FragmentActivity;
 import android.util.DisplayMetrics;
 import android.util.Log;
 import android.view.View;
+import android.widget.FrameLayout;
 import android.widget.ImageButton;
 import android.widget.LinearLayout;
 import android.widget.ListView;
@@ -39,8 +44,10 @@ public class ListMessagesBySenderActivity extends FragmentActivity {
 	private TextView txtHeader;
 	private LoadMoreSwipeListView swipeListView;
 	private ProgressDialog dialog;
+	private FrameLayout proNotifications;
 
 	private Context mContext;
+	private Activity mActivity;
 
 	public static int screenWidth;
 	public static String stringEmptyData = "Không có dữ liệu";
@@ -74,6 +81,7 @@ public class ListMessagesBySenderActivity extends FragmentActivity {
 			messageId = bundle.getInt(NotificationUtil.messageId);
 		}
 		mContext = this;
+		mActivity = this;
 		lstMessages = new ArrayList<messages>();
 
 		init();
@@ -87,6 +95,10 @@ public class ListMessagesBySenderActivity extends FragmentActivity {
 		txtHeader = (TextView) findViewById(R.id.txtHeader);
 		swipeListView = (LoadMoreSwipeListView) findViewById(R.id.listMessages);
 
+		proNotifications = (FrameLayout) findViewById(R.id.progressBar);
+		FrameLayout loadProgressBar = (FrameLayout) findViewById(R.id.loadProgressBar);
+		((AnimationDrawable) loadProgressBar.getBackground()).start();
+
 		dialog = new ProgressDialog(mContext);
 		dialog.setMessage("Vui lòng chờ đợi!");
 		dialog.setCancelable(false);
@@ -95,41 +107,45 @@ public class ListMessagesBySenderActivity extends FragmentActivity {
 	}
 
 	private void setGUI() {
-		GetListMessagesBySenderTask task = new GetListMessagesBySenderTask(
-				mContext, senderID, page);
-		task.setGetListMessagesBySenderTaskListener(new onGetListMessagesBySenderTaskListener() {
+		if (Tools.isNetworkAvailable(mContext)) {
+			GetListMessagesBySenderTask task = new GetListMessagesBySenderTask(
+					mContext, senderID, page);
+			task.setGetListMessagesBySenderTaskListener(new onGetListMessagesBySenderTaskListener() {
 
-			@Override
-			public void onPreGetListMessagesBySender() {
-				if (dialog != null && !dialog.isShowing())
-					dialog.show();
-			}
+				@Override
+				public void onPreGetListMessagesBySender() {
+					proNotifications.setVisibility(View.VISIBLE);
+				}
 
-			@Override
-			public void onGetListMessagesBySenderSuccess(String response) {
-				if (dialog != null && dialog.isShowing())
-					dialog.cancel();
-				if (response != null && response.compareTo("") != 0) {
-					loadMessagesData(response);
-					if (messageBySender != null) {
-						checkLogicLoadMore(messageBySender);
-						initAdapterListView();
-					} else {
-						initEmptyData();
+				@Override
+				public void onGetListMessagesBySenderSuccess(String response) {
+					proNotifications.setVisibility(View.GONE);
+					if (response != null && response.compareTo("") != 0) {
+						loadMessagesData(response);
+						if (messageBySender != null) {
+							checkLogicLoadMore(messageBySender);
+							initAdapterListView();
+						} else {
+							initEmptyData();
+						}
 					}
 				}
-			}
 
-			@Override
-			public void onGetListMessagesBySenderFailure() {
-				if (dialog != null && dialog.isShowing())
-					dialog.cancel();
-				// show error in here
-				initEmptyData();
-				initAdapterListView();
-			}
-		});
-		task.execute();
+				@Override
+				public void onGetListMessagesBySenderFailure() {
+					proNotifications.setVisibility(View.GONE);
+					// show error in here
+					initEmptyData();
+					initAdapterListView();
+				}
+			});
+			task.execute();
+
+		} else {
+			AlertDialog.Builder builder = Tools.AlertNetWorkDialog(
+					mContext, mActivity);
+			builder.show();
+		}
 	}
 
 	private void checkLogicLoadMore(MessageBySender messageBySender) {
@@ -208,9 +224,14 @@ public class ListMessagesBySenderActivity extends FragmentActivity {
 		// set a listener to be invoked when the list reaches the end
 		swipeListView.setOnLoadMoreListener(new OnLoadMoreListener() {
 			public void onLoadMore() {
-				// Do the work to load more items at the end of list
-				// here
-				new LoadDataTask().execute();
+				// Do the work to load more items at the end of list here
+				if (Tools.isNetworkAvailable(mContext)) {
+					new LoadDataTask().execute();
+				} else {
+					AlertDialog.Builder builder = Tools.AlertNetWorkDialog(
+							mContext, mActivity);
+					builder.show();
+				}
 			}
 		});
 

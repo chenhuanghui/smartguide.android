@@ -58,7 +58,7 @@
     <string name="scan_code_result_activity">ScanCodeResultActivity</string>
     <string name="scan_code_result2_activity">ScanCodeResult2Activity</string>
     <string name="home_loading_activity">HomeLoadingActivity</string>
-    <string name="error">Lỗi!</string>
+    <string name="error">Lỗi kết nối!</string>
 	<string name="dialog_cancel">Hủy</string>
 	<string name="dialog_setting">Cài đặt</string>
     <string name="layout_error">LayoutErrorActivity</string>

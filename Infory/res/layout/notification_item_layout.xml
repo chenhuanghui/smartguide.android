@@ -61,7 +61,7 @@
                         android:ellipsize="end"
                         android:maxLines="2"
                         android:text="Mọi người nói về địa điểm Mọi người nói về địa điểm Mọi người nói về địa điểm Mọi người nói về địa điểm Mọi người nói về địa điểm Mọi người nói về địa điểm"
-                        android:textColor="#000000" />
+                        android:textColor="#474948" />
 
                     <LinearLayout
                         android:layout_width="match_parent"

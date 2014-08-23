@@ -2,12 +2,13 @@ package vn.infory.infory.mywidget;
 
 import vn.infory.infory.R;
 import android.content.Context;
+import android.graphics.drawable.AnimationDrawable;
 import android.text.format.DateUtils;
 import android.util.AttributeSet;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
-import android.widget.ProgressBar;
+import android.widget.FrameLayout;
 import android.widget.RelativeLayout;
 
 import com.fortysevendeg.swipelistview.BaseSwipeListViewListener;
@@ -24,13 +25,13 @@ public class MyPTRAndSwipeListView extends RelativeLayout {
 	private Context mcontext;
 	private LayoutInflater mInflater;
 	
-	private ProgressBar proNotifications;
+	private FrameLayout proNotifications;
 	private SwipeListView swipeListView;
 	private PullToRefreshSwipsListView mPullRefreshListView;
 	
 	// footer load more view
-	private RelativeLayout mFooterView;
-	private ProgressBar mProgressBarLoadMore;
+	private FrameLayout mFooterView;
+	private FrameLayout mProgressBarLoadMore;
 	
 	private boolean mIsLoadingMore = false;
 //	private int mCurrentScrollState;
@@ -38,12 +39,9 @@ public class MyPTRAndSwipeListView extends RelativeLayout {
 	private OnActionPullToRefreshAndLoadMoreListView listener;
 	
 	public interface OnActionPullToRefreshAndLoadMoreListView {
-		public void onRefreshListView(
-				PullToRefreshSwipsListView mPullRefreshListView,
-				ProgressBar proNotifications, boolean isShowProgressBar);
+		public void onRefreshListView(PullToRefreshSwipsListView mPullRefreshListView, FrameLayout proNotifications, boolean isShowProgressBar);
 
-		public void onLoadMoreListView(boolean mIsLoadingMore,
-				ProgressBar mProgressBarLoadMore);
+		public void onLoadMoreListView(boolean mIsLoadingMore, FrameLayout mProgressBarLoadMore);
 
 		public void onOpenedItem(int position);
 		public void onClosedItem(int position);
@@ -86,10 +84,12 @@ public class MyPTRAndSwipeListView extends RelativeLayout {
 	}
 	
 	private void init(View convert, AttributeSet attrs, int defStyle){
-		proNotifications = (ProgressBar) convert.findViewById(R.id.progressBar);
+		proNotifications = (FrameLayout) convert.findViewById(R.id.progressBar);
+		FrameLayout loadProgressBar = (FrameLayout) convert.findViewById(R.id.loadProgressBar);
 		mPullRefreshListView = (PullToRefreshSwipsListView) findViewById(R.id.listView);
 		swipeListView = mPullRefreshListView.getRefreshableView();
-		
+
+		((AnimationDrawable) loadProgressBar.getBackground()).start();
 		initFooterLoadMore(mcontext);
 		initEvent();
 	}
@@ -97,8 +97,9 @@ public class MyPTRAndSwipeListView extends RelativeLayout {
 	private void initFooterLoadMore(Context context) {
 		mInflater = (LayoutInflater) context.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
 
-		mFooterView = (RelativeLayout) mInflater.inflate(R.layout.load_more_footer_layout, null, false);
-		mProgressBarLoadMore = (ProgressBar) mFooterView.findViewById(R.id.load_more_progressBar);
+		mFooterView = (FrameLayout) mInflater.inflate(R.layout.load_more_footer_layout, null, false);
+		mProgressBarLoadMore = (FrameLayout) mFooterView.findViewById(R.id.load_more_progressBar);
+		((AnimationDrawable) mProgressBarLoadMore.getBackground()).start();
 
 //		swipeListView.addFooterView(mFooterView);
 	}
