@@ -103,6 +103,8 @@ public class HomeFragment extends Fragment implements HomeListener, Listener2 {
 		e.putString("use_immediately_activity", "0");
 		e.commit();
 		
+		mLayoutLoading.setVisibility(View.GONE);
+		
 		super.onResume();
 	}
 
