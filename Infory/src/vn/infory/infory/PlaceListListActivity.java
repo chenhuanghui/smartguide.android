@@ -160,6 +160,20 @@ public class PlaceListListActivity extends Activity {
 			}
 		});
 	}
+	
+	@Override
+	protected void onResume() {
+		// TODO Auto-generated method stub
+		super.onResume();
+		mLayoutLoading.setVisibility(View.GONE);
+	}
+
+	@Override
+	protected void onPause() {
+		// TODO Auto-generated method stub
+		super.onPause();
+		mLayoutLoading.setVisibility(View.GONE);
+	}
 
 	///////////////////////////////////////////////////////////////////////////
 	// Public methods
@@ -315,9 +329,9 @@ public class PlaceListListActivity extends Activity {
 				AutoCompleteItem fakeItem = new AutoCompleteItem();
 				fakeItem.RIDtype = 4;
 				fakeItem.highlight = new Highlight();
-				fakeItem.highlight.name_auto_complete.add("Placelist");
+				fakeItem.highlight.name_auto_complete.add("Danh sách địa điểm");
 				fakeItem.fields = new Fields();
-				fakeItem.fields.name = "Placelist";
+				fakeItem.fields.name = "Danh sách địa điểm";
 				mItemList.add(fakeItem);
 				mItemList.addAll(placeList);
 
@@ -465,7 +479,7 @@ public class PlaceListListActivity extends Activity {
 			} else if (item._type.equalsIgnoreCase("placelist")) {
 
 				// If place list, then load placeList
-				GetPlaceListDetail getPlacelistDetail = 
+				/*GetPlaceListDetail getPlacelistDetail = 
 						new GetPlaceListDetail(PlaceListListActivity.this, item.fields.id, 0) {
 					@Override
 					protected void onCompleted(Object result2) {
@@ -486,8 +500,11 @@ public class PlaceListListActivity extends Activity {
 				};
 				getPlacelistDetail.setVisibleView(mLayoutLoading);
 				mTaskList.add(getPlacelistDetail);
-				getPlacelistDetail.executeOnExecutor(NetworkManager.THREAD_POOL);
+				getPlacelistDetail.executeOnExecutor(NetworkManager.THREAD_POOL);*/
 				
+				ShopListActivity.newInstanceWithPlacelistId(PlaceListListActivity.this, item.fields.id+"", new ArrayList<Shop>());
+				
+				mLayoutLoading.setVisibility(View.VISIBLE);
 				AnimationDrawable frameAnimation = (AnimationDrawable) 
 						mLayoutLoadingAni.getBackground();
 				frameAnimation.start();
@@ -552,15 +569,16 @@ public class PlaceListListActivity extends Activity {
 				CyImageLoader.instance().showImage(item.image, imgIcon);
 
 			} else {
+				View layoutPlacelistItem = convertView.findViewById(R.id.linearlayoutPlacelistItem);
 				if (mItemList.size() == 4) {
-					convertView.setBackgroundResource(R.drawable.button_call);
+					layoutPlacelistItem.setBackgroundResource(R.drawable.button_call);
 				} else {
 					if (position == 3) {
-						convertView.setBackgroundResource(R.drawable.frame_detail_info);
+						layoutPlacelistItem.setBackgroundResource(R.drawable.frame_detail_info);
 					} else if (!mIsMore && position == mItemList.size() - 1) {
-						convertView.setBackgroundResource(R.drawable.frame_detail_info_footer);
+						layoutPlacelistItem.setBackgroundResource(R.drawable.frame_detail_info_footer);
 					} else {
-						convertView.setBackgroundResource(R.drawable.frame_detail_info_item);
+						layoutPlacelistItem.setBackgroundResource(R.drawable.frame_detail_info_item);
 					}
 				}
 			}

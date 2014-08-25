@@ -36,6 +36,8 @@ public class HomeItemUpdater_Header extends HomeItemUpdater{
 		TextView txtHeaderContent = (TextView) view.findViewById(R.id.txtHeaderContent);
 		RelativeLayout relativeLayoutHeader = (RelativeLayout) view.findViewById(R.id.relativeLayoutHeader);
 		
+		final View mLayoutLoading = (View) caller.getActivity().findViewById(R.id.layoutLoading);
+		final View mLayoutLoadingAni = (View) caller.getActivity().findViewById(R.id.HomeFragmentLayoutLoadingAni);
 		
 		txtHeaderContent.setText(itemHeader.title);	
 		
@@ -44,6 +46,12 @@ public class HomeItemUpdater_Header extends HomeItemUpdater{
 			@Override
 			public void onClick(View v) {
 				// TODO Auto-generated method stub
+				
+				mLayoutLoading.setVisibility(View.VISIBLE);
+	    		AnimationDrawable frameAnimation = (AnimationDrawable) 
+	    				mLayoutLoadingAni.getBackground();
+				frameAnimation.start();
+				
 				if(itemHeader.idPlacelist != 0)
 				{		    		
 					ShopListActivity.newInstanceWithPlacelistId(caller.getActivity(), itemHeader.idPlacelist+"", new ArrayList<Shop>());

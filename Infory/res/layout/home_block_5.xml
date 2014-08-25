@@ -4,7 +4,9 @@
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:layout_gravity="center_horizontal" 
-    android:background="@drawable/bg_title_placelist">
+    android:background="@drawable/bg_title_placelist"
+	android:paddingLeft="8dp"
+	android:paddingRight="8dp">
 
     <TextView
         android:id="@+id/txtHeaderContent"
