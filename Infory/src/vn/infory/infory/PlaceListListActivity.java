@@ -160,6 +160,20 @@ public class PlaceListListActivity extends Activity {
 			}
 		});
 	}
+	
+	@Override
+	protected void onResume() {
+		// TODO Auto-generated method stub
+		super.onResume();
+		mLayoutLoading.setVisibility(View.GONE);
+	}
+
+	@Override
+	protected void onPause() {
+		// TODO Auto-generated method stub
+		super.onPause();
+		mLayoutLoading.setVisibility(View.GONE);
+	}
 
 	///////////////////////////////////////////////////////////////////////////
 	// Public methods
@@ -465,7 +479,7 @@ public class PlaceListListActivity extends Activity {
 			} else if (item._type.equalsIgnoreCase("placelist")) {
 
 				// If place list, then load placeList
-				GetPlaceListDetail getPlacelistDetail = 
+				/*GetPlaceListDetail getPlacelistDetail = 
 						new GetPlaceListDetail(PlaceListListActivity.this, item.fields.id, 0) {
 					@Override
 					protected void onCompleted(Object result2) {
@@ -486,8 +500,11 @@ public class PlaceListListActivity extends Activity {
 				};
 				getPlacelistDetail.setVisibleView(mLayoutLoading);
 				mTaskList.add(getPlacelistDetail);
-				getPlacelistDetail.executeOnExecutor(NetworkManager.THREAD_POOL);
+				getPlacelistDetail.executeOnExecutor(NetworkManager.THREAD_POOL);*/
 				
+				ShopListActivity.newInstanceWithPlacelistId(PlaceListListActivity.this, item.fields.id+"", new ArrayList<Shop>());
+				
+				mLayoutLoading.setVisibility(View.VISIBLE);
 				AnimationDrawable frameAnimation = (AnimationDrawable) 
 						mLayoutLoadingAni.getBackground();
 				frameAnimation.start();
