@@ -118,6 +118,9 @@ public class SampleListFragment extends ScrollTabHolderFragment implements OnScr
 			llLine.setVisibility(View.GONE);
 			pagerTab.setVisibility(View.GONE);
 			
+			View mHeader = (View) getActivity().findViewById(R.id.header);
+			mHeader.setLayoutParams(new FrameLayout.LayoutParams(FrameLayout.LayoutParams.MATCH_PARENT,FrameLayout.LayoutParams.MATCH_PARENT));
+			
 			ScrollView mScrollHeader = (ScrollView) getActivity().findViewById(R.id.scrScanDLG2);
 			mScrollHeader.setLayoutParams(new LayoutParams(LayoutParams.MATCH_PARENT,LayoutParams.MATCH_PARENT));
 		}
