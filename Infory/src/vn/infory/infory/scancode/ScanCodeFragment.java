@@ -5,6 +5,7 @@ import java.net.URL;
 import java.util.ArrayList;
 import java.util.List;
 
+import net.sourceforge.zbar.Config;
 import net.sourceforge.zbar.Image;
 import net.sourceforge.zbar.ImageScanner;
 import net.sourceforge.zbar.Symbol;
@@ -52,6 +53,7 @@ import android.hardware.Camera.Parameters;
 import android.hardware.Camera.PreviewCallback;
 import android.net.Uri;
 import android.os.Bundle;
+import android.os.Handler;
 import android.os.Vibrator;
 import android.support.v4.app.Fragment;
 import android.support.v4.view.ViewPager;
@@ -80,15 +82,16 @@ import com.google.zxing.qrcode.QRCodeReader;
 public class ScanCodeFragment extends Fragment {
 	
 	// Data
-	private QRCodeReader mQRCodeReader = new QRCodeReader();
-	private ImageScanner mZBarScanner = new ImageScanner();
+//	private QRCodeReader mQRCodeReader = new QRCodeReader();
 	private boolean isCanScan = true;
-	private Integer scanCodeTaskStatus = 0;
 	private Object objScanCode;
 	private List<CyAsyncTask> mTaskList = new ArrayList<CyAsyncTask>();
 	
 	private Camera mCamera;
     private CameraPreview mPreview;
+    private ImageScanner mScanner;
+    private Handler mAutoFocusHandler;
+    private boolean mPreviewing = true;
     
 	// GUI
 //    @ViewById(id = R.id.llScanDLG2)			private LinearLayout mLLScanDLG2;
@@ -100,6 +103,11 @@ public class ScanCodeFragment extends Fragment {
 	@Override
 	public void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
+		
+		mAutoFocusHandler = new Handler();
+
+        // Create and configure the ImageScanner;
+        setupScanner();
 
 		mPreview = new CameraPreview(getActivity());
 	}
@@ -116,10 +124,9 @@ public class ScanCodeFragment extends Fragment {
 		public void onPreviewFrame(byte[] data, Camera camera) {
 			if (!isCanScan)
 				return;
-			
+						
 			Camera.Parameters parameters = camera.getParameters();
-			int w = parameters.getPreviewSize().width;
-			int h = parameters.getPreviewSize().height;
+	        Camera.Size size = parameters.getPreviewSize();
 			
 			/*YUVLuminanceSource source = new YUVLuminanceSource(data, w, h, 0, 0, w, h);
 			
@@ -132,16 +139,17 @@ public class ScanCodeFragment extends Fragment {
 				return;
 			}*/
 			
-			Image barcode = new Image(w, h, "Y800");
+			Image barcode = new Image(size.width, size.height, "Y800");
 	        barcode.setData(data);
 
-	        int result = mZBarScanner.scanImage(barcode);	        
-
+	        int result = mScanner.scanImage(barcode);	  
 	        if (result != 0) {
-	            mCamera.setPreviewCallback(null);
-	            mCamera.stopPreview();
+	        	 mCamera.cancelAutoFocus();
+	             mCamera.setPreviewCallback(null);
+	             mCamera.stopPreview();
+	             mPreviewing = false;
 
-	            SymbolSet syms = mZBarScanner.getResults();
+	            SymbolSet syms = mScanner.getResults();
 	            for (Symbol sym : syms) {	                
 	                try {
 	    				Vibrator v = (Vibrator) getActivity().getSystemService(Context.VIBRATOR_SERVICE);
@@ -167,9 +175,7 @@ public class ScanCodeFragment extends Fragment {
 	        			
 	        			isCanScan = false;	
 	        			
-	        			String prefix = "http://page.infory.vn/";
-	        			String ssl_prefix = "https://page.infory.vn/";
-	        			String www_prefix = "www.page.infory.vn/";			
+	        			String prefix = "http://page.infory.vn/";	
 	        						
 	        			if(code.toLowerCase().startsWith("http://") ||
 	        					code.toLowerCase().startsWith("https://") ||
@@ -185,7 +191,6 @@ public class ScanCodeFragment extends Fragment {
 	        								mTaskList.remove(this);
 	        								
 	        								objScanCode = result2;
-	        								scanCodeTaskStatus = 1; //Finished
 	        								
 	        								ScanCodeResult2Activity.newInstance(getActivity(), result2, code);
 	        							}
@@ -278,7 +283,6 @@ public class ScanCodeFragment extends Fragment {
 	        									mTaskList.remove(this);
 	        									
 	        									objScanCode = result2;
-	        									scanCodeTaskStatus = 1; //Finished
 	        									ScanCodeResult2Activity.newInstance(getActivity(), result2, qrcode);
 	        								}
 	        								
@@ -309,7 +313,6 @@ public class ScanCodeFragment extends Fragment {
 	        									mTaskList.remove(this);
 	        									
 	        									objScanCode = result2;
-	        									scanCodeTaskStatus = 1; //Finished
 	        									
 	        									ScanCodeResult2Activity.newInstance(getActivity(), result2, code);
 	        								}
@@ -359,7 +362,6 @@ public class ScanCodeFragment extends Fragment {
 	        							mTaskList.remove(this);
 	        							
 	        							objScanCode = result2;
-	        							scanCodeTaskStatus = 1; //Finished
 	        							
 	        							ScanCodeResult2Activity.newInstance(getActivity(), result2, code);
 	        						}
@@ -421,6 +423,7 @@ public class ScanCodeFragment extends Fragment {
 		super.onPause();
 		
 //		mCamera.lock();
+		
 		mCamera.stopPreview();
 		mCamera.setPreviewCallback(null);
 		mCamera.release();
@@ -491,4 +494,33 @@ public class ScanCodeFragment extends Fragment {
 		});
 		builder.create().show();
 	}
+	
+	public void setupScanner() {
+        mScanner = new ImageScanner();
+        mScanner.setConfig(0, Config.X_DENSITY, 1);
+        mScanner.setConfig(0, Config.Y_DENSITY, 1);
+
+        int[] symbols = getActivity().getIntent().getIntArrayExtra("SCAN_MODES");
+        if (symbols != null) {
+            mScanner.setConfig(Symbol.NONE, Config.ENABLE, 0);
+            for (int symbol : symbols) {
+                mScanner.setConfig(symbol, Config.ENABLE, 1);
+            }
+        }
+    }
+	
+	private Runnable doAutoFocus = new Runnable() {
+        public void run() {
+            if(mCamera != null && mPreviewing) {
+                mCamera.autoFocus(autoFocusCB);
+            }
+        }
+    };
+
+    // Mimic continuous auto-focusing
+    Camera.AutoFocusCallback autoFocusCB = new Camera.AutoFocusCallback() {
+        public void onAutoFocus(boolean success, Camera camera) {
+            mAutoFocusHandler.postDelayed(doAutoFocus, 1000);
+        }
+    };
 }
