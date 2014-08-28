@@ -7,6 +7,7 @@ import vn.infory.infory.data.home.HomeItem_ShopItem;
 import vn.infory.infory.network.CyAsyncTask;
 import android.graphics.Bitmap;
 import android.graphics.Point;
+import android.graphics.drawable.AnimationDrawable;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.widget.Button;
@@ -28,6 +29,8 @@ public class HomeItemUpdater_ShopItem extends HomeItemUpdater {
 		final ImageView imgCover = (ImageView) view.findViewById(R.id.imgCover);
 		final ImageView imgLogo = (ImageView) view.findViewById(R.id.imgLogo);
 		Button btnGoto = (Button) view.findViewById(R.id.btnGoto);
+		final View mLayoutLoading = (View) view.findViewById(R.id.layoutLoading);
+		final View mLayoutLoadingAnimation = (View) view.findViewById(R.id.layoutLoadingAni);
 		
 		if (itemShop.title == null || itemShop.title.length() == 0)
 			txtTitle.setVisibility(View.GONE);
@@ -112,6 +115,12 @@ public class HomeItemUpdater_ShopItem extends HomeItemUpdater {
 		CyImageLoader.instance().loadImage(itemShop.cover, new CyImageLoader.Listener() {
 			@Override
 			public void startLoad(int from) {
+				
+				mLayoutLoading.setVisibility(View.VISIBLE);
+        		AnimationDrawable frameAnimation = (AnimationDrawable) 
+    					mLayoutLoadingAnimation.getBackground();
+    			frameAnimation.start();
+				
 				switch (from) {
 				case CyImageLoader.FROM_DISK:
 				case CyImageLoader.FROM_NETWORK:
@@ -123,6 +132,8 @@ public class HomeItemUpdater_ShopItem extends HomeItemUpdater {
 			@Override
 			public void loadFinish(int from, Bitmap image, String url, CyAsyncTask task) {
 				if (imgCover.getTag().equals(url))
+					mLayoutLoading.setVisibility(View.GONE);
+				
 					imgCover.setImageBitmap(image);
 			}
 		}, coverSize, caller.getActivity());

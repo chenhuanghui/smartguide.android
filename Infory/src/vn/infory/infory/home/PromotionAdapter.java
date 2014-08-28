@@ -74,6 +74,8 @@ implements OnClickListener {
 		final ImageView imgCover = (ImageView) convertView.findViewById(R.id.imgCover);
 		final ImageView imgLogo = (ImageView) convertView.findViewById(R.id.imgLogo);
 		Button btnGoto = (Button) convertView.findViewById(R.id.btnGoto);
+		final View mLayoutLoading = (View) convertView.findViewById(R.id.layoutLoading);
+		final View mLayoutLoadingAnimation = (View) convertView.findViewById(R.id.layoutLoadingAni);
 		
 		txtName.setText(item.brandName);
 		txtDate.setText(item.date);
@@ -91,6 +93,12 @@ implements OnClickListener {
 		CyImageLoader.instance().loadImage(item.logo, new CyImageLoader.Listener() {
 			@Override
 			public void startLoad(int from) {
+				
+				mLayoutLoading.setVisibility(View.VISIBLE);
+        		AnimationDrawable frameAnimation = (AnimationDrawable) 
+    					mLayoutLoadingAnimation.getBackground();
+    			frameAnimation.start();
+    			
 				switch (from) {
 				case CyImageLoader.FROM_DISK:
 				case CyImageLoader.FROM_NETWORK:
@@ -102,6 +110,8 @@ implements OnClickListener {
 			@Override
 			public void loadFinish(int from, Bitmap image, String url, CyAsyncTask task) {
 				if (((String) imgLogo.getTag()).equals(url))
+					mLayoutLoading.setVisibility(View.GONE);
+				
 					imgLogo.setImageBitmap(image);
 			}
 		}, mAvaAize, parent.getContext());
