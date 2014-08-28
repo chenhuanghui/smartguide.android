@@ -121,7 +121,7 @@ public class PromotionFragment extends Fragment implements HomeListener {
 			protected void onFail(Exception e) {
 				mTaskList.remove(this);
 				
-				CyUtils.showError("Không thể lấy danh sách chuỗi cửa hàng", mEx, getActivity());
+//				CyUtils.showError("Không thể lấy danh sách chuỗi cửa hàng", mEx, getActivity());
 //				LayoutError.newInstance(getActivity());
 				
 				AlertDialog.Builder builder = new Builder(getActivity());
