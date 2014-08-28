@@ -144,7 +144,7 @@ public final class NetworkManager {
 
 		if (refreshTokenException != null)
 			throw refreshTokenException;
-
+		Log.e(TAG, "post return result: " + result);
 		return result;
 	}
 

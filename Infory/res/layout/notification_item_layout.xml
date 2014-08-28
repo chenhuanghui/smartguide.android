@@ -61,7 +61,8 @@
                         android:ellipsize="end"
                         android:maxLines="2"
                         android:text="Mọi người nói về địa điểm Mọi người nói về địa điểm Mọi người nói về địa điểm Mọi người nói về địa điểm Mọi người nói về địa điểm Mọi người nói về địa điểm"
-                        android:textColor="#474948" />
+                        android:textColor="#474948"
+                        android:textSize="17sp" />
 
                     <LinearLayout
                         android:layout_width="match_parent"
@@ -77,7 +78,8 @@
                             android:contentDescription="@string/sfu_normal"
                             android:singleLine="true"
                             android:text="12121"
-                            android:textColor="#737373" />
+                            android:textColor="#737373"
+                            android:textSize="14sp" />
 
                         <TextView
                             android:id="@+id/txtUnreadCount"
@@ -88,7 +90,8 @@
                             android:gravity="right"
                             android:singleLine="true"
                             android:text="dsds"
-                            android:textColor="#737373" />
+                            android:textColor="#737373"
+                            android:textSize="14sp" />
                     </LinearLayout>
                 </LinearLayout>
 

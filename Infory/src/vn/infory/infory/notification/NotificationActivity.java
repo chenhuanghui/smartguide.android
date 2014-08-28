@@ -84,8 +84,9 @@ public class NotificationActivity extends FragmentActivity {
 				loadDataForFirstTime(mPullRefreshListView, proNotifications, isShowProgressBar);
 	            myPullToRefreshSwipeListView.setMyIsLoadingMore(false);
 			} else {
-				AlertDialog.Builder builder = Tools.AlertNetWorkDialog(
-						mContext, mActivity);
+				isNeedReloaded = true;
+				mPullRefreshListView.onRefreshComplete();
+				AlertDialog.Builder builder = Tools.AlertNetWorkDialog(mContext, mActivity);
 				builder.show();
 			}
         }
@@ -96,8 +97,8 @@ public class NotificationActivity extends FragmentActivity {
 				loadMoreListMessagesTask task = new loadMoreListMessagesTask(mIsLoadingMore, mProgressBarLoadMore);
 				task.execute();
 			} else {
-				AlertDialog.Builder builder = Tools.AlertNetWorkDialog(
-						mContext, mActivity);
+				isNeedReloaded = true;
+				AlertDialog.Builder builder = Tools.AlertNetWorkDialog(mContext, mActivity);
 				builder.show();
 			}
         }
@@ -107,42 +108,56 @@ public class NotificationActivity extends FragmentActivity {
         	MessageInfo messageInfo = lstMessages.get(position);
         	if(messageInfo.getStatus() != -1) {
         		DeleteMessageTask task = new DeleteMessageTask(mContext, 0, messageInfo.getIdSender());
-            	task.setDeleteMessageTaskListener(new onDeleteMessageTaskListener() {
-    				
-    				@Override
-    				public void onPreDeleteMessage() {
-    					if(dialog != null && !dialog.isShowing())
-    						dialog.show();
-    				}
-    				
-    				@Override
-    				public void onDeleteMessageSuccess(String response) {
-    					if(dialog != null && dialog.isShowing())
-    						dialog.cancel();
-    					lstMessages.remove(position);
-    					viewAdapter.notifyDataSetChanged();
-    					swipeListView.closeOpenedItems(true);
-    					
-    				}
-    				
-    				@Override
-    				public void onDeleteMessageFailure() {
-    					if(dialog != null && dialog.isShowing())
-    						dialog.cancel();
-    					swipeListView.closeOpenedItems(true);
-    				}
-    			});
-            	task.execute();
+//            	task.setDeleteMessageTaskListener(new onDeleteMessageTaskListener() {
+//    				
+//    				@Override
+//    				public void onPreDeleteMessage() {
+//    					if(dialog != null && !dialog.isShowing())
+//    						dialog.show();
+//    				}
+//    				
+//    				@Override
+//    				public void onDeleteMessageSuccess(String response) {
+//    					if(dialog != null && dialog.isShowing())
+//    						dialog.cancel();
+//    					lstMessages.remove(position);
+//    					viewAdapter.notifyDataSetChanged();
+//    					swipeListView.closeOpenedItems(true);
+//    					
+//    				}
+//    				
+//    				@Override
+//    				public void onDeleteMessageFailure() {
+//    					if(dialog != null && dialog.isShowing())
+//    						dialog.cancel();
+//    					swipeListView.closeOpenedItems(true);
+//    				}
+//    			});
+        		if (Tools.isNetworkAvailable(mContext)) {
+                	task.execute();
+    				lstMessages.remove(position);
+    				viewAdapter.notifyDataSetChanged();
+    				swipeListView.closeOpenedItems(true);
+    			} else {
+    				isNeedReloaded = true;
+    				AlertDialog.Builder builder = Tools.AlertNetWorkDialog(mContext, mActivity);
+    				builder.show();
+    			}
         	}
         }
 
         @Override
         public void onClickFrontViewListView(int position) {
-            MessageInfo info = lstMessages.get(position);
-            Intent intent = new Intent(mContext, ListMessagesBySenderActivity.class);
-//            intent.putExtra("message_info", new Gson().toJson(info));
-            intent.putExtra(NotificationUtil.senderId, info.getIdSender());
-            startActivity(intent);
+        	if (Tools.isNetworkAvailable(mContext)) {
+                MessageInfo info = lstMessages.get(position);
+                Intent intent = new Intent(mContext, ListMessagesBySenderActivity.class);
+//                intent.putExtra("message_info", new Gson().toJson(info));
+                intent.putExtra(NotificationUtil.senderId, info.getIdSender());
+                startActivity(intent);
+			} else {
+				AlertDialog.Builder builder = Tools.AlertNetWorkDialog(mContext, mActivity);
+				builder.show();
+			}
         }
 
         @Override
@@ -174,6 +189,7 @@ public class NotificationActivity extends FragmentActivity {
     private int page = 0;
     private int per_page = 10;
     private boolean isLoadMore = false;
+    private boolean isNeedReloaded = false;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -346,6 +362,10 @@ public class NotificationActivity extends FragmentActivity {
     @Override
     protected void onResume() {
     	super.onResume();
+    	if(isNeedReloaded) {
+    		myPullToRefreshSwipeListView.activePullToRefeshAndLoadMoreListView();
+			isNeedReloaded = false;
+    	}
     }
 
     private class loadMoreListMessagesTask extends AsyncTask<Void, Void, Void> {
@@ -416,6 +436,13 @@ public class NotificationActivity extends FragmentActivity {
         @Override
         protected void onPostExecute(Void result) {
             super.onPostExecute(result);
+            // Call onLoadMoreComplete when the LoadMore task, has finished
+            onLoadMoreComplete();
+        }
+        
+        @Override
+        protected void onCancelled(Void result) {
+        	super.onCancelled(result);
             // Call onLoadMoreComplete when the LoadMore task, has finished
             onLoadMoreComplete();
         }

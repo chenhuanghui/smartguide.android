@@ -6,7 +6,7 @@ public class MessageBySender {
 
 	private String sender;
 	private ArrayList<messages> messages;
-
+	
 	public String getSender() {
 		return sender;
 	}

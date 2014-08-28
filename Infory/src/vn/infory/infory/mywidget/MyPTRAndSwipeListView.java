@@ -156,30 +156,30 @@ public class MyPTRAndSwipeListView extends RelativeLayout {
 			}
 		});
 		
-		mPullRefreshListView.setOnLastItemVisibleListener(new OnLastItemVisibleListener() {
-
-			@Override
-			public void onLastItemVisible() {
-				if (!mIsLoadingMore && swipeListView.getFirstVisiblePosition() != 0) {
-					swipeListView.addFooterView(mFooterView);
-					mProgressBarLoadMore.setVisibility(View.VISIBLE);
-					mIsLoadingMore = true;
-					onLoadMore();
-				} else {
-					swipeListView.removeFooterView(mFooterView);
-					mProgressBarLoadMore.setVisibility(View.GONE);
-					mIsLoadingMore = false;
-				}
-			}
-			
-			public void onLoadMore() {
-				Log.d(TAG, "onLoadMore");
-				if (listener != null) {
-					listener.onLoadMoreListView(mIsLoadingMore,
-							mProgressBarLoadMore);
-				}
-			}
-		});
+//		mPullRefreshListView.setOnLastItemVisibleListener(new OnLastItemVisibleListener() {
+//
+//			@Override
+//			public void onLastItemVisible() {
+//				if (!mIsLoadingMore && swipeListView.getFirstVisiblePosition() != 0) {
+//					swipeListView.addFooterView(mFooterView);
+//					mProgressBarLoadMore.setVisibility(View.VISIBLE);
+//					mIsLoadingMore = true;
+//					onLoadMore();
+//				} else {
+//					swipeListView.removeFooterView(mFooterView);
+//					mProgressBarLoadMore.setVisibility(View.GONE);
+//					mIsLoadingMore = false;
+//				}
+//			}
+//			
+//			public void onLoadMore() {
+//				Log.d(TAG, "onLoadMore");
+//				if (listener != null) {
+//					listener.onLoadMoreListView(mIsLoadingMore,
+//							mProgressBarLoadMore);
+//				}
+//			}
+//		});
 		
 		swipeListView.setSwipeListViewListener(new BaseSwipeListViewListener(){
 			
@@ -248,6 +248,40 @@ public class MyPTRAndSwipeListView extends RelativeLayout {
 		    public void onFirstListItem() {
 				
 		    }
+			
+			@Override
+			public void onLastListItem() {
+				super.onLastListItem();
+//				Log.e(TAG,"listPushFeeds.size(): "+ listPushFeeds.size());
+//				Log.e(TAG,"pushFeedsCount: "+ pushFeedsCount);
+//				if(listPushFeeds.size() < pushFeedsCount){
+//					if(!isLoadingMore){
+//						isLoadingMore = true;
+//						loadPushFeed(
+//							Integer.valueOf(
+//								listPushFeedsId.get(listPushFeedsId.size()-1))
+//							);
+//					}
+//				}
+				if (!mIsLoadingMore) {
+					swipeListView.addFooterView(mFooterView);
+					mProgressBarLoadMore.setVisibility(View.VISIBLE);
+					mIsLoadingMore = true;
+					onLoadMore();
+				} else {
+					swipeListView.removeFooterView(mFooterView);
+					mProgressBarLoadMore.setVisibility(View.GONE);
+					mIsLoadingMore = false;
+				}
+			}
+
+			public void onLoadMore() {
+				Log.d(TAG, "onLoadMore");
+				if (listener != null) {
+					listener.onLoadMoreListView(mIsLoadingMore, mProgressBarLoadMore);
+				}
+			
+			}
 			
 		});
 	}

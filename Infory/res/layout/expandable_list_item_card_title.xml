@@ -1,0 +1,71 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/relaHeaderTitleHead"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:background="@drawable/leftroundedinput"
+    android:orientation="vertical" >
+
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:padding="10dip" >
+
+        <FrameLayout
+            android:id="@+id/frameImgLogo"
+            android:layout_width="@dimen/image_thumbnail_avatar"
+            android:layout_height="@dimen/image_thumbnail_avatar"
+            android:layout_alignParentLeft="true" >
+
+            <ImageView
+                android:id="@+id/imgLogo"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:scaleType="fitXY"
+                android:src="@color/black" />
+
+            <ImageView
+                android:id="@+id/imgLogoBackground"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:background="@drawable/circle_border_white" />
+        </FrameLayout>
+
+        <TextView
+            android:id="@+id/txtDateTime"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_alignBottom="@+id/frameImgLogo"
+            android:layout_alignTop="@+id/frameImgLogo"
+            android:layout_marginLeft="10dip"
+            android:layout_toLeftOf="@+id/imgDotBlue"
+            android:layout_toRightOf="@+id/frameImgLogo"
+            android:contentDescription="@string/sfu_normal"
+            android:gravity="center_vertical"
+            android:singleLine="true"
+            android:text="12121"
+            android:textColor="#737373" />
+
+        <ImageView
+            android:id="@+id/imgDotBlue"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentRight="true"
+            android:layout_alignParentTop="true"
+            android:layout_marginRight="10dip"
+            android:layout_marginTop="10dip"
+            android:src="@drawable/oval" />
+
+        <TextView
+            android:id="@+id/txtTitleHead"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_below="@+id/frameImgLogo"
+            android:layout_marginTop="5dip"
+            android:contentDescription="@string/sfu_bold"
+            android:gravity="left"
+            android:text="dsds"
+            android:textColor="#737373" />
+    </RelativeLayout>
+
+</RelativeLayout>

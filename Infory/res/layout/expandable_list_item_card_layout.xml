@@ -1,0 +1,48 @@
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:orientation="vertical" >
+
+    <RelativeLayout
+        android:id="@+id/back"
+        android:layout_width="@dimen/width_delete"
+        android:layout_height="wrap_content"
+        android:layout_alignBottom="@+id/front"
+        android:layout_alignParentRight="true"
+        android:layout_alignTop="@+id/front"
+        android:layout_gravity="right"
+        android:gravity="center"
+        android:orientation="vertical"
+        android:tag="back" >
+
+        <TextView
+            android:id="@+id/txtDelete"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_centerInParent="true"
+            android:layout_gravity="center"
+            android:contentDescription="@string/sfu_normal"
+            android:drawableLeft="@drawable/icon_remove"
+            android:text="Xoá"
+            android:textColor="@android:color/holo_red_light" />
+    </RelativeLayout>
+
+    <LinearLayout
+        android:id="@+id/front"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        android:padding="10dip" >
+
+        <FrameLayout
+            android:id="@+id/activity_expandablelistitem_card_title"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content" />
+
+        <FrameLayout
+            android:id="@+id/activity_expandablelistitem_card_content"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content" />
+    </LinearLayout>
+
+</RelativeLayout>

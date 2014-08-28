@@ -1,0 +1,76 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:scrollable="http://schemas.android.com/apk/res-auto"
+    android:id="@+id/relaHeaderTitle"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@drawable/leftroundedinput"
+    android:orientation="vertical" >
+
+    <LinearLayout
+        android:id="@+id/linearContentItem"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        android:paddingBottom="10dip"
+        android:paddingLeft="10dip"
+        android:paddingRight="10dip" >
+
+        <FrameLayout
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center" >
+
+            <FrameLayout
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center" >
+
+                <FrameLayout
+                    android:id="@+id/loadProgressBar"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center"
+                    android:background="@drawable/button_loading_big"
+                    android:visibility="gone" />
+
+                <ImageView
+                    android:id="@+id/imgImage"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="5dip" />
+            </FrameLayout>
+
+            <include layout="@layout/video_item_layout" />
+        </FrameLayout>
+
+        <TextView
+            android:id="@+id/txtTitle"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="5dip"
+            android:contentDescription="@string/sfu_bold"
+            android:gravity="left"
+            android:text="dsds"
+            android:textColor="#737373" />
+
+        <TextView
+            android:id="@+id/txtContent"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="5dip"
+            android:contentDescription="@string/sfu_normal"
+            android:gravity="left"
+            android:text="dsds"
+            android:textColor="#737373" />
+    </LinearLayout>
+
+    <vn.infory.infory.mywidget.ListViewNotScroll
+        android:id="@+id/listViewButtons"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/linearContentItem"
+        android:layout_marginTop="8dip"
+        scrollable:scrollable="false" />
+
+</RelativeLayout>

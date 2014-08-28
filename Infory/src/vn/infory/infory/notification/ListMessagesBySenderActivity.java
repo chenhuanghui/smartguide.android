@@ -14,6 +14,8 @@ import vn.infory.infory.network.DeleteMessageTask;
 import vn.infory.infory.network.DeleteMessageTask.onDeleteMessageTaskListener;
 import vn.infory.infory.network.GetListMessagesBySenderTask;
 import vn.infory.infory.network.GetListMessagesBySenderTask.onGetListMessagesBySenderTaskListener;
+import vn.infory.infory.network.MarkReadMessageTask;
+import vn.infory.infory.network.MarkReadMessageTask.onMarkReadMessageTaskListener;
 import android.app.Activity;
 import android.app.AlertDialog;
 import android.app.ProgressDialog;
@@ -27,18 +29,24 @@ import android.util.Log;
 import android.view.View;
 import android.widget.FrameLayout;
 import android.widget.ImageButton;
+import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.ListView;
+import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import com.fortysevendeg.swipelistview.BaseSwipeListViewListener;
 import com.fortysevendeg.swipelistview.SwipeListView;
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
+import com.nhaarman.listviewanimations.appearance.simple.AlphaInAnimationAdapter;
+import com.nhaarman.listviewanimations.itemmanipulation.expandablelistitem.ExpandableListItemAdapter.ExpandCollapseListener;
 
 public class ListMessagesBySenderActivity extends FragmentActivity {
 	private static final String TAG = "Infory ListMessagesBySenderActivity";
 
+    private static final int INITIAL_DELAY_MILLIS = 250;
+    
 	private LinearLayout linearContentView;
 	private ImageButton btnBack;
 	private TextView txtHeader;
@@ -55,7 +63,8 @@ public class ListMessagesBySenderActivity extends FragmentActivity {
 	private int page = 0;
 	private int per_page = 10;
 	private boolean isLoadMore = false;
-
+	private boolean isNeedReloaded;
+	
 	// private MessageInfo messageInfo;
 	private int senderID;
 	private int messageId = -1;
@@ -142,8 +151,8 @@ public class ListMessagesBySenderActivity extends FragmentActivity {
 			task.execute();
 
 		} else {
-			AlertDialog.Builder builder = Tools.AlertNetWorkDialog(
-					mContext, mActivity);
+			isNeedReloaded = true;
+			AlertDialog.Builder builder = Tools.AlertNetWorkDialog(mContext, mActivity);
 			builder.show();
 		}
 	}
@@ -159,23 +168,82 @@ public class ListMessagesBySenderActivity extends FragmentActivity {
 		}
 		Log.d(TAG, "isLoadMore: " + isLoadMore);
 	}
+    
+	private void updateView(int index, boolean isExpanded){
+	    View v = swipeListView.getChildAt(index - swipeListView.getFirstVisiblePosition());
 
+	    if(v == null)
+	       return;
+
+        RelativeLayout relaHeaderTitleHead = (RelativeLayout) v.findViewById(R.id.relaHeaderTitleHead);
+        RelativeLayout relaHeaderTitle = (RelativeLayout) v.findViewById(R.id.relaHeaderTitle);
+		ImageView imgLogoBackground = (ImageView) v.findViewById(R.id.imgLogoBackground);
+		TextView txtDateTime = (TextView) v.findViewById(R.id.txtDateTime);
+    	TextView txtTitleHead = (TextView) v.findViewById(R.id.txtTitleHead);
+	    TextView txtTitleContent = (TextView) v.findViewById(R.id.txtTitle);
+		TextView txtContent = (TextView) v.findViewById(R.id.txtContent);
+	    if(isExpanded) {
+	    	txtTitleHead.setVisibility(View.GONE);
+	    	txtTitleContent.setVisibility(View.VISIBLE);
+	    	relaHeaderTitle.setBackgroundResource(R.drawable.leftroundedinput);
+	    	relaHeaderTitleHead.setBackgroundResource(R.drawable.leftroundedinput);
+			imgLogoBackground.setBackgroundResource(R.drawable.circle_border_white);
+			txtDateTime.setTextColor(mContext.getResources().getColor(R.color.black));
+			txtTitleContent.setTextColor(mContext.getResources().getColor(R.color.black));
+			txtContent.setTextColor(mContext.getResources().getColor(R.color.black));
+	    } else {
+	    	txtTitleHead.setVisibility(View.VISIBLE);
+	    	txtTitleContent.setVisibility(View.GONE);
+	    	if(lstMessages.get(index).getStatus() == 0) {
+				txtDateTime.setTextColor(mContext.getResources().getColor(R.color.black));
+				txtTitleHead.setTextColor(mContext.getResources().getColor(R.color.black));
+				relaHeaderTitleHead.setBackgroundResource(R.drawable.leftroundedinput);
+				imgLogoBackground.setBackgroundResource(R.drawable.circle_border_white);
+			} else {
+				txtDateTime.setTextColor(mContext.getResources().getColor(R.color.text_color_read_message));
+				txtTitleHead.setTextColor(mContext.getResources().getColor(R.color.text_color_read_message));
+				relaHeaderTitleHead.setBackgroundResource(R.drawable.leftrounded_gray);
+				imgLogoBackground.setBackgroundResource(R.drawable.circle_border_gray);
+			}
+	    }
+	}
+	
 	protected void initAdapterListView() {
 		if (messageBySender.getSender().compareTo(stringEmptyData) == 0) {
 			swipeListView.setSwipeMode(SwipeListView.SWIPE_MODE_NONE);
 		} else {
-			float width_deletehide_btn = getResources()
-					.getDimensionPixelOffset(R.dimen.width_delete);
+			float width_deletehide_btn = getResources().getDimensionPixelOffset(R.dimen.width_delete);
 			swipeListView.setSwipeMode(SwipeListView.SWIPE_MODE_LEFT);
 			swipeListView.setChoiceMode(ListView.CHOICE_MODE_SINGLE);
 			swipeListView.setOffsetLeft(screenWidth - width_deletehide_btn);
 		}
-		adapter = new MessageBySenderAdapter(mContext,
-				R.layout.activity_expandablelistitem_card,
-				lstMessages, swipeListView);
+		adapter = new MessageBySenderAdapter(mContext, lstMessages);
+		adapter.setExpandCollapseListener(new ExpandCollapseListener() {
+
+			@Override
+			public void onItemExpanded(int position) {
+				Log.e(TAG, "onItemExpanded: " + position);
+				updateView(position, true);
+				adapter.setSelectedIndex(position);
+			}
+
+			@Override
+			public void onItemCollapsed(int position) {
+				Log.e(TAG, "onItemCollapsed: " + position);
+				updateView(position, false);
+				adapter.setSelectedIndex(position);
+			}
+		});
+		AlphaInAnimationAdapter alphaInAnimationAdapter = new AlphaInAnimationAdapter(adapter);
+        alphaInAnimationAdapter.setAbsListView(swipeListView);
+
+        assert alphaInAnimationAdapter.getViewAnimator() != null;
+        alphaInAnimationAdapter.getViewAnimator().setInitialDelayMillis(INITIAL_DELAY_MILLIS);
+        swipeListView.setAdapter(alphaInAnimationAdapter);
+        adapter.setLimit(1);
 		swipeListView.setAdapter(adapter);
+		int index = 0;
 		if (messageId > 0) {
-			int index = 0;
 			for (int i = 0; i < messageBySender.getMessages().size(); i++) {
 				messages mess = messageBySender.getMessages().get(i);
 				if (mess.getIdMessage() == messageId) {
@@ -183,12 +251,9 @@ public class ListMessagesBySenderActivity extends FragmentActivity {
 					break;
 				}
 			}
-			adapter.setSelectedIndex(index);
-		} else {
-			// expand item in position 0 by default
-			adapter.setSelectedIndex(0);
 		}
-		adapter.notifyDataSetChanged();
+		adapter.expand(index);
+		updateView(index, true);
 	}
 
 	private void initEmptyData() {
@@ -199,9 +264,7 @@ public class ListMessagesBySenderActivity extends FragmentActivity {
 	protected boolean loadMessagesData(String response) {
 		boolean checkLoad = false;
 		try {
-			messageBySender = new Gson().fromJson(response,
-					new TypeToken<MessageBySender>() {
-					}.getType());
+			messageBySender = new Gson().fromJson(response, new TypeToken<MessageBySender>() {}.getType());
 			txtHeader.setText(messageBySender.getSender());
 			lstMessages = messageBySender.getMessages();
 			Log.d(TAG, "messageBySender.getMessages().size(): " + messageBySender.getMessages().size());
@@ -228,8 +291,8 @@ public class ListMessagesBySenderActivity extends FragmentActivity {
 				if (Tools.isNetworkAvailable(mContext)) {
 					new LoadDataTask().execute();
 				} else {
-					AlertDialog.Builder builder = Tools.AlertNetWorkDialog(
-							mContext, mActivity);
+					isNeedReloaded = true;
+					AlertDialog.Builder builder = Tools.AlertNetWorkDialog(mContext, mActivity);
 					builder.show();
 				}
 			}
@@ -266,42 +329,83 @@ public class ListMessagesBySenderActivity extends FragmentActivity {
 			}
 
 			@Override
-			public void onClickFrontView(int position) {
+			public void onClickFrontView(final int position) {
 				Log.d("swipe", String.format("onClickFrontView %d", position));
+				if (lstMessages.get(position).getStatus() == 0) {
+					// chua doc message, call service mark read message trong
+					// day
+
+					lstMessages.get(position).setStatus(1);
+					updateView(position, true);
+					adapter.expand(position);
+					swipeListView.smoothScrollToPosition(position);
+					MarkReadMessageTask task = new MarkReadMessageTask(mContext, lstMessages.get(position).getIdMessage(), 0);
+//					task.setMarkReadMessageTaskListener(new onMarkReadMessageTaskListener() {
+//
+//						@Override
+//						public void onPreMarkReadMessage() {
+//							
+//						}
+//
+//						@Override
+//						public void onMarkReadMessageSuccess(String response) {
+//						}
+//
+//						@Override
+//						public void onMarkReadMessageFailure() {
+//							
+//						}
+//					});
+					task.execute();
+				} else {
+					adapter.expand(position);
+				}
+//				int h1 = swipeListView.getHeight();
+//				int h2 = v.getHeight();
+//
+//				swipeListView.smoothScrollToPositionFromTop(position, h1/2 - h2/2, INITIAL_DELAY_MILLIS);
 			}
 
 			@Override
 			public void onClickBackView(final int position) {
 				Log.d("swipe", String.format("onClickBackView %d", position));
 				messages message = messageBySender.getMessages().get(position);
-				DeleteMessageTask task = new DeleteMessageTask(mContext,
-						message.getIdMessage(), 0);
-				task.setDeleteMessageTaskListener(new onDeleteMessageTaskListener() {
-
-					@Override
-					public void onPreDeleteMessage() {
-						if (dialog != null && !dialog.isShowing())
-							dialog.show();
-					}
-
-					@Override
-					public void onDeleteMessageSuccess(String response) {
-						if (dialog != null && dialog.isShowing())
-							dialog.cancel();
-						messageBySender.getMessages().remove(position);
-						adapter.notifyDataSetChanged();
-						swipeListView.closeOpenedItems(true);
-
-					}
-
-					@Override
-					public void onDeleteMessageFailure() {
-						if (dialog != null && dialog.isShowing())
-							dialog.cancel();
-						swipeListView.closeOpenedItems(true);
-					}
-				});
-				task.execute();
+				DeleteMessageTask task = new DeleteMessageTask(mContext, message.getIdMessage(), 0);
+//				task.setDeleteMessageTaskListener(new onDeleteMessageTaskListener() {
+//
+//					@Override
+//					public void onPreDeleteMessage() {
+//						if (dialog != null && !dialog.isShowing())
+//							dialog.show();
+//					}
+//
+//					@Override
+//					public void onDeleteMessageSuccess(String response) {
+//						if (dialog != null && dialog.isShowing())
+//							dialog.cancel();
+//						messageBySender.getMessages().remove(position);
+//						adapter.notifyDataSetChanged();
+//						swipeListView.closeOpenedItems(true);
+//
+//					}
+//
+//					@Override
+//					public void onDeleteMessageFailure() {
+//						if (dialog != null && dialog.isShowing())
+//							dialog.cancel();
+//						swipeListView.closeOpenedItems(true);
+//					}
+//				});
+				if (Tools.isNetworkAvailable(mContext)) {
+	            	task.execute();
+					messageBySender.getMessages().remove(position);
+					adapter.notifyDataSetChanged();
+					swipeListView.closeOpenedItems(true);
+				} else {
+					isNeedReloaded = true;
+					AlertDialog.Builder builder = Tools.AlertNetWorkDialog(mContext, mActivity);
+					builder.show();
+				}
 			}
 
 			@Override
@@ -379,6 +483,17 @@ public class ListMessagesBySenderActivity extends FragmentActivity {
 			// Notify the loading more operation has finished
 			swipeListView.onLoadMoreComplete();
 		}
+	}
+	
+	@Override
+	protected void onResume() {
+		super.onResume();
+		if(isNeedReloaded) {
+			messageBySender = null;
+			lstMessages.clear();
+			setGUI();
+			isNeedReloaded = false;
+    	}
 	}
 
 }
