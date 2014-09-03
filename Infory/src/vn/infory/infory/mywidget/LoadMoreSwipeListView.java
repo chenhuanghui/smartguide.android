@@ -14,8 +14,7 @@ import android.widget.ListAdapter;
 
 import com.fortysevendeg.swipelistview.SwipeListView;
 
-public class LoadMoreSwipeListView extends SwipeListView implements
-		OnScrollListener {
+public class LoadMoreSwipeListView extends SwipeListView implements OnScrollListener {
 
 	private static final String TAG = "LoadMoreSwipeListView";
 
@@ -109,10 +108,10 @@ public class LoadMoreSwipeListView extends SwipeListView implements
 
 			if (!mIsLoadingMore && loadMore
 					&& mCurrentScrollState != SCROLL_STATE_IDLE) {
-				mProgressBarLoadMore.setVisibility(View.VISIBLE);
+//				mProgressBarLoadMore.setVisibility(View.VISIBLE);
 				// mLabLoadMore.setVisibility(View.VISIBLE);
 				mIsLoadingMore = true;
-				onLoadMore();
+				onLoadMore(mProgressBarLoadMore);
 			}
 
 		}
@@ -134,10 +133,10 @@ public class LoadMoreSwipeListView extends SwipeListView implements
 
 	}
 
-	public void onLoadMore() {
+	public void onLoadMore(FrameLayout mProgressBarLoadMore) {
 		Log.d(TAG, "onLoadMore");
 		if (mOnLoadMoreListener != null) {
-			mOnLoadMoreListener.onLoadMore();
+			mOnLoadMoreListener.onLoadMore(mProgressBarLoadMore);
 		}
 	}
 
@@ -157,7 +156,8 @@ public class LoadMoreSwipeListView extends SwipeListView implements
 		/**
 		 * Called when the list reaches the last item (the last item is visible
 		 * to the user)
+		 * @param mProgressBarLoadMore 
 		 */
-		public void onLoadMore();
+		public void onLoadMore(FrameLayout mProgressBarLoadMore);
 	}
 }

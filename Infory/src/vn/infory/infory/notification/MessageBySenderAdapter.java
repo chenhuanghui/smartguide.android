@@ -400,7 +400,11 @@ public class MessageBySenderAdapter extends ExpandableListItemAdapter<messages> 
 			imgDotBlue.setVisibility(View.GONE);
 		}
 		txtDateTime.setText(item.getTime());
-		txtTitle.setText(item.getTitle());
+		if(item.getTitle() != null && item.getTitle().length() > 0) {
+			txtTitle.setText(item.getTitle());
+			txtTitle.setVisibility(View.VISIBLE);
+		} else
+			txtTitle.setVisibility(View.GONE);
 		
 		imgLogo.setTag(item.getLogo());
 		CyImageLoader.instance().loadImage(item.getLogo(), new CyImageLoader.Listener() {
@@ -479,8 +483,14 @@ public class MessageBySenderAdapter extends ExpandableListItemAdapter<messages> 
 		});
 	}
 
-	private void initGUIContent(messages item, int position, final ImageView imgImage, final ImageView imgVideoThumb, Button btnPlay, FrameLayout frameVideoThumb, final FrameLayout loadProgressBar, final FrameLayout loadProgressBarVideo, TextView txtTitle, TextView txtContent, ListViewNotScroll listViewButtons, RelativeLayout relaHeaderTitle) {
-		Log.i(TAG, "initGUIContent in position: " + position);
+	private void initGUIContent(messages item, int position,
+			final ImageView imgImage, final ImageView imgVideoThumb,
+			final Button btnPlay, FrameLayout frameVideoThumb,
+			final FrameLayout loadProgressBar,
+			final FrameLayout loadProgressBarVideo, TextView txtTitle,
+			TextView txtContent, ListViewNotScroll listViewButtons,
+			RelativeLayout relaHeaderTitle) {
+	Log.i(TAG, "initGUIContent in position: " + position);
 		if (item.getStatus() == 0) {
 			// message chua doc
 			relaHeaderTitle.setBackgroundResource(R.drawable.leftroundedinput);
@@ -488,8 +498,17 @@ public class MessageBySenderAdapter extends ExpandableListItemAdapter<messages> 
 			// da doc message
 			relaHeaderTitle.setBackgroundResource(R.drawable.leftrounded_gray);
 		}
-		txtTitle.setText(item.getTitle());
-		txtContent.setText(item.getContent());
+		if(item.getTitle() != null && item.getTitle().length() > 0) {
+			txtTitle.setText(item.getTitle());
+			txtTitle.setVisibility(View.VISIBLE);
+		} else
+			txtTitle.setVisibility(View.GONE);
+
+		if(item.getContent() != null && item.getContent().length() > 0) {
+			txtContent.setText(item.getContent());
+			txtContent.setVisibility(View.VISIBLE);
+		} else
+			txtContent.setVisibility(View.GONE);
 		
 		int newWidth = ListMessagesBySenderActivity.screenWidth - mContext.getResources().getDimensionPixelSize(R.dimen.padding_20dip) * 2;
 		if ((item.getImage() != null && item.getImage().length() > 0)) {
@@ -554,6 +573,7 @@ public class MessageBySenderAdapter extends ExpandableListItemAdapter<messages> 
 							case CyImageLoader.FROM_DISK:
 							case CyImageLoader.FROM_NETWORK:
 								imgVideoThumb.setImageBitmap(null);
+								btnPlay.setVisibility(View.INVISIBLE);
 								break;
 							}
 						}
@@ -563,6 +583,7 @@ public class MessageBySenderAdapter extends ExpandableListItemAdapter<messages> 
 							loadProgressBarVideo.setVisibility(View.GONE);
 							if (imgVideoThumb.getTag().equals(url)) {
 								imgVideoThumb.setImageBitmap(image);
+								btnPlay.setVisibility(View.VISIBLE);
 							}
 						}
 					}, HomeAdapter.mImageSize, mContext);

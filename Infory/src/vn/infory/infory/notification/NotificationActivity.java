@@ -189,7 +189,7 @@ public class NotificationActivity extends FragmentActivity {
     private int page = 0;
     private int per_page = 10;
     private boolean isLoadMore = false;
-    private boolean isNeedReloaded = false;
+    public static boolean isNeedReloaded = false;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {

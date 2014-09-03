@@ -26,6 +26,7 @@ import android.os.Bundle;
 import android.support.v4.app.FragmentActivity;
 import android.util.DisplayMetrics;
 import android.util.Log;
+import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.FrameLayout;
 import android.widget.ImageButton;
@@ -51,8 +52,13 @@ public class ListMessagesBySenderActivity extends FragmentActivity {
 	private ImageButton btnBack;
 	private TextView txtHeader;
 	private LoadMoreSwipeListView swipeListView;
-	private ProgressDialog dialog;
+//	private ProgressDialog dialog;
 	private FrameLayout proNotifications;
+	
+	// footer view
+	private FrameLayout mFooterView;
+	// private TextView mLabLoadMore;
+	private FrameLayout mProgressBarLoadMore;
 
 	private Context mContext;
 	private Activity mActivity;
@@ -64,6 +70,7 @@ public class ListMessagesBySenderActivity extends FragmentActivity {
 	private int per_page = 10;
 	private boolean isLoadMore = false;
 	private boolean isNeedReloaded;
+//	private boolean mIsLoadingMore = false;
 	
 	// private MessageInfo messageInfo;
 	private int senderID;
@@ -108,9 +115,15 @@ public class ListMessagesBySenderActivity extends FragmentActivity {
 		FrameLayout loadProgressBar = (FrameLayout) findViewById(R.id.loadProgressBar);
 		((AnimationDrawable) loadProgressBar.getBackground()).start();
 
-		dialog = new ProgressDialog(mContext);
-		dialog.setMessage("Vui lòng chờ đợi!");
-		dialog.setCancelable(false);
+//		LayoutInflater mInflater = (LayoutInflater) getSystemService(Context.LAYOUT_INFLATER_SERVICE);
+//
+//		// footer
+//		mFooterView = (FrameLayout) mInflater.inflate(R.layout.load_more_footer_layout, null, false);
+//		mProgressBarLoadMore = (FrameLayout) mFooterView.findViewById(R.id.load_more_progressBar);
+//		((AnimationDrawable) mProgressBarLoadMore.getBackground()).start();
+//		dialog = new ProgressDialog(mContext);
+//		dialog.setMessage("Vui lòng chờ đợi!");
+//		dialog.setCancelable(false);
 
 		FontsCollection.setFont(linearContentView);
 	}
@@ -283,13 +296,13 @@ public class ListMessagesBySenderActivity extends FragmentActivity {
 				onBackPressed();
 			}
 		});
-
+		
 		// set a listener to be invoked when the list reaches the end
 		swipeListView.setOnLoadMoreListener(new OnLoadMoreListener() {
-			public void onLoadMore() {
+			public void onLoadMore(FrameLayout mProgressBarLoadMore) {
 				// Do the work to load more items at the end of list here
 				if (Tools.isNetworkAvailable(mContext)) {
-					new LoadDataTask().execute();
+					new LoadDataTask(mProgressBarLoadMore).execute();
 				} else {
 					isNeedReloaded = true;
 					AlertDialog.Builder builder = Tools.AlertNetWorkDialog(mContext, mActivity);
@@ -297,7 +310,7 @@ public class ListMessagesBySenderActivity extends FragmentActivity {
 				}
 			}
 		});
-
+				
 		swipeListView.setSwipeListViewListener(new BaseSwipeListViewListener() {
 			@Override
 			public void onOpened(int position, boolean toRight) {
@@ -338,7 +351,13 @@ public class ListMessagesBySenderActivity extends FragmentActivity {
 					lstMessages.get(position).setStatus(1);
 					updateView(position, true);
 					adapter.expand(position);
-					swipeListView.smoothScrollToPosition(position);
+					swipeListView.postDelayed(new Runnable() {
+						
+						@Override
+						public void run() {
+							swipeListView.smoothScrollToPosition(position);
+						}
+					}, 500);
 					MarkReadMessageTask task = new MarkReadMessageTask(mContext, lstMessages.get(position).getIdMessage(), 0);
 //					task.setMarkReadMessageTaskListener(new onMarkReadMessageTaskListener() {
 //
@@ -359,6 +378,13 @@ public class ListMessagesBySenderActivity extends FragmentActivity {
 					task.execute();
 				} else {
 					adapter.expand(position);
+					swipeListView.postDelayed(new Runnable() {
+						
+						@Override
+						public void run() {
+							swipeListView.smoothScrollToPosition(position);
+						}
+					}, 500);
 				}
 //				int h1 = swipeListView.getHeight();
 //				int h2 = v.getHeight();
@@ -401,6 +427,7 @@ public class ListMessagesBySenderActivity extends FragmentActivity {
 					messageBySender.getMessages().remove(position);
 					adapter.notifyDataSetChanged();
 					swipeListView.closeOpenedItems(true);
+					NotificationActivity.isNeedReloaded = true;
 				} else {
 					isNeedReloaded = true;
 					AlertDialog.Builder builder = Tools.AlertNetWorkDialog(mContext, mActivity);
@@ -413,10 +440,32 @@ public class ListMessagesBySenderActivity extends FragmentActivity {
 
 			}
 
+			@Override
+			public void onLastListItem() {
+				super.onLastListItem();
+				// Do the work to load more items at the end of list here
+				Log.e(TAG, "onLastListItem");
+//				if (!mIsLoadingMore) {
+//					if (Tools.isNetworkAvailable(mContext)) {
+//						new LoadDataTask().execute();
+//					} else {
+//						isNeedReloaded = true;
+//						AlertDialog.Builder builder = Tools.AlertNetWorkDialog(mContext, mActivity);
+//						builder.show();
+//					}
+//				} else {
+//					onLoadMoreComplete();
+//				}
+			}
 		});
 	}
 
 	private class LoadDataTask extends AsyncTask<Void, Void, Void> {
+		private FrameLayout mProgressBarLoadMore;
+		
+		public LoadDataTask(FrameLayout mProgressBarLoadMore) {
+			this.mProgressBarLoadMore = mProgressBarLoadMore;
+		}
 
 		private MessageBySender loadDataLoadMore(String response) {
 			MessageBySender messageBySender = new Gson().fromJson(response,
@@ -427,23 +476,21 @@ public class ListMessagesBySenderActivity extends FragmentActivity {
 
 		@Override
 		protected Void doInBackground(Void... params) {
-			if (isCancelled()) {
-				return null;
-			}
 			return null;
 		}
 
 		@Override
 		protected void onPreExecute() {
 			super.onPreExecute();
+//			mIsLoadingMore = true;
+//			swipeListView.addFooterView(mFooterView);
 			if (isLoadMore) {
-				GetListMessagesBySenderTask task = new GetListMessagesBySenderTask(
-						mContext, senderID, page);
+				mProgressBarLoadMore.setVisibility(View.VISIBLE);
+				GetListMessagesBySenderTask task = new GetListMessagesBySenderTask(mContext, senderID, page);
 				task.setGetListMessagesBySenderTaskListener(new onGetListMessagesBySenderTaskListener() {
 
 					@Override
 					public void onPreGetListMessagesBySender() {
-
 					}
 
 					@Override
@@ -468,22 +515,24 @@ public class ListMessagesBySenderActivity extends FragmentActivity {
 					}
 				});
 				task.execute();
+			} else {
+				swipeListView.onLoadMoreComplete();
 			}
 		}
 
 		@Override
 		protected void onPostExecute(Void result) {
-			// Call onLoadMoreComplete when the LoadMore task, has finished
-			swipeListView.onLoadMoreComplete();
 			super.onPostExecute(result);
-		}
-
-		@Override
-		protected void onCancelled() {
-			// Notify the loading more operation has finished
+			// Call onLoadMoreComplete when the LoadMore task, has finished
 			swipeListView.onLoadMoreComplete();
 		}
 	}
+	
+//	private void onLoadMoreComplete() {
+//		mIsLoadingMore = false;
+//		mProgressBarLoadMore.setVisibility(View.GONE);
+//		swipeListView.removeFooterView(mFooterView);
+//	}
 	
 	@Override
 	protected void onResume() {
