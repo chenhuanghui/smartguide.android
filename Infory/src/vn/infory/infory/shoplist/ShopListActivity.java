@@ -153,7 +153,14 @@ public class ShopListActivity extends FragmentActivity {
 
 	public static void newInstance(Activity act, PlaceList placelist, ArrayList<Shop> shopList) {
 		View mLayoutLoading = (View)act.findViewById(R.id.HomeFragmentlayoutLoading);
-		mLayoutLoading.setVisibility(View.INVISIBLE);
+		try
+		{
+			mLayoutLoading.setVisibility(View.INVISIBLE);
+		}
+		catch(Exception e)
+		{
+			
+		}
 		
 		sPlacelist = placelist;
 		sShoplist = shopList;
@@ -164,7 +171,15 @@ public class ShopListActivity extends FragmentActivity {
 	public static void newInstance(Activity act, String shopIds, 
 			ArrayList<Shop> shopList, int dummyShopList) {
 		View mLayoutLoading = (View)act.findViewById(R.id.HomeFragmentlayoutLoading);
-		mLayoutLoading.setVisibility(View.INVISIBLE);
+		try
+		{
+			mLayoutLoading.setVisibility(View.INVISIBLE);
+		}
+		catch(Exception e)
+		{
+			
+		}
+		
 
 		sShopIds = shopIds;
 		sShoplist = shopList;
