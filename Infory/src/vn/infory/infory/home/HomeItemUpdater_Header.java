@@ -36,9 +36,6 @@ public class HomeItemUpdater_Header extends HomeItemUpdater{
 		TextView txtHeaderContent = (TextView) view.findViewById(R.id.txtHeaderContent);
 		RelativeLayout relativeLayoutHeader = (RelativeLayout) view.findViewById(R.id.relativeLayoutHeader);
 		
-		final View mLayoutLoading = (View) caller.getActivity().findViewById(R.id.layoutLoading);
-		final View mLayoutLoadingAni = (View) caller.getActivity().findViewById(R.id.HomeFragmentLayoutLoadingAni);
-		
 		txtHeaderContent.setText(itemHeader.title);	
 		
 		relativeLayoutHeader.setOnClickListener(new View.OnClickListener() {
@@ -46,6 +43,9 @@ public class HomeItemUpdater_Header extends HomeItemUpdater{
 			@Override
 			public void onClick(View v) {
 				// TODO Auto-generated method stub
+				View parent = (View)v.getParent().getParent();
+				FrameLayout mLayoutLoading = (FrameLayout) parent.findViewById(R.id.HomeFragmentlayoutLoading);
+				FrameLayout mLayoutLoadingAni = (FrameLayout) parent.findViewById(R.id.HomeFragmentLayoutLoadingAni);
 				
 				mLayoutLoading.setVisibility(View.VISIBLE);
 	    		AnimationDrawable frameAnimation = (AnimationDrawable) 
