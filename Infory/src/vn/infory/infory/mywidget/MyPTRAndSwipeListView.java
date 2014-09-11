@@ -265,7 +265,7 @@ public class MyPTRAndSwipeListView extends RelativeLayout {
 //				}
 				if (!mIsLoadingMore) {
 					swipeListView.addFooterView(mFooterView);
-					mProgressBarLoadMore.setVisibility(View.VISIBLE);
+//					mProgressBarLoadMore.setVisibility(View.VISIBLE);
 					mIsLoadingMore = true;
 					onLoadMore();
 				} else {

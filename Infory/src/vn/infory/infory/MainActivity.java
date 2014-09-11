@@ -99,68 +99,7 @@ public class MainActivity extends FragmentActivity
 			finish();
 		}
 
-		/*
-		 * Start GCM;
-		 */
-
-		try {
-			GCMRegistrar.checkDevice(this);
-			GCMRegistrar.checkManifest(this);
-			final String regId = "";
-
-			final Context mContext = this;
-
-			if (regId.compareTo("") == 0 || regId.compareTo("0") == 0)
-			{
-				System.out.println("Device is not have any registrationID");
-				GCMRegistrar.register(this, Constants.GCM_SENDERID);
-			}
-			else
-			{
-				// device is already registered on GCM, check server.
-				System.out.println("registrationID is: " + regId);
-				if (GCMRegistrar.isRegisteredOnServer(this))
-				{
-					System.out.println("Device is already registered on Server side: " + regId);
-				}
-				else
-				{
-					// Try to register again, but not in the UI thread.
-					// It's also necessary to cancel the thread
-					// onDestroy(),
-					// hence the use of AsyncTask instead of a raw
-					// thread.
-					System.out.println("Device is not registered on Server side");
-					final AsyncTask<Void, Void, Void> mRegisterTask = new AsyncTask<Void, Void, Void>() {
-
-						@Override
-						protected Void doInBackground(Void... params)
-						{
-
-							boolean registered = ServerUtilities.register(mContext, regId);
-							if (!registered)
-							{
-								System.out.println("async task: not registered ");
-								GCMRegistrar.unregister(mContext);
-							}
-							return null;
-						}
-
-						@Override
-						protected void onPostExecute(Void result)
-						{
-							Log.e("GCMRegistrar regid", GCMRegistrar.getRegistrationId(mContext));
-
-						}
-					};
-					mRegisterTask.execute(null, null, null);
-				}
-			}
-		} catch (Exception ex) {
-			Log.e("", ex.toString());
-		}
-		
-
+		updateRegistrationID(this);
 		/*
 		 * Intent intent = new Intent(this, ScanCodeRelatedActivity.class);
 		 * startActivity(intent);
@@ -476,7 +415,59 @@ public class MainActivity extends FragmentActivity
 	{
 		public void onSideMenuClick();
 	}
+	
+	private void updateRegistrationID(final Context mContext) {
+		/*
+		 * Start GCM;
+		 */
+		try {
+			GCMRegistrar.checkDevice(mContext);
+			GCMRegistrar.checkManifest(mContext);
+			final String regId = GCMRegistrar.getRegistrationId(mContext);
+			Log.e("MainActivity", "regId: " + regId);
+			
+			if (regId.compareTo("") == 0 || regId.compareTo("0") == 0) {
+				System.out.println("Device is not have any registrationID");
+				GCMRegistrar.register(mContext, Constants.GCM_SENDERID);
+			} else {
+//				// device is already registered on GCM, check server.
+//				System.out.println("registrationID is: " + regId);
+//				if (GCMRegistrar.isRegisteredOnServer(mContext)) {
+//					System.out.println("Device is already registered on Server side: " + regId);
+//				} else {
+//					// Try to register again, but not in the UI thread.
+//					// It's also necessary to cancel the thread
+//					// onDestroy(),
+//					// hence the use of AsyncTask instead of a raw
+//					// thread.
+//					System.out.println("Device is not registered on Server side");
+//					
+//				}
+				final AsyncTask<Void, Void, Void> mRegisterTask = new AsyncTask<Void, Void, Void>() {
 
+					@Override
+					protected Void doInBackground(Void... params) {
+
+						boolean registered = ServerUtilities.register(mContext, regId);
+						if (!registered) {
+							System.out.println("async task: not registered ");
+							GCMRegistrar.unregister(mContext);
+						}
+						return null;
+					}
+
+					@Override
+					protected void onPostExecute(Void result) {
+						Log.e("GCMRegistrar regid", GCMRegistrar.getRegistrationId(mContext));
+					}
+				};
+				mRegisterTask.execute(null, null, null);
+			}
+		} catch (Exception ex) {
+			Log.e("", ex.toString());
+		}
+	}
+	
 	@Override
 	protected void onResume()
 	{
@@ -501,4 +492,5 @@ public class MainActivity extends FragmentActivity
 															mFragHome.updateCounter(count);
 														}
 													};
+													
 }

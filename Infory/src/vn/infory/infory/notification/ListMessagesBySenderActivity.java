@@ -95,6 +95,8 @@ public class ListMessagesBySenderActivity extends FragmentActivity {
 			// MessageInfo.class);
 			senderID = bundle.getInt(NotificationUtil.senderId);
 			messageId = bundle.getInt(NotificationUtil.messageId);
+			Log.e(TAG, "senderID: " + senderID);
+			Log.e(TAG, "messageId: " + messageId);
 		}
 		mContext = this;
 		mActivity = this;
@@ -130,6 +132,7 @@ public class ListMessagesBySenderActivity extends FragmentActivity {
 
 	private void setGUI() {
 		if (Tools.isNetworkAvailable(mContext)) {
+			page = 0;
 			GetListMessagesBySenderTask task = new GetListMessagesBySenderTask(
 					mContext, senderID, page);
 			task.setGetListMessagesBySenderTaskListener(new onGetListMessagesBySenderTaskListener() {
@@ -255,18 +258,39 @@ public class ListMessagesBySenderActivity extends FragmentActivity {
         swipeListView.setAdapter(alphaInAnimationAdapter);
         adapter.setLimit(1);
 		swipeListView.setAdapter(adapter);
-		int index = 0;
-		if (messageId > 0) {
-			for (int i = 0; i < messageBySender.getMessages().size(); i++) {
-				messages mess = messageBySender.getMessages().get(i);
-				if (mess.getIdMessage() == messageId) {
-					index = i;
-					break;
+		
+		swipeListView.postDelayed(new Runnable() {
+			
+			@Override
+			public void run() {
+				int index = 0;
+				if (messageId > 0) {
+					for (int i = 0; i < messageBySender.getMessages().size(); i++) {
+						messages mess = messageBySender.getMessages().get(i);
+						if (mess.getIdMessage() == messageId) {
+							index = i;
+							break;
+						}
+					}
 				}
+				final int positionWillBeScrollTo = index;
+				Log.e(TAG, "positionWillBeScrollTo: " + positionWillBeScrollTo);
+				messages mess = messageBySender.getMessages().get(index);
+				if(mess.getStatus() == 0) {
+					MarkReadMessageTask task = new MarkReadMessageTask(mContext, mess.getIdMessage(), 0);
+					task.execute();
+				}
+				updateView(index, true);
+				adapter.expand(index);
+				swipeListView.postDelayed(new Runnable() {
+					
+					@Override
+					public void run() {
+						swipeListView.smoothScrollToPosition(positionWillBeScrollTo);
+					}
+				}, 500);
 			}
-		}
-		adapter.expand(index);
-		updateView(index, true);
+		}, 500);
 	}
 
 	private void initEmptyData() {
@@ -344,48 +368,51 @@ public class ListMessagesBySenderActivity extends FragmentActivity {
 			@Override
 			public void onClickFrontView(final int position) {
 				Log.d("swipe", String.format("onClickFrontView %d", position));
-				if (lstMessages.get(position).getStatus() == 0) {
-					// chua doc message, call service mark read message trong
-					// day
-
-					lstMessages.get(position).setStatus(1);
-					updateView(position, true);
-					adapter.expand(position);
-					swipeListView.postDelayed(new Runnable() {
-						
-						@Override
-						public void run() {
-							swipeListView.smoothScrollToPosition(position);
-						}
-					}, 500);
-					MarkReadMessageTask task = new MarkReadMessageTask(mContext, lstMessages.get(position).getIdMessage(), 0);
-//					task.setMarkReadMessageTaskListener(new onMarkReadMessageTaskListener() {
-//
-//						@Override
-//						public void onPreMarkReadMessage() {
-//							
-//						}
-//
-//						@Override
-//						public void onMarkReadMessageSuccess(String response) {
-//						}
-//
-//						@Override
-//						public void onMarkReadMessageFailure() {
-//							
-//						}
-//					});
-					task.execute();
-				} else {
-					adapter.expand(position);
-					swipeListView.postDelayed(new Runnable() {
-						
-						@Override
-						public void run() {
-							swipeListView.smoothScrollToPosition(position);
-						}
-					}, 500);
+				if(!adapter.isExpanded(position)) {
+					if (lstMessages.get(position).getStatus() == 0) {
+						// chua doc message, call service mark read message trong
+						// day
+						NotificationActivity.isNeedReloaded = true;
+						lstMessages.get(position).setStatus(1);
+						updateView(position, true);
+						adapter.expand(position);
+						swipeListView.postDelayed(new Runnable() {
+							
+							@Override
+							public void run() {
+								swipeListView.smoothScrollToPosition(position);
+							}
+						}, 500);
+						MarkReadMessageTask task = new MarkReadMessageTask(mContext, lstMessages.get(position).getIdMessage(), 0);
+//						task.setMarkReadMessageTaskListener(new onMarkReadMessageTaskListener() {
+	//
+//							@Override
+//							public void onPreMarkReadMessage() {
+//								
+//							}
+	//
+//							@Override
+//							public void onMarkReadMessageSuccess(String response) {
+//							}
+	//
+//							@Override
+//							public void onMarkReadMessageFailure() {
+//								
+//							}
+//						});
+						task.execute();
+					} else {
+						adapter.expand(position);
+						swipeListView.postDelayed(new Runnable() {
+							
+							@Override
+							public void run() {
+								swipeListView.smoothScrollToPosition(position);
+							}
+						}, 500);
+					}
 				}
+				
 //				int h1 = swipeListView.getHeight();
 //				int h2 = v.getHeight();
 //
@@ -542,6 +569,7 @@ public class ListMessagesBySenderActivity extends FragmentActivity {
 			lstMessages.clear();
 			setGUI();
 			isNeedReloaded = false;
+			swipeListView.onLoadMoreComplete();
     	}
 	}
 

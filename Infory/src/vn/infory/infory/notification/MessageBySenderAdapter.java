@@ -10,7 +10,10 @@ import vn.infory.infory.data.MessageBySender.messages;
 import vn.infory.infory.home.HomeAdapter;
 import vn.infory.infory.mywidget.ListViewNotScroll;
 import vn.infory.infory.network.CyAsyncTask;
+import android.app.AlertDialog;
 import android.content.Context;
+import android.content.DialogInterface;
+import android.content.DialogInterface.OnClickListener;
 import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.drawable.AnimationDrawable;
@@ -25,7 +28,6 @@ import android.widget.FrameLayout;
 import android.widget.ImageView;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import com.nhaarman.listviewanimations.itemmanipulation.expandablelistitem.ExpandableListItemAdapter;
 
@@ -477,7 +479,24 @@ public class MessageBySenderAdapter extends ExpandableListItemAdapter<messages> 
 					tostart.setDataAndType(video, "video/*");
 					mContext.startActivity(tostart);
 				} catch (Exception e) {
-					Toast.makeText(mContext, e.toString(), Toast.LENGTH_SHORT).show();
+					AlertDialog.Builder builder = new AlertDialog.Builder(mContext);
+					builder.setMessage(mContext.getString(R.string.error_no_video_player));
+					builder.setPositiveButton(mContext.getString(R.string.google_play), new OnClickListener() {
+						
+						@Override
+						public void onClick(DialogInterface dialog, int which) {
+							mContext.startActivity(new Intent(Intent.ACTION_VIEW,
+									Uri.parse("market://search?q=video%20player&c=apps")));
+						}
+					});
+					builder.setNegativeButton(mContext.getString(R.string.Cancel), new OnClickListener() {
+						
+						@Override
+						public void onClick(DialogInterface dialog, int which) {
+							dialog.cancel();
+						}
+					});
+					builder.create().show();
 				}
 			}
 		});

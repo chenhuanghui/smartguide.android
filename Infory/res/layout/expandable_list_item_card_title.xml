@@ -43,7 +43,6 @@
             android:contentDescription="@string/sfu_normal"
             android:gravity="center_vertical"
             android:singleLine="true"
-            android:text="12121"
             android:textColor="#737373" />
 
         <ImageView
@@ -64,7 +63,6 @@
             android:layout_marginTop="5dip"
             android:contentDescription="@string/sfu_bold"
             android:gravity="left"
-            android:text="dsds"
             android:textColor="#737373" />
     </RelativeLayout>
 

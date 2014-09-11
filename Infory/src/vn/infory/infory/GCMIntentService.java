@@ -2,6 +2,8 @@ package vn.infory.infory;
 
 import org.json.JSONException;
 
+import vn.infory.infory.notification.ListMessagesBySenderActivity;
+import vn.infory.infory.notification.NotificationActivity;
 import vn.infory.infory.notification.NotificationGotoActivity;
 import vn.infory.infory.notification.NotificationUtil;
 import vn.infory.infory.notification.ServerUtilities;
@@ -120,12 +122,36 @@ public class GCMIntentService extends GCMBaseIntentService
 
 	private Intent gotoNotification(String content, String messageId, String senderId)
 	{
-		Intent intent = null;
+		Intent i = null;
 
-		intent = new Intent(mycontext, NotificationGotoActivity.class);
-		intent.putExtra(NotificationUtil.messageId, messageId);
-		intent.putExtra(NotificationUtil.senderId, senderId);
+		int idMessage = Integer.valueOf(messageId);
+		int idSender = Integer.valueOf(senderId);
+//		intent = new Intent(mycontext, NotificationGotoActivity.class);
+//		intent.putExtra(NotificationUtil.messageId, messageId);
+//		intent.putExtra(NotificationUtil.senderId, senderId);
+		if(idMessage > 0 && idSender > 0)
+		{
+			i = new Intent(this, ListMessagesBySenderActivity.class);
+			i.putExtra(NotificationUtil.messageId, idMessage);
+			i.putExtra(NotificationUtil.senderId, idSender);
+		}
+		else
+		{
+			if(idMessage == 0 && idSender > 0)
+			{
+				i = new Intent(this, ListMessagesBySenderActivity.class);
+				i.putExtra(NotificationUtil.senderId, idSender);
+			}
+			else
+			{
+				if(idMessage == 0 && idSender == 0)
+				{
+					//Đi đến view message list
+					i = new Intent(this, NotificationActivity.class);
+				}
+			}
+		}
 
-		return intent;
+		return i;
 	}
 }

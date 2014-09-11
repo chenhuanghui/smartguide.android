@@ -20,13 +20,17 @@ import vn.infory.infory.network.CyAsyncTask;
 import vn.infory.infory.network.NetworkManager;
 import vn.infory.infory.network.CyAsyncTask.Listener2;
 import vn.infory.infory.network.GetCounterMessage;
+import vn.infory.infory.notification.Constants;
 import vn.infory.infory.notification.NotificationActivity;
+import vn.infory.infory.notification.ServerUtilities;
 import vn.infory.infory.shopdetail.ShopDetailActivity;
 import vn.infory.infory.shoplist.ShopListActivity;
 import android.app.Activity;
 import android.app.AlertDialog;
+import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences.Editor;
+import android.os.AsyncTask;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
 import android.support.v4.app.Fragment;
@@ -42,9 +46,11 @@ import android.widget.TextView;
 import com.cycrix.androidannotation.AndroidAnnotationParser;
 import com.cycrix.androidannotation.Click;
 import com.cycrix.androidannotation.ViewById;
+import com.google.android.gcm.GCMRegistrar;
 
-public class HomeFragment extends Fragment implements HomeListener, Listener2 {
-
+public class HomeFragment extends Fragment implements HomeListener {
+	private static final String TAG = "Infory HomeFragment";
+	
 	public static final int iType_unread = 0;
 	public static final int iType_read = 1;
 	public static final int iType_total = 2;
@@ -95,10 +101,6 @@ public class HomeFragment extends Fragment implements HomeListener, Listener2 {
 
 	public void onFinishInit() {
 		FontsCollection.setFont(getView());
-		// Get count unread message
-		CyAsyncTask mLoader = new GetCounterMessage(getActivity(), iType_unread);
-		mLoader.setListener(this);
-		mLoader.executeOnExecutor(NetworkManager.THREAD_POOL);
 
 		mAdapter = new HomeAdapter(getActivity(), this);
 		mLayoutMain.setAdapter(mAdapter);
@@ -111,6 +113,35 @@ public class HomeFragment extends Fragment implements HomeListener, Listener2 {
 
 	@Override
 	public void onResume() {
+		Log.e(TAG, "onResume");
+		// Get count unread message
+		CyAsyncTask mLoader = new GetCounterMessage(getActivity(), iType_unread);
+		mLoader.setListener(new Listener2() {
+			
+			@Override
+			public void onFail(Exception e) {
+
+				txtCounter.setVisibility(View.GONE);
+			}
+			
+			@Override
+			public void onCompleted(Object result) {
+				try {
+					int unreadMessage = new JSONObject((String) result).getInt("number");
+					Log.e(getTag(), "unreadMessage: " + unreadMessage);
+					if (unreadMessage > 0) {
+						txtCounter.setText("" + unreadMessage);
+						txtCounter.setVisibility(View.VISIBLE);
+					} else if (unreadMessage == 0) {
+						txtCounter.setVisibility(View.GONE);
+					}
+				} catch (JSONException e) {
+					Log.e(getTag(), e.toString());
+				}
+			}
+		});
+		mLoader.executeOnExecutor(NetworkManager.THREAD_POOL);
+		
 		// TODO Auto-generated method stub
 		Editor e = PreferenceManager.getDefaultSharedPreferences(getActivity())
 				.edit();
@@ -232,31 +263,6 @@ public class HomeFragment extends Fragment implements HomeListener, Listener2 {
 	public void onShopItemClick(int shopId, PromoItem shopItem) {
 		// TODO Auto-generated method stub
 
-	}
-
-	@Override
-	public void onCompleted(Object result) {
-		// TODO Auto-generated method stub
-		// json response: {"number":0,"string":"0"}
-
-		try {
-			String unreadMessage = new JSONObject((String) result)
-					.getString("string");
-			Log.e(getTag(), "unreadMessage: " + unreadMessage);
-			if (unreadMessage.compareTo("0") != 0) {
-				txtCounter.setVisibility(View.VISIBLE);
-				txtCounter.setText(unreadMessage);
-			}
-		} catch (JSONException e) {
-			Log.e(getTag(), e.toString());
-		}
-
-	}
-
-	@Override
-	public void onFail(Exception e) {
-		txtCounter.setVisibility(View.GONE);
-		// TODO Auto-generated method stub
 	}
 
 	public void updateCounter(String count) {

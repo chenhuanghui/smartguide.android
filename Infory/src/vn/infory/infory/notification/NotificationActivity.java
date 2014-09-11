@@ -70,10 +70,10 @@ public class NotificationActivity extends FragmentActivity {
 							// {"number":[400,0,400],"string":["400","0","400"]}
 							// unread, read, total
 
-							JSONArray jsonArr = new JSONObject((String) result).getJSONArray("string");
+							JSONArray jsonArr = new JSONObject((String) result).getJSONArray("number");
 							txtHeader.setText("Thông báo" + " ("
-									+ jsonArr.getString(0) + "/"
-									+ jsonArr.getString(2) + ")");
+									+ "" + jsonArr.getInt(0) + "/"
+									+ "" + jsonArr.getInt(2) + ")");
 						} catch (Exception e) {
 							Log.e(TAG, e.toString());
 						}
@@ -394,6 +394,7 @@ public class NotificationActivity extends FragmentActivity {
             super.onPreExecute();
             Log.v(TAG + "loadmore: ", "page + isLoadMore: " + page + " + " + isLoadMore);
             if (isLoadMore) {
+            	mProgressBarLoadMore.setVisibility(View.VISIBLE);
             	GetNotificationTask task = new GetNotificationTask(mContext, type, page);
                 task.setGetNotificationsTaskListener(new onGetNotificationsTaskListener() {
 
@@ -425,6 +426,8 @@ public class NotificationActivity extends FragmentActivity {
                     }
                 });
                 task.execute();
+            } else {
+            	onLoadMoreComplete();
             }
         }
 
@@ -436,13 +439,6 @@ public class NotificationActivity extends FragmentActivity {
         @Override
         protected void onPostExecute(Void result) {
             super.onPostExecute(result);
-            // Call onLoadMoreComplete when the LoadMore task, has finished
-            onLoadMoreComplete();
-        }
-        
-        @Override
-        protected void onCancelled(Void result) {
-        	super.onCancelled(result);
             // Call onLoadMoreComplete when the LoadMore task, has finished
             onLoadMoreComplete();
         }

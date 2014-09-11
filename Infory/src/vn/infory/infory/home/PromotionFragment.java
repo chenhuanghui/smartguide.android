@@ -3,32 +3,39 @@ package vn.infory.infory.home;
 import java.util.ArrayList;
 import java.util.List;
 
-import vn.infory.infory.CyUtils;
+import org.json.JSONException;
+import org.json.JSONObject;
+
 import vn.infory.infory.FontsCollection;
-import vn.infory.infory.LayoutError;
 import vn.infory.infory.PlaceListListActivity;
 import vn.infory.infory.R;
+import vn.infory.infory.Tools;
 import vn.infory.infory.data.PlaceList;
 import vn.infory.infory.data.Shop;
 import vn.infory.infory.data.home.HomeItem_ShopItem;
 import vn.infory.infory.data.home.PromoItem;
 import vn.infory.infory.home.HomeFragment.Listener;
 import vn.infory.infory.network.CyAsyncTask;
+import vn.infory.infory.network.CyAsyncTask.Listener2;
+import vn.infory.infory.network.GetCounterMessage;
 import vn.infory.infory.network.GetShopList;
 import vn.infory.infory.network.NetworkManager;
+import vn.infory.infory.notification.NotificationActivity;
 import vn.infory.infory.shopdetail.ShopDetailActivity;
 import vn.infory.infory.shoplist.ShopListActivity;
 import android.app.AlertDialog;
 import android.app.AlertDialog.Builder;
 import android.content.DialogInterface;
+import android.content.Intent;
 import android.graphics.drawable.AnimationDrawable;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AbsListView;
-import android.widget.FrameLayout;
+import android.widget.TextView;
 import android.widget.AbsListView.OnScrollListener;
 import android.widget.ListView;
 
@@ -51,6 +58,8 @@ public class PromotionFragment extends Fragment implements HomeListener {
 	@ViewById(id = R.id.lstMain)			private ListView mLayoutMain;
 	@ViewById(id = R.id.layoutLoading)		private View mLayoutLoading;
 	@ViewById(id = R.id.HomeFragmentLayoutLoadingAni)		private View mLayoutLoadingAni;
+	@ViewById(id = R.id.imageNotification)  private View imageNotification;
+	@ViewById(id = R.id.txtCounter)         private TextView txtCounter;
 
 	@Override
 	public View onCreateView(LayoutInflater inflater, ViewGroup container,
@@ -170,6 +179,54 @@ public class PromotionFragment extends Fragment implements HomeListener {
 		// TODO Auto-generated method stub
 	}
 
+	@Click(id = R.id.imageNotification)
+	private void onNotificationClick(View v) {
+		// check connection cho nay
+
+		if (Tools.isNetworkAvailable(getActivity())) {
+			Intent intent = new Intent(getActivity(), NotificationActivity.class);
+			getActivity().startActivity(intent);
+			getActivity().overridePendingTransition(android.R.anim.fade_in,
+					android.R.anim.fade_out);
+		} else {
+			AlertDialog.Builder builder = Tools.AlertNetWorkDialog(getActivity(), getActivity());
+			builder.show();
+		}
+
+	}
 	
+	@Override
+	public void onResume() {
+		super.onResume();
+		// Get count unread message
+		CyAsyncTask mLoader = new GetCounterMessage(getActivity(), HomeFragment.iType_unread);
+		mLoader.setListener(new Listener2() {
+			
+			@Override
+			public void onFail(Exception e) {
+
+				txtCounter.setVisibility(View.GONE);
+			}
+			
+			@Override
+			public void onCompleted(Object result) {
+				try {
+					String unreadMessage = new JSONObject((String) result).getString("string");
+					Log.e(getTag(), "unreadMessage: " + unreadMessage);
+					if (unreadMessage.compareTo("0") != 0) {
+						txtCounter.setVisibility(View.VISIBLE);
+						txtCounter.setText(unreadMessage);
+					}
+				} catch (JSONException e) {
+					Log.e(getTag(), e.toString());
+				}
+			}
+		});
+		mLoader.executeOnExecutor(NetworkManager.THREAD_POOL);
+	}
+
+	public void updateCounter(String count) {
+		txtCounter.setText(count + "");
+	}
 	
 }

@@ -16,8 +16,7 @@ import android.widget.LinearLayout;
 
 public class NotificationGotoActivity extends Activity
 {
-	
-	
+	private static final String TAG = "Infory NotificationGotoActivity";
 	public static boolean	isAlreadyForeGround		= false;
 
 	private Intent			IntentGoto;
@@ -28,6 +27,7 @@ public class NotificationGotoActivity extends Activity
 	@Override
 	public void onCreate(Bundle savedInstanceState)
 	{
+		Log.e(TAG, "on Create");
 		super.onCreate(savedInstanceState);
 
 		mContext = this;
@@ -65,6 +65,7 @@ public class NotificationGotoActivity extends Activity
 					}
 				}
 			}
+			finish();
 		}
 	}
 

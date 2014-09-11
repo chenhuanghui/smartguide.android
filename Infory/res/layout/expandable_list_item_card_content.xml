@@ -51,7 +51,6 @@
             android:layout_marginTop="5dip"
             android:contentDescription="@string/sfu_bold"
             android:gravity="left"
-            android:text="dsds"
             android:textColor="#737373" />
 
         <TextView
@@ -61,7 +60,6 @@
             android:layout_marginTop="5dip"
             android:contentDescription="@string/sfu_normal"
             android:gravity="left"
-            android:text="dsds"
             android:textColor="#737373" />
     </LinearLayout>
 
