@@ -56,7 +56,7 @@ public class PromotionFragment extends Fragment implements HomeListener {
 
 	// GUI
 	@ViewById(id = R.id.lstMain)			private ListView mLayoutMain;
-	@ViewById(id = R.id.layoutLoading)		private View mLayoutLoading;
+	@ViewById(id = R.id.HomeFragmentlayoutLoading)		private View mLayoutLoading;
 	@ViewById(id = R.id.HomeFragmentLayoutLoadingAni)		private View mLayoutLoadingAni;
 	@ViewById(id = R.id.imageNotification)  private View imageNotification;
 	@ViewById(id = R.id.txtCounter)         private TextView txtCounter;

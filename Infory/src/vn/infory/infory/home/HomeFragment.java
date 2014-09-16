@@ -69,18 +69,12 @@ public class HomeFragment extends Fragment implements HomeListener {
 	private HomeAdapter mAdapter;
 
 	// GUI elements
-	@ViewById(id = R.id.edtSearch)
-	private View mEdtSearch;
-	@ViewById(id = R.id.lstMain)
-	private ListView mLayoutMain;
-	@ViewById(id = R.id.layoutLoading)
-	private View mLayoutLoading;
-	@ViewById(id = R.id.btnSideMenu)
-	private View mBtnSideMenu;
-	@ViewById(id = R.id.imageNotification)
-	private View imageNotification;
-	@ViewById(id = R.id.txtCounter)
-	private TextView txtCounter;
+	@ViewById(id = R.id.edtSearch)			private View mEdtSearch;
+	@ViewById(id = R.id.lstMain)			private ListView mLayoutMain;
+	@ViewById(id = R.id.HomeFragmentlayoutLoading)		private View mLayoutLoading;
+	@ViewById(id = R.id.btnSideMenu)		private View mBtnSideMenu;
+	@ViewById(id = R.id.imageNotification)	private View imageNotification;
+	@ViewById(id = R.id.txtCounter)			private TextView txtCounter;
 
 	@Override
 	public View onCreateView(LayoutInflater inflater, ViewGroup container,
@@ -150,6 +144,7 @@ public class HomeFragment extends Fragment implements HomeListener {
 		e.commit();
 		
 		mLayoutLoading.setVisibility(View.GONE);
+//		mLayoutLoading.setVisibility(View.INVISIBLE);
 		super.onResume();
 	}
 

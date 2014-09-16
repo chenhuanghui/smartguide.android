@@ -91,7 +91,7 @@
     </RelativeLayout>
 
     <FrameLayout
-        android:id="@+id/layoutLoading"
+        android:id="@+id/HomeFragmentlayoutLoading"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:background="#80000000"

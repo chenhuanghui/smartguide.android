@@ -42,8 +42,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_alignLeft="@+id/txtName"
-            android:layout_below="@+id/imgArrowNav"
-            android:layout_marginTop="5dp"
+            android:layout_below="@+id/txtName"
             android:text="Content"
             android:textAppearance="?android:attr/textAppearanceSmall" />
 

@@ -4,11 +4,14 @@ import android.app.Activity;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.hardware.Camera;
+import android.hardware.Camera.CameraInfo;
 import android.os.Bundle;
 import android.os.Handler;
 import android.text.TextUtils;
+import android.util.Log;
 import android.view.Window;
 import android.view.WindowManager;
+import android.widget.Toast;
 import net.sourceforge.zbar.Config;
 import net.sourceforge.zbar.Image;
 import net.sourceforge.zbar.ImageScanner;
@@ -55,8 +58,8 @@ public class ZBarScannerActivity extends Activity implements Camera.PreviewCallb
 
     public void setupScanner() {
         mScanner = new ImageScanner();
-        mScanner.setConfig(0, Config.X_DENSITY, 3);
-        mScanner.setConfig(0, Config.Y_DENSITY, 3);
+        mScanner.setConfig(0, Config.X_DENSITY, 1);
+        mScanner.setConfig(0, Config.Y_DENSITY, 1);
 
         int[] symbols = getIntent().getIntArrayExtra(SCAN_MODES);
         if (symbols != null) {
@@ -71,8 +74,14 @@ public class ZBarScannerActivity extends Activity implements Camera.PreviewCallb
     protected void onResume() {
         super.onResume();
 
-        // Open the default i.e. the first rear facing camera.
-        mCamera = Camera.open();
+        try {
+			try {
+				mCamera = Camera.open(CameraInfo.CAMERA_FACING_BACK);
+			} catch (Exception e) {
+				mCamera = Camera.open(CameraInfo.CAMERA_FACING_FRONT);
+			}
+		} catch (Exception e) {
+		}
         if(mCamera == null) {
             // Cancel request if mCamera is null.
             cancelRequest();
@@ -109,8 +118,14 @@ public class ZBarScannerActivity extends Activity implements Camera.PreviewCallb
     }
 
     public boolean isCameraAvailable() {
-        PackageManager pm = getPackageManager();
-        return pm.hasSystemFeature(PackageManager.FEATURE_CAMERA);
+    	
+    	if (!getPackageManager().hasSystemFeature(PackageManager.FEATURE_CAMERA) && 
+				!getPackageManager().hasSystemFeature(PackageManager.FEATURE_CAMERA_FRONT)) {
+			return false;
+		}
+    	return true;
+    	/*PackageManager pm = getPackageManager();
+        return pm.hasSystemFeature(PackageManager.FEATURE_CAMERA);*/
     }
 
     public void cancelRequest() {
