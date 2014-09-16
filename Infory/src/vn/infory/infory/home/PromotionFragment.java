@@ -211,11 +211,13 @@ public class PromotionFragment extends Fragment implements HomeListener {
 			@Override
 			public void onCompleted(Object result) {
 				try {
-					String unreadMessage = new JSONObject((String) result).getString("string");
+					int unreadMessage = new JSONObject((String) result).getInt("number");
 					Log.e(getTag(), "unreadMessage: " + unreadMessage);
-					if (unreadMessage.compareTo("0") != 0) {
+					if (unreadMessage > 0) {
+						txtCounter.setText("" + unreadMessage);
 						txtCounter.setVisibility(View.VISIBLE);
-						txtCounter.setText(unreadMessage);
+					} else if (unreadMessage == 0) {
+						txtCounter.setVisibility(View.GONE);
 					}
 				} catch (JSONException e) {
 					Log.e(getTag(), e.toString());
