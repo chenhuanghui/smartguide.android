@@ -1,0 +1,121 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="horizontal" >
+
+    <RelativeLayout
+        android:id="@+id/layoutHeader"
+        android:layout_width="86dp"
+        android:layout_height="match_parent"
+        android:background="@drawable/bg" >
+
+        <TextView
+            android:id="@+id/textView1"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_below="@+id/imgLandmark"
+            android:layout_centerHorizontal="true"
+            android:text="HÌNH ẢNH"
+            android:textAlignment="center"
+            android:textColor="#282E3A"
+            android:textSize="10dp"
+            android:textStyle="bold" />
+
+        <ImageView
+            android:id="@+id/imgLandmark"
+            android:layout_width="46dp"
+            android:layout_height="wrap_content"
+            android:layout_alignParentTop="true"
+            android:layout_centerHorizontal="true"
+            android:layout_marginTop="46dp"
+            android:src="@drawable/pic_shopphoto" />
+
+    </RelativeLayout>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:background="#ffffff"
+        android:orientation="vertical"
+        android:paddingLeft="10dp"
+        android:paddingRight="10dp" >
+
+        <RelativeLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_alignParentTop="true"
+            android:layout_marginTop="46dp" >
+
+            <TextView
+                android:id="@+id/textView3"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Hình ảnh cửa hàng:"
+                android:textAppearance="?android:attr/textAppearanceSmall"
+                android:textColor="#282E3A"
+                android:textSize="11dp"
+                android:textStyle="bold" />
+            
+            <RelativeLayout
+                android:layout_width="match_parent"
+                android:layout_height="64dp"
+                android:layout_below="@+id/textView3"
+                android:padding="8dp" >
+
+                <vn.smartguide.HorizontalListView
+                    android:id="@+id/pagerShopPhoto1"
+                    android:layout_width="match_parent"
+                    android:layout_height="48dp" >
+                </vn.smartguide.HorizontalListView>
+
+                <Button
+                    android:id="@+id/btnPagerPhoto1"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:background="#00000000" />
+                
+            </RelativeLayout>
+
+        </RelativeLayout>
+
+        <RelativeLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="12dp" >
+
+            <TextView
+                android:id="@+id/TextView06"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Hình ảnh khách hàng:"
+                android:textAppearance="?android:attr/textAppearanceSmall"
+                android:textColor="#282E3A"
+                android:textSize="11dp"
+                android:textStyle="bold" />
+
+            <RelativeLayout
+                android:layout_width="match_parent"
+                android:layout_height="64dp"
+                android:layout_below="@+id/TextView06"
+                android:padding="8dp" >
+
+                <vn.smartguide.HorizontalListView
+                    android:id="@+id/pagerShopPhoto2"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent" >
+                </vn.smartguide.HorizontalListView>
+
+                <Button
+                    android:id="@+id/btnPagerPhoto2"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:background="#00000000" />
+
+            </RelativeLayout>
+
+        </RelativeLayout>
+
+    </LinearLayout>
+
+</LinearLayout>
